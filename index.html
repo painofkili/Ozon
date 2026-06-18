@@ -16,6 +16,7 @@ button.blue { background: #2196F3; }
 button.gray { background: #999; }
 button.gold { background: #FFD700; color: #333; }
 button.orange { background: #FF9800; }
+button.punish { background: #9C27B0; }
 .status { text-align: center; font-weight: bold; margin: 8px 0; }
 table { width: 100%; font-size: 12px; border-collapse: collapse; margin-top: 8px; }
 td, th { padding: 6px; text-align: center; border-bottom: 1px solid #eee; }
@@ -24,23 +25,26 @@ th { background: #f0f0f0; }
 .tabs button { flex: 1; font-size: 11px; padding: 10px 5px; background: #ddd; color: #333; }
 .tabs button.active { background: #4CAF50; color: white; }
 .zp-result { background: #e8f5e9; padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 14px; white-space: pre-line; }
-.worker-row { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #eee; }
-.worker-row button { width: auto; padding: 6px 10px; font-size: 12px; margin-left: 3px; }
+.worker-row { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #eee; flex-wrap: wrap; gap: 4px; }
+.worker-row button { width: auto; padding: 5px 8px; font-size: 11px; margin: 1px; }
 .chat-container { display: flex; flex-direction: column; height: 60vh; }
 .chat-messages { flex: 1; overflow-y: auto; padding: 10px; background: #fafafa; border-radius: 8px; margin-bottom: 8px; }
-.chat-msg { padding: 8px 12px; margin: 4px 0; background: #e3f2fd; border-radius: 12px; font-size: 14px; max-width: 85%; word-wrap: break-word; }
+.chat-msg { padding: 8px 12px; margin: 4px 0; background: #e3f2fd; border-radius: 12px; font-size: 14px; max-width: 85%; word-wrap: break-word; position: relative; }
 .chat-msg.mine { background: #C8E6C9; margin-left: auto; text-align: right; }
 .chat-msg .author { font-weight: bold; font-size: 11px; color: #555; }
 .chat-msg .time { font-size: 10px; color: #999; }
+.chat-msg .del-msg { position: absolute; top: 2px; right: 2px; background: red; color: white; border-radius: 50%; width: 16px; height: 16px; font-size: 10px; line-height: 16px; text-align: center; cursor: pointer; display: none; }
+.chat-msg:hover .del-msg, .chat-msg:active .del-msg { display: block; }
 .chat-input-row { display: flex; gap: 5px; }
 .chat-input-row input { flex: 1; }
+.punish-row { display: flex; justify-content: space-between; align-items: center; padding: 6px; border-bottom: 1px solid #eee; font-size: 12px; }
+.punish-row button { width: auto; padding: 4px 8px; font-size: 10px; }
 </style>
 </head>
 <body>
 
 <h2>График Ozon</h2>
 
-<!-- ВХОД -->
 <div class="card" id="loginCard">
   <input id="loginName" placeholder="Имя">
   <input id="loginPass" type="password" placeholder="Пароль">
@@ -50,43 +54,33 @@ th { background: #f0f0f0; }
   <div id="msg" style="color:red;text-align:center;margin-top:5px"></div>
 </div>
 
-<!-- ПАРОЛЬ БОГА -->
 <div class="card" id="godPassCard" style="display:none">
   <input id="godPass" type="password" placeholder="Пароль бога">
   <button onclick="checkGodPass()">Войти</button>
   <button class="gray" onclick="showLogin()">Назад</button>
 </div>
 
-<!-- НАСТРОЙКИ БОГА -->
 <div class="card" id="godSettingsCard" style="display:none">
   <div class="status">👑 Настройки бога</div>
-  <label>Имя</label><input id="godName">
-  <label>Новый пароль</label><input id="godNewPass" type="password" placeholder="Не менять">
+  <input id="godName" placeholder="Имя"><input id="godNewPass" type="password" placeholder="Не менять">
   <label>Аватарка</label><input id="godAvatar" type="file" accept="image/*" onchange="previewGodAvatar(this)">
   <img id="godAvatarPreview" style="width:60px;height:60px;border-radius:50%;object-fit:cover;display:none;margin:5px auto">
-  <button onclick="saveGodSettings()">Сохранить</button>
-  <button class="gray" onclick="enterGodMode()">Назад</button>
+  <button onclick="saveGodSettings()">Сохранить</button><button class="gray" onclick="enterGodMode()">Назад</button>
 </div>
 
-<!-- РЕГИСТРАЦИЯ -->
 <div class="card" id="registerCard" style="display:none">
   <div class="status">📝 Регистрация</div>
-  <input id="regName" placeholder="Имя">
-  <label>Пункт</label>
-  <select id="regPunkt"></select>
+  <input id="regName" placeholder="Имя"><select id="regPunkt"></select>
   <input id="regPass" type="password" placeholder="Пароль">
-  <button onclick="register()">Зарегистрироваться</button>
-  <button class="gray" onclick="showLogin()">Назад</button>
+  <button onclick="register()">Зарегистрироваться</button><button class="gray" onclick="showLogin()">Назад</button>
 </div>
 
-<!-- ЭКРАН СОТРУДНИКА -->
 <div class="card" id="mainCard" style="display:none">
   <div class="status">👤 <span id="userName"></span> | Пункт <span id="userPunkt"></span></div>
   <button id="btnStart" onclick="startShift()">🔵 НА СМЕНУ</button>
   <div id="onShift" style="display:none">
     <div class="status" style="color:green">На смене с <span id="shiftStart"></span></div>
-    <input id="timeFrom" value="9" placeholder="Начало">
-    <input id="timeTo" value="21" placeholder="Конец">
+    <input id="timeFrom" value="9" placeholder="Начало"><input id="timeTo" value="21" placeholder="Конец">
     <input id="tovar" type="number" placeholder="Товаров">
     <button class="red" onclick="endShift()">🔴 СО СМЕНЫ</button>
   </div>
@@ -94,7 +88,6 @@ th { background: #f0f0f0; }
   <button class="gray" onclick="logout()" style="margin-top:4px">Выйти</button>
 </div>
 
-<!-- РЕЖИМ БОГА -->
 <div class="card" id="godCard" style="display:none">
   <div class="status">👑 Режим бога</div>
   <div class="tabs">
@@ -105,33 +98,36 @@ th { background: #f0f0f0; }
   </div>
   <div id="punktsTab"><button onclick="addPunkt()">+ Пункт</button><div id="punktsList"></div></div>
   <div id="workersTab" style="display:none">
-    <label>Пункт</label>
-    <select id="workerPunktFilter" onchange="loadWorkersList()"><option value="">Все</option></select>
+    <label>Пункт</label><select id="workerPunktFilter" onchange="loadWorkersList()"><option value="">Все</option></select>
     <div id="workersList"></div>
   </div>
   <div id="calcTab" style="display:none">
-    <label>Сотрудник</label>
-    <select id="calcSelect" onchange="onCalcSelect()"><option value="">-- Выбери --</option></select>
+    <label>Сотрудник</label><select id="calcSelect" onchange="onCalcSelect()"><option value="">-- Выбери --</option></select>
     <div id="calcBlock" style="display:none">
-      <label>Период</label>
-      <div style="display:flex;gap:5px"><input id="calcFrom" type="date" style="flex:1"><span>–</span><input id="calcTo" type="date" style="flex:1"></div>
-      <button onclick="calcZP()">🧮 Посчитать</button>
-      <button class="blue" onclick="markPaid()">✅ Оплачено</button>
+      <label>Период</label><div style="display:flex;gap:5px"><input id="calcFrom" type="date" style="flex:1"><span>–</span><input id="calcTo" type="date" style="flex:1"></div>
+      <button onclick="calcZP()">🧮 Посчитать</button><button class="blue" onclick="markPaid()">✅ Оплачено</button>
       <div id="zpResult" class="zp-result" style="display:none"></div>
     </div>
   </div>
   <button class="gray" onclick="logout()">Выйти</button>
 </div>
 
-<!-- ЧАТ -->
+<div class="card" id="punishCard" style="display:none">
+  <div class="status">⚠️ Штрафы: <span id="punishUser"></span></div>
+  <div id="punishList"></div>
+  <div style="display:flex;gap:5px;margin-top:8px">
+    <input id="punishAmount" type="number" placeholder="Сумма" style="flex:1">
+    <input id="punishReason" placeholder="Причина" style="flex:2">
+  </div>
+  <button onclick="addPunish()">+ Добавить штраф</button>
+  <button class="gray" onclick="document.getElementById('punishCard').style.display='none'; document.getElementById('godCard').style.display='block';">Назад</button>
+</div>
+
 <div class="card" id="chatCard" style="display:none">
   <div class="status">💬 Чат</div>
   <div class="chat-container">
     <div class="chat-messages" id="chatMessages"></div>
-    <div class="chat-input-row">
-      <input id="chatInput" placeholder="Сообщение...">
-      <button onclick="sendChat()" style="width:auto">➤</button>
-    </div>
+    <div class="chat-input-row"><input id="chatInput" placeholder="Сообщение..."><button onclick="sendChat()" style="width:auto">➤</button></div>
   </div>
 </div>
 
@@ -154,58 +150,39 @@ firebase.initializeApp({
 });
 
 const db = firebase.database();
-let currentUser = null, isGod = false, godPassword = null, allShifts = [], lastCalc = null, godAvatar = null;
+let currentUser = null, isGod = false, godPassword = null, allShifts = [], lastCalc = null, godAvatar = null, currentPunishUser = null;
 
 db.ref('godPassword').once('value', s => godPassword = s.val());
 db.ref('godSettings').once('value', s => { if (s.exists()) godAvatar = s.val().avatar; });
 
 function msg(t) { document.getElementById('msg').textContent = t; }
 function showLogin() { 
-  document.getElementById('godPassCard').style.display='none'; 
-  document.getElementById('registerCard').style.display='none';
-  document.getElementById('loginCard').style.display='block'; 
+  ['godPassCard','registerCard'].forEach(id => document.getElementById(id).style.display='none');
+  document.getElementById('loginCard').style.display='block';
 }
 
-function loadPunkts(cb) {
-  db.ref('punkts').once('value', function(snap) {
-    const punkts = []; snap.forEach(c => punkts.push({ id: c.key, ...c.val() }));
-    if (cb) cb(punkts);
-  });
-}
-
-function fillPunktSelect(selectId, cb) {
-  loadPunkts(function(punkts) {
-    const s = document.getElementById(selectId); s.innerHTML = '';
-    punkts.forEach(p => s.innerHTML += '<option value="' + p.id + '">' + p.id + ' (' + (p.rate||0) + '₽/ч)</option>');
-    if (cb) cb();
-  });
-}
+function loadPunkts(cb) { db.ref('punkts').once('value', s => { const p = []; s.forEach(c => p.push({ id: c.key, ...c.val() })); if (cb) cb(p); }); }
+function fillPunktSelect(sid, cb) { loadPunkts(function(p) { const s = document.getElementById(sid); s.innerHTML = ''; p.forEach(x => s.innerHTML += '<option value="' + x.id + '">' + x.id + ' (' + (x.rate||0) + '₽/ч)</option>'); if (cb) cb(); }); }
 
 function register() {
-  const name = document.getElementById('regName').value.trim(), pass = document.getElementById('regPass').value.trim(), punkt = document.getElementById('regPunkt').value;
-  if (!name || !pass || !punkt) { msg('Заполни все поля'); return; }
-  db.ref('users/' + name.replace(/\s/g, '_')).once('value', function(snap) {
-    if (snap.exists()) { msg('Уже есть!'); }
-    else { db.ref('users/' + name.replace(/\s/g, '_')).set({ name, punkt, password: pass, bonus: 0 }); msg('✅ Зарегистрирован!'); showLogin(); }
+  const n = document.getElementById('regName').value.trim(), p = document.getElementById('regPass').value.trim(), pk = document.getElementById('regPunkt').value;
+  if (!n || !p || !pk) { msg('Заполни все поля'); return; }
+  db.ref('users/' + n.replace(/\s/g, '_')).once('value', function(s) {
+    if (s.exists()) { msg('Уже есть!'); }
+    else { db.ref('users/' + n.replace(/\s/g, '_')).set({ name: n, punkt: pk, password: p, bonus: 0 }); msg('✅'); showLogin(); }
   });
 }
-
-function showRegister() {
-  document.getElementById('loginCard').style.display='none';
-  document.getElementById('registerCard').style.display='block';
-  fillPunktSelect('regPunkt');
-}
+function showRegister() { document.getElementById('loginCard').style.display='none'; document.getElementById('registerCard').style.display='block'; fillPunktSelect('regPunkt'); }
 
 function login() {
-  const name = document.getElementById('loginName').value.trim(), pass = document.getElementById('loginPass').value.trim();
-  if (!name || !pass) { msg('Введи имя и пароль'); return; }
-  db.ref('users/' + name.replace(/\s/g, '_')).once('value', function(snap) {
-    if (!snap.exists()) { msg('Не найден'); return; }
-    if (snap.val().password !== pass) { msg('Неверный пароль'); return; }
-    currentUser = snap.val(); isGod = false;
+  const n = document.getElementById('loginName').value.trim(), p = document.getElementById('loginPass').value.trim();
+  if (!n || !p) { msg('Введи имя и пароль'); return; }
+  db.ref('users/' + n.replace(/\s/g, '_')).once('value', function(s) {
+    if (!s.exists()) { msg('Не найден'); return; }
+    if (s.val().password !== p) { msg('Неверный пароль'); return; }
+    currentUser = s.val(); isGod = false;
     document.getElementById('delCol').style.display = 'none';
-    document.getElementById('loginCard').style.display='none'; document.getElementById('registerCard').style.display='none';
-    document.getElementById('godCard').style.display='none'; document.getElementById('godPassCard').style.display='none';
+    ['loginCard','registerCard','godCard','godPassCard'].forEach(id => document.getElementById(id).style.display='none');
     document.getElementById('mainCard').style.display='block'; document.getElementById('chatCard').style.display='block';
     document.getElementById('userName').textContent = currentUser.name;
     document.getElementById('userPunkt').textContent = currentUser.punkt;
@@ -221,36 +198,38 @@ function checkGodPass() { if (document.getElementById('godPass').value.trim() ==
 function enterGodMode() {
   isGod = true; currentUser = null;
   document.getElementById('delCol').style.display = '';
-  document.getElementById('loginCard').style.display='none'; document.getElementById('registerCard').style.display='none';
-  document.getElementById('godPassCard').style.display='none'; document.getElementById('godSettingsCard').style.display='none';
-  document.getElementById('mainCard').style.display='none'; document.getElementById('godCard').style.display='block';
-  document.getElementById('chatCard').style.display='block';
+  ['loginCard','registerCard','godPassCard','godSettingsCard','mainCard'].forEach(id => document.getElementById(id).style.display='none');
+  document.getElementById('godCard').style.display='block'; document.getElementById('chatCard').style.display='block';
   godTab('punkts'); loadShifts(null); loadChat();
 }
 function godTab(tab) {
-  document.getElementById('punktsTab').style.display = tab==='punkts'?'block':'none';
-  document.getElementById('workersTab').style.display = tab==='workers'?'block':'none';
-  document.getElementById('calcTab').style.display = tab==='calc'?'block':'none';
+  ['punktsTab','workersTab','calcTab'].forEach(id => document.getElementById(id).style.display='none');
+  document.getElementById(tab + 'Tab').style.display='block';
   ['tabPunkts','tabWorkers','tabCalc'].forEach(id => document.getElementById(id).classList.remove('active'));
   document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
-  if (tab==='punkts') loadPunktsList(); if (tab==='workers') { fillPunktSelect('workerPunktFilter', loadWorkersList); } if (tab==='calc') loadCalcUsers();
+  if (tab==='punkts') loadPunktsList();
+  if (tab==='workers') { fillPunktSelect('workerPunktFilter', loadWorkersList); }
+  if (tab==='calc') loadCalcUsers();
 }
 function godSettings() { document.getElementById('godCard').style.display='none'; document.getElementById('godSettingsCard').style.display='block'; db.ref('godSettings').once('value', s => { if (s.exists()) { document.getElementById('godName').value = s.val().name||''; if (s.val().avatar) { document.getElementById('godAvatarPreview').src = s.val().avatar; document.getElementById('godAvatarPreview').style.display='block'; } } }); }
 function previewGodAvatar(input) { if (input.files && input.files[0]) { const r = new FileReader(); r.onload = function(e) { godAvatar = e.target.result; document.getElementById('godAvatarPreview').src = godAvatar; document.getElementById('godAvatarPreview').style.display='block'; }; r.readAsDataURL(input.files[0]); } }
 function saveGodSettings() { const n = document.getElementById('godName').value.trim(), p = document.getElementById('godNewPass').value.trim(); if (n) db.ref('godSettings/name').set(n); if (p) { db.ref('godPassword').set(p); godPassword = p; } if (godAvatar) db.ref('godSettings/avatar').set(godAvatar); alert('✅'); document.getElementById('godSettingsCard').style.display='none'; document.getElementById('godCard').style.display='block'; }
 
-function loadPunktsList() { loadPunkts(function(punkts) { document.getElementById('punktsList').innerHTML = punkts.length ? punkts.map(p => '<div class="worker-row"><span><b>' + p.id + '</b><br>' + (p.rate||0) + ' ₽/ч</span><span><button class="blue" onclick="editPunkt(\'' + p.id + '\',' + (p.rate||0) + ')">✏️</button><button class="red" onclick="deletePunkt(\'' + p.id + '\')">✕</button></span></div>').join('') : '<p>Нет пунктов</p>'; }); }
-function addPunkt() { const id = prompt('Номер пункта:'); if (!id) return; const rate = parseInt(prompt('Ставка (₽/ч):','210'))||210; db.ref('punkts/' + id).set({ rate }); loadPunktsList(); }
+function loadPunktsList() { loadPunkts(function(p) { document.getElementById('punktsList').innerHTML = p.length ? p.map(x => '<div class="worker-row"><span><b>' + x.id + '</b><br>' + (x.rate||0) + ' ₽/ч</span><span><button class="blue" onclick="editPunkt(\'' + x.id + '\',' + (x.rate||0) + ')">✏️</button><button class="red" onclick="deletePunkt(\'' + x.id + '\')">✕</button></span></div>').join('') : '<p>Нет пунктов</p>'; }); }
+function addPunkt() { const id = prompt('Номер пункта:'); if (!id) return; db.ref('punkts/' + id).set({ rate: parseInt(prompt('Ставка (₽/ч):','210'))||210 }); loadPunktsList(); }
 function editPunkt(id, cur) { const r = parseInt(prompt('Ставка для ' + id + ':', cur)); if (r && !isNaN(r)) { db.ref('punkts/' + id + '/rate').set(r); loadPunktsList(); } }
 function deletePunkt(id) { if (confirm('Удалить ' + id + '?')) { db.ref('punkts/' + id).remove(); loadPunktsList(); } }
 
 function loadWorkersList() {
   const fp = document.getElementById('workerPunktFilter').value;
-  db.ref('users').once('value', function(snap) {
+  db.ref('users').once('value', function(s) {
     const list = document.getElementById('workersList'); list.innerHTML = '';
-    snap.forEach(function(c) { const w = c.val(); if (fp && w.punkt !== fp) return;
+    s.forEach(function(c) { const w = c.val(); if (fp && w.punkt !== fp) return;
       const div = document.createElement('div'); div.className = 'worker-row';
-      div.innerHTML = '<span><b>' + w.name + '</b><br>Пункт ' + (w.punkt||'?') + ' | Надбавка: ' + (w.bonus||0) + ' ₽</span><span><button class="orange" onclick="setBonus(\'' + c.key + '\',\'' + w.name + '\',' + (w.bonus||0) + ')">💰</button><button class="red" onclick="deleteWorker(\'' + c.key + '\',\'' + w.name + '\')">✕</button></span>';
+      div.innerHTML = '<span><b>' + w.name + '</b><br>Пункт ' + (w.punkt||'?') + ' | Надбавка: ' + (w.bonus||0) + ' ₽</span><span>' +
+        '<button class="orange" onclick="setBonus(\'' + c.key + '\',\'' + w.name + '\',' + (w.bonus||0) + ')">💰</button>' +
+        '<button class="punish" onclick="openPunish(\'' + w.name + '\')">⚠️</button>' +
+        '<button class="red" onclick="deleteWorker(\'' + c.key + '\',\'' + w.name + '\')">✕</button></span>';
       list.appendChild(div);
     });
     if (!list.children.length) list.innerHTML = '<p>Нет сотрудников</p>';
@@ -259,42 +238,74 @@ function loadWorkersList() {
 function setBonus(key, name, cur) { const b = prompt('Надбавка для ' + name + ':', cur); if (b !== null && !isNaN(parseInt(b))) { db.ref('users/' + key + '/bonus').set(parseInt(b)); loadWorkersList(); } }
 function deleteWorker(key, name) { if (!confirm('Удалить ' + name + '?')) return; db.ref('shifts').once('value', s => { s.forEach(c => { if (c.val().user === name) db.ref('shifts/' + c.key).remove(); }); }); db.ref('users/' + key).remove(); loadWorkersList(); loadCalcUsers(); }
 
-function loadCalcUsers() { db.ref('users').once('value', snap => { const s = document.getElementById('calcSelect'); s.innerHTML = '<option value="">-- Выбери --</option>'; snap.forEach(c => s.innerHTML += '<option value="' + c.val().name + '">' + c.val().name + '</option>'); }); }
+// ШТРАФЫ
+function openPunish(user) {
+  currentPunishUser = user;
+  document.getElementById('godCard').style.display='none';
+  document.getElementById('punishCard').style.display='block';
+  document.getElementById('punishUser').textContent = user;
+  loadPunishes();
+}
+function loadPunishes() {
+  db.ref('punishes').orderByChild('user').equalTo(currentPunishUser).on('value', function(s) {
+    const list = document.getElementById('punishList');
+    const arr = []; s.forEach(c => arr.push({ id: c.key, ...c.val() }));
+    arr.sort((a,b) => (b.timestamp||0) - (a.timestamp||0));
+    list.innerHTML = arr.length ? arr.map(x => '<div class="punish-row"><span>' + x.amount + ' ₽ — ' + (x.reason||'') + ' <small>' + new Date(x.timestamp).toLocaleDateString('ru-RU') + '</small></span><button class="red" onclick="delPunish(\'' + x.id + '\')">✕</button></div>').join('') : '<p>Нет штрафов</p>';
+  });
+}
+function addPunish() {
+  const am = parseInt(document.getElementById('punishAmount').value), r = document.getElementById('punishReason').value.trim();
+  if (!am || isNaN(am) || !r) { alert('Введи сумму и причину!'); return; }
+  db.ref('punishes').push({ user: currentPunishUser, amount: am, reason: r, timestamp: Date.now() });
+  document.getElementById('punishAmount').value=''; document.getElementById('punishReason').value='';
+}
+function delPunish(id) { if (confirm('Удалить штраф?')) { db.ref('punishes/' + id).remove(); } }
+
+function loadCalcUsers() { db.ref('users').once('value', s => { const sel = document.getElementById('calcSelect'); sel.innerHTML = '<option value="">-- Выбери --</option>'; s.forEach(c => sel.innerHTML += '<option value="' + c.val().name + '">' + c.val().name + '</option>'); }); }
 function onCalcSelect() { const u = document.getElementById('calcSelect').value; document.getElementById('calcBlock').style.display = u ? 'block' : 'none'; if (u) { const n = new Date(), t = new Date(n.getTime()-14*24*60*60*1000); document.getElementById('calcFrom').value = t.toISOString().split('T')[0]; document.getElementById('calcTo').value = n.toISOString().split('T')[0]; document.getElementById('zpResult').style.display='none'; } }
 function calcZP() {
   const user = document.getElementById('calcSelect').value, from = new Date(document.getElementById('calcFrom').value), to = new Date(document.getElementById('calcTo').value); to.setHours(23,59,59);
   if (!user || isNaN(from) || isNaN(to)) { alert('Заполни!'); return; }
   loadPunkts(function(punkts) { const rates = {}; punkts.forEach(p => rates[p.id] = p.rate||0);
     db.ref('users/' + user.replace(/\s/g, '_')).once('value', function(uSnap) { const bonus = uSnap.exists() ? (uSnap.val().bonus||0) : 0;
-      const shifts = allShifts.filter(s => { const t = new Date(s.timestamp); return s.user === user && !s.paid && t >= from && t <= to; });
-      let th = 0, tt = 0, tz = 0, det = ''; shifts.forEach(s => { const h = s.hours||0, tv = s.tovar||0; th += h; tt += tv; const rate = rates[s.punkt]||0; const zp = h*rate + tv + bonus; tz += zp; det += s.date + ' (п.' + s.punkt + '): ' + h + 'ч×' + rate + '₽ + ' + tv + 'тов + ' + bonus + 'н = ' + zp + '₽\n'; });
-      lastCalc = { user, from: from.toISOString(), to: to.toISOString(), shifts: shifts.map(s => s._id), total: tz };
-      document.getElementById('zpResult').style.display='block'; document.getElementById('zpResult').innerHTML = '📊 <b>' + user + '</b>\n' + from.toLocaleDateString('ru-RU') + ' – ' + to.toLocaleDateString('ru-RU') + '\n\nЧасов: ' + th + '\nТоваров: ' + tt + '\n<b>Итого: ' + tz + ' ₽</b>\n\n' + det;
+      db.ref('punishes').orderByChild('user').equalTo(user).once('value', function(pSnap) {
+        const punishes = []; pSnap.forEach(c => { const p = c.val(); const pt = new Date(p.timestamp); if (pt >= from && pt <= to) punishes.push(p); });
+        const totalPunish = punishes.reduce((sum, p) => sum + (p.amount||0), 0);
+        const shifts = allShifts.filter(s => { const t = new Date(s.timestamp); return s.user === user && !s.paid && t >= from && t <= to; });
+        let th = 0, tt = 0, tz = 0, det = '';
+        shifts.forEach(s => { const h = s.hours||0, tv = s.tovar||0; th += h; tt += tv; const rate = rates[s.punkt]||0; const zp = h*rate + tv + bonus; tz += zp; det += s.date + ' (п.' + s.punkt + '): ' + h + 'ч×' + rate + '₽ + ' + tv + 'тов + ' + bonus + 'н = ' + zp + '₽\n'; });
+        const total = tz - totalPunish;
+        lastCalc = { user, from: from.toISOString(), to: to.toISOString(), shifts: shifts.map(s => s._id), total };
+        document.getElementById('zpResult').style.display='block';
+        document.getElementById('zpResult').innerHTML = '📊 <b>' + user + '</b>\n' + from.toLocaleDateString('ru-RU') + ' – ' + to.toLocaleDateString('ru-RU') + '\n\nЧасов: ' + th + '\nТоваров: ' + tt + '\nЗП (часы+тов+надб): ' + tz + ' ₽\nШтрафы: -' + totalPunish + ' ₽\n<b>Итого: ' + total + ' ₽</b>\n\n' + det + (totalPunish ? '\nШтрафы:\n' + punishes.map(p => '- ' + p.amount + ' ₽: ' + p.reason).join('\n') : '');
+      });
     });
   });
 }
-function markPaid() { if (!lastCalc || !lastCalc.shifts.length) { alert('Сначала Посчитать!'); return; } if (!confirm('Оплачено?\n' + lastCalc.total + ' ₽')) return; db.ref('payments').push({ user: lastCalc.user, dateFrom: lastCalc.from, dateTo: lastCalc.to, total: lastCalc.total, timestamp: Date.now() }); lastCalc.shifts.forEach(id => db.ref('shifts/' + id + '/paid').set(true)); alert('✅ Оплачено!'); document.getElementById('zpResult').style.display='none'; lastCalc = null; loadShifts(null); }
+function markPaid() { if (!lastCalc || !lastCalc.shifts.length) { alert('Сначала Посчитать!'); return; } if (!confirm('Оплачено?\n' + lastCalc.total + ' ₽')) return; db.ref('payments').push({ user: lastCalc.user, dateFrom: lastCalc.from, dateTo: lastCalc.to, total: lastCalc.total, timestamp: Date.now() }); lastCalc.shifts.forEach(id => db.ref('shifts/' + id + '/paid').set(true)); alert('✅'); document.getElementById('zpResult').style.display='none'; lastCalc = null; loadShifts(null); }
 
 function changePunkt() { fillPunktSelect('_temp', function() { const p = prompt('Новый номер пункта:'); if (p && p.trim()) { currentUser.punkt = p.trim(); document.getElementById('userPunkt').textContent = currentUser.punkt; db.ref('users/' + currentUser.name.replace(/\s/g, '_') + '/punkt').set(currentUser.punkt); } }); }
-function logout() { currentUser = null; isGod = false; document.getElementById('loginCard').style.display='block'; ['mainCard','godCard','godPassCard','registerCard','godSettingsCard','chatCard'].forEach(id => document.getElementById(id).style.display='none'); document.getElementById('onShift').style.display='none'; document.getElementById('btnStart').style.display='block'; }
+function logout() { currentUser = null; isGod = false; document.getElementById('loginCard').style.display='block'; ['mainCard','godCard','godPassCard','registerCard','godSettingsCard','chatCard','punishCard'].forEach(id => document.getElementById(id).style.display='none'); document.getElementById('onShift').style.display='none'; document.getElementById('btnStart').style.display='block'; }
 function startShift() { document.getElementById('btnStart').style.display='none'; document.getElementById('onShift').style.display='block'; document.getElementById('shiftStart').textContent = new Date().toLocaleTimeString('ru-RU'); }
 function endShift() { const tf = document.getElementById('timeFrom').value||'9', tt = document.getElementById('timeTo').value||'21', tv = parseInt(document.getElementById('tovar').value)||0; db.ref('shifts/' + currentUser.name.replace(/\s/g, '_') + '_' + Date.now()).set({ user: currentUser.name, punkt: currentUser.punkt, date: new Date().toLocaleDateString('ru-RU'), timeFrom: tf, timeTo: tt, hours: parseInt(tt)-parseInt(tf), tovar: tv, paid: false, timestamp: new Date().toISOString() }, function() { loadShifts(currentUser.name); }); document.getElementById('onShift').style.display='none'; document.getElementById('btnStart').style.display='block'; document.getElementById('tovar').value=''; }
-function loadShifts(filterUser) { db.ref('shifts').once('value', function(snap) { const shifts = []; snap.forEach(function(c) { const s = c.val(); s._id = c.key; if (!filterUser || s.user === filterUser) shifts.push(s); }); shifts.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)); allShifts = shifts; const tbody = document.getElementById('shiftsBody'); tbody.innerHTML = shifts.length ? shifts.map(s => '<tr><td>' + (isGod && !filterUser ? s.user + '<br>' + s.date : s.date) + '</td><td>' + s.hours + 'ч</td><td>' + s.tovar + '</td>' + (isGod ? '<td><button class="red" onclick="delShift(\'' + s._id + '\')" style="padding:4px 8px;font-size:11px;width:auto">✕</button></td>' : '') + '</tr>').join('') : '<tr><td colspan="' + (isGod ? '4' : '3') + '">Нет смен</td></tr>'; }); }
+function loadShifts(filterUser) { db.ref('shifts').once('value', function(s) { const shifts = []; s.forEach(function(c) { const x = c.val(); x._id = c.key; if (!filterUser || x.user === filterUser) shifts.push(x); }); shifts.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)); allShifts = shifts; const tbody = document.getElementById('shiftsBody'); tbody.innerHTML = shifts.length ? shifts.map(x => '<tr><td>' + (isGod && !filterUser ? x.user + '<br>' + x.date : x.date) + '</td><td>' + x.hours + 'ч</td><td>' + x.tovar + '</td>' + (isGod ? '<td><button class="red" onclick="delShift(\'' + x._id + '\')" style="padding:4px 8px;font-size:11px;width:auto">✕</button></td>' : '') + '</tr>').join('') : '<tr><td colspan="' + (isGod ? '4' : '3') + '">Нет смен</td></tr>'; }); }
 function delShift(id) { if (confirm('Удалить?')) { db.ref('shifts/' + id).remove(); loadShifts(null); } }
 
-// ===== ЧАТ =====
 function loadChat() {
-  db.ref('chat').limitToLast(100).on('value', function(snap) {
-    const msgs = []; snap.forEach(c => msgs.push(c.val()));
+  db.ref('chat').limitToLast(100).on('value', function(s) {
+    const msgs = []; s.forEach(c => { msgs.push({ id: c.key, ...c.val() }); });
     msgs.sort((a,b) => (a.timestamp||0) - (b.timestamp||0));
     document.getElementById('chatMessages').innerHTML = msgs.map(m => {
       const isMine = currentUser && m.user === currentUser.name;
-      return '<div class="chat-msg' + (isMine ? ' mine' : '') + '"><span class="author">' + (m.user||'?') + '</span> <span class="time">' + (m.timestamp ? new Date(m.timestamp).toLocaleTimeString('ru-RU').slice(0,5) : '') + '</span><br>' + (m.text||'') + '</div>';
+      const canDel = isGod || (currentUser && m.user === currentUser.name);
+      return '<div class="chat-msg' + (isMine ? ' mine' : '') + '">' + (canDel ? '<span class="del-msg" onclick="delChatMsg(\'' + m.id + '\')">✕</span>' : '') + '<span class="author">' + (m.user||'?') + '</span> <span class="time">' + (m.timestamp ? new Date(m.timestamp).toLocaleTimeString('ru-RU').slice(0,5) : '') + '</span><br>' + (m.text||'') + '</div>';
     }).join('');
     document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
   });
 }
 function sendChat() { const text = document.getElementById('chatInput').value.trim(); if (!text || !currentUser) return; db.ref('chat').push({ user: currentUser.name, text, timestamp: Date.now() }); document.getElementById('chatInput').value = ''; }
+function delChatMsg(id) { if (confirm('Удалить сообщение?')) db.ref('chat/' + id).remove(); }
 </script>
 </body>
 </html>
