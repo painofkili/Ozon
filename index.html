@@ -241,6 +241,8 @@ function loadAnnounce() { db.ref('announce').limitToLast(1).on('value', s => { c
 function loadAnnounceList() { db.ref('announce').once('value', s => { const arr = []; s.forEach(c => arr.push({ id: c.key, ...c.val() })); arr.sort((a,b) => b.timestamp - a.timestamp); document.getElementById('announceList').innerHTML = arr.length ? arr.map(x => '<div style="padding:6px;border-bottom:1px solid #eee"><b>' + x.text + '</b><br><small>' + new Date(x.timestamp).toLocaleString('ru-RU') + '</small> <button class="red" onclick="delAnnounce(\'' + x.id + '\')" style="width:auto;padding:4px 8px;font-size:10px">✕</button></div>').join('') : '<p>Нет объявлений</p>'; }); }
 function postAnnounce() { const t = document.getElementById('announceText').value.trim(); if (!t) return; db.ref('announce').push({ text: t, timestamp: Date.now() }); document.getElementById('announceText').value=''; loadAnnounce(); loadAnnounceList(); }
 function delAnnounce(id) { if (confirm('Удалить?')) { db.ref('announce/' + id).remove(); loadAnnounce(); loadAnnounceList(); } }
+document.getElementById('chatInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); sendChat(); } });
+document.getElementById('loginPass').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); login(); } });
 </script>
 </body>
 </html>
