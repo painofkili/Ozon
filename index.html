@@ -9,7 +9,7 @@
 body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 10px; max-width: 500px; margin: 0 auto; }
 h2 { text-align: center; color: #333; margin: 10px 0; }
 .card { background: white; border-radius: 12px; padding: 15px; margin: 8px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-input, button, select { width: 100%; padding: 12px; font-size: 16px; border-radius: 8px; margin: 4px 0; border: 1px solid #ddd; }
+input, button, select, textarea { width: 100%; padding: 12px; font-size: 16px; border-radius: 8px; margin: 4px 0; border: 1px solid #ddd; }
 button { background: #4CAF50; color: white; border: none; font-weight: bold; cursor: pointer; }
 button.red { background: #f44336; }
 button.blue { background: #2196F3; }
@@ -39,32 +39,40 @@ th { background: #f0f0f0; }
 .chat-input-row input { flex: 1; }
 .punish-row { display: flex; justify-content: space-between; align-items: center; padding: 6px; border-bottom: 1px solid #eee; font-size: 12px; }
 .punish-row button { width: auto; padding: 4px 8px; font-size: 10px; }
+.announce { background: #FFF9C4; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; }
+.announce .ann-date { font-size: 10px; color: #999; }
+.shift-photos { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+.shift-photos img { width: 40px; height: 40px; object-fit: cover; border-radius: 4px; cursor: pointer; }
+.shift-photos-viewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+.shift-photos-viewer img { max-width: 95%; max-height: 90%; border-radius: 8px; }
+.photo-preview { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+.photo-preview img { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
+.highlight-shift { background: #e8f5e9; border-left: 4px solid #4CAF50; padding-left: 8px; }
+.avatar-preview { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin: 5px auto; display: block; }
 </style>
 </head>
 <body>
 
 <h2>График Ozon</h2>
+<div id="announceBlock" style="display:none"></div>
 
 <div class="card" id="loginCard">
-  <input id="loginName" placeholder="Имя">
-  <input id="loginPass" type="password" placeholder="Пароль">
-  <button onclick="login()">Войти</button>
-  <button class="blue" onclick="showRegister()">Регистрация</button>
+  <input id="loginName" placeholder="Имя"><input id="loginPass" type="password" placeholder="Пароль">
+  <button onclick="login()">Войти</button><button class="blue" onclick="showRegister()">Регистрация</button>
   <button class="gold" onclick="godLogin()">👑 Режим бога</button>
   <div id="msg" style="color:red;text-align:center;margin-top:5px"></div>
 </div>
 
 <div class="card" id="godPassCard" style="display:none">
   <input id="godPass" type="password" placeholder="Пароль бога">
-  <button onclick="checkGodPass()">Войти</button>
-  <button class="gray" onclick="showLogin()">Назад</button>
+  <button onclick="checkGodPass()">Войти</button><button class="gray" onclick="showLogin()">Назад</button>
 </div>
 
 <div class="card" id="godSettingsCard" style="display:none">
   <div class="status">👑 Настройки бога</div>
   <input id="godName" placeholder="Имя"><input id="godNewPass" type="password" placeholder="Не менять">
   <label>Аватарка</label><input id="godAvatar" type="file" accept="image/*" onchange="previewGodAvatar(this)">
-  <img id="godAvatarPreview" style="width:60px;height:60px;border-radius:50%;object-fit:cover;display:none;margin:5px auto">
+  <img id="godAvatarPreview" class="avatar-preview" style="display:none">
   <button onclick="saveGodSettings()">Сохранить</button><button class="gray" onclick="enterGodMode()">Назад</button>
 </div>
 
@@ -72,6 +80,8 @@ th { background: #f0f0f0; }
   <div class="status">📝 Регистрация</div>
   <input id="regName" placeholder="Имя"><select id="regPunkt"></select>
   <input id="regPass" type="password" placeholder="Пароль">
+  <label>Аватарка</label><input id="regAvatar" type="file" accept="image/*" onchange="previewRegAvatar(this)">
+  <img id="regAvatarPreview" class="avatar-preview" style="display:none">
   <button onclick="register()">Зарегистрироваться</button><button class="gray" onclick="showLogin()">Назад</button>
 </div>
 
@@ -82,9 +92,12 @@ th { background: #f0f0f0; }
     <div class="status" style="color:green">На смене с <span id="shiftStart"></span></div>
     <input id="timeFrom" value="9" placeholder="Начало"><input id="timeTo" value="21" placeholder="Конец">
     <input id="tovar" type="number" placeholder="Товаров">
+    <label>Фотоотчёт (до 5)</label><input id="shiftPhotos" type="file" accept="image/*" multiple onchange="previewShiftPhotos(this)">
+    <div id="shiftPhotoPreviews" class="photo-preview"></div>
     <button class="red" onclick="endShift()">🔴 СО СМЕНЫ</button>
   </div>
-  <button class="gray" onclick="changePunkt()" style="margin-top:8px">📝 Сменить пункт</button>
+  <button class="gray" onclick="changeAvatar()" style="margin-top:8px">📷 Сменить аватар</button>
+  <button class="gray" onclick="changePunkt()" style="margin-top:4px">📝 Сменить пункт</button>
   <button class="gray" onclick="logout()" style="margin-top:4px">Выйти</button>
 </div>
 
@@ -94,13 +107,11 @@ th { background: #f0f0f0; }
     <button id="tabPunkts" class="active" onclick="godTab('punkts')">📍</button>
     <button id="tabWorkers" onclick="godTab('workers')">👥</button>
     <button id="tabCalc" onclick="godTab('calc')">💰</button>
+    <button id="tabAnnounce" onclick="godTab('announce')">📢</button>
     <button id="tabSettings" onclick="godSettings()">⚙️</button>
   </div>
   <div id="punktsTab"><button onclick="addPunkt()">+ Пункт</button><div id="punktsList"></div></div>
-  <div id="workersTab" style="display:none">
-    <label>Пункт</label><select id="workerPunktFilter" onchange="loadWorkersList()"><option value="">Все</option></select>
-    <div id="workersList"></div>
-  </div>
+  <div id="workersTab" style="display:none"><label>Пункт</label><select id="workerPunktFilter" onchange="loadWorkersList()"><option value="">Все</option></select><div id="workersList"></div></div>
   <div id="calcTab" style="display:none">
     <label>Сотрудник</label><select id="calcSelect" onchange="onCalcSelect()"><option value="">-- Выбери --</option></select>
     <div id="calcBlock" style="display:none">
@@ -109,27 +120,26 @@ th { background: #f0f0f0; }
       <div id="zpResult" class="zp-result" style="display:none"></div>
     </div>
   </div>
+  <div id="announceTab" style="display:none">
+    <textarea id="announceText" placeholder="Объявление..." rows="3"></textarea>
+    <button onclick="postAnnounce()">📢 Опубликовать</button><div id="announceList"></div>
+  </div>
   <button class="gray" onclick="logout()">Выйти</button>
 </div>
 
 <div class="card" id="punishCard" style="display:none">
   <div class="status">⚠️ Штрафы: <span id="punishUser"></span></div>
   <div id="punishList"></div>
-  <div style="display:flex;gap:5px;margin-top:8px">
-    <input id="punishAmount" type="number" placeholder="Сумма" style="flex:1">
-    <input id="punishReason" placeholder="Причина" style="flex:2">
-  </div>
-  <button onclick="addPunish()">+ Добавить штраф</button>
-  <button class="gray" onclick="document.getElementById('punishCard').style.display='none'; document.getElementById('godCard').style.display='block';">Назад</button>
+  <div style="display:flex;gap:5px;margin-top:8px"><input id="punishAmount" type="number" placeholder="Сумма" style="flex:1"><input id="punishReason" placeholder="Причина" style="flex:2"></div>
+  <button onclick="addPunish()">+ Добавить</button><button class="gray" onclick="document.getElementById('punishCard').style.display='none';document.getElementById('godCard').style.display='block';">Назад</button>
 </div>
 
 <div class="card" id="chatCard" style="display:none">
   <div class="status">💬 Чат</div>
-  <div class="chat-container">
-    <div class="chat-messages" id="chatMessages"></div>
-    <div class="chat-input-row"><input id="chatInput" placeholder="Сообщение..."><button onclick="sendChat()" style="width:auto">➤</button></div>
-  </div>
+  <div class="chat-container"><div class="chat-messages" id="chatMessages"></div><div class="chat-input-row"><input id="chatInput" placeholder="Сообщение..."><button onclick="sendChat()" style="width:auto">➤</button></div></div>
 </div>
+
+<div id="photoViewer" class="shift-photos-viewer" style="display:none" onclick="this.style.display='none'"><img id="photoViewerImg" src=""></div>
 
 <table>
   <tr><th>Дата</th><th>Часы</th><th>Товары</th><th id="delCol" style="display:none"></th></tr>
@@ -150,26 +160,39 @@ firebase.initializeApp({
 });
 
 const db = firebase.database();
-let currentUser = null, isGod = false, godPassword = null, allShifts = [], lastCalc = null, godAvatar = null, currentPunishUser = null;
+let currentUser = null, isGod = false, godPassword = null, allShifts = [], lastCalc = null, godAvatar = null, currentPunishUser = null, regAvatar = null, shiftPhotosArr = [];
 
 db.ref('godPassword').once('value', s => godPassword = s.val());
 db.ref('godSettings').once('value', s => { if (s.exists()) godAvatar = s.val().avatar; });
+setInterval(cleanPhotos, 600000); // Чистим фото каждые 10 минут
+
+function cleanPhotos() {
+  db.ref('shifts').once('value', function(snap) {
+    snap.forEach(function(c) {
+      const s = c.val();
+      if (s.photos && s.photos.length && s.timestamp) {
+        if (Date.now() - new Date(s.timestamp).getTime() > 43200000) { // 12 часов
+          db.ref('shifts/' + c.key + '/photos').remove();
+        }
+      }
+    });
+  });
+}
 
 function msg(t) { document.getElementById('msg').textContent = t; }
-function showLogin() { 
-  ['godPassCard','registerCard'].forEach(id => document.getElementById(id).style.display='none');
-  document.getElementById('loginCard').style.display='block';
-}
+function showLogin() { ['godPassCard','registerCard'].forEach(id => document.getElementById(id).style.display='none'); document.getElementById('loginCard').style.display='block'; }
 
 function loadPunkts(cb) { db.ref('punkts').once('value', s => { const p = []; s.forEach(c => p.push({ id: c.key, ...c.val() })); if (cb) cb(p); }); }
 function fillPunktSelect(sid, cb) { loadPunkts(function(p) { const s = document.getElementById(sid); s.innerHTML = ''; p.forEach(x => s.innerHTML += '<option value="' + x.id + '">' + x.id + ' (' + (x.rate||0) + '₽/ч)</option>'); if (cb) cb(); }); }
+
+function previewRegAvatar(input) { if (input.files && input.files[0]) { const r = new FileReader(); r.onload = function(e) { regAvatar = e.target.result; document.getElementById('regAvatarPreview').src = regAvatar; document.getElementById('regAvatarPreview').style.display='block'; }; r.readAsDataURL(input.files[0]); } }
 
 function register() {
   const n = document.getElementById('regName').value.trim(), p = document.getElementById('regPass').value.trim(), pk = document.getElementById('regPunkt').value;
   if (!n || !p || !pk) { msg('Заполни все поля'); return; }
   db.ref('users/' + n.replace(/\s/g, '_')).once('value', function(s) {
     if (s.exists()) { msg('Уже есть!'); }
-    else { db.ref('users/' + n.replace(/\s/g, '_')).set({ name: n, punkt: pk, password: p, bonus: 0 }); msg('✅'); showLogin(); }
+    else { db.ref('users/' + n.replace(/\s/g, '_')).set({ name: n, punkt: pk, password: p, bonus: 0, avatar: regAvatar || '' }); msg('✅'); showLogin(); }
   });
 }
 function showRegister() { document.getElementById('loginCard').style.display='none'; document.getElementById('registerCard').style.display='block'; fillPunktSelect('regPunkt'); }
@@ -186,8 +209,14 @@ function login() {
     document.getElementById('mainCard').style.display='block'; document.getElementById('chatCard').style.display='block';
     document.getElementById('userName').textContent = currentUser.name;
     document.getElementById('userPunkt').textContent = currentUser.punkt;
-    loadShifts(currentUser.name); loadChat();
+    loadShifts(currentUser.name); loadChat(); loadAnnounce();
   });
+}
+
+function changeAvatar() {
+  const input = document.createElement('input'); input.type='file'; input.accept='image/*';
+  input.onchange = function() { if (input.files && input.files[0]) { const r = new FileReader(); r.onload = function(e) { currentUser.avatar = e.target.result; db.ref('users/' + currentUser.name.replace(/\s/g, '_') + '/avatar').set(e.target.result); alert('✅'); }; r.readAsDataURL(input.files[0]); } };
+  input.click();
 }
 
 function godLogin() {
@@ -196,20 +225,17 @@ function godLogin() {
 }
 function checkGodPass() { if (document.getElementById('godPass').value.trim() === godPassword) { document.getElementById('godPassCard').style.display='none'; enterGodMode(); } else alert('Неверно!'); }
 function enterGodMode() {
-  isGod = true; currentUser = null;
-  document.getElementById('delCol').style.display = '';
+  isGod = true; currentUser = null; document.getElementById('delCol').style.display = '';
   ['loginCard','registerCard','godPassCard','godSettingsCard','mainCard'].forEach(id => document.getElementById(id).style.display='none');
   document.getElementById('godCard').style.display='block'; document.getElementById('chatCard').style.display='block';
-  godTab('punkts'); loadShifts(null); loadChat();
+  godTab('punkts'); loadShifts(null); loadChat(); loadAnnounce();
 }
 function godTab(tab) {
-  ['punktsTab','workersTab','calcTab'].forEach(id => document.getElementById(id).style.display='none');
+  ['punktsTab','workersTab','calcTab','announceTab'].forEach(id => document.getElementById(id).style.display='none');
   document.getElementById(tab + 'Tab').style.display='block';
-  ['tabPunkts','tabWorkers','tabCalc'].forEach(id => document.getElementById(id).classList.remove('active'));
+  ['tabPunkts','tabWorkers','tabCalc','tabAnnounce'].forEach(id => document.getElementById(id).classList.remove('active'));
   document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
-  if (tab==='punkts') loadPunktsList();
-  if (tab==='workers') { fillPunktSelect('workerPunktFilter', loadWorkersList); }
-  if (tab==='calc') loadCalcUsers();
+  if (tab==='punkts') loadPunktsList(); if (tab==='workers') { fillPunktSelect('workerPunktFilter', loadWorkersList); } if (tab==='calc') loadCalcUsers(); if (tab==='announce') loadAnnounceList();
 }
 function godSettings() { document.getElementById('godCard').style.display='none'; document.getElementById('godSettingsCard').style.display='block'; db.ref('godSettings').once('value', s => { if (s.exists()) { document.getElementById('godName').value = s.val().name||''; if (s.val().avatar) { document.getElementById('godAvatarPreview').src = s.val().avatar; document.getElementById('godAvatarPreview').style.display='block'; } } }); }
 function previewGodAvatar(input) { if (input.files && input.files[0]) { const r = new FileReader(); r.onload = function(e) { godAvatar = e.target.result; document.getElementById('godAvatarPreview').src = godAvatar; document.getElementById('godAvatarPreview').style.display='block'; }; r.readAsDataURL(input.files[0]); } }
@@ -222,8 +248,7 @@ function deletePunkt(id) { if (confirm('Удалить ' + id + '?')) { db.ref('
 
 function loadWorkersList() {
   const fp = document.getElementById('workerPunktFilter').value;
-  db.ref('users').once('value', function(s) {
-    const list = document.getElementById('workersList'); list.innerHTML = '';
+  db.ref('users').once('value', function(s) { const list = document.getElementById('workersList'); list.innerHTML = '';
     s.forEach(function(c) { const w = c.val(); if (fp && w.punkt !== fp) return;
       const div = document.createElement('div'); div.className = 'worker-row';
       div.innerHTML = '<span><b>' + w.name + '</b><br>Пункт ' + (w.punkt||'?') + ' | Надбавка: ' + (w.bonus||0) + ' ₽</span><span>' +
@@ -238,28 +263,9 @@ function loadWorkersList() {
 function setBonus(key, name, cur) { const b = prompt('Надбавка для ' + name + ':', cur); if (b !== null && !isNaN(parseInt(b))) { db.ref('users/' + key + '/bonus').set(parseInt(b)); loadWorkersList(); } }
 function deleteWorker(key, name) { if (!confirm('Удалить ' + name + '?')) return; db.ref('shifts').once('value', s => { s.forEach(c => { if (c.val().user === name) db.ref('shifts/' + c.key).remove(); }); }); db.ref('users/' + key).remove(); loadWorkersList(); loadCalcUsers(); }
 
-// ШТРАФЫ
-function openPunish(user) {
-  currentPunishUser = user;
-  document.getElementById('godCard').style.display='none';
-  document.getElementById('punishCard').style.display='block';
-  document.getElementById('punishUser').textContent = user;
-  loadPunishes();
-}
-function loadPunishes() {
-  db.ref('punishes').orderByChild('user').equalTo(currentPunishUser).on('value', function(s) {
-    const list = document.getElementById('punishList');
-    const arr = []; s.forEach(c => arr.push({ id: c.key, ...c.val() }));
-    arr.sort((a,b) => (b.timestamp||0) - (a.timestamp||0));
-    list.innerHTML = arr.length ? arr.map(x => '<div class="punish-row"><span>' + x.amount + ' ₽ — ' + (x.reason||'') + ' <small>' + new Date(x.timestamp).toLocaleDateString('ru-RU') + '</small></span><button class="red" onclick="delPunish(\'' + x.id + '\')">✕</button></div>').join('') : '<p>Нет штрафов</p>';
-  });
-}
-function addPunish() {
-  const am = parseInt(document.getElementById('punishAmount').value), r = document.getElementById('punishReason').value.trim();
-  if (!am || isNaN(am) || !r) { alert('Введи сумму и причину!'); return; }
-  db.ref('punishes').push({ user: currentPunishUser, amount: am, reason: r, timestamp: Date.now() });
-  document.getElementById('punishAmount').value=''; document.getElementById('punishReason').value='';
-}
+function openPunish(user) { currentPunishUser = user; document.getElementById('godCard').style.display='none'; document.getElementById('punishCard').style.display='block'; document.getElementById('punishUser').textContent = user; loadPunishes(); }
+function loadPunishes() { db.ref('punishes').orderByChild('user').equalTo(currentPunishUser).on('value', function(s) { const arr = []; s.forEach(c => arr.push({ id: c.key, ...c.val() })); arr.sort((a,b) => (b.timestamp||0) - (a.timestamp||0)); document.getElementById('punishList').innerHTML = arr.length ? arr.map(x => '<div class="punish-row"><span>' + x.amount + ' ₽ — ' + (x.reason||'') + ' <small>' + new Date(x.timestamp).toLocaleDateString('ru-RU') + '</small></span><button class="red" onclick="delPunish(\'' + x.id + '\')">✕</button></div>').join('') : '<p>Нет штрафов</p>'; }); }
+function addPunish() { const am = parseInt(document.getElementById('punishAmount').value), r = document.getElementById('punishReason').value.trim(); if (!am || isNaN(am) || !r) { alert('Введи сумму и причину!'); return; } db.ref('punishes').push({ user: currentPunishUser, amount: am, reason: r, timestamp: Date.now() }); document.getElementById('punishAmount').value=''; document.getElementById('punishReason').value=''; }
 function delPunish(id) { if (confirm('Удалить штраф?')) { db.ref('punishes/' + id).remove(); } }
 
 function loadCalcUsers() { db.ref('users').once('value', s => { const sel = document.getElementById('calcSelect'); sel.innerHTML = '<option value="">-- Выбери --</option>'; s.forEach(c => sel.innerHTML += '<option value="' + c.val().name + '">' + c.val().name + '</option>'); }); }
@@ -269,43 +275,65 @@ function calcZP() {
   if (!user || isNaN(from) || isNaN(to)) { alert('Заполни!'); return; }
   loadPunkts(function(punkts) { const rates = {}; punkts.forEach(p => rates[p.id] = p.rate||0);
     db.ref('users/' + user.replace(/\s/g, '_')).once('value', function(uSnap) { const bonus = uSnap.exists() ? (uSnap.val().bonus||0) : 0;
-      db.ref('punishes').orderByChild('user').equalTo(user).once('value', function(pSnap) {
-        const punishes = []; pSnap.forEach(c => { const p = c.val(); const pt = new Date(p.timestamp); if (pt >= from && pt <= to) punishes.push(p); });
-        const totalPunish = punishes.reduce((sum, p) => sum + (p.amount||0), 0);
+      db.ref('punishes').orderByChild('user').equalTo(user).once('value', function(pSnap) { const punishes = []; pSnap.forEach(c => { const p = c.val(); const pt = new Date(p.timestamp); if (pt >= from && pt <= to) punishes.push(p); }); const totalPunish = punishes.reduce((s, p) => s + (p.amount||0), 0);
         const shifts = allShifts.filter(s => { const t = new Date(s.timestamp); return s.user === user && !s.paid && t >= from && t <= to; });
-        let th = 0, tt = 0, tz = 0, det = '';
-        shifts.forEach(s => { const h = s.hours||0, tv = s.tovar||0; th += h; tt += tv; const rate = rates[s.punkt]||0; const zp = h*rate + tv + bonus; tz += zp; det += s.date + ' (п.' + s.punkt + '): ' + h + 'ч×' + rate + '₽ + ' + tv + 'тов + ' + bonus + 'н = ' + zp + '₽\n'; });
-        const total = tz - totalPunish;
-        lastCalc = { user, from: from.toISOString(), to: to.toISOString(), shifts: shifts.map(s => s._id), total };
-        document.getElementById('zpResult').style.display='block';
-        document.getElementById('zpResult').innerHTML = '📊 <b>' + user + '</b>\n' + from.toLocaleDateString('ru-RU') + ' – ' + to.toLocaleDateString('ru-RU') + '\n\nЧасов: ' + th + '\nТоваров: ' + tt + '\nЗП (часы+тов+надб): ' + tz + ' ₽\nШтрафы: -' + totalPunish + ' ₽\n<b>Итого: ' + total + ' ₽</b>\n\n' + det + (totalPunish ? '\nШтрафы:\n' + punishes.map(p => '- ' + p.amount + ' ₽: ' + p.reason).join('\n') : '');
+        let th = 0, tt = 0, tz = 0, det = ''; shifts.forEach(s => { const h = s.hours||0, tv = s.tovar||0; th += h; tt += tv; const rate = rates[s.punkt]||0; const zp = h*rate + tv + bonus; tz += zp; det += s.date + ' (п.' + s.punkt + '): ' + h + 'ч×' + rate + '₽ + ' + tv + 'тов + ' + bonus + 'н = ' + zp + '₽\n'; });
+        document.getElementById('zpResult').style.display='block'; document.getElementById('zpResult').innerHTML = '📊 <b>' + user + '</b>\n' + from.toLocaleDateString('ru-RU') + ' – ' + to.toLocaleDateString('ru-RU') + '\n\nЧасов: ' + th + '\nТоваров: ' + tt + '\nЗП: ' + tz + ' ₽\nШтрафы: -' + totalPunish + ' ₽\n<b>Итого: ' + (tz-totalPunish) + ' ₽</b>\n\n' + det;
+        lastCalc = { user, from: from.toISOString(), to: to.toISOString(), shifts: shifts.map(s => s._id), total: tz-totalPunish };
       });
     });
   });
 }
 function markPaid() { if (!lastCalc || !lastCalc.shifts.length) { alert('Сначала Посчитать!'); return; } if (!confirm('Оплачено?\n' + lastCalc.total + ' ₽')) return; db.ref('payments').push({ user: lastCalc.user, dateFrom: lastCalc.from, dateTo: lastCalc.to, total: lastCalc.total, timestamp: Date.now() }); lastCalc.shifts.forEach(id => db.ref('shifts/' + id + '/paid').set(true)); alert('✅'); document.getElementById('zpResult').style.display='none'; lastCalc = null; loadShifts(null); }
 
+function previewShiftPhotos(input) { shiftPhotosArr = []; document.getElementById('shiftPhotoPreviews').innerHTML = ''; Array.from(input.files).slice(0,5).forEach(f => { const r = new FileReader(); r.onload = function(e) { shiftPhotosArr.push(e.target.result); const img = document.createElement('img'); img.src = e.target.result; document.getElementById('shiftPhotoPreviews').appendChild(img); }; r.readAsDataURL(f); }); }
+
 function changePunkt() { fillPunktSelect('_temp', function() { const p = prompt('Новый номер пункта:'); if (p && p.trim()) { currentUser.punkt = p.trim(); document.getElementById('userPunkt').textContent = currentUser.punkt; db.ref('users/' + currentUser.name.replace(/\s/g, '_') + '/punkt').set(currentUser.punkt); } }); }
 function logout() { currentUser = null; isGod = false; document.getElementById('loginCard').style.display='block'; ['mainCard','godCard','godPassCard','registerCard','godSettingsCard','chatCard','punishCard'].forEach(id => document.getElementById(id).style.display='none'); document.getElementById('onShift').style.display='none'; document.getElementById('btnStart').style.display='block'; }
 function startShift() { document.getElementById('btnStart').style.display='none'; document.getElementById('onShift').style.display='block'; document.getElementById('shiftStart').textContent = new Date().toLocaleTimeString('ru-RU'); }
-function endShift() { const tf = document.getElementById('timeFrom').value||'9', tt = document.getElementById('timeTo').value||'21', tv = parseInt(document.getElementById('tovar').value)||0; db.ref('shifts/' + currentUser.name.replace(/\s/g, '_') + '_' + Date.now()).set({ user: currentUser.name, punkt: currentUser.punkt, date: new Date().toLocaleDateString('ru-RU'), timeFrom: tf, timeTo: tt, hours: parseInt(tt)-parseInt(tf), tovar: tv, paid: false, timestamp: new Date().toISOString() }, function() { loadShifts(currentUser.name); }); document.getElementById('onShift').style.display='none'; document.getElementById('btnStart').style.display='block'; document.getElementById('tovar').value=''; }
-function loadShifts(filterUser) { db.ref('shifts').once('value', function(s) { const shifts = []; s.forEach(function(c) { const x = c.val(); x._id = c.key; if (!filterUser || x.user === filterUser) shifts.push(x); }); shifts.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)); allShifts = shifts; const tbody = document.getElementById('shiftsBody'); tbody.innerHTML = shifts.length ? shifts.map(x => '<tr><td>' + (isGod && !filterUser ? x.user + '<br>' + x.date : x.date) + '</td><td>' + x.hours + 'ч</td><td>' + x.tovar + '</td>' + (isGod ? '<td><button class="red" onclick="delShift(\'' + x._id + '\')" style="padding:4px 8px;font-size:11px;width:auto">✕</button></td>' : '') + '</tr>').join('') : '<tr><td colspan="' + (isGod ? '4' : '3') + '">Нет смен</td></tr>'; }); }
+function endShift() {
+  const tf = document.getElementById('timeFrom').value||'9', tt = document.getElementById('timeTo').value||'21', tv = parseInt(document.getElementById('tovar').value)||0;
+  const now = new Date();
+  db.ref('shifts/' + currentUser.name.replace(/\s/g, '_') + '_' + Date.now()).set({
+    user: currentUser.name, punkt: currentUser.punkt, date: now.toLocaleDateString('ru-RU'),
+    timeFrom: tf, timeTo: tt, hours: parseInt(tt)-parseInt(tf), tovar: tv, paid: false,
+    photos: shiftPhotosArr.slice(0,5), timestamp: now.toISOString()
+  }, function() { loadShifts(currentUser.name); });
+  document.getElementById('onShift').style.display='none'; document.getElementById('btnStart').style.display='block';
+  document.getElementById('tovar').value=''; document.getElementById('shiftPhotos').value='';
+  document.getElementById('shiftPhotoPreviews').innerHTML=''; shiftPhotosArr = [];
+}
+
+function loadShifts(filterUser) {
+  db.ref('shifts').once('value', function(s) {
+    const shifts = []; s.forEach(function(c) { const x = c.val(); x._id = c.key; if (!filterUser || x.user === filterUser) shifts.push(x); });
+    shifts.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)); allShifts = shifts;
+    const latest = shifts.length ? new Date(shifts[0].timestamp).getTime() : 0;
+    const tbody = document.getElementById('shiftsBody');
+    tbody.innerHTML = shifts.length ? shifts.map(x => {
+      const isLatest = new Date(x.timestamp).getTime() === latest && x.photos && x.photos.length;
+      const photosHtml = x.photos && x.photos.length ? '<div class="shift-photos">' + x.photos.map((ph,i) => '<img src="' + ph + '" onclick="event.stopPropagation();viewPhoto(\'' + ph + '\')">').join('') + '</div>' : '';
+      return '<tr class="' + (isLatest ? 'highlight-shift' : '') + '"><td>' + (isGod && !filterUser ? x.user + '<br>' + x.date : x.date) + (isLatest ? ' 📸' : '') + '</td><td>' + x.hours + 'ч</td><td>' + x.tovar + photosHtml + '</td>' + (isGod ? '<td><button class="red" onclick="delShift(\'' + x._id + '\')" style="padding:4px 8px;font-size:11px;width:auto">✕</button></td>' : '') + '</tr>';
+    }).join('') : '<tr><td colspan="' + (isGod ? '4' : '3') + '">Нет смен</td></tr>';
+  });
+}
 function delShift(id) { if (confirm('Удалить?')) { db.ref('shifts/' + id).remove(); loadShifts(null); } }
+function viewPhoto(url) { document.getElementById('photoViewerImg').src = url; document.getElementById('photoViewer').style.display = 'flex'; }
 
 function loadChat() {
-  db.ref('chat').limitToLast(100).on('value', function(s) {
-    const msgs = []; s.forEach(c => { msgs.push({ id: c.key, ...c.val() }); });
-    msgs.sort((a,b) => (a.timestamp||0) - (b.timestamp||0));
-    document.getElementById('chatMessages').innerHTML = msgs.map(m => {
-      const isMine = currentUser && m.user === currentUser.name;
-      const canDel = isGod || (currentUser && m.user === currentUser.name);
-      return '<div class="chat-msg' + (isMine ? ' mine' : '') + '">' + (canDel ? '<span class="del-msg" onclick="delChatMsg(\'' + m.id + '\')">✕</span>' : '') + '<span class="author">' + (m.user||'?') + '</span> <span class="time">' + (m.timestamp ? new Date(m.timestamp).toLocaleTimeString('ru-RU').slice(0,5) : '') + '</span><br>' + (m.text||'') + '</div>';
-    }).join('');
+  db.ref('chat').limitToLast(100).on('value', function(s) { const msgs = []; s.forEach(c => { msgs.push({ id: c.key, ...c.val() }); }); msgs.sort((a,b) => (a.timestamp||0) - (b.timestamp||0));
+    document.getElementById('chatMessages').innerHTML = msgs.map(m => { const isMine = currentUser && m.user === currentUser.name; const canDel = isGod || (currentUser && m.user === currentUser.name);
+      return '<div class="chat-msg' + (isMine ? ' mine' : '') + '">' + (canDel ? '<span class="del-msg" onclick="delChatMsg(\'' + m.id + '\')">✕</span>' : '') + '<span class="author">' + (m.user||'?') + '</span> <span class="time">' + (m.timestamp ? new Date(m.timestamp).toLocaleTimeString('ru-RU').slice(0,5) : '') + '</span><br>' + (m.text||'') + '</div>'; }).join('');
     document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
   });
 }
-function sendChat() { const text = document.getElementById('chatInput').value.trim(); if (!text || !currentUser) return; db.ref('chat').push({ user: currentUser.name, text, timestamp: Date.now() }); document.getElementById('chatInput').value = ''; }
-function delChatMsg(id) { if (confirm('Удалить сообщение?')) db.ref('chat/' + id).remove(); }
+function sendChat() { const t = document.getElementById('chatInput').value.trim(); if (!t || !currentUser) return; db.ref('chat').push({ user: currentUser.name, text: t, timestamp: Date.now() }); document.getElementById('chatInput').value = ''; }
+function delChatMsg(id) { if (confirm('Удалить?')) db.ref('chat/' + id).remove(); }
+
+function loadAnnounce() { db.ref('announce').limitToLast(1).on('value', s => { const b = document.getElementById('announceBlock'); if (!s.exists()) { b.style.display='none'; return; } let l = null; s.forEach(c => { l = c.val(); }); b.style.display='block'; b.innerHTML = '<div class="announce"><b>📢 ' + l.text + '</b><div class="ann-date">' + new Date(l.timestamp).toLocaleString('ru-RU') + '</div></div>'; }); }
+function loadAnnounceList() { db.ref('announce').once('value', s => { const arr = []; s.forEach(c => arr.push({ id: c.key, ...c.val() })); arr.sort((a,b) => b.timestamp - a.timestamp); document.getElementById('announceList').innerHTML = arr.length ? arr.map(x => '<div style="padding:6px;border-bottom:1px solid #eee"><b>' + x.text + '</b><br><small>' + new Date(x.timestamp).toLocaleString('ru-RU') + '</small> <button class="red" onclick="delAnnounce(\'' + x.id + '\')" style="width:auto;padding:4px 8px;font-size:10px">✕</button></div>').join('') : '<p>Нет объявлений</p>'; }); }
+function postAnnounce() { const t = document.getElementById('announceText').value.trim(); if (!t) return; db.ref('announce').push({ text: t, timestamp: Date.now() }); document.getElementById('announceText').value=''; loadAnnounce(); loadAnnounceList(); }
+function delAnnounce(id) { if (confirm('Удалить?')) { db.ref('announce/' + id).remove(); loadAnnounce(); loadAnnounceList(); } }
 </script>
 </body>
 </html>
