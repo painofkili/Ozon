@@ -10,7 +10,7 @@ body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 10px; max-w
 h2 { text-align: center; color: #333; margin: 10px 0; }
 .card { background: white; border-radius: 12px; padding: 15px; margin: 8px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 input, button, select, textarea { width: 100%; padding: 12px; font-size: 16px; border-radius: 8px; margin: 4px 0; border: 1px solid #ddd; }
-button { background: #4CAF50; color: white; border: none; font-weight: bold; cursor: pointer; }
+button { background: #4CAF50; color: white; border: none; font-weight: bold; cursor: pointer; min-height: 44px; }
 button.red { background: #f44336; }
 button.blue { background: #2196F3; }
 button.gray { background: #999; }
@@ -18,7 +18,8 @@ button.gold { background: #FFD700; color: #333; }
 button.orange { background: #FF9800; }
 button.punish { background: #9C27B0; }
 button.export { background: #00BCD4; }
-.status { text-align: center; font-weight: bold; margin: 8px 0; }
+.status { text-align: center; font-weight: bold; margin: 8px 0; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.status img.ava { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
 table { width: 100%; font-size: 12px; border-collapse: collapse; margin-top: 8px; }
 td, th { padding: 6px; text-align: center; border-bottom: 1px solid #eee; }
 th { background: #f0f0f0; }
@@ -30,13 +31,14 @@ th { background: #f0f0f0; }
 .worker-row button { width: auto; padding: 5px 8px; font-size: 11px; margin: 1px; }
 .chat-container { display: flex; flex-direction: column; height: 50vh; }
 .chat-messages { flex: 1; overflow-y: auto; padding: 10px; background: #fafafa; border-radius: 8px; margin-bottom: 8px; }
-.chat-msg { padding: 8px 12px; margin: 4px 0; background: #e3f2fd; border-radius: 12px; font-size: 14px; max-width: 85%; word-wrap: break-word; position: relative; }
-.chat-msg.mine { background: #C8E6C9; margin-left: auto; text-align: right; }
+.chat-msg { padding: 8px 12px; margin: 4px 0; background: #e3f2fd; border-radius: 12px; font-size: 14px; max-width: 85%; word-wrap: break-word; position: relative; display: flex; align-items: flex-start; gap: 6px; }
+.chat-msg.mine { background: #C8E6C9; margin-left: auto; flex-direction: row-reverse; text-align: right; }
 .chat-msg .author { font-weight: bold; font-size: 11px; color: #555; }
 .chat-msg .time { font-size: 10px; color: #999; }
 .chat-msg .del-msg { position: absolute; top: 2px; right: 2px; background: red; color: white; border-radius: 50%; width: 16px; height: 16px; font-size: 10px; line-height: 16px; text-align: center; cursor: pointer; display: none; }
 .chat-msg:hover .del-msg, .chat-msg:active .del-msg { display: block; }
-.chat-msg img.ava { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; margin-right: 6px; vertical-align: middle; }
+.chat-msg img.ava { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.chat-msg .msg-body { flex: 1; }
 .chat-input-row { display: flex; gap: 5px; }
 .chat-input-row input { flex: 1; }
 .punish-row { display: flex; justify-content: space-between; align-items: center; padding: 6px; border-bottom: 1px solid #eee; font-size: 12px; }
@@ -89,7 +91,7 @@ th { background: #f0f0f0; }
 </div>
 
 <div class="card" id="mainCard" style="display:none">
-  <div class="status">👤 <span id="userName"></span> | Пункт <span id="userPunkt"></span></div>
+  <div class="status"><img id="userAvatar" class="ava" style="display:none"> 👤 <span id="userName"></span> | Пункт <span id="userPunkt"></span></div>
   <div class="tabs">
     <button id="tabShift" class="active" onclick="userTab('shift')">🔵 Смена</button>
     <button id="tabStats" onclick="userTab('stats')">📊 Статистика</button>
@@ -114,7 +116,7 @@ th { background: #f0f0f0; }
 </div>
 
 <div class="card" id="godCard" style="display:none">
-  <div class="status">👑 Режим бога</div>
+  <div class="status"><img id="godAvatarImg" class="ava" style="display:none"> 👑 Режим бога</div>
   <div class="tabs">
     <button id="tabPunkts" class="active" onclick="godTab('punkts')">📍</button>
     <button id="tabWorkers" onclick="godTab('workers')">👥</button>
@@ -149,7 +151,7 @@ th { background: #f0f0f0; }
 
 <div class="card" id="chatCard" style="display:none">
   <div class="status">💬 Чат</div>
-  <div class="chat-container"><div class="chat-messages" id="chatMessages"></div><div class="chat-input-row"><input id="chatInput" placeholder="Сообщение..."><button onclick="sendChat()" style="width:auto">➤</button></div></div>
+  <div class="chat-container"><div class="chat-messages" id="chatMessages"></div><div class="chat-input-row"><input id="chatInput" placeholder="Сообщение..."><button id="chatSendBtn" onclick="sendChat()" style="width:auto;min-width:44px">➤</button></div></div>
 </div>
 
 <div id="photoViewer" class="shift-photos-viewer" style="display:none" onclick="this.style.display='none'"><img id="photoViewerImg" src=""></div>
@@ -190,19 +192,19 @@ function previewRegAvatar(input) { if (input.files && input.files[0]) { const r 
 function register() { const n = document.getElementById('regName').value.trim(), p = document.getElementById('regPass').value.trim(), pk = document.getElementById('regPunkt').value; if (!n || !p || !pk) { msg('Заполни все поля'); return; } db.ref('users/' + n.replace(/\s/g, '_')).once('value', function(s) { if (s.exists()) { msg('Уже есть!'); } else { db.ref('users/' + n.replace(/\s/g, '_')).set({ name: n, punkt: pk, password: p, bonus: 0, avatar: regAvatar || '' }); msg('✅'); showLogin(); } }); }
 function showRegister() { document.getElementById('loginCard').style.display='none'; document.getElementById('registerCard').style.display='block'; fillPunktSelect('regPunkt'); }
 
-function login() { const n = document.getElementById('loginName').value.trim(), p = document.getElementById('loginPass').value.trim(); if (!n || !p) { msg('Введи имя и пароль'); return; } db.ref('users/' + n.replace(/\s/g, '_')).once('value', function(s) { if (!s.exists()) { msg('Не найден'); return; } if (s.val().password !== p) { msg('Неверный пароль'); return; } currentUser = s.val(); isGod = false; document.getElementById('delCol').style.display = 'none'; ['loginCard','registerCard','godCard','godPassCard'].forEach(id => document.getElementById(id).style.display='none'); document.getElementById('mainCard').style.display='block'; document.getElementById('chatCard').style.display='block'; document.getElementById('userName').textContent = currentUser.name; document.getElementById('userPunkt').textContent = currentUser.punkt; userTab('shift'); loadShifts(currentUser.name); loadChat(); loadAnnounce(); }); }
+function login() { const n = document.getElementById('loginName').value.trim(), p = document.getElementById('loginPass').value.trim(); if (!n || !p) { msg('Введи имя и пароль'); return; } db.ref('users/' + n.replace(/\s/g, '_')).once('value', function(s) { if (!s.exists()) { msg('Не найден'); return; } if (s.val().password !== p) { msg('Неверный пароль'); return; } currentUser = s.val(); isGod = false; document.getElementById('delCol').style.display = 'none'; ['loginCard','registerCard','godCard','godPassCard'].forEach(id => document.getElementById(id).style.display='none'); document.getElementById('mainCard').style.display='block'; document.getElementById('chatCard').style.display='block'; document.getElementById('userName').textContent = currentUser.name; document.getElementById('userPunkt').textContent = currentUser.punkt; if (currentUser.avatar) { document.getElementById('userAvatar').src = currentUser.avatar; document.getElementById('userAvatar').style.display = 'inline'; } userTab('shift'); loadShifts(currentUser.name); loadChat(); loadAnnounce(); }); }
 function userTab(tab) { document.getElementById('shiftTab').style.display = tab==='shift'?'block':'none'; document.getElementById('statsTab').style.display = tab==='stats'?'block':'none'; document.getElementById('historyTab').style.display = tab==='history'?'block':'none'; ['tabShift','tabStats','tabHistory'].forEach(id => document.getElementById(id).classList.remove('active')); document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active'); if (tab==='stats') loadStats(); if (tab==='history') loadHistory(); }
 function loadStats() { loadPunkts(function(punkts) { const rates = {}; punkts.forEach(p => rates[p.id] = p.rate||0); db.ref('punishes').orderByChild('user').equalTo(currentUser.name).once('value', function(pSnap) { const now = new Date(), two = new Date(now.getTime() - 14*24*60*60*1000); const punishes = []; pSnap.forEach(c => { const p = c.val(); if (new Date(p.timestamp) >= two) punishes.push(p); }); const totalPunish = punishes.reduce((s, p) => s + (p.amount||0), 0); const shifts = allShifts.filter(s => { const t = new Date(s.timestamp); return s.user === currentUser.name && !s.paid && t >= two; }); let th = 0, tt = 0, hz = 0; shifts.forEach(s => { const h = s.hours||0; th += h; tt += s.tovar||0; hz += h * (rates[s.punkt]||0); }); const bonus = (currentUser.bonus||0) * shifts.length; document.getElementById('statsContent').innerHTML = '<div class="stat-card">📅 Смен: <b>' + shifts.length + '</b></div><div class="stat-card">⏱ Часов: <b>' + th + '</b></div><div class="stat-card">📦 Товаров: <b>' + tt + '</b> (ЗП: ' + tt + ' ₽)</div><div class="stat-card">💵 ЗП за часы: <b>' + hz + ' ₽</b></div><div class="stat-card">💰 Надбавка: <b>' + bonus + ' ₽</b></div><div class="stat-card">⚠️ Штрафы: <b>-' + totalPunish + ' ₽</b></div><div class="stat-card" style="background:#e8f5e9"><b>🧾 Итого: ' + (tt + hz + bonus - totalPunish) + ' ₽</b></div>'; }); }); }
 function loadHistory() { db.ref('payments').orderByChild('user').equalTo(currentUser.name).once('value', function(s) { const arr = []; s.forEach(c => arr.push(c.val())); arr.sort((a,b) => b.timestamp - a.timestamp); document.getElementById('historyContent').innerHTML = arr.length ? arr.map(x => '<div class="stat-card">📅 ' + new Date(x.dateFrom).toLocaleDateString('ru-RU') + ' – ' + new Date(x.dateTo).toLocaleDateString('ru-RU') + '<br><b>' + x.total + ' ₽</b><br><small>' + new Date(x.timestamp).toLocaleString('ru-RU') + '</small></div>').join('') : '<p>Нет выплат</p>'; }); }
-function changeAvatar() { const inp = document.createElement('input'); inp.type='file'; inp.accept='image/*'; inp.onchange = function() { if (inp.files && inp.files[0]) { const r = new FileReader(); r.onload = function(e) { currentUser.avatar = e.target.result; db.ref('users/' + currentUser.name.replace(/\s/g, '_') + '/avatar').set(e.target.result); alert('✅'); }; r.readAsDataURL(inp.files[0]); } }; inp.click(); }
+function changeAvatar() { const inp = document.createElement('input'); inp.type='file'; inp.accept='image/*'; inp.onchange = function() { if (inp.files && inp.files[0]) { const r = new FileReader(); r.onload = function(e) { currentUser.avatar = e.target.result; db.ref('users/' + currentUser.name.replace(/\s/g, '_') + '/avatar').set(e.target.result); document.getElementById('userAvatar').src = e.target.result; document.getElementById('userAvatar').style.display = 'inline'; alert('✅'); }; r.readAsDataURL(inp.files[0]); } }; inp.click(); }
 
 function godLogin() { if (!godPassword) { const p = prompt('Придумайте пароль бога:'); if (p) { db.ref('godPassword').set(p); godPassword = p; enterGodMode(); } } else { document.getElementById('loginCard').style.display='none'; document.getElementById('godPassCard').style.display='block'; } }
 function checkGodPass() { if (document.getElementById('godPass').value.trim() === godPassword) { document.getElementById('godPassCard').style.display='none'; enterGodMode(); } else alert('Неверно!'); }
-function enterGodMode() { isGod = true; currentUser = null; document.getElementById('delCol').style.display = ''; ['loginCard','registerCard','godPassCard','godSettingsCard','mainCard'].forEach(id => document.getElementById(id).style.display='none'); document.getElementById('godCard').style.display='block'; document.getElementById('chatCard').style.display='block'; godTab('punkts'); loadShifts(null); loadChat(); loadAnnounce(); }
+function enterGodMode() { isGod = true; currentUser = null; document.getElementById('delCol').style.display = ''; ['loginCard','registerCard','godPassCard','godSettingsCard','mainCard'].forEach(id => document.getElementById(id).style.display='none'); document.getElementById('godCard').style.display='block'; document.getElementById('chatCard').style.display='block'; db.ref('godSettings').once('value', function(s) { if (s.exists() && s.val().avatar) { document.getElementById('godAvatarImg').src = s.val().avatar; document.getElementById('godAvatarImg').style.display = 'inline'; } }); godTab('punkts'); loadShifts(null); loadChat(); loadAnnounce(); }
 function godTab(tab) { ['punktsTab','workersTab','calcTab','announceTab'].forEach(id => document.getElementById(id).style.display='none'); document.getElementById(tab + 'Tab').style.display='block'; ['tabPunkts','tabWorkers','tabCalc','tabAnnounce'].forEach(id => document.getElementById(id).classList.remove('active')); document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active'); if (tab==='punkts') loadPunktsList(); if (tab==='workers') { fillPunktSelect('workerPunktFilter', loadWorkersList); } if (tab==='calc') loadCalcUsers(); if (tab==='announce') loadAnnounceList(); }
 function godSettings() { document.getElementById('godCard').style.display='none'; document.getElementById('godSettingsCard').style.display='block'; db.ref('godSettings').once('value', s => { if (s.exists()) { document.getElementById('godName').value = s.val().name||''; if (s.val().avatar) { document.getElementById('godAvatarPreview').src = s.val().avatar; document.getElementById('godAvatarPreview').style.display='block'; } } }); }
 function previewGodAvatar(input) { if (input.files && input.files[0]) { const r = new FileReader(); r.onload = function(e) { godAvatar = e.target.result; document.getElementById('godAvatarPreview').src = godAvatar; document.getElementById('godAvatarPreview').style.display='block'; }; r.readAsDataURL(input.files[0]); } }
-function saveGodSettings() { const n = document.getElementById('godName').value.trim(), p = document.getElementById('godNewPass').value.trim(); if (n) db.ref('godSettings/name').set(n); if (p) { db.ref('godPassword').set(p); godPassword = p; } if (godAvatar) db.ref('godSettings/avatar').set(godAvatar); alert('✅'); document.getElementById('godSettingsCard').style.display='none'; document.getElementById('godCard').style.display='block'; }
+function saveGodSettings() { const n = document.getElementById('godName').value.trim(), p = document.getElementById('godNewPass').value.trim(); if (n) db.ref('godSettings/name').set(n); if (p) { db.ref('godPassword').set(p); godPassword = p; } if (godAvatar) { db.ref('godSettings/avatar').set(godAvatar); document.getElementById('godAvatarImg').src = godAvatar; document.getElementById('godAvatarImg').style.display = 'inline'; } alert('✅'); document.getElementById('godSettingsCard').style.display='none'; document.getElementById('godCard').style.display='block'; }
 
 function loadPunktsList() { loadPunkts(function(p) { document.getElementById('punktsList').innerHTML = p.length ? p.map(x => '<div class="worker-row"><span><b>' + x.id + '</b><br>' + (x.rate||0) + ' ₽/ч</span><span><button class="blue" onclick="editPunkt(\'' + x.id + '\',' + (x.rate||0) + ')">✏️</button><button class="red" onclick="deletePunkt(\'' + x.id + '\')">✕</button></span></div>').join('') : '<p>Нет пунктов</p>'; }); }
 function addPunkt() { const id = prompt('Номер пункта:'); if (!id) return; db.ref('punkts/' + id).set({ rate: parseInt(prompt('Ставка (₽/ч):','210'))||210 }); loadPunktsList(); }
@@ -233,7 +235,7 @@ function loadShifts(filterUser) { db.ref('shifts').once('value', function(s) { c
 function delShift(id) { if (confirm('Удалить?')) { db.ref('shifts/' + id).remove(); loadShifts(null); } }
 function viewPhoto(url) { document.getElementById('photoViewerImg').src = url; document.getElementById('photoViewer').style.display = 'flex'; }
 
-function loadChat() { db.ref('chat').limitToLast(100).on('value', function(s) { const msgs = []; s.forEach(c => { msgs.push({ id: c.key, ...c.val() }); }); msgs.sort((a,b) => (a.timestamp||0) - (b.timestamp||0)); db.ref('users').once('value', function(userSnap) { const avatars = {}; userSnap.forEach(c => { avatars[c.val().name] = c.val().avatar || ''; }); db.ref('godSettings').once('value', function(godSnap) { if (godSnap.exists() && godSnap.val().avatar) avatars['god'] = godSnap.val().avatar; document.getElementById('chatMessages').innerHTML = msgs.map(m => { const isMine = currentUser && m.user === currentUser.name; const canDel = isGod || (currentUser && m.user === currentUser.name); const ava = avatars[m.user] || ''; const avaHtml = ava ? '<img src="' + ava + '" class="ava">' : ''; return '<div class="chat-msg' + (isMine ? ' mine' : '') + '">' + (canDel ? '<span class="del-msg" onclick="delChatMsg(\'' + m.id + '\')">✕</span>' : '') + avaHtml + '<span class="author">' + (m.user||'?') + '</span> <span class="time">' + (m.timestamp ? new Date(m.timestamp).toLocaleTimeString('ru-RU').slice(0,5) : '') + '</span><br>' + (m.text||'') + '</div>'; }).join(''); document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight; }); }); }); }
+function loadChat() { db.ref('chat').limitToLast(100).on('value', function(s) { const msgs = []; s.forEach(function(c) { msgs.push({ id: c.key, ...c.val() }); }); msgs.sort(function(a, b) { return (a.timestamp || 0) - (b.timestamp || 0); }); db.ref('users').once('value', function(userSnap) { var avatars = {}; userSnap.forEach(function(c) { avatars[c.val().name] = c.val().avatar || ''; }); db.ref('godSettings').once('value', function(godSnap) { if (godSnap.exists() && godSnap.val().avatar) avatars['god'] = godSnap.val().avatar; var html = ''; for (var i = 0; i < msgs.length; i++) { var m = msgs[i]; var isMine = currentUser && m.user === currentUser.name; var canDel = isGod || (currentUser && m.user === currentUser.name); var ava = avatars[m.user] || ''; var avaTag = ava ? '<img src="' + ava + '" class="ava">' : ''; html += '<div class="chat-msg' + (isMine ? ' mine' : '') + '">'; if (canDel) html += '<span class="del-msg" onclick="delChatMsg(\'' + m.id + '\')">✕</span>'; html += avaTag + '<div class="msg-body"><span class="author">' + (m.user || '?') + '</span> <span class="time">' + (m.timestamp ? new Date(m.timestamp).toLocaleTimeString('ru-RU').slice(0,5) : '') + '</span><br>' + (m.text || '') + '</div></div>'; } document.getElementById('chatMessages').innerHTML = html; document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight; }); }); }); }
 function sendChat() { const t = document.getElementById('chatInput').value.trim(); if (!t || !currentUser) return; db.ref('chat').push({ user: currentUser.name, text: t, timestamp: Date.now() }); document.getElementById('chatInput').value = ''; }
 function delChatMsg(id) { if (confirm('Удалить?')) db.ref('chat/' + id).remove(); }
 
@@ -241,8 +243,12 @@ function loadAnnounce() { db.ref('announce').limitToLast(1).on('value', s => { c
 function loadAnnounceList() { db.ref('announce').once('value', s => { const arr = []; s.forEach(c => arr.push({ id: c.key, ...c.val() })); arr.sort((a,b) => b.timestamp - a.timestamp); document.getElementById('announceList').innerHTML = arr.length ? arr.map(x => '<div style="padding:6px;border-bottom:1px solid #eee"><b>' + x.text + '</b><br><small>' + new Date(x.timestamp).toLocaleString('ru-RU') + '</small> <button class="red" onclick="delAnnounce(\'' + x.id + '\')" style="width:auto;padding:4px 8px;font-size:10px">✕</button></div>').join('') : '<p>Нет объявлений</p>'; }); }
 function postAnnounce() { const t = document.getElementById('announceText').value.trim(); if (!t) return; db.ref('announce').push({ text: t, timestamp: Date.now() }); document.getElementById('announceText').value=''; loadAnnounce(); loadAnnounceList(); }
 function delAnnounce(id) { if (confirm('Удалить?')) { db.ref('announce/' + id).remove(); loadAnnounce(); loadAnnounceList(); } }
-document.getElementById('chatInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); sendChat(); } });
-document.getElementById('loginPass').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); login(); } });
+
+// Обработчики Enter и touch для iPhone
+document.getElementById('chatInput').addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.keyCode === 13) { e.preventDefault(); sendChat(); } });
+document.getElementById('loginPass').addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.keyCode === 13) { e.preventDefault(); login(); } });
+document.getElementById('chatSendBtn').addEventListener('touchend', function(e) { e.preventDefault(); sendChat(); });
+document.getElementById('chatSendBtn').addEventListener('click', function(e) { e.preventDefault(); sendChat(); });
 </script>
 </body>
 </html>
