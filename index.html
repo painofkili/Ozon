@@ -119,7 +119,6 @@ function previewPhotos() {
     (function(file) {
       var reader = new FileReader();
       reader.onload = function(e) {
-        // Сжимаем фото до миниатюры
         var img = new Image();
         img.onload = function() {
           var canvas = document.createElement('canvas');
@@ -188,7 +187,6 @@ function loadChat() {
     chatKeys = [];
     s.forEach(function(c) {
       var m = c.val();
-      chatKeys.push({ key: c.key, user: m.user });
       var canDel = (user && m.user === user.name) || (user && m.user === '📢 ' + user.name);
       h += '<p>' + (canDel ? '<span class="del-msg" onclick="delChatMsg(\'' + c.key + '\')">✕</span>' : '') + '<b>' + (m.user||'?') + ':</b> ' + (m.text||'');
       if (m.photos && m.photos.length) {
@@ -197,7 +195,8 @@ function loadChat() {
         for (var i = 0; i < m.photos.length; i++) {
           allFull.push(typeof m.photos[i] === 'object' ? m.photos[i].full : m.photos[i]);
         }
-        h += '<br><img class="thumb" src="' + firstThumb + '" onclick="event.stopPropagation();viewPack(\'' + JSON.stringify(allFull).replace(/'/g, "\\'") + '\')">';
+        var packData = JSON.stringify(allFull).replace(/'/g, "&#39;").replace(/"/g, '&quot;');
+        h += '<br><img class="thumb" src="' + firstThumb + '" onclick="event.stopPropagation();viewPack(\'' + packData + '\')">';
         if (m.photos.length > 1) h += ' <span style="font-size:11px;color:#999">+ ещё ' + (m.photos.length-1) + '</span>';
       }
       h += '</p>';
@@ -208,29 +207,37 @@ function loadChat() {
   });
 }
 
-function viewPack(fullArr) {
-  var photos = JSON.parse(fullArr);
-  var viewer = document.getElementById('photoViewer');
-  var img = document.getElementById('photoViewerImg');
-  var idx = 0;
-  img.src = photos[0];
-  viewer.style.display = 'flex';
-  img.onclick = function() {
-    idx++;
-    if (idx < photos.length) {
-      img.src = photos[idx];
-    } else {
-      viewer.style.display = 'none';
-      img.onclick = null;
-    }
-  };
-}
-
 function delChatMsg(key) {
   if (confirm('Удалить сообщение?')) {
     db.ref('chat/' + key).remove();
   }
 }
+
+function viewPack(packData) {
+  var photos = JSON.parse(packData.replace(/&quot;/g, '"').replace(/&#39;/g, "'"));
+  var viewer = document.getElementById('photoViewer');
+  var img = document.getElementById('photoViewerImg');
+  var idx = 0;
+  img.src = photos[0];
+  viewer.style.display = 'flex';
+  viewer.onclick = function(e) {
+    if (e.target === viewer) {
+      viewer.style.display = 'none';
+      viewer.onclick = null;
+      return;
+    }
+  };
+  img.onclick = function(e) {
+    e.stopPropagation();
+    idx++;
+    if (idx < photos.length) {
+      img.src = photos[idx];
+    } else {
+      viewer.style.display = 'none';
+    }
+  };
+}
+
 function send() {
   var t = document.getElementById('msg').value.trim();
   if (!t || !user) return;
