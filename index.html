@@ -192,11 +192,13 @@ function loadChat() {
       var canDel = (user && m.user === user.name) || (user && m.user === '📢 ' + user.name);
       h += '<p>' + (canDel ? '<span class="del-msg" onclick="delChatMsg(\'' + c.key + '\')">✕</span>' : '') + '<b>' + (m.user||'?') + ':</b> ' + (m.text||'');
       if (m.photos && m.photos.length) {
+        var firstThumb = typeof m.photos[0] === 'object' ? m.photos[0].thumb : m.photos[0];
+        var allFull = [];
         for (var i = 0; i < m.photos.length; i++) {
-          var src = typeof m.photos[i] === 'object' ? m.photos[i].thumb : m.photos[i];
-          var full = typeof m.photos[i] === 'object' ? m.photos[i].full : m.photos[i];
-          h += '<br><img class="thumb" src="' + src + '" onclick="event.stopPropagation();viewPhoto(\'' + full + '\')">';
+          allFull.push(typeof m.photos[i] === 'object' ? m.photos[i].full : m.photos[i]);
         }
+        h += '<br><img class="thumb" src="' + firstThumb + '" onclick="event.stopPropagation();viewPack(\'' + JSON.stringify(allFull).replace(/'/g, "\\'") + '\')">';
+        if (m.photos.length > 1) h += ' <span style="font-size:11px;color:#999">+ ещё ' + (m.photos.length-1) + '</span>';
       }
       h += '</p>';
     });
@@ -206,17 +208,29 @@ function loadChat() {
   });
 }
 
+function viewPack(fullArr) {
+  var photos = JSON.parse(fullArr);
+  var viewer = document.getElementById('photoViewer');
+  var img = document.getElementById('photoViewerImg');
+  var idx = 0;
+  img.src = photos[0];
+  viewer.style.display = 'flex';
+  img.onclick = function() {
+    idx++;
+    if (idx < photos.length) {
+      img.src = photos[idx];
+    } else {
+      viewer.style.display = 'none';
+      img.onclick = null;
+    }
+  };
+}
+
 function delChatMsg(key) {
   if (confirm('Удалить сообщение?')) {
     db.ref('chat/' + key).remove();
   }
 }
-
-function viewPhoto(src) {
-  document.getElementById('photoViewerImg').src = src;
-  document.getElementById('photoViewer').style.display = 'flex';
-}
-
 function send() {
   var t = document.getElementById('msg').value.trim();
   if (!t || !user) return;
