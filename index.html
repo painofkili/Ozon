@@ -11,10 +11,14 @@ input, button { width: 100%; padding: 12px; font-size: 16px; margin: 4px 0; }
 button { background: green; color: white; border: none; }
 button.gray { background: gray; }
 #chat { max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 8px; border-radius: 8px; margin: 8px 0; }
-#chat p { margin: 2px 0; font-size: 13px; }
-#chat img { max-width: 200px; border-radius: 8px; margin: 4px 0; }
+#chat p { margin: 2px 0; font-size: 13px; position: relative; }
+#chat .thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; cursor: pointer; margin: 2px; }
+#chat .del-msg { position: absolute; top: 0; right: 0; background: red; color: white; border-radius: 50%; width: 16px; height: 16px; font-size: 10px; line-height: 16px; text-align: center; cursor: pointer; display: none; }
+#chat p:hover .del-msg { display: block; }
 .photo-preview { display: flex; gap: 4px; flex-wrap: wrap; }
 .photo-preview img { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
+#photoViewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 1000; }
+#photoViewer img { max-width: 95%; max-height: 90%; border-radius: 8px; }
 </style>
 </head>
 <body>
@@ -44,6 +48,8 @@ button.gray { background: gray; }
   <input id="msg" placeholder="Чат..."><button onclick="send()">Отправить</button>
 </div>
 
+<div id="photoViewer" onclick="this.style.display='none'"><img id="photoViewerImg" src=""></div>
+
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <script>
@@ -60,6 +66,7 @@ var db = firebase.database();
 var user = null;
 var onShift = false;
 var photoBase64 = [];
+var chatKeys = [];
 
 var saved = localStorage.getItem('ozon_user');
 if (saved) {
@@ -93,9 +100,7 @@ function login() {
         document.getElementById('startBtn').style.display = 'none';
         document.getElementById('shift').style.display = 'block';
       }
-    } else {
-      alert('Неверно!');
-    }
+    } else alert('Неверно!');
   });
 }
 
@@ -111,14 +116,29 @@ function previewPhotos() {
   document.getElementById('photoPreviews').innerHTML = '';
   var files = document.getElementById('photos').files;
   for (var i = 0; i < Math.min(files.length, 5); i++) {
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      photoBase64.push(e.target.result);
-      var img = document.createElement('img');
-      img.src = e.target.result;
-      document.getElementById('photoPreviews').appendChild(img);
-    };
-    reader.readAsDataURL(files[i]);
+    (function(file) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        // Сжимаем фото до миниатюры
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement('canvas');
+          var maxW = 200;
+          var scale = maxW / img.width;
+          canvas.width = maxW;
+          canvas.height = img.height * scale;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          var thumb = canvas.toDataURL('image/jpeg', 0.6);
+          photoBase64.push({ full: e.target.result, thumb: thumb });
+          var preview = document.createElement('img');
+          preview.src = thumb;
+          document.getElementById('photoPreviews').appendChild(preview);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    })(files[i]);
   }
 }
 
@@ -141,9 +161,7 @@ function endShift() {
     hours: 12, tovar: tv, photos: photos, timestamp: new Date().toISOString()
   });
   
-  // Сообщение в чат
-  var chatMsg = { user: '📢 ' + user.name, text: '🔴 Пункт ' + user.punkt + ' смена окончена в ' + time + ', товаров: ' + tv, timestamp: Date.now(), photos: photos };
-  db.ref('chat').push(chatMsg);
+  db.ref('chat').push({ user: '📢 ' + user.name, text: '🔴 Пункт ' + user.punkt + ' смена окончена в ' + time + ', товаров: ' + tv, timestamp: Date.now(), photos: photos });
   
   onShift = false;
   localStorage.removeItem('ozon_onShift');
@@ -167,12 +185,17 @@ function logout() {
 function loadChat() {
   db.ref('chat').limitToLast(30).on('value', function(s) {
     var h = '';
+    chatKeys = [];
     s.forEach(function(c) {
       var m = c.val();
-      h += '<p><b>' + (m.user||'?') + ':</b> ' + (m.text||'');
+      chatKeys.push({ key: c.key, user: m.user });
+      var canDel = (user && m.user === user.name) || (user && m.user === '📢 ' + user.name);
+      h += '<p>' + (canDel ? '<span class="del-msg" onclick="delChatMsg(\'' + c.key + '\')">✕</span>' : '') + '<b>' + (m.user||'?') + ':</b> ' + (m.text||'');
       if (m.photos && m.photos.length) {
         for (var i = 0; i < m.photos.length; i++) {
-          h += '<br><img src="' + m.photos[i] + '">';
+          var src = typeof m.photos[i] === 'object' ? m.photos[i].thumb : m.photos[i];
+          var full = typeof m.photos[i] === 'object' ? m.photos[i].full : m.photos[i];
+          h += '<br><img class="thumb" src="' + src + '" onclick="event.stopPropagation();viewPhoto(\'' + full + '\')">';
         }
       }
       h += '</p>';
@@ -181,6 +204,17 @@ function loadChat() {
     var chatEl = document.getElementById('chat');
     chatEl.scrollTop = chatEl.scrollHeight;
   });
+}
+
+function delChatMsg(key) {
+  if (confirm('Удалить сообщение?')) {
+    db.ref('chat/' + key).remove();
+  }
+}
+
+function viewPhoto(src) {
+  document.getElementById('photoViewerImg').src = src;
+  document.getElementById('photoViewer').style.display = 'flex';
 }
 
 function send() {
