@@ -40,6 +40,8 @@ button.gray { background: gray; }
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <script>
 firebase.initializeApp({
   apiKey: "AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",
@@ -54,7 +56,6 @@ var db = firebase.database();
 var user = null;
 var onShift = false;
 
-// Автовход
 var saved = localStorage.getItem('ozon_user');
 if (saved) {
   user = JSON.parse(saved);
@@ -62,7 +63,6 @@ if (saved) {
   document.getElementById('app').style.display = 'block';
   document.getElementById('uname').textContent = user.name;
   loadChat();
-  // Восстановить состояние смены
   if (localStorage.getItem('ozon_onShift') === '1') {
     onShift = true;
     document.getElementById('startBtn').style.display = 'none';
@@ -75,20 +75,21 @@ function login() {
   var p = document.getElementById('pass').value.trim();
   db.ref('users/' + n).once('value', function(s) {
     if (s.exists() && s.val().password === p) {
-      user = s.val(); user.key = n;
+      user = s.val();
       user.punkt = user.punkt || '49';
       localStorage.setItem('ozon_user', JSON.stringify(user));
       document.getElementById('login').style.display = 'none';
       document.getElementById('app').style.display = 'block';
       document.getElementById('uname').textContent = user.name;
       loadChat();
-      // Восстановить состояние смены
       if (localStorage.getItem('ozon_onShift') === '1') {
         onShift = true;
         document.getElementById('startBtn').style.display = 'none';
         document.getElementById('shift').style.display = 'block';
       }
-    } else alert('Неверно!');
+    } else {
+      alert('Неверно!');
+    }
   });
 }
 
@@ -104,7 +105,6 @@ function startShift() {
   localStorage.setItem('ozon_onShift', '1');
   document.getElementById('startBtn').style.display = 'none';
   document.getElementById('shift').style.display = 'block';
-  // Автосообщение в чат с временем
   var time = new Date().toLocaleTimeString('ru-RU');
   db.ref('chat').push({ user: '📢 ' + user.name, text: '🔵 Пункт ' + user.punkt + ' на смене! (' + time + ')', timestamp: Date.now() });
 }
@@ -115,17 +115,7 @@ function endShift() {
   db.ref('shifts/' + user.name + '_' + Date.now()).set({
     user: user.name, punkt: user.punkt, date: new Date().toLocaleDateString('ru-RU'),
     hours: 12, tovar: tv, timestamp: new Date().toISOString()
-  }, function() {
-    // Автосообщение в чат с временем
-    db.ref('chat').push({ user: '📢 ' + user.name, text: '🔴 Пункт ' + user.punkt + ' смена окончена в ' + time + ', товаров: ' + tv, timestamp: Date.now() });
   });
-  onShift = false;
-  localStorage.removeItem('ozon_onShift');
-  document.getElementById('shift').style.display = 'none';
-  document.getElementById('startBtn').style.display = 'block';
-  document.getElementById('tov').value = '';
-}
-  // Автосообщение в чат с временем
   db.ref('chat').push({ user: '📢 ' + user.name, text: '🔴 Пункт ' + user.punkt + ' смена окончена в ' + time + ', товаров: ' + tv, timestamp: Date.now() });
   onShift = false;
   localStorage.removeItem('ozon_onShift');
@@ -148,7 +138,6 @@ function loadChat() {
     var h = '';
     s.forEach(function(c) { h += '<p>' + c.val().user + ': ' + c.val().text + '</p>'; });
     document.getElementById('chat').innerHTML = h;
-    // Автопрокрутка вниз
     var chatEl = document.getElementById('chat');
     chatEl.scrollTop = chatEl.scrollHeight;
   });
