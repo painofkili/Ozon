@@ -5,73 +5,46 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>График Ozon</title>
 <style>
-:root {
-  --bg: #1a1a2e;
-  --card: rgba(22,33,62,0.85);
-  --green: #4CAF50;
-  --red: #e94560;
-  --text: #eee;
-  --muted: #aaa;
-}
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { 
-  font-family: Arial; 
-  background: var(--bg) url('https://raw.githubusercontent.com/painofkili/ozon/main/фон.jpg') center/cover fixed; 
-  color: var(--text); 
-  padding: 12px; 
-  max-width: 450px; 
-  margin: 0 auto; 
-  min-height: 100vh; 
-  font-size: 16px;
-}
-body::before {
-  content: '';
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(26,26,46,0.7);
-  z-index: -1;
-}
-.card { background: var(--card); padding: 18px; border-radius: 16px; margin: 10px 0; backdrop-filter: blur(10px); }
-input, button, select { width: 100%; padding: 14px; font-size: 16px; margin: 5px 0; border-radius: 12px; border: none; }
-input, select { background: rgba(26,26,46,0.8); color: #fff; border: 1px solid #444; }
-button { font-weight: bold; cursor: pointer; font-size: 16px; padding: 14px; color: #fff; }
-.btn-green { background: var(--green); }
+body { font-family: Arial; background: #1a1a2e; color: #eee; padding: 10px; max-width: 420px; margin: 0 auto; font-size: 16px; }
+.card { background: rgba(22,33,62,0.9); padding: 16px; border-radius: 14px; margin: 8px 0; }
+input, select { width: 100%; padding: 14px; font-size: 16px; margin: 4px 0; border-radius: 10px; border: 1px solid #444; background: #1a1a2e; color: #fff; }
+button { border: none; cursor: pointer; border-radius: 10px; color: #fff; font-weight: bold; }
+.btn-green { background: #4CAF50; }
 .btn-blue { background: #2196F3; }
-.btn-red { background: var(--red); }
+.btn-red { background: #e94560; }
 .btn-gray { background: #555; }
-button:disabled { opacity: 0.5; cursor: default; }
-.icon-btn { width: 44px; height: 44px; padding: 0; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
-.icon-btn img { width: 22px; height: 22px; }
-.avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid var(--green); }
-.avatar-mini { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; margin-right: 6px; vertical-align: middle; }
-.profile-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-.status-badge { font-size: 14px; font-weight: bold; padding: 4px 12px; border-radius: 14px; display: inline-block; margin: 4px 0; }
-.progress-bar { height: 8px; background: #333; border-radius: 4px; margin-top: 6px; overflow: hidden; }
-.progress-fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
-.progress-text { font-size: 12px; color: var(--muted); margin-top: 2px; }
-.tabs { display: flex; gap: 6px; margin: 12px 0; }
-.tabs button { flex: 1; font-size: 13px; padding: 12px 6px; background: #333; color: #aaa; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.tabs button img { width: 28px; height: 28px; }
-.tabs button.active { background: var(--green); color: #fff; }
-#chat { max-height: 250px; overflow-y: auto; padding: 10px; border-radius: 12px; margin: 10px 0; background: rgba(26,26,46,0.8); }
-#chat p { margin: 4px 0; font-size: 14px; position: relative; line-height: 1.4; }
-#chat .thumb { width: 70px; height: 70px; object-fit: cover; border-radius: 6px; cursor: pointer; margin: 3px; }
-#chat .del-msg { position: absolute; top: 0; right: 0; background: var(--red); color: #fff; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; line-height: 20px; text-align: center; cursor: pointer; display: none; }
+.avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; }
+.avatar-mini { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; margin-right: 6px; vertical-align: middle; }
+.profile-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.status-badge { font-size: 14px; font-weight: bold; padding: 4px 12px; border-radius: 12px; }
+.progress-bar { height: 6px; background: #333; border-radius: 3px; margin-top: 4px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
+.progress-text { font-size: 11px; color: #aaa; }
+.tabs { display: flex; gap: 6px; margin: 10px 0; }
+.tabs button { flex: 1; padding: 12px 6px; background: #333; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; color: #aaa; }
+.tabs button img { width: 32px; height: 32px; }
+.tabs button.active { background: #4CAF50; color: #fff; }
+#chat { max-height: 220px; overflow-y: auto; padding: 8px; border-radius: 10px; margin: 8px 0; background: rgba(26,26,46,0.8); font-size: 13px; }
+#chat p { margin: 3px 0; position: relative; }
+#chat .thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; cursor: pointer; margin: 2px; }
+#chat .del-msg { position: absolute; top: 0; right: 0; background: #e94560; color: #fff; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; line-height: 18px; text-align: center; cursor: pointer; display: none; }
 #chat p:hover .del-msg { display: block; }
-.photo-preview { display: flex; gap: 6px; flex-wrap: wrap; }
-.photo-preview img { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; }
+.photo-preview { display: flex; gap: 4px; flex-wrap: wrap; }
+.photo-preview img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; }
 #photoViewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 1000; }
 #photoViewer img { max-width: 95%; max-height: 90%; border-radius: 10px; }
-.stat-card { background: rgba(26,26,46,0.8); padding: 10px; border-radius: 12px; margin: 5px 0; font-size: 14px; }
-.calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; text-align: center; font-size: 13px; }
-.calendar div { padding: 8px; border-radius: 6px; }
-.calendar .shift-day { background: var(--green); color: #fff; font-weight: bold; }
+.stat-card { background: rgba(26,26,46,0.8); padding: 8px; border-radius: 10px; margin: 4px 0; font-size: 13px; }
+.calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 12px; }
+.calendar div { padding: 6px; border-radius: 4px; }
+.calendar .shift-day { background: #4CAF50; color: #fff; font-weight: bold; }
 .calendar .today { border: 2px solid #2196F3; }
 .calendar .header { font-weight: bold; background: #333; }
-h3, h4 { margin: 8px 0; text-align: center; }
-label { font-size: 13px; color: var(--muted); display: block; margin-top: 6px; }
-.btn-icon-text { display: flex; align-items: center; justify-content: center; gap: 8px; }
-.btn-icon-text img { width: 22px; height: 22px; }
+label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
+.icon-btn { display: flex; align-items: center; justify-content: center; }
+.icon-btn img { width: 28px; height: 28px; }
+.big-btn { display: flex; align-items: center; justify-content: center; padding: 16px; }
+.big-btn img { width: 36px; height: 36px; }
 </style>
 </head>
 <body>
@@ -79,35 +52,33 @@ label { font-size: 13px; color: var(--muted); display: block; margin-top: 6px; }
 <div id="login">
   <input id="name" placeholder="Имя">
   <input id="pass" type="password" placeholder="Пароль">
-  <button class="btn-green" onclick="login()">Войти</button>
-  <button class="btn-blue" onclick="showRegister()">Регистрация</button>
+  <button class="btn-green" onclick="login()" style="padding:14px">Войти</button>
+  <button class="btn-blue" onclick="showRegister()" style="padding:14px">Регистрация</button>
 </div>
 
 <div id="registerCard" style="display:none">
   <div class="card">
-    <h3>📝 Регистрация</h3>
     <input id="regName" placeholder="Имя">
-    <input id="regPunkt" placeholder="Номер пункта (например 49)">
+    <input id="regPunkt" placeholder="Номер пункта">
     <input id="regPass" type="password" placeholder="Пароль">
     <label>Аватарка</label>
     <input id="regAvatar" type="file" accept="image/*" onchange="previewRegAvatar()">
-    <div id="regAvatarPreview" style="text-align:center;margin:6px 0"></div>
-    <button class="btn-green" onclick="register()">Зарегистрироваться</button>
-    <button class="btn-gray" onclick="document.getElementById('registerCard').style.display='none';document.getElementById('login').style.display='block';">Назад</button>
+    <div id="regAvatarPreview" style="text-align:center;margin:4px 0"></div>
+    <button class="btn-green" onclick="register()" style="padding:14px">Зарегистрироваться</button>
+    <button class="btn-gray" onclick="document.getElementById('registerCard').style.display='none';document.getElementById('login').style.display='block';" style="padding:14px">Назад</button>
   </div>
 </div>
 
 <div id="settingsCard" style="display:none">
   <div class="card">
-    <h3>⚙️ Настройки</h3>
     <input id="newName" placeholder="Новое имя">
     <input id="newPass" type="password" placeholder="Новый пароль">
     <select id="newPunkt"></select>
     <label>Новая аватарка</label>
     <input id="newAvatar" type="file" accept="image/*" onchange="previewNewAvatar()">
-    <div id="newAvatarPreview" style="text-align:center;margin:6px 0"></div>
-    <button class="btn-green" onclick="saveSettings()">💾 Сохранить</button>
-    <button class="btn-gray" onclick="closeSettings()">Назад</button>
+    <div id="newAvatarPreview" style="text-align:center;margin:4px 0"></div>
+    <button class="btn-green" onclick="saveSettings()" style="padding:14px">Сохранить</button>
+    <button class="btn-gray" onclick="closeSettings()" style="padding:14px">Назад</button>
   </div>
 </div>
 
@@ -115,34 +86,34 @@ label { font-size: 13px; color: var(--muted); display: block; margin-top: 6px; }
   <div class="profile-row">
     <img id="profileAvatar" class="avatar" src="" style="display:none">
     <div style="flex:1">
-      <b style="font-size:18px"><span id="uname"></span></b> 
+      <b style="font-size:17px"><span id="uname"></span></b> 
       <span id="statusBadge" class="status-badge"></span><br>
-      <span style="font-size:13px;color:var(--muted)">📍 Пункт <span id="upunkt"></span></span>
+      <span style="font-size:12px;color:#aaa">Пункт <span id="upunkt"></span></span>
       <div class="progress-bar"><div id="progressFill" class="progress-fill" style="width:0%"></div></div>
       <div id="progressText" class="progress-text"></div>
     </div>
-    <button class="btn-gray icon-btn" onclick="openSettings()">
+    <button class="btn-gray icon-btn" onclick="openSettings()" style="width:40px;height:40px;padding:6px;border-radius:10px">
       <img src="https://raw.githubusercontent.com/painofkili/ozon/main/смена.png">
     </button>
   </div>
   
   <div class="tabs">
     <button id="tabShift" class="active" onclick="showTab('shift')">
-      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/смена.png">Смена
+      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/смена.png">
     </button>
     <button id="tabStats" onclick="showTab('stats')">
-      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/статистика.png">Статистика
+      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/статистика.png">
     </button>
     <button id="tabHistory" onclick="showTab('history')">
-      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/выплаты.png">Выплаты
+      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/выплаты.png">
     </button>
   </div>
   
   <div id="shiftTab">
-    <button id="startBtn" class="btn-green btn-icon-text" onclick="startShift()">
-      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/на%20смену.png">НА СМЕНУ
+    <button id="startBtn" class="btn-green big-btn" onclick="startShift()">
+      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/на%20смену.png">
     </button>
-    <button id="onShiftBtn" class="btn-blue" style="display:none" disabled>🟢 НА СМЕНЕ</button>
+    <button id="onShiftBtn" class="btn-blue" style="display:none;padding:16px" disabled>🟢 НА СМЕНЕ</button>
     <div id="shift" style="display:none">
       <input id="timeFrom" value="9" placeholder="Начало">
       <input id="timeTo" value="21" placeholder="Конец">
@@ -150,31 +121,29 @@ label { font-size: 13px; color: var(--muted); display: block; margin-top: 6px; }
       <label>Фотоотчёт (до 5)</label>
       <input id="photos" type="file" accept="image/*" multiple onchange="previewPhotos()">
       <div id="photoPreviews" class="photo-preview"></div>
-      <button class="btn-red" onclick="endShift()">СО СМЕНЫ</button>
+      <button class="btn-red" onclick="endShift()" style="padding:14px">СО СМЕНЫ</button>
     </div>
-    <button class="btn-gray btn-icon-text" onclick="logout()" style="margin-top:8px">
-      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/выйти.png">Выйти
+    <button class="btn-gray big-btn" onclick="logout()" style="margin-top:8px">
+      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/выйти.png">
     </button>
     <div id="chat"></div>
-    <div style="display:flex;gap:6px">
+    <div style="display:flex;gap:4px">
       <input id="msg" placeholder="Чат..." style="flex:1">
-      <button class="btn-green icon-btn" onclick="send()">
+      <button class="btn-green icon-btn" onclick="send()" style="width:50px;height:50px;padding:10px">
         <img src="https://raw.githubusercontent.com/painofkili/ozon/main/отправить.png">
       </button>
     </div>
   </div>
   
   <div id="statsTab" style="display:none">
-    <h4>📅 Календарь смен</h4>
-    <div id="calHeader" style="text-align:center;margin-bottom:6px"></div>
+    <div id="calHeader" style="text-align:center;margin-bottom:4px"></div>
     <div class="calendar" id="calendar"></div>
-    <div class="stat-card" id="statsSummary">Загрузка...</div>
-    <button class="btn-red" onclick="clearMyShifts()">🗑 Очистить мои смены</button>
+    <div class="stat-card" id="statsSummary"></div>
+    <button class="btn-red" onclick="clearMyShifts()" style="padding:12px">🗑 Очистить мои смены</button>
   </div>
   
   <div id="historyTab" style="display:none">
-    <h4>💳 История выплат</h4>
-    <div id="historyContent">Загрузка...</div>
+    <div id="historyContent"></div>
   </div>
 </div>
 
@@ -205,29 +174,15 @@ var STATUSES = [
   { name: '👑 Озоний', color: '#f5c518', min: 21, max: 999 }
 ];
 
-function getStatus(totalShifts) {
-  for (var i = STATUSES.length - 1; i >= 0; i--) {
-    if (totalShifts >= STATUSES[i].min) return STATUSES[i];
-  }
-  return STATUSES[0];
-}
+function getStatus(n) { for (var i = STATUSES.length-1; i >= 0; i--) { if (n >= STATUSES[i].min) return STATUSES[i]; } return STATUSES[0]; }
 
 function updateStatusUI() {
-  var total = allMyShifts.length;
-  var status = getStatus(total);
-  var nextStatus = null;
-  for (var i = 0; i < STATUSES.length; i++) {
-    if (STATUSES[i].min > total) { nextStatus = STATUSES[i]; break; }
-  }
-  var badge = document.getElementById('statusBadge');
-  badge.textContent = status.name;
-  badge.style.background = status.color;
-  badge.style.color = '#000';
-  
-  var progress = nextStatus ? ((total - status.min) / (nextStatus.min - status.min) * 100) : 100;
-  document.getElementById('progressFill').style.width = progress + '%';
-  document.getElementById('progressFill').style.background = status.color;
-  document.getElementById('progressText').textContent = nextStatus ? total + '/' + nextStatus.min + ' до ' + nextStatus.name : '⭐ Максимум!';
+  var n = allMyShifts.length, st = getStatus(n), ns = null;
+  for (var i = 0; i < STATUSES.length; i++) { if (STATUSES[i].min > n) { ns = STATUSES[i]; break; } }
+  var b = document.getElementById('statusBadge'); b.textContent = st.name; b.style.background = st.color; b.style.color = '#000';
+  var p = ns ? ((n - st.min) / (ns.min - st.min) * 100) : 100;
+  document.getElementById('progressFill').style.width = p + '%'; document.getElementById('progressFill').style.background = st.color;
+  document.getElementById('progressText').textContent = ns ? n + '/' + ns.min + ' до ' + ns.name : '⭐ Максимум!';
 }
 
 function loadPunkts(cb) { db.ref('punkts').once('value', function(s) { var p = []; s.forEach(function(c) { p.push(c.key); }); if (cb) cb(p); }); }
@@ -235,23 +190,14 @@ function loadPunkts(cb) { db.ref('punkts').once('value', function(s) { var p = [
 var saved = localStorage.getItem('ozon_user');
 if (saved) {
   user = JSON.parse(saved); user.punkt = user.punkt || '49';
-  document.getElementById('login').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
+  document.getElementById('login').style.display = 'none'; document.getElementById('app').style.display = 'block';
   updateProfileUI(); loadChat(); loadAllData(); loadHistory();
   if (localStorage.getItem('ozon_onShift') === '1') {
-    onShift = true;
-    document.getElementById('startBtn').style.display = 'none';
-    document.getElementById('onShiftBtn').style.display = 'block';
-    document.getElementById('shift').style.display = 'block';
+    onShift = true; document.getElementById('startBtn').style.display='none'; document.getElementById('onShiftBtn').style.display='block'; document.getElementById('shift').style.display='block';
   }
 }
 
-function updateProfileUI() {
-  document.getElementById('uname').textContent = user.name;
-  document.getElementById('upunkt').textContent = user.punkt || '?';
-  if (user.avatar) { document.getElementById('profileAvatar').src = user.avatar; document.getElementById('profileAvatar').style.display = 'inline'; }
-  updateStatusUI();
-}
+function updateProfileUI() { document.getElementById('uname').textContent = user.name; document.getElementById('upunkt').textContent = user.punkt || '?'; if (user.avatar) { document.getElementById('profileAvatar').src = user.avatar; document.getElementById('profileAvatar').style.display = 'inline'; } updateStatusUI(); }
 
 function showTab(tab) {
   document.getElementById('shiftTab').style.display = tab==='shift'?'block':'none';
@@ -259,8 +205,7 @@ function showTab(tab) {
   document.getElementById('historyTab').style.display = tab==='history'?'block':'none';
   ['tabShift','tabStats','tabHistory'].forEach(function(id) { document.getElementById(id).classList.remove('active'); });
   document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
-  if (tab==='stats') renderCalendar();
-  if (tab==='history') loadHistory();
+  if (tab==='stats') renderCalendar(); if (tab==='history') loadHistory();
 }
 
 function loadAllData() {
@@ -268,59 +213,50 @@ function loadAllData() {
   db.ref('shifts').orderByChild('user').equalTo(user.name).on('value', function(s) {
     allMyShifts = []; s.forEach(function(c) { var x = c.val(); x._id = c.key; allMyShifts.push(x); });
     allMyShifts.sort(function(a,b) { return new Date(b.timestamp) - new Date(a.timestamp); });
-    updateStatusUI();
-    if (document.getElementById('statsTab').style.display !== 'none') renderCalendar();
+    updateStatusUI(); if (document.getElementById('statsTab').style.display !== 'none') renderCalendar();
   });
 }
 
 function renderCalendar() {
-  var now = new Date(), year = now.getFullYear(), month = now.getMonth();
-  var daysInMonth = new Date(year, month+1, 0).getDate(), firstDay = new Date(year, month, 0).getDay();
+  var now = new Date(), y = now.getFullYear(), m = now.getMonth();
+  var dim = new Date(y, m+1, 0).getDate(), fd = new Date(y, m, 0).getDay();
   document.getElementById('calHeader').innerHTML = '<b>' + now.toLocaleDateString('ru-RU', {month:'long',year:'numeric'}) + '</b>';
-  var days = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'], html = '';
-  for (var i = 0; i < 7; i++) html += '<div class="header">' + days[i] + '</div>';
-  for (var i = 0; i < firstDay; i++) html += '<div></div>';
-  var shiftDates = {}; allMyShifts.forEach(function(s) { shiftDates[s.date] = (shiftDates[s.date]||0)+1; });
-  var todayStr = now.toLocaleDateString('ru-RU');
-  for (var d = 1; d <= daysInMonth; d++) {
-    var dateStr = new Date(year, month, d).toLocaleDateString('ru-RU'), cls = '';
-    if (shiftDates[dateStr]) cls = 'shift-day';
-    if (dateStr === todayStr) cls += ' today';
-    html += '<div class="' + cls + '">' + d + '</div>';
+  var days = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'], h = '';
+  for (var i = 0; i < 7; i++) h += '<div class="header">' + days[i] + '</div>';
+  for (var i = 0; i < fd; i++) h += '<div></div>';
+  var sd = {}; allMyShifts.forEach(function(s) { sd[s.date] = (sd[s.date]||0)+1; });
+  var ts = now.toLocaleDateString('ru-RU');
+  for (var d = 1; d <= dim; d++) {
+    var ds = new Date(y, m, d).toLocaleDateString('ru-RU'), cl = '';
+    if (sd[ds]) cl = 'shift-day'; if (ds === ts) cl += ' today';
+    h += '<div class="' + cl + '">' + d + '</div>';
   }
-  document.getElementById('calendar').innerHTML = html;
-  var totalShifts = allMyShifts.length, totalHours = allMyShifts.reduce(function(s, x) { return s + (x.hours||0); }, 0), totalTovar = allMyShifts.reduce(function(s, x) { return s + (x.tovar||0); }, 0);
-  document.getElementById('statsSummary').innerHTML = '📅 Смен: <b>' + totalShifts + '</b><br>⏱ Часов: <b>' + totalHours + '</b><br>📦 Товаров: <b>' + totalTovar + '</b>';
+  document.getElementById('calendar').innerHTML = h;
+  var tot = allMyShifts.length, th = allMyShifts.reduce(function(s, x) { return s + (x.hours||0); }, 0), tt = allMyShifts.reduce(function(s, x) { return s + (x.tovar||0); }, 0);
+  document.getElementById('statsSummary').innerHTML = '📅 Смен: <b>' + tot + '</b><br>⏱ Часов: <b>' + th + '</b><br>📦 Товаров: <b>' + tt + '</b>';
 }
 
 function loadHistory() {
   if (!user) return;
   db.ref('payments').orderByChild('user').equalTo(user.name).once('value', function(s) {
-    var arr = []; s.forEach(function(c) { arr.push(c.val()); }); arr.sort(function(a,b) { return b.timestamp - a.timestamp; });
-    document.getElementById('historyContent').innerHTML = arr.length ? arr.map(function(x) {
-      return '<div class="stat-card">📅 ' + new Date(x.dateFrom).toLocaleDateString('ru-RU') + ' – ' + new Date(x.dateTo).toLocaleDateString('ru-RU') + '<br><b style="font-size:16px">' + x.total + ' ₽</b><br><small>' + new Date(x.timestamp).toLocaleString('ru-RU') + '</small></div>';
+    var a = []; s.forEach(function(c) { a.push(c.val()); }); a.sort(function(x,y) { return y.timestamp - x.timestamp; });
+    document.getElementById('historyContent').innerHTML = a.length ? a.map(function(x) {
+      return '<div class="stat-card">📅 ' + new Date(x.dateFrom).toLocaleDateString('ru-RU') + ' – ' + new Date(x.dateTo).toLocaleDateString('ru-RU') + '<br><b>' + x.total + ' ₽</b><br><small>' + new Date(x.timestamp).toLocaleString('ru-RU') + '</small></div>';
     }).join('') : '<p>Нет выплат</p>';
   });
 }
 
-function clearMyShifts() { if (!confirm('Удалить ВСЕ твои смены?')) return; db.ref('shifts').orderByChild('user').equalTo(user.name).once('value', function(s) { s.forEach(function(c) { db.ref('shifts/' + c.key).remove(); }); alert('✅ Удалено'); }); }
+function clearMyShifts() { if (!confirm('Удалить все смены?')) return; db.ref('shifts').orderByChild('user').equalTo(user.name).once('value', function(s) { s.forEach(function(c) { db.ref('shifts/' + c.key).remove(); }); alert('✅'); }); }
 
-function openSettings() { document.getElementById('app').style.display='none'; document.getElementById('settingsCard').style.display='block'; document.getElementById('newAvatarPreview').innerHTML=''; newAvatarData = null; loadPunkts(function(punkts) { var s = document.getElementById('newPunkt'); s.innerHTML = '<option value="">Не менять</option>'; for (var i = 0; i < punkts.length; i++) { s.innerHTML += '<option value="' + punkts[i] + '">' + punkts[i] + '</option>'; } }); }
+function openSettings() { document.getElementById('app').style.display='none'; document.getElementById('settingsCard').style.display='block'; document.getElementById('newAvatarPreview').innerHTML=''; newAvatarData = null; loadPunkts(function(p) { var s = document.getElementById('newPunkt'); s.innerHTML = '<option value="">Не менять</option>'; for (var i = 0; i < p.length; i++) { s.innerHTML += '<option value="' + p[i] + '">' + p[i] + '</option>'; } }); }
 function closeSettings() { document.getElementById('settingsCard').style.display='none'; document.getElementById('app').style.display='block'; }
 
 function saveSettings() {
-  var nn = document.getElementById('newName').value.trim(), np = document.getElementById('newPass').value.trim(), npunkt = document.getElementById('newPunkt').value, oldKey = user.name, updates = {};
-  if (nn && nn !== user.name) {
-    updates['users/' + nn] = { name: nn, punkt: npunkt || user.punkt, password: user.password, bonus: user.bonus || 0, avatar: user.avatar || '' };
-    if (newAvatarData) updates['users/' + nn + '/avatar'] = newAvatarData;
-    if (np) updates['users/' + nn + '/password'] = np;
-    updates['users/' + oldKey] = null; user.name = nn; if (npunkt) user.punkt = npunkt;
-  } else {
-    var uu = {}; if (np) uu.password = np; if (newAvatarData) uu.avatar = newAvatarData; if (npunkt) uu.punkt = npunkt;
-    if (Object.keys(uu).length > 0) updates['users/' + oldKey] = uu; if (npunkt) user.punkt = npunkt;
-  }
-  if (Object.keys(updates).length === 0) { closeSettings(); return; }
-  db.ref().update(updates, function(err) { if (err) { alert('Ошибка: ' + err); return; } if (np) user.password = np; if (newAvatarData) user.avatar = newAvatarData; localStorage.setItem('ozon_user', JSON.stringify(user)); updateProfileUI(); closeSettings(); alert('✅ Настройки сохранены!'); });
+  var nn = document.getElementById('newName').value.trim(), np = document.getElementById('newPass').value.trim(), npu = document.getElementById('newPunkt').value, ok = user.name, up = {};
+  if (nn && nn !== user.name) { up['users/' + nn] = { name: nn, punkt: npu || user.punkt, password: user.password, bonus: user.bonus || 0, avatar: user.avatar || '' }; if (newAvatarData) up['users/' + nn + '/avatar'] = newAvatarData; if (np) up['users/' + nn + '/password'] = np; up['users/' + ok] = null; user.name = nn; if (npu) user.punkt = npu; }
+  else { var uu = {}; if (np) uu.password = np; if (newAvatarData) uu.avatar = newAvatarData; if (npu) uu.punkt = npu; if (Object.keys(uu).length > 0) up['users/' + ok] = uu; if (npu) user.punkt = npu; }
+  if (Object.keys(up).length === 0) { closeSettings(); return; }
+  db.ref().update(up, function(err) { if (err) { alert('Ошибка'); return; } if (np) user.password = np; if (newAvatarData) user.avatar = newAvatarData; localStorage.setItem('ozon_user', JSON.stringify(user)); updateProfileUI(); closeSettings(); alert('✅'); });
 }
 
 function previewRegAvatar() { var f = document.getElementById('regAvatar').files[0]; if (!f) return; var r = new FileReader(); r.onload = function(e) { regAvatarData = e.target.result; document.getElementById('regAvatarPreview').innerHTML = '<img class="avatar" src="' + regAvatarData + '">'; }; r.readAsDataURL(f); }
@@ -328,33 +264,27 @@ function previewNewAvatar() { var f = document.getElementById('newAvatar').files
 function showRegister() { document.getElementById('login').style.display='none'; document.getElementById('registerCard').style.display='block'; }
 
 function login() { var n = document.getElementById('name').value.trim(), p = document.getElementById('pass').value.trim(); db.ref('users/' + n).once('value', function(s) { if (s.exists() && s.val().password === p) { user = s.val(); user.punkt = user.punkt || '49'; localStorage.setItem('ozon_user', JSON.stringify(user)); document.getElementById('login').style.display='none'; document.getElementById('app').style.display='block'; updateProfileUI(); loadChat(); loadAllData(); loadHistory(); } else alert('Неверно!'); }); }
-function register() { var n = document.getElementById('regName').value.trim(), pk = document.getElementById('regPunkt').value.trim(), p = document.getElementById('regPass').value.trim(); if (!n || !p || !pk) { alert('Заполни все поля!'); return; } db.ref('users/' + n).once('value', function(s) { if (s.exists()) { alert('Уже есть!'); return; } db.ref('users/' + n).set({ name: n, punkt: pk, password: p, bonus: 0, avatar: regAvatarData || '' }, function() { alert('✅ Зарегистрирован!'); document.getElementById('registerCard').style.display='none'; document.getElementById('login').style.display='block'; }); }); }
+function register() { var n = document.getElementById('regName').value.trim(), pk = document.getElementById('regPunkt').value.trim(), p = document.getElementById('regPass').value.trim(); if (!n || !p || !pk) { alert('Заполни все поля!'); return; } db.ref('users/' + n).once('value', function(s) { if (s.exists()) { alert('Уже есть!'); return; } db.ref('users/' + n).set({ name: n, punkt: pk, password: p, bonus: 0, avatar: regAvatarData || '' }, function() { alert('✅'); document.getElementById('registerCard').style.display='none'; document.getElementById('login').style.display='block'; }); }); }
 
-function previewPhotos() { photoBase64 = []; document.getElementById('photoPreviews').innerHTML = ''; var files = document.getElementById('photos').files; for (var i = 0; i < Math.min(files.length, 5); i++) { (function(file) { var reader = new FileReader(); reader.onload = function(e) { var img = new Image(); img.onload = function() { var canvas = document.createElement('canvas'), maxW = 200, scale = maxW / img.width; canvas.width = maxW; canvas.height = img.height * scale; canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height); var thumb = canvas.toDataURL('image/jpeg', 0.6); photoBase64.push({ full: e.target.result, thumb: thumb }); var preview = document.createElement('img'); preview.src = thumb; document.getElementById('photoPreviews').appendChild(preview); }; img.src = e.target.result; }; reader.readAsDataURL(file); })(files[i]); } }
+function previewPhotos() { photoBase64 = []; document.getElementById('photoPreviews').innerHTML = ''; var files = document.getElementById('photos').files; for (var i = 0; i < Math.min(files.length, 5); i++) { (function(file) { var r = new FileReader(); r.onload = function(e) { var img = new Image(); img.onload = function() { var c = document.createElement('canvas'), mw = 200, s = mw / img.width; c.width = mw; c.height = img.height * s; c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); var thumb = c.toDataURL('image/jpeg', 0.6); photoBase64.push({ full: e.target.result, thumb: thumb }); var pv = document.createElement('img'); pv.src = thumb; document.getElementById('photoPreviews').appendChild(pv); }; img.src = e.target.result; }; r.readAsDataURL(file); })(files[i]); } }
 
-function startShift() { onShift = true; localStorage.setItem('ozon_onShift', '1'); document.getElementById('startBtn').style.display='none'; document.getElementById('onShiftBtn').style.display='block'; document.getElementById('shift').style.display='block'; var time = new Date().toLocaleTimeString('ru-RU'); db.ref('chat').push({ user: '📢 ' + user.name, text: '🔵 Пункт ' + user.punkt + ' на смене! (' + time + ')', timestamp: Date.now() }); }
+function startShift() { onShift = true; localStorage.setItem('ozon_onShift', '1'); document.getElementById('startBtn').style.display='none'; document.getElementById('onShiftBtn').style.display='block'; document.getElementById('shift').style.display='block'; var t = new Date().toLocaleTimeString('ru-RU'); db.ref('chat').push({ user: '📢 ' + user.name, text: '🔵 Пункт ' + user.punkt + ' на смене! (' + t + ')', timestamp: Date.now() }); }
 
 function endShift() {
-  var tf = document.getElementById('timeFrom').value || '9', tt = document.getElementById('timeTo').value || '21', tv = parseInt(document.getElementById('tov').value)||0, hours = parseInt(tt) - parseInt(tf), time = new Date().toLocaleTimeString('ru-RU'), photos = photoBase64.slice(0, 5);
-  db.ref('shifts/' + user.name + '_' + Date.now()).set({ user: user.name, punkt: user.punkt || '49', date: new Date().toLocaleDateString('ru-RU'), timeFrom: tf, timeTo: tt, hours: hours, tovar: tv, photos: photos, paid: false, timestamp: new Date().toISOString() });
-  db.ref('chat').push({ user: '📢 ' + user.name, text: '🔴 Пункт ' + user.punkt + ' с ' + tf + ' до ' + tt + ', товаров: ' + tv, timestamp: Date.now(), photos: photos });
-  
-  var oldStatus = getStatus(allMyShifts.length);
-  allMyShifts.push({ hours: hours, tovar: tv, date: new Date().toLocaleDateString('ru-RU') });
-  var newStatus = getStatus(allMyShifts.length);
-  if (oldStatus.name !== newStatus.name) {
-    db.ref('chat').push({ user: '🎉 СИСТЕМА', text: user.name + ' получил статус ' + newStatus.name + '!', timestamp: Date.now() });
-  }
-  
+  var tf = document.getElementById('timeFrom').value || '9', tt = document.getElementById('timeTo').value || '21', tv = parseInt(document.getElementById('tov').value)||0, hh = parseInt(tt)-parseInt(tf), t = new Date().toLocaleTimeString('ru-RU'), ph = photoBase64.slice(0, 5);
+  db.ref('shifts/' + user.name + '_' + Date.now()).set({ user: user.name, punkt: user.punkt||'49', date: new Date().toLocaleDateString('ru-RU'), timeFrom: tf, timeTo: tt, hours: hh, tovar: tv, photos: ph, paid: false, timestamp: new Date().toISOString() });
+  db.ref('chat').push({ user: '📢 ' + user.name, text: '🔴 Пункт ' + user.punkt + ' с ' + tf + ' до ' + tt + ', товаров: ' + tv, timestamp: Date.now(), photos: ph });
+  var os = getStatus(allMyShifts.length); allMyShifts.push({ hours: hh, tovar: tv, date: new Date().toLocaleDateString('ru-RU') }); var ns = getStatus(allMyShifts.length);
+  if (os.name !== ns.name) { db.ref('chat').push({ user: '🎉 СИСТЕМА', text: user.name + ' получил статус ' + ns.name + '!', timestamp: Date.now() }); }
   onShift = false; localStorage.removeItem('ozon_onShift'); document.getElementById('shift').style.display='none'; document.getElementById('onShiftBtn').style.display='none'; document.getElementById('startBtn').style.display='block';
   document.getElementById('tov').value=''; document.getElementById('photos').value=''; document.getElementById('photoPreviews').innerHTML=''; photoBase64 = [];
 }
 
 function logout() { user = null; onShift = false; localStorage.removeItem('ozon_user'); localStorage.removeItem('ozon_onShift'); document.getElementById('app').style.display='none'; document.getElementById('settingsCard').style.display='none'; document.getElementById('registerCard').style.display='none'; document.getElementById('login').style.display='block'; }
 
-function loadChat() { db.ref('chat').limitToLast(30).on('value', function(s) { var h = ''; s.forEach(function(c) { var m = c.val(), canDel = (user && (m.user === user.name || m.user === '📢 ' + user.name)), senderName = (m.user||'').replace('📢 ',''), ava = allUsers[senderName] || '', avaHtml = ava ? '<img class="avatar-mini" src="' + ava + '">' : ''; h += '<p>' + (canDel ? '<span class="del-msg" onclick="delChatMsg(\'' + c.key + '\')">✕</span>' : '') + avaHtml + '<b>' + (m.user||'?') + ':</b> ' + (m.text||''); if (m.photos && m.photos.length) { var firstThumb = typeof m.photos[0] === 'object' ? m.photos[0].thumb : m.photos[0], allFull = []; for (var i = 0; i < m.photos.length; i++) { allFull.push(typeof m.photos[i] === 'object' ? m.photos[i].full : m.photos[i]); } var packData = JSON.stringify(allFull).replace(/'/g, "&#39;").replace(/"/g, '&quot;'); h += '<br><img class="thumb" src="' + firstThumb + '" onclick="event.stopPropagation();viewPack(\'' + packData + '\')">'; if (m.photos.length > 1) h += ' <span style="font-size:11px;color:#999">+ ещё ' + (m.photos.length-1) + '</span>'; } h += '</p>'; }); document.getElementById('chat').innerHTML = h; document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight; }); }
-function viewPack(packData) { var photos = JSON.parse(packData.replace(/&quot;/g, '"').replace(/&#39;/g, "'")), viewer = document.getElementById('photoViewer'), img = document.getElementById('photoViewerImg'), idx = 0; img.src = photos[0]; viewer.style.display = 'flex'; viewer.onclick = function(e) { if (e.target === viewer) { viewer.style.display = 'none'; viewer.onclick = null; } }; img.onclick = function(e) { e.stopPropagation(); idx++; if (idx < photos.length) img.src = photos[idx]; else viewer.style.display = 'none'; }; }
-function delChatMsg(key) { if (confirm('Удалить сообщение?')) { db.ref('chat/' + key).remove(); } }
+function loadChat() { db.ref('chat').limitToLast(30).on('value', function(s) { var h = ''; s.forEach(function(c) { var m = c.val(), cd = (user && (m.user === user.name || m.user === '📢 ' + user.name)), sn = (m.user||'').replace('📢 ',''), av = allUsers[sn] || '', ah = av ? '<img class="avatar-mini" src="' + av + '">' : ''; h += '<p>' + (cd ? '<span class="del-msg" onclick="delChatMsg(\'' + c.key + '\')">✕</span>' : '') + ah + '<b>' + (m.user||'?') + ':</b> ' + (m.text||''); if (m.photos && m.photos.length) { var ft = typeof m.photos[0] === 'object' ? m.photos[0].thumb : m.photos[0], af = []; for (var i = 0; i < m.photos.length; i++) { af.push(typeof m.photos[i] === 'object' ? m.photos[i].full : m.photos[i]); } var pd = JSON.stringify(af).replace(/'/g, "&#39;").replace(/"/g, '&quot;'); h += '<br><img class="thumb" src="' + ft + '" onclick="event.stopPropagation();viewPack(\'' + pd + '\')">'; if (m.photos.length > 1) h += ' <span style="font-size:11px;color:#999">+ ещё ' + (m.photos.length-1) + '</span>'; } h += '</p>'; }); document.getElementById('chat').innerHTML = h; document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight; }); }
+function viewPack(pd) { var ph = JSON.parse(pd.replace(/&quot;/g, '"').replace(/&#39;/g, "'")), v = document.getElementById('photoViewer'), im = document.getElementById('photoViewerImg'), idx = 0; im.src = ph[0]; v.style.display = 'flex'; v.onclick = function(e) { if (e.target === v) { v.style.display = 'none'; v.onclick = null; } }; im.onclick = function(e) { e.stopPropagation(); idx++; if (idx < ph.length) im.src = ph[idx]; else v.style.display = 'none'; }; }
+function delChatMsg(key) { if (confirm('Удалить?')) { db.ref('chat/' + key).remove(); } }
 function send() { var t = document.getElementById('msg').value.trim(); if (!t || !user) return; db.ref('chat').push({ user: user.name, text: t, timestamp: Date.now() }); document.getElementById('msg').value = ''; }
 document.getElementById('msg').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); send(); } });
 </script>
