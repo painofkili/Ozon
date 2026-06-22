@@ -3,14 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ozon Test</title>
+<title>График Ozon</title>
 <style>
 body { font-family: Arial; padding: 10px; max-width: 400px; margin: 0 auto; }
 .card { background: white; padding: 15px; border-radius: 10px; margin: 8px 0; }
 input, button { width: 100%; padding: 12px; font-size: 16px; margin: 4px 0; }
-button { background: green; color: white; border: none; }
+button { background: green; color: white; border: none; cursor: pointer; }
 button.gray { background: gray; }
-#chat { max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 8px; border-radius: 8px; margin: 8px 0; }
+button.blue { background: #2196F3; }
+.avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; vertical-align: middle; margin-right: 8px; }
+.avatar-small { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; vertical-align: middle; margin-right: 4px; }
+#chat { max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 8px; border-radius: 8px; margin: 8px 0; background: #fafafa; }
 #chat p { margin: 2px 0; font-size: 13px; position: relative; }
 #chat .thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; cursor: pointer; margin: 2px; }
 #chat .del-msg { position: absolute; top: 0; right: 0; background: red; color: white; border-radius: 50%; width: 16px; height: 16px; font-size: 10px; line-height: 16px; text-align: center; cursor: pointer; display: none; }
@@ -19,21 +22,56 @@ button.gray { background: gray; }
 .photo-preview img { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
 #photoViewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 1000; }
 #photoViewer img { max-width: 95%; max-height: 90%; border-radius: 8px; }
+.profile-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 </style>
 </head>
 <body>
-<h2>Ozon Test</h2>
+<h2>График Ozon</h2>
 
 <div id="login">
   <input id="name" placeholder="Имя">
   <input id="pass" type="password" placeholder="Пароль">
   <button onclick="login()">Войти</button>
-  <button onclick="register()" style="background:blue">Регистрация</button>
+  <button onclick="showRegister()" style="background:blue">Регистрация</button>
+</div>
+
+<div id="registerCard" style="display:none">
+  <div class="card">
+    <h3 style="text-align:center">📝 Регистрация</h3>
+    <input id="regName" placeholder="Имя">
+    <input id="regPunkt" placeholder="Номер пункта (например 49)">
+    <input id="regPass" type="password" placeholder="Пароль">
+    <label>Аватарка (необязательно)</label>
+    <input id="regAvatar" type="file" accept="image/*" onchange="previewRegAvatar()">
+    <div id="regAvatarPreview" style="text-align:center;margin:4px 0"></div>
+    <button onclick="register()">Зарегистрироваться</button>
+    <button class="gray" onclick="document.getElementById('registerCard').style.display='none';document.getElementById('login').style.display='block';">Назад</button>
+  </div>
+</div>
+
+<div id="settingsCard" style="display:none">
+  <div class="card">
+    <h3 style="text-align:center">⚙️ Настройки</h3>
+    <input id="newName" placeholder="Новое имя (оставь пустым)">
+    <input id="newPass" type="password" placeholder="Новый пароль (оставь пустым)">
+    <label>Новая аватарка</label>
+    <input id="newAvatar" type="file" accept="image/*" onchange="previewNewAvatar()">
+    <div id="newAvatarPreview" style="text-align:center;margin:4px 0"></div>
+    <button onclick="saveSettings()">💾 Сохранить</button>
+    <button class="gray" onclick="document.getElementById('settingsCard').style.display='none';document.getElementById('app').style.display='block';">Назад</button>
+  </div>
 </div>
 
 <div id="app" style="display:none">
-  <p>Привет, <span id="uname"></span>!</p>
-  <button id="startBtn" onclick="startShift()">НА СМЕНУ</button>
+  <div class="profile-row">
+    <img id="profileAvatar" class="avatar" src="" style="display:none">
+    <div>
+      <b><span id="uname"></span></b><br>
+      <span style="font-size:12px;color:#666">Пункт <span id="upunkt"></span></span>
+    </div>
+    <button class="gray" onclick="openSettings()" style="width:auto;margin-left:auto">⚙️</button>
+  </div>
+  <button id="startBtn" onclick="startShift()">🔵 НА СМЕНУ</button>
   <div id="shift" style="display:none">
     <p>🟢 На смене!</p>
     <input id="tov" placeholder="Товары">
@@ -66,7 +104,8 @@ var db = firebase.database();
 var user = null;
 var onShift = false;
 var photoBase64 = [];
-var chatKeys = [];
+var regAvatarData = null;
+var newAvatarData = null;
 
 var saved = localStorage.getItem('ozon_user');
 if (saved) {
@@ -74,13 +113,98 @@ if (saved) {
   user.punkt = user.punkt || '49';
   document.getElementById('login').style.display = 'none';
   document.getElementById('app').style.display = 'block';
-  document.getElementById('uname').textContent = user.name;
+  updateProfileUI();
   loadChat();
   if (localStorage.getItem('ozon_onShift') === '1') {
     onShift = true;
     document.getElementById('startBtn').style.display = 'none';
     document.getElementById('shift').style.display = 'block';
   }
+}
+
+function updateProfileUI() {
+  document.getElementById('uname').textContent = user.name;
+  document.getElementById('upunkt').textContent = user.punkt || '?';
+  if (user.avatar) {
+    document.getElementById('profileAvatar').src = user.avatar;
+    document.getElementById('profileAvatar').style.display = 'inline';
+  }
+}
+
+function openSettings() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('settingsCard').style.display = 'block';
+  document.getElementById('newName').value = '';
+  document.getElementById('newPass').value = '';
+  document.getElementById('newAvatarPreview').innerHTML = '';
+  newAvatarData = null;
+}
+
+function saveSettings() {
+  var nn = document.getElementById('newName').value.trim();
+  var np = document.getElementById('newPass').value.trim();
+  var oldKey = user.name;
+  var updates = {};
+  
+  if (nn && nn !== user.name) {
+    // Меняем имя
+    updates['users/' + nn] = { name: nn, punkt: user.punkt, password: user.password, bonus: user.bonus || 0, avatar: user.avatar || '' };
+    if (newAvatarData) updates['users/' + nn + '/avatar'] = newAvatarData;
+    if (np) updates['users/' + nn + '/password'] = np;
+    updates['users/' + oldKey] = null; // удаляем старый ключ
+    user.name = nn;
+  } else {
+    var userUpdates = {};
+    if (np) userUpdates.password = np;
+    if (newAvatarData) userUpdates.avatar = newAvatarData;
+    if (Object.keys(userUpdates).length > 0) {
+      updates['users/' + oldKey] = userUpdates;
+    }
+  }
+  
+  if (Object.keys(updates).length === 0) {
+    document.getElementById('settingsCard').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    return;
+  }
+  
+  db.ref().update(updates, function(err) {
+    if (err) { alert('Ошибка: ' + err); return; }
+    if (np) user.password = np;
+    if (newAvatarData) user.avatar = newAvatarData;
+    localStorage.setItem('ozon_user', JSON.stringify(user));
+    updateProfileUI();
+    document.getElementById('settingsCard').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    alert('✅ Настройки сохранены!');
+  });
+}
+
+function previewRegAvatar() {
+  var f = document.getElementById('regAvatar').files[0];
+  if (!f) return;
+  var r = new FileReader();
+  r.onload = function(e) {
+    regAvatarData = e.target.result;
+    document.getElementById('regAvatarPreview').innerHTML = '<img class="avatar" src="' + regAvatarData + '">';
+  };
+  r.readAsDataURL(f);
+}
+
+function previewNewAvatar() {
+  var f = document.getElementById('newAvatar').files[0];
+  if (!f) return;
+  var r = new FileReader();
+  r.onload = function(e) {
+    newAvatarData = e.target.result;
+    document.getElementById('newAvatarPreview').innerHTML = '<img class="avatar" src="' + newAvatarData + '">';
+  };
+  r.readAsDataURL(f);
+}
+
+function showRegister() {
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('registerCard').style.display = 'block';
 }
 
 function login() {
@@ -93,7 +217,7 @@ function login() {
       localStorage.setItem('ozon_user', JSON.stringify(user));
       document.getElementById('login').style.display = 'none';
       document.getElementById('app').style.display = 'block';
-      document.getElementById('uname').textContent = user.name;
+      updateProfileUI();
       loadChat();
       if (localStorage.getItem('ozon_onShift') === '1') {
         onShift = true;
@@ -105,10 +229,18 @@ function login() {
 }
 
 function register() {
-  var n = document.getElementById('name').value.trim();
-  var p = document.getElementById('pass').value.trim();
-  db.ref('users/' + n).set({ name: n, password: p, punkt: '49', bonus: 0 });
-  alert('OK');
+  var n = document.getElementById('regName').value.trim();
+  var pk = document.getElementById('regPunkt').value.trim();
+  var p = document.getElementById('regPass').value.trim();
+  if (!n || !p || !pk) { alert('Заполни все поля!'); return; }
+  db.ref('users/' + n).once('value', function(s) {
+    if (s.exists()) { alert('Уже есть!'); return; }
+    db.ref('users/' + n).set({ name: n, punkt: pk, password: p, bonus: 0, avatar: regAvatarData || '' }, function() {
+      alert('✅ Зарегистрирован!');
+      document.getElementById('registerCard').style.display = 'none';
+      document.getElementById('login').style.display = 'block';
+    });
+  });
 }
 
 function previewPhotos() {
@@ -126,8 +258,7 @@ function previewPhotos() {
           var scale = maxW / img.width;
           canvas.width = maxW;
           canvas.height = img.height * scale;
-          var ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
           var thumb = canvas.toDataURL('image/jpeg', 0.6);
           photoBase64.push({ full: e.target.result, thumb: thumb });
           var preview = document.createElement('img');
@@ -178,16 +309,23 @@ function logout() {
   localStorage.removeItem('ozon_user');
   localStorage.removeItem('ozon_onShift');
   document.getElementById('app').style.display = 'none';
+  document.getElementById('settingsCard').style.display = 'none';
+  document.getElementById('registerCard').style.display = 'none';
   document.getElementById('login').style.display = 'block';
 }
 
 function loadChat() {
   db.ref('chat').limitToLast(30).on('value', function(s) {
     var h = '';
-    chatKeys = [];
     s.forEach(function(c) {
       var m = c.val();
-      var canDel = (user && m.user === user.name) || (user && m.user === '📢 ' + user.name);
+      var canDel = (user && (m.user === user.name || m.user === '📢 ' + user.name));
+      // Загружаем аватарку отправителя
+      var avaHtml = '';
+      if (m.user && m.user.indexOf('📢 ') === 0) {
+        var senderName = m.user.replace('📢 ', '');
+        // Ищем аватарку в базе
+      }
       h += '<p>' + (canDel ? '<span class="del-msg" onclick="delChatMsg(\'' + c.key + '\')">✕</span>' : '') + '<b>' + (m.user||'?') + ':</b> ' + (m.text||'');
       if (m.photos && m.photos.length) {
         var firstThumb = typeof m.photos[0] === 'object' ? m.photos[0].thumb : m.photos[0];
@@ -207,12 +345,6 @@ function loadChat() {
   });
 }
 
-function delChatMsg(key) {
-  if (confirm('Удалить сообщение?')) {
-    db.ref('chat/' + key).remove();
-  }
-}
-
 function viewPack(packData) {
   var photos = JSON.parse(packData.replace(/&quot;/g, '"').replace(/&#39;/g, "'"));
   var viewer = document.getElementById('photoViewer');
@@ -220,22 +352,12 @@ function viewPack(packData) {
   var idx = 0;
   img.src = photos[0];
   viewer.style.display = 'flex';
-  viewer.onclick = function(e) {
-    if (e.target === viewer) {
-      viewer.style.display = 'none';
-      viewer.onclick = null;
-      return;
-    }
-  };
-  img.onclick = function(e) {
-    e.stopPropagation();
-    idx++;
-    if (idx < photos.length) {
-      img.src = photos[idx];
-    } else {
-      viewer.style.display = 'none';
-    }
-  };
+  viewer.onclick = function(e) { if (e.target === viewer) { viewer.style.display = 'none'; viewer.onclick = null; } };
+  img.onclick = function(e) { e.stopPropagation(); idx++; if (idx < photos.length) img.src = photos[idx]; else viewer.style.display = 'none'; };
+}
+
+function delChatMsg(key) {
+  if (confirm('Удалить сообщение?')) { db.ref('chat/' + key).remove(); }
 }
 
 function send() {
