@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ozon Бог</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial; background: #1a1a2e; color: #eee; padding: 10px; max-width: 450px; margin: 0 auto; font-size: 16px; }
+.card { background: rgba(22,33,62,0.9); padding: 16px; border-radius: 14px; margin: 8px 0; }
+input, button, select, textarea { width: 100%; padding: 14px; font-size: 16px; margin: 4px 0; border-radius: 10px; border: 1px solid #444; background: #1a1a2e; color: #fff; }
+button { border: none; font-weight: bold; cursor: pointer; }
+.btn-green { background: #4CAF50; }
+.btn-blue { background: #2196F3; }
+.btn-red { background: #e94560; }
+.btn-gray { background: #555; }
+.btn-purple { background: #9C27B0; }
+.btn-orange { background: #FF9800; }
+.tabs { display: flex; gap: 4px; margin: 10px 0; }
+.tabs button { flex: 1; padding: 12px; background: #333; font-size: 13px; color: #aaa; }
+.tabs button.active { background: #4CAF50; color: #fff; }
+.worker-row { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #333; gap: 4px; }
+.worker-row button { width: auto; padding: 6px 10px; font-size: 11px; }
+.zp-result { background: #1a3a1a; padding: 10px; border-radius: 8px; margin-top: 8px; font-size: 14px; white-space: pre-line; }
+.punish-row { display: flex; justify-content: space-between; padding: 4px; font-size: 13px; }
+#chat { max-height: 200px; overflow-y: auto; padding: 8px; border-radius: 8px; margin: 8px 0; background: rgba(0,0,0,0.3); font-size: 13px; }
+#chat p { margin: 2px 0; }
+</style>
+</head>
+<body>
+<h2 style="text-align:center">👑 Режим бога</h2>
+
+<div id="loginCard">
+  <input id="godPass" type="password" placeholder="Пароль бога">
+  <button class="btn-green" onclick="login()">Войти</button>
+  <div id="msg" style="color:red;text-align:center;margin-top:4px"></div>
+</div>
+
+<div id="app" style="display:none">
+  <div class="tabs">
+    <button id="tabPunkts" class="active" onclick="tab('punkts')">📍 Пункты</button>
+    <button id="tabWorkers" onclick="tab('workers')">👥 Сотрудники</button>
+    <button id="tabCalc" onclick="tab('calc')">💰 Расчёт</button>
+  </div>
+  
+  <div id="punktsTab">
+    <button class="btn-green" onclick="addPunkt()">+ Добавить пункт</button>
+    <div id="punktsList"></div>
+  </div>
+  
+  <div id="workersTab" style="display:none">
+    <select id="filterPunkt" onchange="loadWorkers()"><option value="">Все пункты</option></select>
+    <div id="workersList"></div>
+  </div>
+  
+  <div id="calcTab" style="display:none">
+    <select id="calcUser" onchange="onCalcSelect()"><option value="">-- Выбери сотрудника --</option></select>
+    <div id="calcBlock" style="display:none">
+      <div style="display:flex;gap:4px"><input id="calcFrom" type="date" style="flex:1"><span style="align-self:center">–</span><input id="calcTo" type="date" style="flex:1"></div>
+      <button class="btn-green" onclick="calcZP()">🧮 Посчитать</button>
+      <button class="btn-blue" onclick="markPaid()">✅ Оплачено</button>
+      <div id="zpResult" class="zp-result" style="display:none"></div>
+    </div>
+  </div>
+  
+  <div id="punishCard" style="display:none">
+    <h4>⚠️ Штрафы: <span id="punishUser"></span></h4>
+    <div id="punishList"></div>
+    <div style="display:flex;gap:4px"><input id="punishAmount" type="number" placeholder="Сумма" style="flex:1"><input id="punishReason" placeholder="Причина" style="flex:2"></div>
+    <button class="btn-red" onclick="addPunish()">+ Штраф</button>
+    <button class="btn-gray" onclick="document.getElementById('punishCard').style.display='none';document.getElementById('app').style.display='block';">Назад</button>
+  </div>
+  
+  <div id="chat"></div>
+  <div style="display:flex;gap:4px"><input id="chatInput" placeholder="Чат..."><button class="btn-green" onclick="sendChat()" style="width:auto">➤</button></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey: "AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",
+  authDomain: "ozon-grafik-4ad9f.firebaseapp.com",
+  databaseURL: "https://ozon-grafik-4ad9f-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "ozon-grafik-4ad9f",
+  storageBucket: "ozon-grafik-4ad9f.firebasestorage.app",
+  messagingSenderId: "798009068634",
+  appId: "1:798009068634:web:4b70eea3cce6c96f4f5c63"
+});
+var db = firebase.database();
+var godPass = null, allShifts = [], lastCalc = null, currentPunish = null;
+
+db.ref('godPassword').once('value', function(s) { godPass = s.val(); });
+
+function msg(t) { document.getElementById('msg').textContent = t; }
+
+function login() {
+  var p = document.getElementById('godPass').value.trim();
+  if (!godPass) { db.ref('godPassword').set(p); godPass = p; enter(); }
+  else if (p === godPass) { enter(); }
+  else { msg('Неверный пароль!'); }
+}
+
+function enter() {
+  document.getElementById('loginCard').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  tab('punkts'); loadChat();
+}
+
+function tab(t) {
+  document.getElementById('punktsTab').style.display = t==='punkts'?'block':'none';
+  document.getElementById('workersTab').style.display = t==='workers'?'block':'none';
+  document.getElementById('calcTab').style.display = t==='calc'?'block':'none';
+  ['tabPunkts','tabWorkers','tabCalc'].forEach(function(id) { document.getElementById(id).classList.remove('active'); });
+  document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).classList.add('active');
+  if (t==='punkts') loadPunkts();
+  if (t==='workers') loadWorkers();
+  if (t==='calc') loadCalcUsers();
+}
+
+// Пункты
+function loadPunkts() {
+  db.ref('punkts').once('value', function(s) {
+    var h = '';
+    s.forEach(function(c) {
+      h += '<div class="worker-row"><span><b>' + c.key + '</b><br>' + (c.val().rate||0) + ' ₽/ч</span><span><button class="btn-blue" onclick="editPunkt(\'' + c.key + '\',' + (c.val().rate||0) + ')">✏️</button><button class="btn-red" onclick="deletePunkt(\'' + c.key + '\')">✕</button></span></div>';
+    });
+    document.getElementById('punktsList').innerHTML = h || '<p>Нет пунктов</p>';
+  });
+}
+function addPunkt() { var id = prompt('Номер пункта:'); if (!id) return; db.ref('punkts/' + id).set({ rate: parseInt(prompt('Ставка (₽/ч):','210'))||210 }); loadPunkts(); }
+function editPunkt(id, cur) { var r = parseInt(prompt('Ставка для ' + id + ':', cur)); if (r && !isNaN(r)) { db.ref('punkts/' + id + '/rate').set(r); loadPunkts(); } }
+function deletePunkt(id) { if (confirm('Удалить ' + id + '?')) { db.ref('punkts/' + id).remove(); loadPunkts(); } }
+
+// Сотрудники
+function loadWorkers() {
+  var fp = document.getElementById('filterPunkt').value;
+  db.ref('users').once('value', function(s) {
+    var h = '';
+    s.forEach(function(c) {
+      var w = c.val();
+      if (fp && w.punkt !== fp) return;
+      h += '<div class="worker-row"><span><b>' + w.name + '</b><br>Пункт ' + (w.punkt||'?') + ' | Надбавка: ' + (w.bonus||0) + ' ₽</span><span><button class="btn-orange" onclick="setBonus(\'' + c.key + '\',\'' + w.name + '\',' + (w.bonus||0) + ')">💰</button><button class="btn-purple" onclick="openPunish(\'' + w.name + '\')">⚠️</button><button class="btn-red" onclick="deleteWorker(\'' + c.key + '\',\'' + w.name + '\')">✕</button></span></div>';
+    });
+    document.getElementById('workersList').innerHTML = h || '<p>Нет сотрудников</p>';
+    // Заполняем фильтр
+    var sel = document.getElementById('filterPunkt');
+    sel.innerHTML = '<option value="">Все пункты</option>';
+    var pk = {};
+    s.forEach(function(c) { pk[c.val().punkt] = true; });
+    Object.keys(pk).forEach(function(p) { if (p) sel.innerHTML += '<option value="' + p + '">' + p + '</option>'; });
+  });
+}
+function setBonus(key, name, cur) { var b = prompt('Надбавка для ' + name + ':', cur); if (b !== null && !isNaN(parseInt(b))) { db.ref('users/' + key + '/bonus').set(parseInt(b)); loadWorkers(); } }
+function deleteWorker(key, name) { if (!confirm('Удалить ' + name + '?')) return; db.ref('shifts').orderByChild('user').equalTo(name).once('value', function(s) { s.forEach(function(c) { db.ref('shifts/' + c.key).remove(); }); }); db.ref('users/' + key).remove(); loadWorkers(); }
+
+// Штрафы
+function openPunish(user) { currentPunish = user; document.getElementById('app').style.display='none'; document.getElementById('punishCard').style.display='block'; document.getElementById('punishUser').textContent = user; loadPunishes(); }
+function loadPunishes() { db.ref('punishes').orderByChild('user').equalTo(currentPunish).on('value', function(s) { var h = ''; s.forEach(function(c) { h += '<div class="punish-row"><span>' + c.val().amount + ' ₽ — ' + c.val().reason + '</span><button class="btn-red" onclick="delPunish(\'' + c.key + '\')" style="width:auto;padding:4px 8px;font-size:10px">✕</button></div>'; }); document.getElementById('punishList').innerHTML = h || '<p>Нет штрафов</p>'; }); }
+function addPunish() { var am = parseInt(document.getElementById('punishAmount').value), r = document.getElementById('punishReason').value.trim(); if (!am || isNaN(am) || !r) { alert('Введи сумму и причину!'); return; } db.ref('punishes').push({ user: currentPunish, amount: am, reason: r, timestamp: Date.now() }); document.getElementById('punishAmount').value=''; document.getElementById('punishReason').value=''; }
+function delPunish(id) { if (confirm('Удалить штраф?')) { db.ref('punishes/' + id).remove(); } }
+
+// Расчёт
+function loadCalcUsers() { db.ref('users').once('value', function(s) { var sel = document.getElementById('calcUser'); sel.innerHTML = '<option value="">-- Выбери --</option>'; s.forEach(function(c) { sel.innerHTML += '<option value="' + c.val().name + '">' + c.val().name + '</option>'; }); }); }
+function onCalcSelect() { var u = document.getElementById('calcUser').value; document.getElementById('calcBlock').style.display = u ? 'block' : 'none'; if (u) { var n = new Date(), t = new Date(n.getTime()-14*24*60*60*1000); document.getElementById('calcFrom').value = t.toISOString().split('T')[0]; document.getElementById('calcTo').value = n.toISOString().split('T')[0]; document.getElementById('zpResult').style.display='none'; loadShifts(u); } }
+function loadShifts(user) { db.ref('shifts').orderByChild('user').equalTo(user).once('value', function(s) { allShifts = []; s.forEach(function(c) { var x = c.val(); x._id = c.key; if (!x.paid) allShifts.push(x); }); }); }
+function calcZP() {
+  var u = document.getElementById('calcUser').value, from = new Date(document.getElementById('calcFrom').value), to = new Date(document.getElementById('calcTo').value); to.setHours(23,59,59);
+  if (!u || isNaN(from) || isNaN(to)) { alert('Заполни!'); return; }
+  db.ref('punkts').once('value', function(pkSnap) { var rates = {}; pkSnap.forEach(function(c) { rates[c.key] = c.val().rate||0; });
+    db.ref('users/' + u).once('value', function(uSnap) { var bonus = uSnap.exists() ? (uSnap.val().bonus||0) : 0;
+      db.ref('punishes').orderByChild('user').equalTo(u).once('value', function(pnSnap) { var totalPunish = 0; pnSnap.forEach(function(c) { var p = c.val(); if (new Date(p.timestamp) >= from && new Date(p.timestamp) <= to) totalPunish += p.amount||0; });
+        var shifts = allShifts.filter(function(s) { var t = new Date(s.timestamp); return t >= from && t <= to && !s.paid; });
+        var th = 0, tt = 0, tz = 0;
+        shifts.forEach(function(s) { var h = s.hours||0, tv = s.tovar||0; th += h; tt += tv; tz += h*(rates[s.punkt]||0) + tv + bonus; });
+        document.getElementById('zpResult').style.display='block';
+        document.getElementById('zpResult').innerHTML = '📊 <b>' + u + '</b>\n' + from.toLocaleDateString('ru-RU') + ' – ' + to.toLocaleDateString('ru-RU') + '\n\nЧасов: ' + th + '\nТоваров: ' + tt + '\nЗП: ' + tz + ' ₽\nШтрафы: -' + totalPunish + ' ₽\n<b>Итого: ' + (tz-totalPunish) + ' ₽</b>';
+        lastCalc = { user: u, from: from.toISOString(), to: to.toISOString(), shifts: shifts.map(function(s) { return s._id; }), total: tz-totalPunish };
+      });
+    });
+  });
+}
+function markPaid() { if (!lastCalc || !lastCalc.shifts.length) { alert('Сначала Посчитать!'); return; } if (!confirm('Оплачено?\n' + lastCalc.total + ' ₽')) return; db.ref('payments').push({ user: lastCalc.user, dateFrom: lastCalc.from, dateTo: lastCalc.to, total: lastCalc.total, timestamp: Date.now() }); lastCalc.shifts.forEach(function(id) { db.ref('shifts/' + id + '/paid').set(true); }); alert('✅'); document.getElementById('zpResult').style.display='none'; lastCalc = null; }
+
+// Чат
+function loadChat() { db.ref('chat').limitToLast(30).on('value', function(s) { var h = ''; s.forEach(function(c) { h += '<p><b>' + (c.val().user||'?') + ':</b> ' + c.val().text + '</p>'; }); document.getElementById('chat').innerHTML = h; document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight; }); }
+function sendChat() { var t = document.getElementById('chatInput').value.trim(); if (!t) return; db.ref('chat').push({ user: '👑 Бог', text: t, timestamp: Date.now() }); document.getElementById('chatInput').value = ''; }
+document.getElementById('chatInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); sendChat(); } });
+</script>
+</body>
+</html>
