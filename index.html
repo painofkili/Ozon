@@ -10,6 +10,8 @@ body { font-family: Arial; padding: 10px; max-width: 400px; margin: 0 auto; }
 input, button { width: 100%; padding: 12px; font-size: 16px; margin: 4px 0; }
 button { background: green; color: white; border: none; }
 button.gray { background: gray; }
+#chat { max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 8px; border-radius: 8px; margin: 8px 0; }
+#chat p { margin: 2px 0; font-size: 13px; }
 </style>
 </head>
 <body>
@@ -60,6 +62,12 @@ if (saved) {
   document.getElementById('app').style.display = 'block';
   document.getElementById('uname').textContent = user.name;
   loadChat();
+  // Восстановить состояние смены
+  if (localStorage.getItem('ozon_onShift') === '1') {
+    onShift = true;
+    document.getElementById('startBtn').style.display = 'none';
+    document.getElementById('shift').style.display = 'block';
+  }
 }
 
 function login() {
@@ -68,11 +76,18 @@ function login() {
   db.ref('users/' + n).once('value', function(s) {
     if (s.exists() && s.val().password === p) {
       user = s.val(); user.key = n;
+      user.punkt = user.punkt || '49';
       localStorage.setItem('ozon_user', JSON.stringify(user));
       document.getElementById('login').style.display = 'none';
       document.getElementById('app').style.display = 'block';
       document.getElementById('uname').textContent = user.name;
       loadChat();
+      // Восстановить состояние смены
+      if (localStorage.getItem('ozon_onShift') === '1') {
+        onShift = true;
+        document.getElementById('startBtn').style.display = 'none';
+        document.getElementById('shift').style.display = 'block';
+      }
     } else alert('Неверно!');
   });
 }
@@ -86,21 +101,25 @@ function register() {
 
 function startShift() {
   onShift = true;
+  localStorage.setItem('ozon_onShift', '1');
   document.getElementById('startBtn').style.display = 'none';
   document.getElementById('shift').style.display = 'block';
-  // Автосообщение в чат
-  db.ref('chat').push({ user: '📢 ' + user.name, text: '🔵 Пункт ' + user.punkt + ' на смене!', timestamp: Date.now() });
+  // Автосообщение в чат с временем
+  var time = new Date().toLocaleTimeString('ru-RU');
+  db.ref('chat').push({ user: '📢 ' + user.name, text: '🔵 Пункт ' + user.punkt + ' на смене! (' + time + ')', timestamp: Date.now() });
 }
 
 function endShift() {
   var tv = parseInt(document.getElementById('tov').value)||0;
+  var time = new Date().toLocaleTimeString('ru-RU');
   db.ref('shifts/' + user.name + '_' + Date.now()).set({
     user: user.name, punkt: user.punkt, date: new Date().toLocaleDateString('ru-RU'),
     hours: 12, tovar: tv, timestamp: new Date().toISOString()
   });
-  // Автосообщение в чат
-  db.ref('chat').push({ user: '📢 ' + user.name, text: '🔴 Пункт ' + user.punkt + ' смена окончена, товаров: ' + tv, timestamp: Date.now() });
+  // Автосообщение в чат с временем
+  db.ref('chat').push({ user: '📢 ' + user.name, text: '🔴 Пункт ' + user.punkt + ' смена окончена в ' + time + ', товаров: ' + tv, timestamp: Date.now() });
   onShift = false;
+  localStorage.removeItem('ozon_onShift');
   document.getElementById('shift').style.display = 'none';
   document.getElementById('startBtn').style.display = 'block';
   document.getElementById('tov').value = '';
@@ -110,6 +129,7 @@ function logout() {
   user = null;
   onShift = false;
   localStorage.removeItem('ozon_user');
+  localStorage.removeItem('ozon_onShift');
   document.getElementById('app').style.display = 'none';
   document.getElementById('login').style.display = 'block';
 }
@@ -119,6 +139,9 @@ function loadChat() {
     var h = '';
     s.forEach(function(c) { h += '<p>' + c.val().user + ': ' + c.val().text + '</p>'; });
     document.getElementById('chat').innerHTML = h;
+    // Автопрокрутка вниз
+    var chatEl = document.getElementById('chat');
+    chatEl.scrollTop = chatEl.scrollHeight;
   });
 }
 
