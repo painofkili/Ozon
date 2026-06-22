@@ -27,7 +27,8 @@ button { border: none; font-weight: bold; cursor: pointer; }
 .worker-row { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #333; gap: 4px; flex-wrap: wrap; }
 .worker-row button { width: auto; padding: 6px 10px; font-size: 11px; }
 .zp-result { background: #1a3a1a; padding: 10px; border-radius: 8px; margin-top: 8px; font-size: 14px; white-space: pre-line; }
-.punish-row { display: flex; justify-content: space-between; align-items: center; padding: 4px; font-size: 13px; }
+.punish-row { display: flex; justify-content: space-between; align-items: center; padding: 6px; font-size: 13px; border-bottom: 1px solid #333; }
+.punish-row button { width: auto; padding: 4px 8px; font-size: 10px; }
 #chat { max-height: 200px; overflow-y: auto; padding: 8px; border-radius: 8px; margin: 8px 0; background: rgba(0,0,0,0.3); font-size: 13px; }
 #chat p { margin: 2px 0; position: relative; }
 #chat .del-msg { position: absolute; top: 0; right: 0; background: #e94560; color: #fff; border-radius: 50%; width: 16px; height: 16px; font-size: 10px; line-height: 16px; text-align: center; cursor: pointer; display: none; }
@@ -83,7 +84,7 @@ button { border: none; font-weight: bold; cursor: pointer; }
       <div id="punishList"></div>
       <div style="display:flex;gap:4px"><input id="punishAmount" type="number" placeholder="Сумма" style="flex:1"><input id="punishReason" placeholder="Причина" style="flex:2"></div>
       <button class="btn-red" onclick="addPunish()">+ Штраф</button>
-      <button class="btn-gray" onclick="document.getElementById('punishCard').style.display='none';document.getElementById('app').style.display='block';">↩ Назад</button>
+      <button class="btn-gray" onclick="backFromPunish()">↩ Назад</button>
     </div>
   </div>
   
@@ -91,12 +92,12 @@ button { border: none; font-weight: bold; cursor: pointer; }
     <div class="card">
       <h4 style="text-align:center">⚙️ Настройки бога</h4>
       <input id="newGodName" placeholder="Имя">
-      <input id="newGodPass" type="password" placeholder="Новый пароль">
+      <input id="newGodPass" type="password" placeholder="Новый пароль (оставь пустым)">
       <label>Аватарка</label>
       <input id="newGodAvatar" type="file" accept="image/*" onchange="previewAvatar()">
-      <div id="avatarPreview" style="text-align:center;margin:4px 0"></div>
+      <div id="avatarPreview" style="text-align:center;margin:6px 0"></div>
       <button class="btn-green" onclick="saveSettings()">💾 Сохранить</button>
-      <button class="btn-gray" onclick="document.getElementById('settingsCard').style.display='none';document.getElementById('app').style.display='block';">↩ Назад</button>
+      <button class="btn-gray" onclick="backFromSettings()">↩ Назад</button>
     </div>
   </div>
   
@@ -117,17 +118,28 @@ firebase.initializeApp({
   appId: "1:798009068634:web:4b70eea3cce6c96f4f5c63"
 });
 var db = firebase.database();
-var godPass = null, allShifts = [], lastCalc = null, currentPunish = null, godName = 'Бог', godAvatar = null, newAvatarData = null;
+var godPass = null, allShifts = [], lastCalc = null, currentPunish = null;
+var godName = 'Бог', godAvatarData = null, newAvatarData = null;
 
+// Загружаем настройки и проверяем автовход
 db.ref('godPassword').once('value', function(s) { godPass = s.val(); });
-db.ref('godSettings').once('value', function(s) { if (s.exists()) { godName = s.val().name || 'Бог'; godAvatar = s.val().avatar || null; } });
+db.ref('godSettings').once('value', function(s) { 
+  if (s.exists()) { 
+    godName = s.val().name || 'Бог'; 
+    godAvatarData = s.val().avatar || null; 
+  }
+  // Автовход
+  if (localStorage.getItem('god_logged') === '1' && godPass) {
+    enter();
+  }
+});
 
 function msg(t) { document.getElementById('msg').textContent = t; }
 
 function login() {
   var p = document.getElementById('godPass').value.trim();
-  if (!godPass) { db.ref('godPassword').set(p); godPass = p; enter(); }
-  else if (p === godPass) { enter(); }
+  if (!godPass) { db.ref('godPassword').set(p); godPass = p; localStorage.setItem('god_logged', '1'); enter(); }
+  else if (p === godPass) { localStorage.setItem('god_logged', '1'); enter(); }
   else { msg('Неверный пароль!'); }
 }
 
@@ -140,7 +152,10 @@ function enter() {
 
 function updateUI() {
   document.getElementById('godName').textContent = godName;
-  if (godAvatar) { document.getElementById('godAvatar').src = godAvatar; document.getElementById('godAvatar').style.display = 'inline'; }
+  if (godAvatarData) { 
+    document.getElementById('godAvatar').src = godAvatarData; 
+    document.getElementById('godAvatar').style.display = 'inline'; 
+  }
 }
 
 function openSettings() {
@@ -148,8 +163,18 @@ function openSettings() {
   document.getElementById('settingsCard').style.display = 'block';
   document.getElementById('newGodName').value = godName;
   document.getElementById('newGodPass').value = '';
-  document.getElementById('avatarPreview').innerHTML = '';
+  document.getElementById('avatarPreview').innerHTML = godAvatarData ? '<img class="avatar" src="' + godAvatarData + '">' : '';
   newAvatarData = null;
+}
+
+function backFromSettings() {
+  document.getElementById('settingsCard').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+}
+
+function backFromPunish() {
+  document.getElementById('punishCard').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
 }
 
 function previewAvatar() {
@@ -169,7 +194,7 @@ function saveSettings() {
   var up = {};
   if (nn) { up['name'] = nn; godName = nn; }
   if (np) { db.ref('godPassword').set(np); godPass = np; }
-  if (newAvatarData) { up['avatar'] = newAvatarData; godAvatar = newAvatarData; }
+  if (newAvatarData) { up['avatar'] = newAvatarData; godAvatarData = newAvatarData; }
   if (Object.keys(up).length > 0) db.ref('godSettings').update(up);
   updateUI();
   document.getElementById('settingsCard').style.display = 'none';
@@ -220,9 +245,30 @@ function loadWorkers() {
 function setBonus(key, name, cur) { var b = prompt('Надбавка для ' + name + ':', cur); if (b !== null && !isNaN(parseInt(b))) { db.ref('users/' + key + '/bonus').set(parseInt(b)); loadWorkers(); } }
 function deleteWorker(key, name) { if (!confirm('Удалить ' + name + '?')) return; db.ref('shifts').orderByChild('user').equalTo(name).once('value', function(s) { s.forEach(function(c) { db.ref('shifts/' + c.key).remove(); }); }); db.ref('users/' + key).remove(); loadWorkers(); }
 
-function openPunish(user) { currentPunish = user; document.getElementById('app').style.display='none'; document.getElementById('punishCard').style.display='block'; document.getElementById('punishUser').textContent = user; loadPunishes(); }
-function loadPunishes() { db.ref('punishes').orderByChild('user').equalTo(currentPunish).on('value', function(s) { var h = ''; s.forEach(function(c) { h += '<div class="punish-row"><span>' + c.val().amount + ' ₽ — ' + c.val().reason + '</span><button class="btn-red" onclick="delPunish(\'' + c.key + '\')" style="width:auto;padding:4px 8px;font-size:10px">✕</button></div>'; }); document.getElementById('punishList').innerHTML = h || '<p>Нет штрафов</p>'; }); }
-function addPunish() { var am = parseInt(document.getElementById('punishAmount').value), r = document.getElementById('punishReason').value.trim(); if (!am || isNaN(am) || !r) { alert('Введи сумму и причину!'); return; } db.ref('punishes').push({ user: currentPunish, amount: am, reason: r, timestamp: Date.now() }); document.getElementById('punishAmount').value=''; document.getElementById('punishReason').value=''; }
+function openPunish(user) { 
+  currentPunish = user; 
+  document.getElementById('app').style.display='none'; 
+  document.getElementById('punishCard').style.display='block'; 
+  document.getElementById('punishUser').textContent = user; 
+  loadPunishes(); 
+}
+function loadPunishes() { 
+  if (!currentPunish) return;
+  db.ref('punishes').orderByChild('user').equalTo(currentPunish).on('value', function(s) { 
+    var h = ''; 
+    s.forEach(function(c) { 
+      h += '<div class="punish-row"><span>' + c.val().amount + ' ₽ — ' + c.val().reason + '</span><button class="btn-red" onclick="delPunish(\'' + c.key + '\')" style="width:auto;padding:4px 8px;font-size:10px">✕</button></div>'; 
+    }); 
+    document.getElementById('punishList').innerHTML = h || '<p>Нет штрафов</p>'; 
+  }); 
+}
+function addPunish() { 
+  var am = parseInt(document.getElementById('punishAmount').value), r = document.getElementById('punishReason').value.trim(); 
+  if (!am || isNaN(am) || !r) { alert('Введи сумму и причину!'); return; } 
+  db.ref('punishes').push({ user: currentPunish, amount: am, reason: r, timestamp: Date.now() }); 
+  document.getElementById('punishAmount').value=''; 
+  document.getElementById('punishReason').value=''; 
+}
 function delPunish(id) { if (confirm('Удалить штраф?')) { db.ref('punishes/' + id).remove(); } }
 
 function loadCalcUsers() { db.ref('users').once('value', function(s) { var sel = document.getElementById('calcUser'); sel.innerHTML = '<option value="">-- Выбери --</option>'; s.forEach(function(c) { sel.innerHTML += '<option value="' + c.val().name + '">' + c.val().name + '</option>'; }); }); }
