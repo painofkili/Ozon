@@ -9,6 +9,7 @@ body { font-family: Arial; padding: 10px; max-width: 400px; margin: 0 auto; }
 .card { background: white; padding: 15px; border-radius: 10px; margin: 8px 0; }
 input, button { width: 100%; padding: 12px; font-size: 16px; margin: 4px 0; }
 button { background: green; color: white; border: none; }
+button.gray { background: gray; }
 </style>
 </head>
 <body>
@@ -25,11 +26,11 @@ button { background: green; color: white; border: none; }
   <p>Привет, <span id="uname"></span>!</p>
   <button id="startBtn" onclick="startShift()">НА СМЕНУ</button>
   <div id="shift" style="display:none">
-    <p>На смене!</p>
+    <p>🟢 На смене!</p>
     <input id="tov" placeholder="Товары">
     <button onclick="endShift()" style="background:red">СО СМЕНЫ</button>
   </div>
-  <button onclick="logout()" style="background:gray">Выйти</button>
+  <button class="gray" onclick="logout()">Выйти</button>
   <hr>
   <div id="chat"></div>
   <input id="msg" placeholder="Чат..."><button onclick="send()">Отправить</button>
@@ -49,6 +50,17 @@ firebase.initializeApp({
 });
 var db = firebase.database();
 var user = null;
+var onShift = false;
+
+// Автовход
+var saved = localStorage.getItem('ozon_user');
+if (saved) {
+  user = JSON.parse(saved);
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('uname').textContent = user.name;
+  loadChat();
+}
 
 function login() {
   var n = document.getElementById('name').value.trim();
@@ -56,6 +68,7 @@ function login() {
   db.ref('users/' + n).once('value', function(s) {
     if (s.exists() && s.val().password === p) {
       user = s.val(); user.key = n;
+      localStorage.setItem('ozon_user', JSON.stringify(user));
       document.getElementById('login').style.display = 'none';
       document.getElementById('app').style.display = 'block';
       document.getElementById('uname').textContent = user.name;
@@ -72,15 +85,22 @@ function register() {
 }
 
 function startShift() {
+  onShift = true;
   document.getElementById('startBtn').style.display = 'none';
   document.getElementById('shift').style.display = 'block';
+  // Автосообщение в чат
+  db.ref('chat').push({ user: '📢 ' + user.name, text: '🔵 Пункт ' + user.punkt + ' на смене!', timestamp: Date.now() });
 }
 
 function endShift() {
+  var tv = parseInt(document.getElementById('tov').value)||0;
   db.ref('shifts/' + user.name + '_' + Date.now()).set({
     user: user.name, punkt: user.punkt, date: new Date().toLocaleDateString('ru-RU'),
-    hours: 12, tovar: parseInt(document.getElementById('tov').value)||0, timestamp: new Date().toISOString()
+    hours: 12, tovar: tv, timestamp: new Date().toISOString()
   });
+  // Автосообщение в чат
+  db.ref('chat').push({ user: '📢 ' + user.name, text: '🔴 Пункт ' + user.punkt + ' смена окончена, товаров: ' + tv, timestamp: Date.now() });
+  onShift = false;
   document.getElementById('shift').style.display = 'none';
   document.getElementById('startBtn').style.display = 'block';
   document.getElementById('tov').value = '';
@@ -88,6 +108,8 @@ function endShift() {
 
 function logout() {
   user = null;
+  onShift = false;
+  localStorage.removeItem('ozon_user');
   document.getElementById('app').style.display = 'none';
   document.getElementById('login').style.display = 'block';
 }
@@ -106,6 +128,8 @@ function send() {
   db.ref('chat').push({ user: user.name, text: t, timestamp: Date.now() });
   document.getElementById('msg').value = '';
 }
+
+document.getElementById('msg').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); send(); } });
 </script>
 </body>
 </html>
