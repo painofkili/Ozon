@@ -265,10 +265,11 @@ function endShift() {
   var tf = document.getElementById('timeFrom').value || '9', tt = document.getElementById('timeTo').value || '21', tv = parseInt(document.getElementById('tov').value)||0, hh = parseInt(tt)-parseInt(tf), t = new Date().toLocaleTimeString('ru-RU'), ph = photoBase64.slice(0, 5);
   db.ref('shifts/' + user.name + '_' + Date.now()).set({ user: user.name, punkt: user.punkt||'49', date: new Date().toLocaleDateString('ru-RU'), timeFrom: tf, timeTo: tt, hours: hh, tovar: tv, photos: ph, paid: false, timestamp: new Date().toISOString() });
   db.ref('chat').push({ user: '📢 ' + user.name, text: '🔴 Пункт ' + user.punkt + ' с ' + tf + ' до ' + tt + ', товаров: ' + tv, timestamp: Date.now(), photos: ph });
+  
   var os = getStatus(allMyShifts.length);
-// Не добавляем в allMyShifts — база сама обновится через loadAllData
-var ns = getStatus(allMyShifts.length + 1);
+  var ns = getStatus(allMyShifts.length + 1);
   if (os.name !== ns.name) { db.ref('chat').push({ user: '🎉 СИСТЕМА', text: user.name + ' получил статус ' + ns.name + '!', timestamp: Date.now() }); }
+  
   onShift = false; localStorage.removeItem('ozon_onShift'); document.getElementById('shift').style.display='none'; document.getElementById('onShiftBtn').style.display='none'; document.getElementById('startBtn').style.display='block';
   document.getElementById('tov').value=''; document.getElementById('photos').value=''; document.getElementById('photoPreviews').innerHTML=''; photoBase64 = [];
 }
