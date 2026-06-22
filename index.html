@@ -5,46 +5,84 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>График Ozon</title>
 <link rel="preload" as="image" href="https://raw.githubusercontent.com/painofkili/ozon/main/фон.jpg">
-<link rel="preload" as="image" href="https://raw.githubusercontent.com/painofkili/ozon/main/смена.png">
-<link rel="preload" as="image" href="https://raw.githubusercontent.com/painofkili/ozon/main/статистика.png">
-<link rel="preload" as="image" href="https://raw.githubusercontent.com/painofkili/ozon/main/выплаты.png">
-<link rel="preload" as="image" href="https://raw.githubusercontent.com/painofkili/ozon/main/на%20смену.png">
-<link rel="preload" as="image" href="https://raw.githubusercontent.com/painofkili/ozon/main/выйти.png">
-<link rel="preload" as="image" href="https://raw.githubusercontent.com/painofkili/ozon/main/отправить.png">
 <style>
-...
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { 
+  font-family: Arial; 
+  background: #1a1a2e url('https://raw.githubusercontent.com/painofkili/ozon/main/фон.jpg') center/cover fixed; 
+  color: #eee; padding: 10px; max-width: 420px; margin: 0 auto; font-size: 16px;
+}
+body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(26,26,46,0.75); z-index: -1; }
+.card { background: rgba(22,33,62,0.85); padding: 16px; border-radius: 14px; margin: 8px 0; backdrop-filter: blur(10px); }
+input, select { width: 100%; padding: 14px; font-size: 16px; margin: 4px 0; border-radius: 10px; border: 1px solid #444; background: rgba(26,26,46,0.8); color: #fff; }
+button { width: 100%; padding: 14px; font-size: 16px; margin: 4px 0; border-radius: 10px; border: none; color: #fff; font-weight: bold; cursor: pointer; }
+.btn-green { background: #4CAF50; }
+.btn-blue { background: #2196F3; }
+.btn-red { background: #e94560; }
+.btn-gray { background: #555; }
+button:disabled { opacity: 0.5; cursor: default; }
+.avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; }
+.avatar-mini { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; margin-right: 6px; vertical-align: middle; }
+.profile-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.status-badge { font-size: 14px; font-weight: bold; padding: 4px 12px; border-radius: 12px; }
+.progress-bar { height: 6px; background: #333; border-radius: 3px; margin-top: 4px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
+.progress-text { font-size: 11px; color: #aaa; }
+.tabs { display: flex; gap: 6px; margin: 10px 0; }
+.tabs button { flex: 1; padding: 12px; background: #333; font-size: 13px; color: #aaa; }
+.tabs button.active { background: #4CAF50; color: #fff; }
+#chat { max-height: 220px; overflow-y: auto; padding: 8px; border-radius: 10px; margin: 8px 0; background: rgba(26,26,46,0.8); font-size: 13px; }
+#chat p { margin: 3px 0; position: relative; }
+#chat .thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; cursor: pointer; margin: 2px; }
+#chat .del-msg { position: absolute; top: 0; right: 0; background: #e94560; color: #fff; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; line-height: 18px; text-align: center; cursor: pointer; display: none; }
+#chat p:hover .del-msg { display: block; }
+.photo-preview { display: flex; gap: 4px; flex-wrap: wrap; }
+.photo-preview img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; }
+#photoViewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 1000; }
+#photoViewer img { max-width: 95%; max-height: 90%; border-radius: 10px; }
+.stat-card { background: rgba(26,26,46,0.8); padding: 8px; border-radius: 10px; margin: 4px 0; font-size: 13px; }
+.calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 12px; }
+.calendar div { padding: 6px; border-radius: 4px; }
+.calendar .shift-day { background: #4CAF50; color: #fff; font-weight: bold; }
+.calendar .today { border: 2px solid #2196F3; }
+.calendar .header { font-weight: bold; background: #333; }
+label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
+</style>
+</head>
 <body>
 
 <div id="login">
   <input id="name" placeholder="Имя">
   <input id="pass" type="password" placeholder="Пароль">
-  <button class="btn-green" onclick="login()" style="padding:14px">Войти</button>
-  <button class="btn-blue" onclick="showRegister()" style="padding:14px">Регистрация</button>
+  <button class="btn-green" onclick="login()">✅ Войти</button>
+  <button class="btn-blue" onclick="showRegister()">📝 Регистрация</button>
 </div>
 
 <div id="registerCard" style="display:none">
   <div class="card">
+    <h3 style="text-align:center">📝 Регистрация</h3>
     <input id="regName" placeholder="Имя">
     <input id="regPunkt" placeholder="Номер пункта">
     <input id="regPass" type="password" placeholder="Пароль">
     <label>Аватарка</label>
     <input id="regAvatar" type="file" accept="image/*" onchange="previewRegAvatar()">
     <div id="regAvatarPreview" style="text-align:center;margin:4px 0"></div>
-    <button class="btn-green" onclick="register()" style="padding:14px">Зарегистрироваться</button>
-    <button class="btn-gray" onclick="document.getElementById('registerCard').style.display='none';document.getElementById('login').style.display='block';" style="padding:14px">Назад</button>
+    <button class="btn-green" onclick="register()">✅ Зарегистрироваться</button>
+    <button class="btn-gray" onclick="document.getElementById('registerCard').style.display='none';document.getElementById('login').style.display='block';">↩ Назад</button>
   </div>
 </div>
 
 <div id="settingsCard" style="display:none">
   <div class="card">
+    <h3 style="text-align:center">⚙️ Настройки</h3>
     <input id="newName" placeholder="Новое имя">
     <input id="newPass" type="password" placeholder="Новый пароль">
     <select id="newPunkt"></select>
     <label>Новая аватарка</label>
     <input id="newAvatar" type="file" accept="image/*" onchange="previewNewAvatar()">
     <div id="newAvatarPreview" style="text-align:center;margin:4px 0"></div>
-    <button class="btn-green" onclick="saveSettings()" style="padding:14px">Сохранить</button>
-    <button class="btn-gray" onclick="closeSettings()" style="padding:14px">Назад</button>
+    <button class="btn-green" onclick="saveSettings()">💾 Сохранить</button>
+    <button class="btn-gray" onclick="closeSettings()">↩ Назад</button>
   </div>
 </div>
 
@@ -54,61 +92,49 @@
     <div style="flex:1">
       <b style="font-size:17px"><span id="uname"></span></b> 
       <span id="statusBadge" class="status-badge"></span><br>
-      <span style="font-size:12px;color:#aaa">Пункт <span id="upunkt"></span></span>
+      <span style="font-size:12px;color:#aaa">📍 Пункт <span id="upunkt"></span></span>
       <div class="progress-bar"><div id="progressFill" class="progress-fill" style="width:0%"></div></div>
       <div id="progressText" class="progress-text"></div>
     </div>
-    <button class="btn-gray icon-btn" onclick="openSettings()" style="width:40px;height:40px;padding:6px;border-radius:10px">
-      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/смена.png">
-    </button>
+    <button class="btn-gray" onclick="openSettings()" style="width:auto;padding:8px 12px">⚙️</button>
   </div>
   
   <div class="tabs">
-    <button id="tabShift" class="active" onclick="showTab('shift')">
-      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/смена.png">
-    </button>
-    <button id="tabStats" onclick="showTab('stats')">
-      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/статистика.png">
-    </button>
-    <button id="tabHistory" onclick="showTab('history')">
-      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/выплаты.png">
-    </button>
+    <button id="tabShift" class="active" onclick="showTab('shift')">🔵 Смена</button>
+    <button id="tabStats" onclick="showTab('stats')">📊 Статистика</button>
+    <button id="tabHistory" onclick="showTab('history')">💳 Выплаты</button>
   </div>
   
   <div id="shiftTab">
-    <button id="startBtn" class="btn-green big-btn" onclick="startShift()">
-      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/на%20смену.png">
-    </button>
-    <button id="onShiftBtn" class="btn-blue" style="display:none;padding:16px" disabled>🟢 НА СМЕНЕ</button>
+    <button id="startBtn" class="btn-green" onclick="startShift()">🔵 НА СМЕНУ</button>
+    <button id="onShiftBtn" class="btn-blue" style="display:none" disabled>🟢 НА СМЕНЕ</button>
     <div id="shift" style="display:none">
       <input id="timeFrom" value="9" placeholder="Начало">
       <input id="timeTo" value="21" placeholder="Конец">
       <input id="tov" placeholder="Товары">
-      <label>Фотоотчёт (до 5)</label>
+      <label>📸 Фотоотчёт (до 5)</label>
       <input id="photos" type="file" accept="image/*" multiple onchange="previewPhotos()">
       <div id="photoPreviews" class="photo-preview"></div>
-      <button class="btn-red" onclick="endShift()" style="padding:14px">СО СМЕНЫ</button>
+      <button class="btn-red" onclick="endShift()">🔴 СО СМЕНЫ</button>
     </div>
-    <button class="btn-gray big-btn" onclick="logout()" style="margin-top:8px">
-      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/выйти.png">
-    </button>
+    <button class="btn-gray" onclick="logout()" style="margin-top:8px">↩ Выйти</button>
     <div id="chat"></div>
     <div style="display:flex;gap:4px">
       <input id="msg" placeholder="Чат..." style="flex:1">
-      <button class="btn-green icon-btn" onclick="send()" style="width:50px;height:50px;padding:10px">
-        <img src="https://raw.githubusercontent.com/painofkili/ozon/main/отправить.png">
-      </button>
+      <button class="btn-green" onclick="send()" style="width:auto;padding:14px 18px">➤</button>
     </div>
   </div>
   
   <div id="statsTab" style="display:none">
+    <h4 style="text-align:center">📅 Календарь смен</h4>
     <div id="calHeader" style="text-align:center;margin-bottom:4px"></div>
     <div class="calendar" id="calendar"></div>
     <div class="stat-card" id="statsSummary"></div>
-    <button class="btn-red" onclick="clearMyShifts()" style="padding:12px">🗑 Очистить мои смены</button>
+    <button class="btn-red" onclick="clearMyShifts()">🗑 Очистить мои смены</button>
   </div>
   
   <div id="historyTab" style="display:none">
+    <h4 style="text-align:center">💳 История выплат</h4>
     <div id="historyContent"></div>
   </div>
 </div>
