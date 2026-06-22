@@ -6,22 +6,12 @@
 <title>Ozon Бог</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { 
-  font-family: Arial; 
-  background: #1a1a2e url('https://raw.githubusercontent.com/painofkili/ozon/main/bg.jpg') center/cover fixed; 
-  color: #eee; padding: 10px; max-width: 450px; margin: 0 auto; font-size: 16px;
-}
+body { font-family: Arial; background: #1a1a2e url('https://raw.githubusercontent.com/painofkili/ozon/main/bg.jpg') center/cover fixed; color: #eee; padding: 10px; max-width: 450px; margin: 0 auto; font-size: 16px; }
 body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(26,26,46,0.75); z-index: -1; }
 .card { background: rgba(22,33,62,0.85); padding: 16px; border-radius: 14px; margin: 8px 0; backdrop-filter: blur(10px); }
 input, button, select, textarea { width: 100%; padding: 14px; font-size: 16px; margin: 4px 0; border-radius: 10px; border: 1px solid #444; background: #1a1a2e; color: #fff; }
 button { border: none; font-weight: bold; cursor: pointer; }
-.btn-green { background: #4CAF50; }
-.btn-blue { background: #2196F3; }
-.btn-red { background: #e94560; }
-.btn-gray { background: #555; }
-.btn-purple { background: #9C27B0; }
-.btn-orange { background: #FF9800; }
-.btn-cyan { background: #00BCD4; }
+.btn-green { background: #4CAF50; } .btn-blue { background: #2196F3; } .btn-red { background: #e94560; } .btn-gray { background: #555; } .btn-purple { background: #9C27B0; } .btn-orange { background: #FF9800; } .btn-cyan { background: #00BCD4; }
 .tabs { display: flex; gap: 4px; margin: 10px 0; }
 .tabs button { flex: 1; padding: 12px; background: #333; font-size: 13px; color: #aaa; }
 .tabs button.active { background: #4CAF50; color: #fff; }
@@ -52,215 +42,69 @@ button { border: none; font-weight: bold; cursor: pointer; }
     <div style="flex:1"><b id="godName">Бог</b></div>
     <button class="btn-gray" onclick="openSettings()" style="width:auto;padding:8px 12px">⚙️</button>
   </div>
-  
   <div class="tabs">
     <button id="tabPunkts" class="active" onclick="tab('punkts')">📍 Пункты</button>
     <button id="tabWorkers" onclick="tab('workers')">👥 Сотрудники</button>
     <button id="tabCalc" onclick="tab('calc')">💰 Расчёт</button>
   </div>
-  
-  <div id="punktsTab">
-    <button class="btn-green" onclick="addPunkt()">+ Добавить пункт</button>
-    <div id="punktsList"></div>
-  </div>
-  
-  <div id="workersTab" style="display:none">
-    <select id="filterPunkt" onchange="loadWorkers()"><option value="">Все пункты</option></select>
-    <div id="workersList"></div>
-  </div>
-  
+  <div id="punktsTab"><button class="btn-green" onclick="addPunkt()">+ Добавить пункт</button><div id="punktsList"></div></div>
+  <div id="workersTab" style="display:none"><select id="filterPunkt" onchange="loadWorkers()"><option value="">Все пункты</option></select><div id="workersList"></div></div>
   <div id="calcTab" style="display:none">
     <select id="calcUser" onchange="onCalcSelect()"><option value="">-- Выбери сотрудника --</option></select>
     <div id="calcBlock" style="display:none">
-      <div style="display:flex;gap:4px"><input id="calcFrom" type="date" style="flex:1"><span style="align-self:center">–</span><input id="calcTo" type="date" style="flex:1"></div>
+      <div style="display:flex;gap:4px"><input id="calcFrom" type="date" style="flex:1"><span>–</span><input id="calcTo" type="date" style="flex:1"></div>
       <button class="btn-cyan" onclick="addShift()">+ Добавить смену</button>
       <button class="btn-green" onclick="calcZP()">🧮 Посчитать</button>
       <button class="btn-blue" onclick="markPaid()">✅ Оплачено</button>
       <div id="zpResult" class="zp-result" style="display:none"></div>
     </div>
   </div>
-  
-  <div id="addShiftCard" style="display:none">
-    <div class="card">
-      <h4 style="text-align:center">+ Новая смена: <span id="addShiftUser"></span></h4>
-      <input id="shiftDate" type="date">
-      <input id="shiftFrom" value="9" placeholder="Начало">
-      <input id="shiftTo" value="21" placeholder="Конец">
-      <input id="shiftTovar" type="number" placeholder="Товаров">
-      <button class="btn-green" onclick="saveShift()">💾 Сохранить смену</button>
-      <button class="btn-gray" onclick="document.getElementById('addShiftCard').style.display='none';document.getElementById('app').style.display='block';">↩ Назад</button>
-    </div>
-  </div>
-  
-  <div id="punishCard" style="display:none">
-    <div class="card">
-      <h4 style="text-align:center">⚠️ Штрафы: <span id="punishUser"></span></h4>
-      <div id="punishList"></div>
-      <div style="display:flex;gap:4px"><input id="punishAmount" type="number" placeholder="Сумма" style="flex:1"><input id="punishReason" placeholder="Причина" style="flex:2"></div>
-      <button class="btn-red" onclick="addPunish()">+ Штраф</button>
-      <button class="btn-gray" onclick="backFromPunish()">↩ Назад</button>
-    </div>
-  </div>
-  
-  <div id="settingsCard" style="display:none">
-    <div class="card">
-      <h4 style="text-align:center">⚙️ Настройки бога</h4>
-      <input id="newGodName" placeholder="Имя">
-      <input id="newGodPass" type="password" placeholder="Новый пароль">
-      <label>Аватарка</label>
-      <input id="newGodAvatar" type="file" accept="image/*" onchange="previewAvatar()">
-      <div id="avatarPreview" style="text-align:center;margin:6px 0"></div>
-      <button class="btn-green" onclick="saveSettings()">💾 Сохранить</button>
-      <button class="btn-gray" onclick="backFromSettings()">↩ Назад</button>
-    </div>
-  </div>
-  
   <div id="chat"></div>
   <div style="display:flex;gap:4px"><input id="chatInput" placeholder="Чат..."><button class="btn-green" onclick="sendChat()" style="width:auto">➤</button></div>
 </div>
 
+<div id="addShiftCard" style="display:none"><div class="card"><h4 style="text-align:center">+ Новая смена: <span id="addShiftUser"></span></h4><input id="shiftDate" type="date"><input id="shiftFrom" value="9" placeholder="Начало"><input id="shiftTo" value="21" placeholder="Конец"><input id="shiftTovar" type="number" placeholder="Товаров"><button class="btn-green" onclick="saveShift()">💾 Сохранить</button><button class="btn-gray" onclick="backToApp()">↩ Назад</button></div></div>
+<div id="punishCard" style="display:none"><div class="card"><h4 style="text-align:center">⚠️ Штрафы: <span id="punishUser"></span></h4><div id="punishList"></div><div style="display:flex;gap:4px"><input id="punishAmount" type="number" placeholder="Сумма" style="flex:1"><input id="punishReason" placeholder="Причина" style="flex:2"></div><button class="btn-red" onclick="addPunish()">+ Штраф</button><button class="btn-gray" onclick="backToApp()">↩ Назад</button></div></div>
+<div id="settingsCard" style="display:none"><div class="card"><h4 style="text-align:center">⚙️ Настройки бога</h4><input id="newGodName" placeholder="Имя"><input id="newGodPass" type="password" placeholder="Новый пароль"><label>Аватарка</label><input id="newGodAvatar" type="file" accept="image/*" onchange="previewAvatar()"><div id="avatarPreview" style="text-align:center;margin:6px 0"></div><button class="btn-green" onclick="saveSettings()">💾 Сохранить</button><button class="btn-gray" onclick="backToApp()">↩ Назад</button></div></div>
+
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <script>
-firebase.initializeApp({
-  apiKey: "AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",
-  authDomain: "ozon-grafik-4ad9f.firebaseapp.com",
-  databaseURL: "https://ozon-grafik-4ad9f-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "ozon-grafik-4ad9f",
-  storageBucket: "ozon-grafik-4ad9f.firebasestorage.app",
-  messagingSenderId: "798009068634",
-  appId: "1:798009068634:web:4b70eea3cce6c96f4f5c63"
-});
-var db = firebase.database();
-var godPass = null, allShifts = [], lastCalc = null, currentPunish = null;
-var godName = 'Бог', godAvatarData = null, newAvatarData = null, currentAddUser = null;
-
-db.ref('godPassword').once('value', function(s) { godPass = s.val(); });
-db.ref('godSettings').once('value', function(s) { 
-  if (s.exists()) { godName = s.val().name || 'Бог'; godAvatarData = s.val().avatar || null; }
-  if (localStorage.getItem('god_logged') === '1' && godPass) { enter(); }
-});
-
-function msg(t) { document.getElementById('msg').textContent = t; }
-
-function login() {
-  var p = document.getElementById('godPass').value.trim();
-  if (!godPass) { db.ref('godPassword').set(p); godPass = p; localStorage.setItem('god_logged', '1'); enter(); }
-  else if (p === godPass) { localStorage.setItem('god_logged', '1'); enter(); }
-  else { msg('Неверный пароль!'); }
-}
-
-function enter() {
-  document.getElementById('loginCard').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  updateUI(); tab('punkts'); loadChat();
-}
-
-function updateUI() {
-  document.getElementById('godName').textContent = godName;
-  if (godAvatarData) { document.getElementById('godAvatar').src = godAvatarData; document.getElementById('godAvatar').style.display = 'inline'; }
-}
-
-function openSettings() { document.getElementById('app').style.display='none'; document.getElementById('settingsCard').style.display='block'; document.getElementById('newGodName').value = godName; document.getElementById('newGodPass').value = ''; document.getElementById('avatarPreview').innerHTML = godAvatarData ? '<img class="avatar" src="' + godAvatarData + '">' : ''; newAvatarData = null; }
-function backFromSettings() { document.getElementById('settingsCard').style.display='none'; document.getElementById('app').style.display='block'; }
-function backFromPunish() { document.getElementById('punishCard').style.display='none'; document.getElementById('app').style.display='block'; }
-
-function previewAvatar() {
-  var f = document.getElementById('newGodAvatar').files[0]; if (!f) return;
-  var r = new FileReader(); r.onload = function(e) { newAvatarData = e.target.result; document.getElementById('avatarPreview').innerHTML = '<img class="avatar" src="' + newAvatarData + '">'; }; r.readAsDataURL(f);
-}
-
-function saveSettings() {
-  var nn = document.getElementById('newGodName').value.trim(), np = document.getElementById('newGodPass').value.trim(), up = {};
-  if (nn) { up['name'] = nn; godName = nn; }
-  if (np) { db.ref('godPassword').set(np); godPass = np; }
-  if (newAvatarData) { up['avatar'] = newAvatarData; godAvatarData = newAvatarData; }
-  if (Object.keys(up).length > 0) db.ref('godSettings').update(up);
-  updateUI(); document.getElementById('settingsCard').style.display='none'; document.getElementById('app').style.display='block'; alert('✅');
-}
-
-function tab(t) {
-  document.getElementById('punktsTab').style.display = t==='punkts'?'block':'none';
-  document.getElementById('workersTab').style.display = t==='workers'?'block':'none';
-  document.getElementById('calcTab').style.display = t==='calc'?'block':'none';
-  ['tabPunkts','tabWorkers','tabCalc'].forEach(function(id) { document.getElementById(id).classList.remove('active'); });
-  document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).classList.add('active');
-  if (t==='punkts') loadPunkts(); if (t==='workers') loadWorkers(); if (t==='calc') loadCalcUsers();
-}
-
-function loadPunkts() { db.ref('punkts').once('value', function(s) { var h = ''; s.forEach(function(c) { h += '<div class="worker-row"><span><b>' + c.key + '</b><br>' + (c.val().rate||0) + ' ₽/ч</span><span><button class="btn-blue" onclick="editPunkt(\'' + c.key + '\',' + (c.val().rate||0) + ')">✏️</button><button class="btn-red" onclick="deletePunkt(\'' + c.key + '\')">✕</button></span></div>'; }); document.getElementById('punktsList').innerHTML = h || '<p>Нет пунктов</p>'; }); }
-function addPunkt() { var id = prompt('Номер пункта:'); if (!id) return; db.ref('punkts/' + id).set({ rate: parseInt(prompt('Ставка (₽/ч):','210'))||210 }); loadPunkts(); }
-function editPunkt(id, cur) { var r = parseInt(prompt('Ставка для ' + id + ':', cur)); if (r && !isNaN(r)) { db.ref('punkts/' + id + '/rate').set(r); loadPunkts(); } }
-function deletePunkt(id) { if (confirm('Удалить ' + id + '?')) { db.ref('punkts/' + id).remove(); loadPunkts(); } }
-
-function loadWorkers() {
-  var fp = document.getElementById('filterPunkt').value;
-  db.ref('users').once('value', function(s) { var h = '', pk = {}; s.forEach(function(c) { var w = c.val(); if (w.punkt) pk[w.punkt] = true; if (fp && w.punkt !== fp) return;
-    h += '<div class="worker-row"><span><b>' + w.name + '</b><br>Пункт ' + (w.punkt||'?') + ' | Надбавка: ' + (w.bonus||0) + ' ₽</span><span><button class="btn-orange" onclick="setBonus(\'' + c.key + '\',\'' + w.name + '\',' + (w.bonus||0) + ')">💰</button><button class="btn-purple" onclick="openPunish(\'' + w.name + '\')">⚠️</button><button class="btn-red" onclick="deleteWorker(\'' + c.key + '\',\'' + w.name + '\')">✕</button></span></div>';
-  }); document.getElementById('workersList').innerHTML = h || '<p>Нет сотрудников</p>';
-    var sel = document.getElementById('filterPunkt'); sel.innerHTML = '<option value="">Все пункты</option>'; Object.keys(pk).forEach(function(p) { if (p) sel.innerHTML += '<option value="' + p + '">' + p + '</option>'; });
-  });
-}
-function setBonus(key, name, cur) { var b = prompt('Надбавка для ' + name + ':', cur); if (b !== null && !isNaN(parseInt(b))) { db.ref('users/' + key + '/bonus').set(parseInt(b)); loadWorkers(); } }
-function deleteWorker(key, name) { if (!confirm('Удалить ' + name + '?')) return; db.ref('shifts').orderByChild('user').equalTo(name).once('value', function(s) { s.forEach(function(c) { db.ref('shifts/' + c.key).remove(); }); }); db.ref('users/' + key).remove(); loadWorkers(); }
-
-function openPunish(user) { currentPunish = user; document.getElementById('app').style.display='none'; document.getElementById('punishCard').style.display='block'; document.getElementById('punishUser').textContent = user; loadPunishes(); }
-function loadPunishes() { if (!currentPunish) return; db.ref('punishes').orderByChild('user').equalTo(currentPunish).on('value', function(s) { var h = ''; s.forEach(function(c) { h += '<div class="punish-row"><span>' + c.val().amount + ' ₽ — ' + c.val().reason + '</span><button class="btn-red" onclick="delPunish(\'' + c.key + '\')" style="width:auto;padding:4px 8px;font-size:10px">✕</button></div>'; }); document.getElementById('punishList').innerHTML = h || '<p>Нет штрафов</p>'; }); }
-function addPunish() { var am = parseInt(document.getElementById('punishAmount').value), r = document.getElementById('punishReason').value.trim(); if (!am || isNaN(am) || !r) { alert('Введи сумму и причину!'); return; } db.ref('punishes').push({ user: currentPunish, amount: am, reason: r, timestamp: Date.now() }); document.getElementById('punishAmount').value=''; document.getElementById('punishReason').value=''; }
-function delPunish(id) { if (confirm('Удалить штраф?')) { db.ref('punishes/' + id).remove(); } }
-
-function loadCalcUsers() { db.ref('users').once('value', function(s) { var sel = document.getElementById('calcUser'); sel.innerHTML = '<option value="">-- Выбери --</option>'; s.forEach(function(c) { sel.innerHTML += '<option value="' + c.val().name + '">' + c.val().name + '</option>'; }); }); }
-function onCalcSelect() { var u = document.getElementById('calcUser').value; document.getElementById('calcBlock').style.display = u ? 'block' : 'none'; if (u) { var n = new Date(), t = new Date(n.getTime()-14*24*60*60*1000); document.getElementById('calcFrom').value = t.toISOString().split('T')[0]; document.getElementById('calcTo').value = n.toISOString().split('T')[0]; document.getElementById('zpResult').style.display='none'; loadShifts(u); } }
-
-// Добавление смены
-function addShift() {
-  var u = document.getElementById('calcUser').value;
-  if (!u) { alert('Сначала выбери сотрудника!'); return; }
-  currentAddUser = u;
-  document.getElementById('addShiftUser').textContent = u;
-  document.getElementById('shiftDate').value = new Date().toISOString().split('T')[0];
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('addShiftCard').style.display = 'block';
-}
-function saveShift() {
-  var d = document.getElementById('shiftDate').value;
-  var tf = document.getElementById('shiftFrom').value || '9';
-  var tt = document.getElementById('shiftTo').value || '21';
-  var tv = parseInt(document.getElementById('shiftTovar').value) || 0;
-  if (!d) { alert('Выбери дату!'); return; }
-  db.ref('shifts/' + currentAddUser + '_' + Date.now()).set({
-    user: currentAddUser, punkt: '49', date: new Date(d).toLocaleDateString('ru-RU'),
-    timeFrom: tf, timeTo: tt, hours: parseInt(tt)-parseInt(tf), tovar: tv, paid: false, timestamp: new Date(d).toISOString()
-  });
-  alert('✅ Смена добавлена!');
-  document.getElementById('addShiftCard').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  loadShifts(currentAddUser);
-}
-
-function loadShifts(user) { db.ref('shifts').orderByChild('user').equalTo(user).once('value', function(s) { allShifts = []; s.forEach(function(c) { var x = c.val(); x._id = c.key; allShifts.push(x); }); }); }
-function calcZP() {
-  var u = document.getElementById('calcUser').value, from = new Date(document.getElementById('calcFrom').value), to = new Date(document.getElementById('calcTo').value); to.setHours(23,59,59);
-  if (!u || isNaN(from) || isNaN(to)) { alert('Заполни!'); return; }
-  db.ref('punkts').once('value', function(pkSnap) { var rates = {}; pkSnap.forEach(function(c) { rates[c.key] = c.val().rate||0; });
-    db.ref('users/' + u).once('value', function(uSnap) { var bonus = uSnap.exists() ? (uSnap.val().bonus||0) : 0;
-      db.ref('punishes').orderByChild('user').equalTo(u).once('value', function(pnSnap) { var totalPunish = 0; pnSnap.forEach(function(c) { var p = c.val(); if (new Date(p.timestamp) >= from && new Date(p.timestamp) <= to) totalPunish += p.amount||0; });
-        var shifts = allShifts.filter(function(s) { var t = new Date(s.timestamp); return t >= from && t <= to && !s.paid; });
-        var th = 0, tt = 0, tz = 0;
-        shifts.forEach(function(s) { var h = s.hours||0, tv = s.tovar||0; th += h; tt += tv; tz += h*(rates[s.punkt]||0) + tv + bonus; });
-        document.getElementById('zpResult').style.display='block';
-        document.getElementById('zpResult').innerHTML = '📊 <b>' + u + '</b>\n' + from.toLocaleDateString('ru-RU') + ' – ' + to.toLocaleDateString('ru-RU') + '\n\nЧасов: ' + th + '\nТоваров: ' + tt + '\nЗП: ' + tz + ' ₽\nШтрафы: -' + totalPunish + ' ₽\n<b>Итого: ' + (tz-totalPunish) + ' ₽</b>';
-        lastCalc = { user: u, from: from.toISOString(), to: to.toISOString(), shifts: shifts.map(function(s) { return s._id; }), total: tz-totalPunish };
-      });
-    });
-  });
-}
-function markPaid() { if (!lastCalc || !lastCalc.shifts.length) { alert('Сначала Посчитать!'); return; } if (!confirm('Оплачено?\n' + lastCalc.total + ' ₽')) return; db.ref('payments').push({ user: lastCalc.user, dateFrom: lastCalc.from, dateTo: lastCalc.to, total: lastCalc.total, timestamp: Date.now() }); lastCalc.shifts.forEach(function(id) { db.ref('shifts/' + id + '/paid').set(true); }); alert('✅'); document.getElementById('zpResult').style.display='none'; lastCalc = null; }
-
-function loadChat() { db.ref('chat').limitToLast(30).on('value', function(s) { var h = ''; s.forEach(function(c) { h += '<p><span class="del-msg" onclick="delChatMsg(\'' + c.key + '\')">✕</span><b>' + (c.val().user||'?') + ':</b> ' + c.val().text + '</p>'; }); document.getElementById('chat').innerHTML = h; document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight; }); }
-function delChatMsg(key) { if (confirm('Удалить?')) { db.ref('chat/' + key).remove(); } }
-function sendChat() { var t = document.getElementById('chatInput').value.trim(); if (!t) return; db.ref('chat').push({ user: '👑 ' + godName, text: t, timestamp: Date.now() }); document.getElementById('chatInput').value = ''; }
-document.getElementById('chatInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); sendChat(); } });
+firebase.initializeApp({apiKey:"AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",authDomain:"ozon-grafik-4ad9f.firebaseapp.com",databaseURL:"https://ozon-grafik-4ad9f-default-rtdb.europe-west1.firebasedatabase.app",projectId:"ozon-grafik-4ad9f",storageBucket:"ozon-grafik-4ad9f.firebasestorage.app",messagingSenderId:"798009068634",appId:"1:798009068634:web:4b70eea3cce6c96f4f5c63"});
+var db=firebase.database(),godPass=null,allShifts=[],lastCalc=null,currentPunish=null,godName='Бог',godAvatarData=null,newAvatarData=null,currentAddUser=null;
+db.ref('godPassword').once('value',function(s){godPass=s.val()});
+db.ref('godSettings').once('value',function(s){if(s.exists()){godName=s.val().name||'Бог';godAvatarData=s.val().avatar||null} if(localStorage.getItem('god_logged')==='1'&&godPass) enter()});
+function msg(t){document.getElementById('msg').textContent=t}
+function backToApp(){['addShiftCard','punishCard','settingsCard'].forEach(function(id){document.getElementById(id).style.display='none'});document.getElementById('app').style.display='block'}
+function login(){var p=document.getElementById('godPass').value.trim();if(!godPass){db.ref('godPassword').set(p);godPass=p;localStorage.setItem('god_logged','1');enter()}else if(p===godPass){localStorage.setItem('god_logged','1');enter()}else msg('Неверный пароль!')}
+function enter(){document.getElementById('loginCard').style.display='none';document.getElementById('app').style.display='block';updateUI();tab('punkts');loadChat()}
+function updateUI(){document.getElementById('godName').textContent=godName;if(godAvatarData){document.getElementById('godAvatar').src=godAvatarData;document.getElementById('godAvatar').style.display='inline'}}
+function openSettings(){document.getElementById('app').style.display='none';document.getElementById('settingsCard').style.display='block';document.getElementById('newGodName').value=godName;document.getElementById('newGodPass').value='';document.getElementById('avatarPreview').innerHTML=godAvatarData?'<img class="avatar" src="'+godAvatarData+'">':'';newAvatarData=null}
+function previewAvatar(){var f=document.getElementById('newGodAvatar').files[0];if(!f)return;var r=new FileReader();r.onload=function(e){newAvatarData=e.target.result;document.getElementById('avatarPreview').innerHTML='<img class="avatar" src="'+newAvatarData+'">'};r.readAsDataURL(f)}
+function saveSettings(){var nn=document.getElementById('newGodName').value.trim(),np=document.getElementById('newGodPass').value.trim(),up={};if(nn){up.name=nn;godName=nn} if(np){db.ref('godPassword').set(np);godPass=np} if(newAvatarData){up.avatar=newAvatarData;godAvatarData=newAvatarData} if(Object.keys(up).length>0)db.ref('godSettings').update(up);updateUI();backToApp();alert('✅')}
+function tab(t){document.getElementById('punktsTab').style.display=t==='punkts'?'block':'none';document.getElementById('workersTab').style.display=t==='workers'?'block':'none';document.getElementById('calcTab').style.display=t==='calc'?'block':'none';['tabPunkts','tabWorkers','tabCalc'].forEach(function(id){document.getElementById(id).classList.remove('active')});document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.add('active');if(t==='punkts')loadPunkts();if(t==='workers')loadWorkers();if(t==='calc')loadCalcUsers()}
+function loadPunkts(){db.ref('punkts').once('value',function(s){var h='';s.forEach(function(c){h+='<div class="worker-row"><span><b>'+c.key+'</b><br>'+(c.val().rate||0)+' ₽/ч</span><span><button class="btn-blue" onclick="editPunkt(\''+c.key+'\','+(c.val().rate||0)+')">✏️</button><button class="btn-red" onclick="deletePunkt(\''+c.key+'\')">✕</button></span></div>'});document.getElementById('punktsList').innerHTML=h||'<p>Нет пунктов</p>'})}
+function addPunkt(){var id=prompt('Номер пункта:');if(!id)return;db.ref('punkts/'+id).set({rate:parseInt(prompt('Ставка (₽/ч):','210'))||210});loadPunkts()}
+function editPunkt(id,cur){var r=parseInt(prompt('Ставка для '+id+':',cur));if(r&&!isNaN(r)){db.ref('punkts/'+id+'/rate').set(r);loadPunkts()}}
+function deletePunkt(id){if(confirm('Удалить '+id+'?')){db.ref('punkts/'+id).remove();loadPunkts()}}
+function loadWorkers(){var fp=document.getElementById('filterPunkt').value;db.ref('users').once('value',function(s){var h='',pk={};s.forEach(function(c){var w=c.val();if(w.punkt)pk[w.punkt]=true;if(fp&&w.punkt!==fp)return;h+='<div class="worker-row"><span><b>'+w.name+'</b><br>Пункт '+(w.punkt||'?')+' | Надбавка: '+(w.bonus||0)+' ₽</span><span><button class="btn-orange" onclick="setBonus(\''+c.key+'\',\''+w.name+'\','+(w.bonus||0)+')">💰</button><button class="btn-purple" onclick="openPunish(\''+w.name+'\')">⚠️</button><button class="btn-red" onclick="deleteWorker(\''+c.key+'\',\''+w.name+'\')">✕</button></span></div>'});document.getElementById('workersList').innerHTML=h||'<p>Нет сотрудников</p>';var sel=document.getElementById('filterPunkt');sel.innerHTML='<option value="">Все пункты</option>';Object.keys(pk).forEach(function(p){if(p)sel.innerHTML+='<option value="'+p+'">'+p+'</option>'})})}
+function setBonus(key,name,cur){var b=prompt('Надбавка для '+name+':',cur);if(b!==null&&!isNaN(parseInt(b))){db.ref('users/'+key+'/bonus').set(parseInt(b));loadWorkers()}}
+function deleteWorker(key,name){if(!confirm('Удалить '+name+'?'))return;db.ref('shifts').orderByChild('user').equalTo(name).once('value',function(s){s.forEach(function(c){db.ref('shifts/'+c.key).remove()})});db.ref('users/'+key).remove();loadWorkers()}
+function openPunish(user){currentPunish=user;document.getElementById('app').style.display='none';document.getElementById('punishCard').style.display='block';document.getElementById('punishUser').textContent=user;loadPunishes()}
+function loadPunishes(){if(!currentPunish)return;db.ref('punishes').orderByChild('user').equalTo(currentPunish).on('value',function(s){var h='';s.forEach(function(c){h+='<div class="punish-row"><span>'+c.val().amount+' ₽ — '+c.val().reason+'</span><button class="btn-red" onclick="delPunish(\''+c.key+'\')" style="width:auto;padding:4px 8px;font-size:10px">✕</button></div>'});document.getElementById('punishList').innerHTML=h||'<p>Нет штрафов</p>'})}
+function addPunish(){var am=parseInt(document.getElementById('punishAmount').value),r=document.getElementById('punishReason').value.trim();if(!am||isNaN(am)||!r){alert('Введи сумму и причину!');return};db.ref('punishes').push({user:currentPunish,amount:am,reason:r,timestamp:Date.now()});document.getElementById('punishAmount').value='';document.getElementById('punishReason').value=''}
+function delPunish(id){if(confirm('Удалить штраф?')){db.ref('punishes/'+id).remove()}}
+function loadCalcUsers(){db.ref('users').once('value',function(s){var sel=document.getElementById('calcUser');sel.innerHTML='<option value="">-- Выбери --</option>';s.forEach(function(c){sel.innerHTML+='<option value="'+c.val().name+'">'+c.val().name+'</option>'})})}
+function onCalcSelect(){var u=document.getElementById('calcUser').value;document.getElementById('calcBlock').style.display=u?'block':'none';if(u){var n=new Date(),t=new Date(n.getTime()-14*24*60*60*1000);document.getElementById('calcFrom').value=t.toISOString().split('T')[0];document.getElementById('calcTo').value=n.toISOString().split('T')[0];document.getElementById('zpResult').style.display='none';loadShifts(u)}}
+function addShift(){var u=document.getElementById('calcUser').value;if(!u){alert('Сначала выбери сотрудника!');return};currentAddUser=u;document.getElementById('addShiftUser').textContent=u;document.getElementById('shiftDate').value=new Date().toISOString().split('T')[0];document.getElementById('app').style.display='none';document.getElementById('addShiftCard').style.display='block'}
+function saveShift(){var d=document.getElementById('shiftDate').value,tf=document.getElementById('shiftFrom').value||'9',tt=document.getElementById('shiftTo').value||'21',tv=parseInt(document.getElementById('shiftTovar').value)||0;if(!d){alert('Выбери дату!');return};db.ref('shifts/'+currentAddUser+'_'+Date.now()).set({user:currentAddUser,punkt:'49',date:new Date(d).toLocaleDateString('ru-RU'),timeFrom:tf,timeTo:tt,hours:parseInt(tt)-parseInt(tf),tovar:tv,paid:false,timestamp:new Date(d).toISOString()});alert('✅');backToApp();loadShifts(currentAddUser)}
+function loadShifts(user){db.ref('shifts').orderByChild('user').equalTo(user).once('value',function(s){allShifts=[];s.forEach(function(c){var x=c.val();x._id=c.key;allShifts.push(x)})})}
+function calcZP(){var u=document.getElementById('calcUser').value,from=new Date(document.getElementById('calcFrom').value),to=new Date(document.getElementById('calcTo').value);to.setHours(23,59,59);if(!u||isNaN(from)||isNaN(to)){alert('Заполни!');return};db.ref('punkts').once('value',function(pkSnap){var rates={};pkSnap.forEach(function(c){rates[c.key]=c.val().rate||0});db.ref('users/'+u).once('value',function(uSnap){var bonus=uSnap.exists()?uSnap.val().bonus||0:0;db.ref('punishes').orderByChild('user').equalTo(u).once('value',function(pnSnap){var totalPunish=0;pnSnap.forEach(function(c){var p=c.val();if(new Date(p.timestamp)>=from&&new Date(p.timestamp)<=to)totalPunish+=p.amount||0});var shifts=allShifts.filter(function(s){var t=new Date(s.timestamp);return t>=from&&t<=to&&!s.paid});var th=0,tt=0,tz=0;shifts.forEach(function(s){var h=s.hours||0,tv=s.tovar||0;th+=h;tt+=tv;tz+=h*(rates[s.punkt]||0)+tv+bonus});document.getElementById('zpResult').style.display='block';document.getElementById('zpResult').innerHTML='📊 <b>'+u+'</b>\n'+from.toLocaleDateString('ru-RU')+' – '+to.toLocaleDateString('ru-RU')+'\n\nЧасов: '+th+'\nТоваров: '+tt+'\nЗП: '+tz+' ₽\nШтрафы: -'+totalPunish+' ₽\n<b>Итого: '+(tz-totalPunish)+' ₽</b>';lastCalc={user:u,from:from.toISOString(),to:to.toISOString(),shifts:shifts.map(function(s){return s._id}),total:tz-totalPunish}})})})}
+function markPaid(){if(!lastCalc||!lastCalc.shifts.length){alert('Сначала Посчитать!');return};if(!confirm('Оплачено?\n'+lastCalc.total+' ₽'))return;db.ref('payments').push({user:lastCalc.user,dateFrom:lastCalc.from,dateTo:lastCalc.to,total:lastCalc.total,timestamp:Date.now()});lastCalc.shifts.forEach(function(id){db.ref('shifts/'+id+'/paid').set(true)});alert('✅');document.getElementById('zpResult').style.display='none';lastCalc=null}
+function loadChat(){db.ref('chat').limitToLast(30).on('value',function(s){var h='';s.forEach(function(c){h+='<p><span class="del-msg" onclick="delChatMsg(\''+c.key+'\')">✕</span><b>'+(c.val().user||'?')+':</b> '+c.val().text+'</p>'});document.getElementById('chat').innerHTML=h;document.getElementById('chat').scrollTop=document.getElementById('chat').scrollHeight})}
+function delChatMsg(key){if(confirm('Удалить?')){db.ref('chat/'+key).remove()}}
+function sendChat(){var t=document.getElementById('chatInput').value.trim();if(!t)return;db.ref('chat').push({user:'👑 '+godName,text:t,timestamp:Date.now()});document.getElementById('chatInput').value=''}
+document.getElementById('chatInput').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();sendChat()}});
 </script>
 </body>
 </html>
