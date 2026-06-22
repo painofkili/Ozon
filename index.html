@@ -115,7 +115,16 @@ function endShift() {
   db.ref('shifts/' + user.name + '_' + Date.now()).set({
     user: user.name, punkt: user.punkt, date: new Date().toLocaleDateString('ru-RU'),
     hours: 12, tovar: tv, timestamp: new Date().toISOString()
+  }, function() {
+    // Автосообщение в чат с временем
+    db.ref('chat').push({ user: '📢 ' + user.name, text: '🔴 Пункт ' + user.punkt + ' смена окончена в ' + time + ', товаров: ' + tv, timestamp: Date.now() });
   });
+  onShift = false;
+  localStorage.removeItem('ozon_onShift');
+  document.getElementById('shift').style.display = 'none';
+  document.getElementById('startBtn').style.display = 'block';
+  document.getElementById('tov').value = '';
+}
   // Автосообщение в чат с временем
   db.ref('chat').push({ user: '📢 ' + user.name, text: '🔴 Пункт ' + user.punkt + ' смена окончена в ' + time + ', товаров: ' + tv, timestamp: Date.now() });
   onShift = false;
