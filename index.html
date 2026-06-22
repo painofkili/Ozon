@@ -12,6 +12,9 @@ button { background: green; color: white; border: none; }
 button.gray { background: gray; }
 #chat { max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 8px; border-radius: 8px; margin: 8px 0; }
 #chat p { margin: 2px 0; font-size: 13px; }
+#chat img { max-width: 200px; border-radius: 8px; margin: 4px 0; }
+.photo-preview { display: flex; gap: 4px; flex-wrap: wrap; }
+.photo-preview img { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
 </style>
 </head>
 <body>
@@ -30,6 +33,9 @@ button.gray { background: gray; }
   <div id="shift" style="display:none">
     <p>🟢 На смене!</p>
     <input id="tov" placeholder="Товары">
+    <label>Фотоотчёт (до 5)</label>
+    <input id="photos" type="file" accept="image/*" multiple onchange="previewPhotos()">
+    <div id="photoPreviews" class="photo-preview"></div>
     <button onclick="endShift()" style="background:red">СО СМЕНЫ</button>
   </div>
   <button class="gray" onclick="logout()">Выйти</button>
@@ -38,8 +44,6 @@ button.gray { background: gray; }
   <input id="msg" placeholder="Чат..."><button onclick="send()">Отправить</button>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <script>
@@ -55,6 +59,7 @@ firebase.initializeApp({
 var db = firebase.database();
 var user = null;
 var onShift = false;
+var photoBase64 = [];
 
 var saved = localStorage.getItem('ozon_user');
 if (saved) {
@@ -101,6 +106,22 @@ function register() {
   alert('OK');
 }
 
+function previewPhotos() {
+  photoBase64 = [];
+  document.getElementById('photoPreviews').innerHTML = '';
+  var files = document.getElementById('photos').files;
+  for (var i = 0; i < Math.min(files.length, 5); i++) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      photoBase64.push(e.target.result);
+      var img = document.createElement('img');
+      img.src = e.target.result;
+      document.getElementById('photoPreviews').appendChild(img);
+    };
+    reader.readAsDataURL(files[i]);
+  }
+}
+
 function startShift() {
   onShift = true;
   localStorage.setItem('ozon_onShift', '1');
@@ -113,16 +134,25 @@ function startShift() {
 function endShift() {
   var tv = parseInt(document.getElementById('tov').value)||0;
   var time = new Date().toLocaleTimeString('ru-RU');
+  var photos = photoBase64.slice(0, 5);
+  
   db.ref('shifts/' + user.name + '_' + Date.now()).set({
-  user: user.name, punkt: user.punkt || '49', date: new Date().toLocaleDateString('ru-RU'),
-  hours: 12, tovar: tv, timestamp: new Date().toISOString()
-});
-  db.ref('chat').push({ user: '📢 ' + user.name, text: '🔴 Пункт ' + user.punkt + ' смена окончена в ' + time + ', товаров: ' + tv, timestamp: Date.now() });
+    user: user.name, punkt: user.punkt || '49', date: new Date().toLocaleDateString('ru-RU'),
+    hours: 12, tovar: tv, photos: photos, timestamp: new Date().toISOString()
+  });
+  
+  // Сообщение в чат
+  var chatMsg = { user: '📢 ' + user.name, text: '🔴 Пункт ' + user.punkt + ' смена окончена в ' + time + ', товаров: ' + tv, timestamp: Date.now(), photos: photos };
+  db.ref('chat').push(chatMsg);
+  
   onShift = false;
   localStorage.removeItem('ozon_onShift');
   document.getElementById('shift').style.display = 'none';
   document.getElementById('startBtn').style.display = 'block';
   document.getElementById('tov').value = '';
+  document.getElementById('photos').value = '';
+  document.getElementById('photoPreviews').innerHTML = '';
+  photoBase64 = [];
 }
 
 function logout() {
@@ -137,7 +167,16 @@ function logout() {
 function loadChat() {
   db.ref('chat').limitToLast(30).on('value', function(s) {
     var h = '';
-    s.forEach(function(c) { h += '<p>' + c.val().user + ': ' + c.val().text + '</p>'; });
+    s.forEach(function(c) {
+      var m = c.val();
+      h += '<p><b>' + (m.user||'?') + ':</b> ' + (m.text||'');
+      if (m.photos && m.photos.length) {
+        for (var i = 0; i < m.photos.length; i++) {
+          h += '<br><img src="' + m.photos[i] + '">';
+        }
+      }
+      h += '</p>';
+    });
     document.getElementById('chat').innerHTML = h;
     var chatEl = document.getElementById('chat');
     chatEl.scrollTop = chatEl.scrollHeight;
