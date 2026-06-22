@@ -12,7 +12,9 @@ button { background: #4CAF50; color: white; border: none; cursor: pointer; }
 button.gray { background: #999; }
 button.blue { background: #2196F3; }
 button.red { background: #f44336; }
+button:disabled { opacity: 0.6; cursor: default; }
 .avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; vertical-align: middle; margin-right: 8px; }
+.avatar-mini { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; vertical-align: middle; margin-right: 4px; }
 #chat { max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 8px; border-radius: 8px; margin: 8px 0; background: #fafafa; }
 #chat p { margin: 2px 0; font-size: 13px; position: relative; }
 #chat .thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; cursor: pointer; margin: 2px; }
@@ -61,14 +63,14 @@ button.red { background: #f44336; }
 <div id="settingsCard" style="display:none">
   <div class="card">
     <h3 style="text-align:center">⚙️ Настройки</h3>
-    <input id="newName" placeholder="Новое имя (оставь пустым)">
-    <input id="newPass" type="password" placeholder="Новый пароль (оставь пустым)">
+    <input id="newName" placeholder="Новое имя">
+    <input id="newPass" type="password" placeholder="Новый пароль">
     <select id="newPunkt"></select>
     <label>Новая аватарка</label>
     <input id="newAvatar" type="file" accept="image/*" onchange="previewNewAvatar()">
     <div id="newAvatarPreview" style="text-align:center;margin:4px 0"></div>
     <button onclick="saveSettings()">💾 Сохранить</button>
-    <button class="gray" onclick="document.getElementById('settingsCard').style.display='none';document.getElementById('app').style.display='block';">Назад</button>
+    <button class="gray" onclick="closeSettings()">Назад</button>
   </div>
 </div>
 
@@ -90,8 +92,8 @@ button.red { background: #f44336; }
   
   <div id="shiftTab">
     <button id="startBtn" onclick="startShift()">🔵 НА СМЕНУ</button>
+    <button id="onShiftBtn" onclick="return false" class="blue" style="display:none" disabled>🟢 НА СМЕНЕ</button>
     <div id="shift" style="display:none">
-      <p>🟢 На смене!</p>
       <input id="timeFrom" value="9" placeholder="Начало (час)">
       <input id="timeTo" value="21" placeholder="Конец (час)">
       <input id="tov" placeholder="Товары">
@@ -141,6 +143,12 @@ var photoBase64 = [];
 var regAvatarData = null;
 var newAvatarData = null;
 var allMyShifts = [];
+var allUsers = {};
+
+// Кешируем аватарки всех пользователей для чата
+db.ref('users').on('value', function(s) {
+  s.forEach(function(c) { allUsers[c.key] = c.val().avatar || ''; });
+});
 
 function loadPunkts(cb) {
   db.ref('punkts').once('value', function(s) {
@@ -159,9 +167,11 @@ if (saved) {
   updateProfileUI();
   loadChat();
   loadAllData();
+  loadHistory();
   if (localStorage.getItem('ozon_onShift') === '1') {
     onShift = true;
     document.getElementById('startBtn').style.display = 'none';
+    document.getElementById('onShiftBtn').style.display = 'block';
     document.getElementById('shift').style.display = 'block';
   }
 }
@@ -211,11 +221,7 @@ function renderCalendar() {
   for (var i = 0; i < firstDay; i++) html += '<div></div>';
   
   var shiftDates = {};
-  allMyShifts.forEach(function(s) {
-    var d = s.date;
-    if (!shiftDates[d]) shiftDates[d] = 0;
-    shiftDates[d]++;
-  });
+  allMyShifts.forEach(function(s) { shiftDates[s.date] = (shiftDates[s.date]||0) + 1; });
   
   var todayStr = now.toLocaleDateString('ru-RU');
   
@@ -229,7 +235,6 @@ function renderCalendar() {
   
   document.getElementById('calendar').innerHTML = html;
   
-  // Итого
   var totalShifts = allMyShifts.length;
   var totalHours = allMyShifts.reduce(function(s, x) { return s + (x.hours||0); }, 0);
   var totalTovar = allMyShifts.reduce(function(s, x) { return s + (x.tovar||0); }, 0);
@@ -237,6 +242,7 @@ function renderCalendar() {
 }
 
 function loadHistory() {
+  if (!user) return;
   db.ref('payments').orderByChild('user').equalTo(user.name).once('value', function(s) {
     var arr = [];
     s.forEach(function(c) { arr.push(c.val()); });
@@ -252,18 +258,16 @@ function loadHistory() {
 }
 
 function clearMyShifts() {
-  if (!confirm('Удалить ВСЕ твои смены? Это нельзя отменить.')) return;
+  if (!confirm('Удалить ВСЕ твои смены?')) return;
   db.ref('shifts').orderByChild('user').equalTo(user.name).once('value', function(s) {
     s.forEach(function(c) { db.ref('shifts/' + c.key).remove(); });
-    alert('✅ Смены удалены');
+    alert('✅ Удалено');
   });
 }
 
 function openSettings() {
   document.getElementById('app').style.display = 'none';
   document.getElementById('settingsCard').style.display = 'block';
-  document.getElementById('newName').value = '';
-  document.getElementById('newPass').value = '';
   document.getElementById('newAvatarPreview').innerHTML = '';
   newAvatarData = null;
   loadPunkts(function(punkts) {
@@ -273,6 +277,11 @@ function openSettings() {
       s.innerHTML += '<option value="' + punkts[i] + '">' + punkts[i] + '</option>';
     }
   });
+}
+
+function closeSettings() {
+  document.getElementById('settingsCard').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
 }
 
 function saveSettings() {
@@ -298,11 +307,7 @@ function saveSettings() {
     if (npunkt) user.punkt = npunkt;
   }
   
-  if (Object.keys(updates).length === 0) {
-    document.getElementById('settingsCard').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    return;
-  }
+  if (Object.keys(updates).length === 0) { closeSettings(); return; }
   
   db.ref().update(updates, function(err) {
     if (err) { alert('Ошибка: ' + err); return; }
@@ -310,8 +315,7 @@ function saveSettings() {
     if (newAvatarData) user.avatar = newAvatarData;
     localStorage.setItem('ozon_user', JSON.stringify(user));
     updateProfileUI();
-    document.getElementById('settingsCard').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
+    closeSettings();
     alert('✅ Настройки сохранены!');
   });
 }
@@ -356,11 +360,7 @@ function login() {
       updateProfileUI();
       loadChat();
       loadAllData();
-      if (localStorage.getItem('ozon_onShift') === '1') {
-        onShift = true;
-        document.getElementById('startBtn').style.display = 'none';
-        document.getElementById('shift').style.display = 'block';
-      }
+      loadHistory();
     } else alert('Неверно!');
   });
 }
@@ -413,6 +413,7 @@ function startShift() {
   onShift = true;
   localStorage.setItem('ozon_onShift', '1');
   document.getElementById('startBtn').style.display = 'none';
+  document.getElementById('onShiftBtn').style.display = 'block';
   document.getElementById('shift').style.display = 'block';
   var time = new Date().toLocaleTimeString('ru-RU');
   db.ref('chat').push({ user: '📢 ' + user.name, text: '🔵 Пункт ' + user.punkt + ' на смене! (' + time + ')', timestamp: Date.now() });
@@ -436,6 +437,7 @@ function endShift() {
   onShift = false;
   localStorage.removeItem('ozon_onShift');
   document.getElementById('shift').style.display = 'none';
+  document.getElementById('onShiftBtn').style.display = 'none';
   document.getElementById('startBtn').style.display = 'block';
   document.getElementById('tov').value = '';
   document.getElementById('photos').value = '';
@@ -460,7 +462,10 @@ function loadChat() {
     s.forEach(function(c) {
       var m = c.val();
       var canDel = (user && (m.user === user.name || m.user === '📢 ' + user.name));
-      h += '<p>' + (canDel ? '<span class="del-msg" onclick="delChatMsg(\'' + c.key + '\')">✕</span>' : '') + '<b>' + (m.user||'?') + ':</b> ' + (m.text||'');
+      var senderName = (m.user||'').replace('📢 ','');
+      var ava = allUsers[senderName] || '';
+      var avaHtml = ava ? '<img class="avatar-mini" src="' + ava + '">' : '';
+      h += '<p>' + (canDel ? '<span class="del-msg" onclick="delChatMsg(\'' + c.key + '\')">✕</span>' : '') + avaHtml + '<b>' + (m.user||'?') + ':</b> ' + (m.text||'');
       if (m.photos && m.photos.length) {
         var firstThumb = typeof m.photos[0] === 'object' ? m.photos[0].thumb : m.photos[0];
         var allFull = [];
