@@ -59,6 +59,7 @@ var onShift = false;
 var saved = localStorage.getItem('ozon_user');
 if (saved) {
   user = JSON.parse(saved);
+  user.punkt = user.punkt || '49';
   document.getElementById('login').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   document.getElementById('uname').textContent = user.name;
@@ -113,9 +114,9 @@ function endShift() {
   var tv = parseInt(document.getElementById('tov').value)||0;
   var time = new Date().toLocaleTimeString('ru-RU');
   db.ref('shifts/' + user.name + '_' + Date.now()).set({
-    user: user.name, punkt: user.punkt, date: new Date().toLocaleDateString('ru-RU'),
-    hours: 12, tovar: tv, timestamp: new Date().toISOString()
-  });
+  user: user.name, punkt: user.punkt || '49', date: new Date().toLocaleDateString('ru-RU'),
+  hours: 12, tovar: tv, timestamp: new Date().toISOString()
+});
   db.ref('chat').push({ user: '📢 ' + user.name, text: '🔴 Пункт ' + user.punkt + ' смена окончена в ' + time + ', товаров: ' + tv, timestamp: Date.now() });
   onShift = false;
   localStorage.removeItem('ozon_onShift');
