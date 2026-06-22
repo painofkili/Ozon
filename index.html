@@ -151,7 +151,7 @@ th { background: #f0f0f0; }
 
 <div class="card" id="chatCard" style="display:none">
   <div class="status">💬 Чат</div>
-  <div class="chat-container"><div class="chat-messages" id="chatMessages"></div><div class="chat-input-row"><input id="chatInput" placeholder="Сообщение..."><button id="chatSendBtn" onclick="sendChat()" style="width:auto;min-width:44px">➤</button></div></div>
+  <div class="chat-container"><div class="chat-messages" id="chatMessages"></div><div class="chat-input-row"><input id="chatInput" placeholder="Сообщение..."><button id="chatSendBtn" type="button" onclick="sendChat();return false;" style="width:auto;min-width:44px">➤</button></div></div>
 </div>
 
 <div id="photoViewer" class="shift-photos-viewer" style="display:none" onclick="this.style.display='none'"><img id="photoViewerImg" src=""></div>
