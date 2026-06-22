@@ -18,7 +18,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { 
   font-family: Arial; 
-  background: var(--bg) url('https://raw.githubusercontent.com/painofkili/ozon/main/bg.png') center/cover fixed; 
+  background: var(--bg) url('https://raw.githubusercontent.com/painofkili/ozon/main/фон.jpg') center/cover fixed; 
   color: var(--text); 
   padding: 12px; 
   max-width: 450px; 
@@ -83,7 +83,7 @@ label { font-size: 13px; color: var(--muted); display: block; margin-top: 6px; }
 <body>
 
 <div style="text-align:center;margin-bottom:8px">
-  <img src="https://raw.githubusercontent.com/painofkili/ozon/main/logo.png" style="height:40px" onerror="this.style.display='none'">
+  <img src="https://raw.githubusercontent.com/painofkili/ozon/main/на%20смену.png" style="height:40px" onerror="this.style.display='none'">
 </div>
 
 <div id="login">
@@ -132,25 +132,25 @@ label { font-size: 13px; color: var(--muted); display: block; margin-top: 6px; }
       <div id="progressText" class="progress-text"></div>
     </div>
     <button class="btn-gray icon-btn" onclick="openSettings()">
-      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/settings.png" style="width:24px;height:24px">
+      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/смена.png">
     </button>
   </div>
   
   <div class="tabs">
     <button id="tabShift" class="active" onclick="showTab('shift')">
-      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/shift.png">Смена
+      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/смена.png">Смена
     </button>
     <button id="tabStats" onclick="showTab('stats')">
-      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/stats.png">Статистика
+      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/статистика.png">Статистика
     </button>
     <button id="tabHistory" onclick="showTab('history')">
-      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/payments.png">Выплаты
+      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/выплаты.png">Выплаты
     </button>
   </div>
   
   <div id="shiftTab">
     <button id="startBtn" class="btn-green" onclick="startShift()">
-      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/start_shift.png" style="width:20px;height:20px;vertical-align:middle;margin-right:6px">НА СМЕНУ
+      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/на%20смену.png" style="width:24px;height:24px;vertical-align:middle;margin-right:6px">НА СМЕНУ
     </button>
     <button id="onShiftBtn" class="btn-blue" style="display:none" disabled>🟢 НА СМЕНЕ</button>
     <div id="shift" style="display:none">
@@ -163,13 +163,13 @@ label { font-size: 13px; color: var(--muted); display: block; margin-top: 6px; }
       <button class="btn-red" onclick="endShift()">СО СМЕНЫ</button>
     </div>
     <button class="btn-gray" onclick="logout()" style="margin-top:8px">
-      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/exit.png" style="width:18px;height:18px;vertical-align:middle;margin-right:4px">Выйти
+      <img src="https://raw.githubusercontent.com/painofkili/ozon/main/выйти.png" style="width:20px;height:20px;vertical-align:middle;margin-right:4px">Выйти
     </button>
     <div id="chat"></div>
     <div style="display:flex;gap:6px">
       <input id="msg" placeholder="Чат..." style="flex:1">
       <button class="btn-green" onclick="send()" style="width:auto;padding:14px 18px">
-        <img src="https://raw.githubusercontent.com/painofkili/ozon/main/send.png" style="width:20px;height:20px">
+        <img src="https://raw.githubusercontent.com/painofkili/ozon/main/отправить.png" style="width:22px;height:22px">
       </button>
     </div>
   </div>
