@@ -7,12 +7,11 @@
 <style>
 body { font-family: Arial; padding: 10px; max-width: 400px; margin: 0 auto; }
 .card { background: white; padding: 15px; border-radius: 10px; margin: 8px 0; }
-input, button { width: 100%; padding: 12px; font-size: 16px; margin: 4px 0; }
+input, button, select { width: 100%; padding: 12px; font-size: 16px; margin: 4px 0; }
 button { background: green; color: white; border: none; cursor: pointer; }
 button.gray { background: gray; }
 button.blue { background: #2196F3; }
 .avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; vertical-align: middle; margin-right: 8px; }
-.avatar-small { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; vertical-align: middle; margin-right: 4px; }
 #chat { max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 8px; border-radius: 8px; margin: 8px 0; background: #fafafa; }
 #chat p { margin: 2px 0; font-size: 13px; position: relative; }
 #chat .thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; cursor: pointer; margin: 2px; }
@@ -23,6 +22,9 @@ button.blue { background: #2196F3; }
 #photoViewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 1000; }
 #photoViewer img { max-width: 95%; max-height: 90%; border-radius: 8px; }
 .profile-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.shifts-table { width: 100%; font-size: 12px; border-collapse: collapse; margin-top: 8px; }
+.shifts-table td, .shifts-table th { padding: 4px; text-align: center; border-bottom: 1px solid #eee; }
+.shifts-table th { background: #f0f0f0; }
 </style>
 </head>
 <body>
@@ -54,6 +56,7 @@ button.blue { background: #2196F3; }
     <h3 style="text-align:center">⚙️ Настройки</h3>
     <input id="newName" placeholder="Новое имя (оставь пустым)">
     <input id="newPass" type="password" placeholder="Новый пароль (оставь пустым)">
+    <select id="newPunkt"></select>
     <label>Новая аватарка</label>
     <input id="newAvatar" type="file" accept="image/*" onchange="previewNewAvatar()">
     <div id="newAvatarPreview" style="text-align:center;margin:4px 0"></div>
@@ -74,6 +77,8 @@ button.blue { background: #2196F3; }
   <button id="startBtn" onclick="startShift()">🔵 НА СМЕНУ</button>
   <div id="shift" style="display:none">
     <p>🟢 На смене!</p>
+    <input id="timeFrom" value="9" placeholder="Начало (час)">
+    <input id="timeTo" value="21" placeholder="Конец (час)">
     <input id="tov" placeholder="Товары">
     <label>Фотоотчёт (до 5)</label>
     <input id="photos" type="file" accept="image/*" multiple onchange="previewPhotos()">
@@ -84,6 +89,12 @@ button.blue { background: #2196F3; }
   <hr>
   <div id="chat"></div>
   <input id="msg" placeholder="Чат..."><button onclick="send()">Отправить</button>
+  <hr>
+  <h4>Мои смены</h4>
+  <table class="shifts-table">
+    <tr><th>Дата</th><th>Часы</th><th>Товары</th></tr>
+    <tbody id="myShifts"><tr><td colspan="3">Нет смен</td></tr></tbody>
+  </table>
 </div>
 
 <div id="photoViewer" onclick="this.style.display='none'"><img id="photoViewerImg" src=""></div>
@@ -107,6 +118,14 @@ var photoBase64 = [];
 var regAvatarData = null;
 var newAvatarData = null;
 
+function loadPunkts(cb) {
+  db.ref('punkts').once('value', function(s) {
+    var p = [];
+    s.forEach(function(c) { p.push(c.key); });
+    if (cb) cb(p);
+  });
+}
+
 var saved = localStorage.getItem('ozon_user');
 if (saved) {
   user = JSON.parse(saved);
@@ -115,6 +134,7 @@ if (saved) {
   document.getElementById('app').style.display = 'block';
   updateProfileUI();
   loadChat();
+  loadMyShifts();
   if (localStorage.getItem('ozon_onShift') === '1') {
     onShift = true;
     document.getElementById('startBtn').style.display = 'none';
@@ -138,28 +158,37 @@ function openSettings() {
   document.getElementById('newPass').value = '';
   document.getElementById('newAvatarPreview').innerHTML = '';
   newAvatarData = null;
+  // Загружаем пункты
+  loadPunkts(function(punkts) {
+    var s = document.getElementById('newPunkt');
+    s.innerHTML = '<option value="">Не менять</option>';
+    for (var i = 0; i < punkts.length; i++) {
+      s.innerHTML += '<option value="' + punkts[i] + '">' + punkts[i] + '</option>';
+    }
+  });
 }
 
 function saveSettings() {
   var nn = document.getElementById('newName').value.trim();
   var np = document.getElementById('newPass').value.trim();
+  var npunkt = document.getElementById('newPunkt').value;
   var oldKey = user.name;
   var updates = {};
   
   if (nn && nn !== user.name) {
-    // Меняем имя
-    updates['users/' + nn] = { name: nn, punkt: user.punkt, password: user.password, bonus: user.bonus || 0, avatar: user.avatar || '' };
+    updates['users/' + nn] = { name: nn, punkt: npunkt || user.punkt, password: user.password, bonus: user.bonus || 0, avatar: user.avatar || '' };
     if (newAvatarData) updates['users/' + nn + '/avatar'] = newAvatarData;
     if (np) updates['users/' + nn + '/password'] = np;
-    updates['users/' + oldKey] = null; // удаляем старый ключ
+    updates['users/' + oldKey] = null;
     user.name = nn;
+    if (npunkt) user.punkt = npunkt;
   } else {
-    var userUpdates = {};
-    if (np) userUpdates.password = np;
-    if (newAvatarData) userUpdates.avatar = newAvatarData;
-    if (Object.keys(userUpdates).length > 0) {
-      updates['users/' + oldKey] = userUpdates;
-    }
+    var uu = {};
+    if (np) uu.password = np;
+    if (newAvatarData) uu.avatar = newAvatarData;
+    if (npunkt) uu.punkt = npunkt;
+    if (Object.keys(uu).length > 0) updates['users/' + oldKey] = uu;
+    if (npunkt) user.punkt = npunkt;
   }
   
   if (Object.keys(updates).length === 0) {
@@ -219,6 +248,7 @@ function login() {
       document.getElementById('app').style.display = 'block';
       updateProfileUI();
       loadChat();
+      loadMyShifts();
       if (localStorage.getItem('ozon_onShift') === '1') {
         onShift = true;
         document.getElementById('startBtn').style.display = 'none';
@@ -282,16 +312,19 @@ function startShift() {
 }
 
 function endShift() {
+  var tf = document.getElementById('timeFrom').value || '9';
+  var tt = document.getElementById('timeTo').value || '21';
   var tv = parseInt(document.getElementById('tov').value)||0;
+  var hours = parseInt(tt) - parseInt(tf);
   var time = new Date().toLocaleTimeString('ru-RU');
   var photos = photoBase64.slice(0, 5);
   
   db.ref('shifts/' + user.name + '_' + Date.now()).set({
     user: user.name, punkt: user.punkt || '49', date: new Date().toLocaleDateString('ru-RU'),
-    hours: 12, tovar: tv, photos: photos, timestamp: new Date().toISOString()
+    timeFrom: tf, timeTo: tt, hours: hours, tovar: tv, photos: photos, paid: false, timestamp: new Date().toISOString()
   });
   
-  db.ref('chat').push({ user: '📢 ' + user.name, text: '🔴 Пункт ' + user.punkt + ' смена окончена в ' + time + ', товаров: ' + tv, timestamp: Date.now(), photos: photos });
+  db.ref('chat').push({ user: '📢 ' + user.name, text: '🔴 Пункт ' + user.punkt + ' с ' + tf + ' до ' + tt + ', товаров: ' + tv, timestamp: Date.now(), photos: photos });
   
   onShift = false;
   localStorage.removeItem('ozon_onShift');
@@ -301,6 +334,24 @@ function endShift() {
   document.getElementById('photos').value = '';
   document.getElementById('photoPreviews').innerHTML = '';
   photoBase64 = [];
+  loadMyShifts();
+}
+
+function loadMyShifts() {
+  if (!user) return;
+  db.ref('shifts').orderByChild('user').equalTo(user.name).once('value', function(s) {
+    var shifts = [];
+    s.forEach(function(c) { shifts.push(c.val()); });
+    shifts.sort(function(a,b) { return new Date(b.timestamp) - new Date(a.timestamp); });
+    var tbody = document.getElementById('myShifts');
+    if (shifts.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="3">Нет смен</td></tr>';
+    } else {
+      tbody.innerHTML = shifts.map(function(x) {
+        return '<tr><td>' + x.date + '</td><td>' + x.hours + 'ч (' + x.timeFrom + '-' + x.timeTo + ')</td><td>' + x.tovar + '</td></tr>';
+      }).join('');
+    }
+  });
 }
 
 function logout() {
@@ -320,12 +371,6 @@ function loadChat() {
     s.forEach(function(c) {
       var m = c.val();
       var canDel = (user && (m.user === user.name || m.user === '📢 ' + user.name));
-      // Загружаем аватарку отправителя
-      var avaHtml = '';
-      if (m.user && m.user.indexOf('📢 ') === 0) {
-        var senderName = m.user.replace('📢 ', '');
-        // Ищем аватарку в базе
-      }
       h += '<p>' + (canDel ? '<span class="del-msg" onclick="delChatMsg(\'' + c.key + '\')">✕</span>' : '') + '<b>' + (m.user||'?') + ':</b> ' + (m.text||'');
       if (m.photos && m.photos.length) {
         var firstThumb = typeof m.photos[0] === 'object' ? m.photos[0].thumb : m.photos[0];
@@ -340,8 +385,7 @@ function loadChat() {
       h += '</p>';
     });
     document.getElementById('chat').innerHTML = h;
-    var chatEl = document.getElementById('chat');
-    chatEl.scrollTop = chatEl.scrollHeight;
+    document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight;
   });
 }
 
@@ -356,9 +400,7 @@ function viewPack(packData) {
   img.onclick = function(e) { e.stopPropagation(); idx++; if (idx < photos.length) img.src = photos[idx]; else viewer.style.display = 'none'; };
 }
 
-function delChatMsg(key) {
-  if (confirm('Удалить сообщение?')) { db.ref('chat/' + key).remove(); }
-}
+function delChatMsg(key) { if (confirm('Удалить сообщение?')) { db.ref('chat/' + key).remove(); } }
 
 function send() {
   var t = document.getElementById('msg').value.trim();
