@@ -113,7 +113,6 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
 firebase.initializeApp({apiKey:"AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",authDomain:"ozon-grafik-4ad9f.firebaseapp.com",databaseURL:"https://ozon-grafik-4ad9f-default-rtdb.europe-west1.firebasedatabase.app",projectId:"ozon-grafik-4ad9f",storageBucket:"ozon-grafik-4ad9f.firebasestorage.app",messagingSenderId:"798009068634",appId:"1:798009068634:web:4b70eea3cce6c96f4f5c63"});
 var db=firebase.database(),user=null,onShift=!1,photoBase64=[],regAvatarData=null,newAvatarData=null,allMyShifts=[],allUsers={};
 
-// PWA уведомления
 if('Notification' in window && Notification.permission==='default'){Notification.requestPermission()}
 function notifyMe(title,body){if('Notification' in window && Notification.permission==='granted'){new Notification(title,{body:body,icon:'https://raw.githubusercontent.com/painofkili/ozon/main/на%20смену.png'})}}
 
@@ -129,11 +128,17 @@ if(saved){
   user=JSON.parse(saved);user.punkt=user.punkt||'49';
   document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';
   updateProfileUI();loadChat();loadAllData();loadHistory();loadNotifications();
-  // Слушаем уведомления для этого пользователя
+  // Проверяем состояние смены в Firebase
+  db.ref('activeShifts/'+user.name).once('value',function(s){
+    if(s.exists()&&s.val().active){
+      onShift=!0;document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block';
+      document.getElementById('shiftStart').textContent=s.val().startTime||'';
+    }
+  });
+  // Слушаем уведомления
   db.ref('notifications').orderByChild('user').equalTo(user.name).limitToLast(1).on('child_added',function(s){var x=s.val();notifyMe('🔔 Уведомление',x.text)});
   // Слушаем чат
   db.ref('chat').limitToLast(1).on('child_added',function(s){var x=s.val();if(x.user!==user.name&&x.user!=='📢 '+user.name){notifyMe('💬 Чат',x.user+': '+x.text)}});
-  if(localStorage.getItem('ozon_onShift')==='1'){onShift=!0;document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block'}
 }
 
 function updateProfileUI(){document.getElementById('uname').textContent=user.name;document.getElementById('upunkt').textContent=user.punkt||'?';if(user.avatar){document.getElementById('profileAvatar').src=user.avatar;document.getElementById('profileAvatar').style.display='inline'}updateStatusUI()}
@@ -150,6 +155,8 @@ function previewRegAvatar(){var f=document.getElementById('regAvatar').files[0];
 function previewNewAvatar(){var f=document.getElementById('newAvatar').files[0];if(!f)return;var r=new FileReader();r.onload=function(e){newAvatarData=e.target.result;document.getElementById('newAvatarPreview').innerHTML='<img class="avatar" src="'+newAvatarData+'">'};r.readAsDataURL(f)}
 function showRegister(){document.getElementById('login').style.display='none';document.getElementById('registerCard').style.display='block'}
 function login(){var n=document.getElementById('name').value.trim(),p=document.getElementById('pass').value.trim();db.ref('users/'+n).once('value',function(s){if(s.exists()&&s.val().password===p){user=s.val();user.punkt=user.punkt||'49';localStorage.setItem('ozon_user',JSON.stringify(user));document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';updateProfileUI();loadChat();loadAllData();loadHistory();loadNotifications();
+// Проверяем состояние смены в Firebase
+db.ref('activeShifts/'+user.name).once('value',function(s){if(s.exists()&&s.val().active){onShift=!0;document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block';document.getElementById('shiftStart').textContent=s.val().startTime||''}});
 // Слушаем уведомления
 db.ref('notifications').orderByChild('user').equalTo(user.name).limitToLast(1).on('child_added',function(s){var x=s.val();notifyMe('🔔 Уведомление',x.text)});
 // Слушаем чат
@@ -157,9 +164,19 @@ db.ref('chat').limitToLast(1).on('child_added',function(s){var x=s.val();if(x.us
 }else alert('Неверно!')})}
 function register(){var n=document.getElementById('regName').value.trim(),pk=document.getElementById('regPunkt').value.trim(),p=document.getElementById('regPass').value.trim();if(!n||!p||!pk){alert('Заполни все поля!');return}db.ref('users/'+n).once('value',function(s){if(s.exists()){alert('Уже есть!');return}db.ref('users/'+n).set({name:n,punkt:pk,password:p,bonus:0,avatar:regAvatarData||''},function(){alert('✅');document.getElementById('registerCard').style.display='none';document.getElementById('login').style.display='block'})})}
 function previewPhotos(){photoBase64=[];document.getElementById('photoPreviews').innerHTML='';var files=document.getElementById('photos').files;for(var i=0;i<Math.min(files.length,5);i++){(function(file){var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var c=document.createElement('canvas'),mw=200,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);var thumb=c.toDataURL('image/jpeg',0.6);photoBase64.push({full:e.target.result,thumb:thumb});var pv=document.createElement('img');pv.src=thumb;document.getElementById('photoPreviews').appendChild(pv)};img.src=e.target.result};r.readAsDataURL(file)})(files[i])}}
-function startShift(){onShift=!0;localStorage.setItem('ozon_onShift','1');document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block';var t=new Date().toLocaleTimeString('ru-RU');db.ref('chat').push({user:'📢 '+user.name,text:'🔵 Пункт '+user.punkt+' на смене! ('+t+')',timestamp:Date.now()})}
-function endShift(){var tf=document.getElementById('timeFrom').value||'9',tt=document.getElementById('timeTo').value||'21',tv=parseInt(document.getElementById('tov').value)||0,hh=parseInt(tt)-parseInt(tf),t=new Date().toLocaleTimeString('ru-RU'),ph=photoBase64.slice(0,5);db.ref('shifts/'+user.name+'_'+Date.now()).set({user:user.name,punkt:user.punkt||'49',date:new Date().toLocaleDateString('ru-RU'),timeFrom:tf,timeTo:tt,hours:hh,tovar:tv,photos:ph,paid:!1,timestamp:new Date().toISOString()});db.ref('chat').push({user:'📢 '+user.name,text:'🔴 Пункт '+user.punkt+' с '+tf+' до '+tt+', товаров: '+tv,timestamp:Date.now(),photos:ph});var os=getStatus(allMyShifts.length),ns=getStatus(allMyShifts.length+1);if(os.name!==ns.name){db.ref('chat').push({user:'🎉 СИСТЕМА',text:user.name+' получил статус '+ns.name+'!',timestamp:Date.now()})}onShift=!1;localStorage.removeItem('ozon_onShift');document.getElementById('shift').style.display='none';document.getElementById('onShiftBtn').style.display='none';document.getElementById('startBtn').style.display='block';document.getElementById('tov').value='';document.getElementById('photos').value='';document.getElementById('photoPreviews').innerHTML='';photoBase64=[]}
-function logout(){user=null;onShift=!1;localStorage.removeItem('ozon_user');localStorage.removeItem('ozon_onShift');document.getElementById('app').style.display='none';document.getElementById('settingsCard').style.display='none';document.getElementById('registerCard').style.display='none';document.getElementById('login').style.display='block'}
+function startShift(){onShift=!0;var t=new Date().toLocaleTimeString('ru-RU');
+  // Сохраняем в Firebase
+  db.ref('activeShifts/'+user.name).set({active:!0,startTime:t});
+  document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block';document.getElementById('shiftStart').textContent=t;
+  db.ref('chat').push({user:'📢 '+user.name,text:'🔵 Пункт '+user.punkt+' на смене! ('+t+')',timestamp:Date.now()})}
+function endShift(){var tf=document.getElementById('timeFrom').value||'9',tt=document.getElementById('timeTo').value||'21',tv=parseInt(document.getElementById('tov').value)||0,hh=parseInt(tt)-parseInt(tf),t=new Date().toLocaleTimeString('ru-RU'),ph=photoBase64.slice(0,5);
+  db.ref('shifts/'+user.name+'_'+Date.now()).set({user:user.name,punkt:user.punkt||'49',date:new Date().toLocaleDateString('ru-RU'),timeFrom:tf,timeTo:tt,hours:hh,tovar:tv,photos:ph,paid:!1,timestamp:new Date().toISOString()});
+  db.ref('chat').push({user:'📢 '+user.name,text:'🔴 Пункт '+user.punkt+' с '+tf+' до '+tt+', товаров: '+tv,timestamp:Date.now(),photos:ph});
+  // Удаляем из активных смен
+  db.ref('activeShifts/'+user.name).remove();
+  var os=getStatus(allMyShifts.length),ns=getStatus(allMyShifts.length+1);if(os.name!==ns.name){db.ref('chat').push({user:'🎉 СИСТЕМА',text:user.name+' получил статус '+ns.name+'!',timestamp:Date.now()})}
+  onShift=!1;document.getElementById('shift').style.display='none';document.getElementById('onShiftBtn').style.display='none';document.getElementById('startBtn').style.display='block';document.getElementById('tov').value='';document.getElementById('photos').value='';document.getElementById('photoPreviews').innerHTML='';photoBase64=[]}
+function logout(){if(user){db.ref('activeShifts/'+user.name).remove()}user=null;onShift=!1;localStorage.removeItem('ozon_user');document.getElementById('app').style.display='none';document.getElementById('settingsCard').style.display='none';document.getElementById('registerCard').style.display='none';document.getElementById('login').style.display='block'}
 function loadChat(){db.ref('chat').limitToLast(30).on('value',function(s){var h='';s.forEach(function(c){var m=c.val(),cd=(user&&(m.user===user.name||m.user==='📢 '+user.name)),sn=(m.user||'').replace('📢 ',''),av=allUsers[sn]||'',ah=av?'<img class="avatar-mini" src="'+av+'">':'';h+='<p>'+(cd?'<span class="del-msg" onclick="delChatMsg(\''+c.key+'\')">✕</span>':'')+ah+'<b>'+(m.user||'?')+':</b> '+(m.text||'');if(m.photos&&m.photos.length){var ft=typeof m.photos[0]==='object'?m.photos[0].thumb:m.photos[0],af=[];for(var i=0;i<m.photos.length;i++){af.push(typeof m.photos[i]==='object'?m.photos[i].full:m.photos[i])}var pd=JSON.stringify(af).replace(/'/g,"&#39;").replace(/"/g,'&quot;');h+='<br><img class="thumb" src="'+ft+'" onclick="event.stopPropagation();viewPack(\''+pd+'\')">';if(m.photos.length>1)h+=' <span style="font-size:11px;color:#999">+ ещё '+(m.photos.length-1)+'</span>'}h+='</p>'});document.getElementById('chat').innerHTML=h;document.getElementById('chat').scrollTop=document.getElementById('chat').scrollHeight})}
 function viewPack(pd){var ph=JSON.parse(pd.replace(/&quot;/g,'"').replace(/&#39;/g,"'")),v=document.getElementById('photoViewer'),im=document.getElementById('photoViewerImg'),idx=0;im.src=ph[0];v.style.display='flex';v.onclick=function(e){if(e.target===v){v.style.display='none';v.onclick=null}};im.onclick=function(e){e.stopPropagation();idx++;if(idx<ph.length)im.src=ph[idx];else v.style.display='none'}}
 function delChatMsg(key){if(confirm('Удалить?')){db.ref('chat/'+key).remove()}}
