@@ -31,9 +31,12 @@ button { border: none; font-weight: bold; cursor: pointer; }
 .progress-text { font-size: 11px; color: #aaa; }
 .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 12px; }
 .calendar div { padding: 6px; border-radius: 4px; }
-.calendar .shift-day { background: #4CAF50; color: #fff; font-weight: bold; }
+.calendar .shift-day { background: #4CAF50; color: #fff; font-weight: bold; cursor: pointer; }
 .calendar .today { border: 2px solid #2196F3; }
 .calendar .header { font-weight: bold; background: #333; }
+.shift-edit-row { display: flex; gap: 4px; align-items: center; margin: 4px 0; }
+.shift-edit-row input { flex: 1; padding: 8px; font-size: 13px; }
+.shift-edit-row button { width: auto; padding: 8px 12px; font-size: 12px; }
 </style>
 </head>
 <body>
@@ -57,6 +60,7 @@ button { border: none; font-weight: bold; cursor: pointer; }
       <h4 style="margin-top:10px">📅 Календарь смен</h4>
       <div id="calHeader" style="text-align:center;margin-bottom:4px"></div>
       <div class="calendar" id="calendar"></div>
+      <div id="shiftDetail" style="margin-top:8px"></div>
     </div>
   </div>
   <div id="chat"></div><div style="display:flex;gap:4px"><input id="chatInput" placeholder="Чат..."><button class="btn-green" onclick="sendChat()" style="width:auto">➤</button></div>
@@ -64,7 +68,7 @@ button { border: none; font-weight: bold; cursor: pointer; }
 
 <div id="addShiftCard" style="display:none"><div class="card"><h4>+ Смена: <span id="addShiftUser"></span></h4><input id="shiftDate" type="date"><input id="shiftFrom" value="9"><input id="shiftTo" value="21"><input id="shiftTovar" type="number" placeholder="Товаров"><button class="btn-green" onclick="saveShift()">💾</button><button class="btn-gray" onclick="backToApp()">↩</button></div></div>
 <div id="punishCard" style="display:none"><div class="card"><h4>⚠️ Штрафы: <span id="punishUser"></span></h4><div id="punishList"></div><div style="display:flex;gap:4px"><input id="punishAmount" type="number" placeholder="Сумма"><input id="punishReason" placeholder="Причина"></div><button class="btn-red" onclick="addPunish()">+ Штраф</button><button class="btn-gray" onclick="backToApp()">↩</button></div></div>
-<div id="premiumCard" style="display:none"><div class="card"><h4>🎁 Премия: <span id="premiumUser"></span></h4><input id="premiumAmount" type="number" placeholder="Сумма"><button class="btn-gold" onclick="addPremium()">🎁 Выдать</button><button class="btn-gray" onclick="backToApp()">↩</button></div></div>
+<div id="premiumCard" style="display:none"><div class="card"><h4>🎁 Премии: <span id="premiumUser"></span></h4><div id="premiumList"></div><input id="premiumAmount" type="number" placeholder="Сумма"><button class="btn-gold" onclick="addPremium()">🎁 Выдать</button><button class="btn-gray" onclick="backToApp()">↩</button></div></div>
 <div id="settingsCard" style="display:none"><div class="card"><h4>⚙️ Настройки</h4><input id="newGodName" placeholder="Имя"><input id="newGodPass" type="password" placeholder="Пароль"><label>Аватарка</label><input id="newGodAvatar" type="file" accept="image/*" onchange="previewAvatar()"><div id="avatarPreview" style="text-align:center;margin:6px 0"></div><button class="btn-green" onclick="saveSettings()">💾</button><button class="btn-gray" onclick="backToApp()">↩</button></div></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -76,8 +80,12 @@ var db=firebase.database(),godPass=null,allShifts=[],lastCalc=null,currentPunish
 db.ref('users').on('value',function(s){s.forEach(function(c){allUsers[c.key]=c.val().avatar||''})});
 db.ref('godSettings').on('value',function(s){if(s.exists()){godName=s.val().name||'Бог';godAvatarData=s.val().avatar||null;allUsers['👑 '+godName]=godAvatarData||''}});
 
-if('Notification' in window && Notification.permission==='default'){Notification.requestPermission()}
-function notifyMe(title,body){if('Notification' in window && Notification.permission==='granted'){try{new Notification(title,{body:body,icon:'https://raw.githubusercontent.com/painofkili/ozon/main/на%20смену.png'})}catch(e){}}}
+function recountRating(){
+  godRating=0;
+  db.ref('premiums').once('value',function(s){godRating+=s.numChildren()*2;
+    db.ref('punishes').once('value',function(p){godRating-=p.numChildren();if(godRating<0)godRating=0;updateGodStatusUI()});
+  });
+}
 
 var GOD_STATUSES=[{name:'💩 Дерьмодемон',color:'#8B4513',min:0,max:1},{name:'🕍 Еврей',color:'#4169E1',min:2,max:4},{name:'👔 Руководитель',color:'#808080',min:5,max:7},{name:'💼 Мистер Бизнес',color:'#000080',min:8,max:14},{name:'🗿 Сигма',color:'#2F4F4F',min:15,max:20},{name:'🌌 Господь',color:'#FFD700',min:21,max:999}];
 var PREMIUM_TEXTS={'💩 Дерьмодемон':['💩 Из кучи навоза выпало +{sum}₽!','💩 Твоя аура настолько убога, что Дерьмодемон дал +{sum}₽.','💩 Дерьмодемон перепутал тебя с кем-то достойным. +{sum}₽.'],'🕍 Еврей':['📈 Инвестиция окупилась! +{sum}₽','💎 Редкий случай щедрости! +{sum}₽','💔 От сердца оторвал! +{sum}₽'],'👔 Руководитель':['👔 Руководитель в хорошем настроении. +{sum}₽','👔 Твой черёд быть любимчиком. +{sum}₽'],'💼 Мистер Бизнес':['💼 Активы перераспределены. +{sum}₽','💼 Ты сегодня в плюсе. +{sum}₽','💼 Карманные расходы. +{sum}₽'],'🗿 Сигма':['🗿 На. +{sum}₽.','🗿 Держи. +{sum}₽.','🗿 Твоё. +{sum}₽.'],'🌌 Господь':['🙏 Благословение свыше. +{sum}₽.','🙏 Молитвы услышаны. +{sum}₽.','🙏 Небесная канцелярия одобрила. +{sum}₽.']};
@@ -88,9 +96,7 @@ function updateGodStatusUI(){var st=getGodStatus(godRating),ns=null;for(var i=0;
 function randomText(arr,sum){return arr[Math.floor(Math.random()*arr.length)].replace('{sum}',sum)}
 
 db.ref('godPassword').once('value',function(s){godPass=s.val();if(localStorage.getItem('god_logged')==='1'&&godPass)enter()});
-db.ref('premiums').once('value',function(s){godRating+=s.numChildren()*2});
-db.ref('punishes').once('value',function(s){godRating-=s.numChildren()});
-if(godRating<0)godRating=0;
+recountRating();
 
 function msg(t){document.getElementById('msg').textContent=t}
 function backToApp(){['addShiftCard','punishCard','premiumCard','settingsCard'].forEach(function(id){document.getElementById(id).style.display='none'});document.getElementById('app').style.display='block'}
@@ -108,24 +114,47 @@ function deletePunkt(id){if(confirm('Удалить '+id+'?')){db.ref('punkts/'+
 function loadWorkers(){var fp=document.getElementById('filterPunkt').value;db.ref('users').once('value',function(s){var h='',pk={};s.forEach(function(c){var w=c.val();if(w.punkt)pk[w.punkt]=!0;if(fp&&w.punkt!==fp)return;h+='<div class="worker-row"><span><b>'+w.name+'</b><br>Пункт '+(w.punkt||'?')+' | Надбавка: '+(w.bonus||0)+' ₽</span><span><button class="btn-orange" onclick="setBonus(\''+c.key+'\',\''+w.name+'\','+(w.bonus||0)+')">💰</button><button class="btn-gold" onclick="openPremium(\''+w.name+'\')">🎁</button><button class="btn-purple" onclick="openPunish(\''+w.name+'\')">⚠️</button><button class="btn-red" onclick="deleteWorker(\''+c.key+'\',\''+w.name+'\')">✕</button></span></div>'});document.getElementById('workersList').innerHTML=h||'<p>Нет сотрудников</p>';var sel=document.getElementById('filterPunkt');sel.innerHTML='<option value="">Все пункты</option>';Object.keys(pk).forEach(function(p){if(p)sel.innerHTML+='<option value="'+p+'">'+p+'</option>'})})}
 function setBonus(key,name,cur){var b=prompt('Надбавка для '+name+':',cur);if(b!==null&&!isNaN(parseInt(b))){db.ref('users/'+key+'/bonus').set(parseInt(b));loadWorkers()}}
 function deleteWorker(key,name){if(!confirm('Удалить '+name+'?'))return;db.ref('shifts').orderByChild('user').equalTo(name).once('value',function(s){s.forEach(function(c){db.ref('shifts/'+c.key).remove()})});db.ref('users/'+key).remove();loadWorkers()}
-function openPremium(user){currentPremiumUser=user;document.getElementById('app').style.display='none';document.getElementById('premiumCard').style.display='block';document.getElementById('premiumUser').textContent=user}
-function addPremium(){var am=parseInt(document.getElementById('premiumAmount').value);if(!am||isNaN(am)){alert('Введи сумму!');return}var st=getGodStatus(godRating),texts=PREMIUM_TEXTS[st.name]||['+{sum}₽'],msg=randomText(texts,am);db.ref('premiums').push({user:currentPremiumUser,amount:am,timestamp:Date.now()});db.ref('notifications').push({user:currentPremiumUser,text:msg,timestamp:Date.now()});godRating+=2;updateGodStatusUI();alert('✅');backToApp()}
+
+// Премии
+function openPremium(user){currentPremiumUser=user;document.getElementById('app').style.display='none';document.getElementById('premiumCard').style.display='block';document.getElementById('premiumUser').textContent=user;loadPremiums()}
+function loadPremiums(){if(!currentPremiumUser)return;db.ref('premiums').orderByChild('user').equalTo(currentPremiumUser).on('value',function(s){var h='';s.forEach(function(c){h+='<div class="punish-row"><span>'+c.val().amount+' ₽</span><button class="btn-red" onclick="delPremium(\''+c.key+'\')" style="width:auto;padding:4px 8px;font-size:10px">✕</button></div>'});document.getElementById('premiumList').innerHTML=h||'<p>Нет премий</p>'})}
+function addPremium(){var am=parseInt(document.getElementById('premiumAmount').value);if(!am||isNaN(am)){alert('Введи сумму!');return}var st=getGodStatus(godRating),texts=PREMIUM_TEXTS[st.name]||['+{sum}₽'],msg=randomText(texts,am);db.ref('premiums').push({user:currentPremiumUser,amount:am,timestamp:Date.now()});db.ref('notifications').push({user:currentPremiumUser,text:msg,timestamp:Date.now()});godRating+=2;updateGodStatusUI();document.getElementById('premiumAmount').value=''}
+function delPremium(id){if(confirm('Удалить премию?')){db.ref('premiums/'+id).remove();recountRating()}}
+
+// Штрафы
 function openPunish(user){currentPunish=user;document.getElementById('app').style.display='none';document.getElementById('punishCard').style.display='block';document.getElementById('punishUser').textContent=user;loadPunishes()}
 function loadPunishes(){if(!currentPunish)return;db.ref('punishes').orderByChild('user').equalTo(currentPunish).on('value',function(s){var h='';s.forEach(function(c){h+='<div class="punish-row"><span>'+c.val().amount+' ₽ — '+c.val().reason+'</span><button class="btn-red" onclick="delPunish(\''+c.key+'\')" style="width:auto;padding:4px 8px;font-size:10px">✕</button></div>'});document.getElementById('punishList').innerHTML=h||'<p>Нет штрафов</p>'})}
 function addPunish(){var am=parseInt(document.getElementById('punishAmount').value),r=document.getElementById('punishReason').value.trim();if(!am||isNaN(am)||!r){alert('Введи сумму и причину!');return}var st=getGodStatus(godRating),texts=PUNISH_TEXTS[st.name]||['-{sum}₽'],msg=randomText(texts,am);db.ref('punishes').push({user:currentPunish,amount:am,reason:r,timestamp:Date.now()});db.ref('notifications').push({user:currentPunish,text:msg,timestamp:Date.now()});godRating-=1;if(godRating<0)godRating=0;updateGodStatusUI();document.getElementById('punishAmount').value='';document.getElementById('punishReason').value=''}
-function delPunish(id){if(confirm('Удалить штраф?')){db.ref('punishes/'+id).remove()}}
+function delPunish(id){if(confirm('Удалить штраф?')){db.ref('punishes/'+id).remove();recountRating()}}
+
+// Расчёт и календарь
 function loadCalcUsers(){db.ref('users').once('value',function(s){var sel=document.getElementById('calcUser');sel.innerHTML='<option value="">-- Выбери --</option>';s.forEach(function(c){sel.innerHTML+='<option value="'+c.val().name+'">'+c.val().name+'</option>'})})}
 function onCalcSelect(){var u=document.getElementById('calcUser').value;document.getElementById('calcBlock').style.display=u?'block':'none';if(u){var n=new Date(),t=new Date(n.getTime()-14*24*60*60*1000);document.getElementById('calcFrom').value=t.toISOString().split('T')[0];document.getElementById('calcTo').value=n.toISOString().split('T')[0];document.getElementById('zpResult').style.display='none';loadShifts(u)}}
 function addShift(){var u=document.getElementById('calcUser').value;if(!u){alert('Выбери сотрудника!');return}currentAddUser=u;document.getElementById('addShiftUser').textContent=u;document.getElementById('shiftDate').value=new Date().toISOString().split('T')[0];document.getElementById('app').style.display='none';document.getElementById('addShiftCard').style.display='block'}
 function saveShift(){var d=document.getElementById('shiftDate').value,tf=document.getElementById('shiftFrom').value||'9',tt=document.getElementById('shiftTo').value||'21',tv=parseInt(document.getElementById('shiftTovar').value)||0;if(!d){alert('Выбери дату!');return}db.ref('shifts/'+currentAddUser+'_'+Date.now()).set({user:currentAddUser,punkt:'49',date:new Date(d).toLocaleDateString('ru-RU'),timeFrom:tf,timeTo:tt,hours:parseInt(tt)-parseInt(tf),tovar:tv,paid:!1,timestamp:new Date(d).toISOString()});alert('✅');backToApp();loadShifts(currentAddUser)}
 function loadShifts(user){db.ref('shifts').orderByChild('user').equalTo(user).once('value',function(s){allShifts=[];s.forEach(function(c){var x=c.val();x._id=c.key;allShifts.push(x)});allShifts.sort(function(a,b){return new Date(b.timestamp)-new Date(a.timestamp)});renderCalendar()})}
-function renderCalendar(){if(!allShifts.length){document.getElementById('calendar').innerHTML='';return}var now=new Date(),y=now.getFullYear(),m=now.getMonth(),dim=new Date(y,m+1,0).getDate(),fd=new Date(y,m,0).getDay();document.getElementById('calHeader').innerHTML='<b>'+now.toLocaleDateString('ru-RU',{month:'long',year:'numeric'})+'</b>';var days=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],h='';for(var i=0;i<7;i++)h+='<div class="header">'+days[i]+'</div>';for(var i=0;i<fd;i++)h+='<div></div>';var sd={};allShifts.forEach(function(s){sd[s.date]=(sd[s.date]||0)+1});var ts=now.toLocaleDateString('ru-RU');for(var d=1;d<=dim;d++){var ds=new Date(y,m,d).toLocaleDateString('ru-RU'),cl='';if(sd[ds])cl='shift-day';if(ds===ts)cl+=' today';h+='<div class="'+cl+'">'+d+'</div>'}document.getElementById('calendar').innerHTML=h}
-function calcZP(){var u=document.getElementById('calcUser').value,from=new Date(document.getElementById('calcFrom').value),to=new Date(document.getElementById('calcTo').value);to.setHours(23,59,59);if(!u||isNaN(from)||isNaN(to)){alert('Заполни период!');return}db.ref('punkts').once('value',function(pkSnap){var rates={};pkSnap.forEach(function(c){rates[c.key]=c.val().rate||0});db.ref('users/'+u).once('value',function(uSnap){var bonus=uSnap.exists()?uSnap.val().bonus||0:0;db.ref('punishes').orderByChild('user').equalTo(u).once('value',function(pnSnap){var totalPunish=0;pnSnap.forEach(function(c){var p=c.val();if(new Date(p.timestamp)>=from&&new Date(p.timestamp)<=to)totalPunish+=p.amount||0});db.ref('premiums').orderByChild('user').equalTo(u).once('value',function(prSnap){var totalPremium=0;prSnap.forEach(function(c){var p=c.val();if(new Date(p.timestamp)>=from&&new Date(p.timestamp)<=to)totalPremium+=p.amount||0});var shifts=allShifts.filter(function(s){var t=new Date(s.timestamp);return t>=from&&t<=to&&!s.paid});var th=0,tt=0,tz=0;shifts.forEach(function(s){var h=s.hours||0,tv=s.tovar||0;th+=h;tt+=tv;tz+=h*(rates[s.punkt]||0)+tv+bonus});tz+=totalPremium;document.getElementById('zpResult').style.display='block';document.getElementById('zpResult').innerHTML='📊 <b>'+u+'</b>\n'+from.toLocaleDateString('ru-RU')+' – '+to.toLocaleDateString('ru-RU')+'\n\nЧасов: '+th+'\nТоваров: '+tt+'\nЗП: '+(tz-totalPremium)+' ₽\nПремии: +'+totalPremium+' ₽\nШтрафы: -'+totalPunish+' ₽\n<b>Итого: '+(tz-totalPunish)+' ₽</b>';lastCalc={user:u,from:from.toISOString(),to:to.toISOString(),shifts:shifts.map(function(s){return s._id}),total:tz-totalPunish}})})})})}
-function markPaid(){if(!lastCalc||!lastCalc.shifts.length){alert('Сначала нажми Посчитать!');return}if(!confirm('Оплачено?\n'+lastCalc.total+' ₽'))return;db.ref('payments').push({user:lastCalc.user,dateFrom:lastCalc.from,dateTo:lastCalc.to,total:lastCalc.total,timestamp:Date.now()});lastCalc.shifts.forEach(function(id){db.ref('shifts/'+id+'/paid').set(!0)});alert('✅');document.getElementById('zpResult').style.display='none';lastCalc=null}
-function loadChat(){db.ref('chat').limitToLast(30).on('value',function(s){var h='';s.forEach(function(c){var m=c.val(),sn=(m.user||'').replace('📢 ',''),av=allUsers[sn]||allUsers[m.user]||'',ah=av?'<img src="'+av+'" style="width:24px;height:24px;border-radius:50%;object-fit:cover;margin-right:4px;vertical-align:middle">':'';h+='<p><span class="del-msg" onclick="delChatMsg(\''+c.key+'\')">✕</span>'+ah+'<b>'+(m.user||'?')+':</b> '+m.text+'</p>'});document.getElementById('chat').innerHTML=h;document.getElementById('chat').scrollTop=document.getElementById('chat').scrollHeight})}
-function delChatMsg(key){if(confirm('Удалить?')){db.ref('chat/'+key).remove()}}
-function sendChat(){var t=document.getElementById('chatInput').value.trim();if(!t)return;db.ref('chat').push({user:'👑 '+godName,text:t,timestamp:Date.now()});document.getElementById('chatInput').value=''}
-document.getElementById('chatInput').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();sendChat()}});
-</script>
-</body>
-</html>
+function renderCalendar(){var now=new Date(),y=now.getFullYear(),m=now.getMonth(),dim=new Date(y,m+1,0).getDate(),fd=new Date(y,m,0).getDay();document.getElementById('calHeader').innerHTML='<b>'+now.toLocaleDateString('ru-RU',{month:'long',year:'numeric'})+'</b>';var days=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],h='';for(var i=0;i<7;i++)h+='<div class="header">'+days[i]+'</div>';for(var i=0;i<fd;i++)h+='<div></div>';var sd={};allShifts.forEach(function(s){sd[s.date]=s});var ts=now.toLocaleDateString('ru-RU');for(var d=1;d<=dim;d++){var ds=new Date(y,m,d).toLocaleDateString('ru-RU'),cl='';if(sd[ds])cl='shift-day';if(ds===ts)cl+=' today';h+='<div class="'+cl+'" onclick="showShiftDetail(\''+ds+'\')">'+d+'</div>'}document.getElementById('calendar').innerHTML=h}
+function showShiftDetail(dateStr){
+  var shifts=allShifts.filter(function(s){return s.date===dateStr});
+  var h='<b>'+dateStr+'</b><br>';
+  shifts.forEach(function(s){
+    h+='<div class="shift-edit-row">';
+    h+='<input id="ed_'+s._id+'_tf" value="'+s.timeFrom+'" style="width:40px">–';
+    h+='<input id="ed_'+s._id+'_tt" value="'+s.timeTo+'" style="width:40px">';
+    h+='Товаров: <input id="ed_'+s._id+'_tv" type="number" value="'+s.tovar+'" style="width:60px">';
+    h+='<button class="btn-blue" onclick="editShift(\''+s._id+'\')">💾</button>';
+    h+='<button class="btn-red" onclick="delShift(\''+s._id+'\')">✕</button>';
+    h+='</div>';
+  });
+  document.getElementById('shiftDetail').innerHTML=h;
+}
+function editShift(id){
+  var tf=document.getElementById('ed_'+id+'_tf').value;
+  var tt=document.getElementById('ed_'+id+'_tt').value;
+  var tv=parseInt(document.getElementById('ed_'+id+'_tv').value)||0;
+  db.ref('shifts/'+id).update({timeFrom:tf,timeTo:tt,hours:parseInt(tt)-parseInt(tf),tovar:tv});
+  alert('✅ Обновлено');
+  loadShifts(document.getElementById('calcUser').value);
+}
+function delShift(id){if(confirm('Удалить смену?')){db.ref('shifts/'+id).remove();loadShifts(document.getElementById('calcUser').value)}}
+function calcZP(){var u=document.getElementById('calcUser').value,from=new Date(document.getElementById('calcFrom').value),to=new Date(document.getElementById('calcTo').value);to.setHours(23,59,59);if(!u||isNaN(from)||isNaN(to)){alert('Заполни период!');return}db.ref('punkts').once('value',function(pkSnap){var rates={};pkSnap.forEach(function(c){rates[c.key]=c.val().rate||0});db.ref('users/'+u).once('value',function(uSnap){var bonus=uSnap.exists()?uSnap.val().bonus||0:0;db.ref('punishes').orderByChild('user').equalTo(u).once('value',function(pnSnap){var totalPunish=0;pnSnap.forEach(function(c){var p=c.val();if(new Date(p.timestamp)>=from&&new Date(p.timestamp)<=to)totalPunish+=p.amount||0});db.ref('premiums').orderByChild('user').equalTo(u).once('value',function(prSnap){var totalPremium=0;prSnap.forEach(function(c){var p=c.val();if(new Date(p.timestamp)>=from&&new Date(p.timestamp)<=to)totalPremium+=p.amount||0});var shifts=allShifts.filter(function(s){var t=new Date(s.timestamp);return t>=from&&t<=to&&!s.paid});var th=0,tt=0,tz=0;shifts.forEach(function(s){var h=s.hours||0,tv=s.tovar||0;th+=h;tt+=tv;tz+=h*(rates[s.punkt]||0)+tv+bonus});tz+=totalPremium;document.getElementById('zpResult').style.display='block';document.getElementById('zpResult').innerHTML='📊 <b>'+u+'</b>\n'+from.toLocaleDateString('ru-RU')+' – '+to.toLocaleDateString('ru-RU')+'\n\nЧасов: '+th+'\nТоваров: '+tt+'\nЗП: '+(tz-totalPremium)+' ₽\nПремии: +'+totalPremium+' ₽\nШтрафы: -'+totalPunish+' ₽\n<b>Итого: '+(tz-totalPunish)+' ₽</b>';lastCalc={user:u,from:from.toISOString(),to:to.toISOString(),shifts:shifts.map(function(s){
