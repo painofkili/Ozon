@@ -141,7 +141,7 @@ if(saved){
 }
 });
 
-function updateProfileUI(){document.getElementById('uname').textContent=user.name;document.getElementById('upunkt').textContent=user.punkt||'?';if(user.avatar){document.getElementById('profileAvatar').src=user.avatar;document.getElementById('profileAvatar').style.display='inline'}updateStatusUI()}
+function updateProfileUI(){document.getElementById('uname').textContent=user.name;document.getElementById('upunkt').textContent=user.punkt||'?';if(user.avatar){var pa=document.getElementById('profileAvatar');pa.src=user.avatar;pa.style.display='inline';pa.onclick=function(){viewPhoto(user.avatar)}}updateStatusUI()}
 function showTab(tab){
   var tabs={shift:'shiftTab',stats:'statsTab',history:'historyTab',notify:'notifyTab'};
   var active=document.querySelector('.tabs button.active');
