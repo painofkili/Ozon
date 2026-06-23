@@ -102,7 +102,7 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
     <div style="display:flex;gap:4px">
       <input id="msg" placeholder="Чат..." style="flex:1">
       <button class="btn-gray" onclick="document.getElementById('chatPhoto').click()" style="width:auto;padding:14px">📎</button>
-      <input id="chatPhoto" type="file" accept="image/*" onchange="sendPhoto()" style="display:none">
+      <input id="chatPhoto" type="file" accept="image/*" multiple onchange="sendPhoto()" style="display:none">
       <button class="btn-green" onclick="send()" style="width:auto;padding:14px 18px">➤</button>
     </div>
   </div>
