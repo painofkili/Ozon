@@ -112,17 +112,30 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
 <script>
 firebase.initializeApp({apiKey:"AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",authDomain:"ozon-grafik-4ad9f.firebaseapp.com",databaseURL:"https://ozon-grafik-4ad9f-default-rtdb.europe-west1.firebasedatabase.app",projectId:"ozon-grafik-4ad9f",storageBucket:"ozon-grafik-4ad9f.firebasestorage.app",messagingSenderId:"798009068634",appId:"1:798009068634:web:4b70eea3cce6c96f4f5c63"});
 var db=firebase.database(),user=null,onShift=!1,photoBase64=[],regAvatarData=null,newAvatarData=null,allMyShifts=[],allUsers={};
+
 // PWA уведомления
 if('Notification' in window && Notification.permission==='default'){Notification.requestPermission()}
 function notifyMe(title,body){if('Notification' in window && Notification.permission==='granted'){new Notification(title,{body:body,icon:'https://raw.githubusercontent.com/painofkili/ozon/main/на%20смену.png'})}}
+
 db.ref('users').on('value',function(s){s.forEach(function(c){allUsers[c.key]=c.val().avatar||''})});
-db.ref('notifications').orderByChild('user').equalTo(localStorage.getItem('ozon_user')?JSON.parse(localStorage.getItem('ozon_user')).name:'').limitToLast(1).on('child_added',function(s){var x=s.val();notifyMe('🔔 Уведомление',x.text)});
+
 var STATUSES=[{name:'📦 Штрих',color:'#999',min:0,max:3},{name:'🚚 ПВЗюк',color:'#cd7f32',min:4,max:7},{name:'🏭 Пунктовой',color:'#2196F3',min:8,max:12},{name:'🚀 Озонавт',color:'#4CAF50',min:13,max:20},{name:'👑 Озоний',color:'#f5c518',min:21,max:999}];
 function getStatus(n){for(var i=STATUSES.length-1;i>=0;i--){if(n>=STATUSES[i].min)return STATUSES[i]}return STATUSES[0]}
 function updateStatusUI(){var n=allMyShifts.length,st=getStatus(n),ns=null;for(var i=0;i<STATUSES.length;i++){if(STATUSES[i].min>n){ns=STATUSES[i];break}}var b=document.getElementById('statusBadge');b.textContent=st.name;b.style.background=st.color;b.style.color='#000';var p=ns?((n-st.min)/(ns.min-st.min)*100):100;document.getElementById('progressFill').style.width=p+'%';document.getElementById('progressFill').style.background=st.color;document.getElementById('progressText').textContent=ns?n+'/'+ns.min+' до '+ns.name:'⭐ Максимум!'}
 function loadPunkts(cb){db.ref('punkts').once('value',function(s){var p=[];s.forEach(function(c){p.push(c.key)});if(cb)cb(p)})}
+
 var saved=localStorage.getItem('ozon_user');
-if(saved){user=JSON.parse(saved);user.punkt=user.punkt||'49';document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';updateProfileUI();loadChat();loadAllData();loadHistory();loadNotifications();if(localStorage.getItem('ozon_onShift')==='1'){onShift=!0;document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block'}}
+if(saved){
+  user=JSON.parse(saved);user.punkt=user.punkt||'49';
+  document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';
+  updateProfileUI();loadChat();loadAllData();loadHistory();loadNotifications();
+  // Слушаем уведомления для этого пользователя
+  db.ref('notifications').orderByChild('user').equalTo(user.name).limitToLast(1).on('child_added',function(s){var x=s.val();notifyMe('🔔 Уведомление',x.text)});
+  // Слушаем чат
+  db.ref('chat').limitToLast(1).on('child_added',function(s){var x=s.val();if(x.user!==user.name&&x.user!=='📢 '+user.name){notifyMe('💬 Чат',x.user+': '+x.text)}});
+  if(localStorage.getItem('ozon_onShift')==='1'){onShift=!0;document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block'}
+}
+
 function updateProfileUI(){document.getElementById('uname').textContent=user.name;document.getElementById('upunkt').textContent=user.punkt||'?';if(user.avatar){document.getElementById('profileAvatar').src=user.avatar;document.getElementById('profileAvatar').style.display='inline'}updateStatusUI()}
 function showTab(tab){document.getElementById('shiftTab').style.display=tab==='shift'?'block':'none';document.getElementById('statsTab').style.display=tab==='stats'?'block':'none';document.getElementById('historyTab').style.display=tab==='history'?'block':'none';document.getElementById('notifyTab').style.display=tab==='notify'?'block':'none';['tabShift','tabStats','tabHistory','tabNotify'].forEach(function(id){document.getElementById(id).classList.remove('active')});document.getElementById('tab'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('active');if(tab==='stats')renderCalendar();if(tab==='history')loadHistory();if(tab==='notify')loadNotifications()}
 function loadNotifications(){if(!user)return;db.ref('notifications').orderByChild('user').equalTo(user.name).once('value',function(s){var arr=[];s.forEach(function(c){arr.push(c.val())});arr.sort(function(a,b){return b.timestamp-a.timestamp});document.getElementById('notifyContent').innerHTML=arr.length?arr.map(function(x){return'<div class="notify-item">'+x.text+' <small style="color:#999">'+new Date(x.timestamp).toLocaleString('ru-RU')+'</small></div>'}).join(''):'<p>Нет уведомлений</p>'})}
@@ -136,7 +149,12 @@ function saveSettings(){var nn=document.getElementById('newName').value.trim(),n
 function previewRegAvatar(){var f=document.getElementById('regAvatar').files[0];if(!f)return;var r=new FileReader();r.onload=function(e){regAvatarData=e.target.result;document.getElementById('regAvatarPreview').innerHTML='<img class="avatar" src="'+regAvatarData+'">'};r.readAsDataURL(f)}
 function previewNewAvatar(){var f=document.getElementById('newAvatar').files[0];if(!f)return;var r=new FileReader();r.onload=function(e){newAvatarData=e.target.result;document.getElementById('newAvatarPreview').innerHTML='<img class="avatar" src="'+newAvatarData+'">'};r.readAsDataURL(f)}
 function showRegister(){document.getElementById('login').style.display='none';document.getElementById('registerCard').style.display='block'}
-function login(){var n=document.getElementById('name').value.trim(),p=document.getElementById('pass').value.trim();db.ref('users/'+n).once('value',function(s){if(s.exists()&&s.val().password===p){user=s.val();user.punkt=user.punkt||'49';localStorage.setItem('ozon_user',JSON.stringify(user));document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';updateProfileUI();loadChat();loadAllData();loadHistory();loadNotifications()}else alert('Неверно!')})}
+function login(){var n=document.getElementById('name').value.trim(),p=document.getElementById('pass').value.trim();db.ref('users/'+n).once('value',function(s){if(s.exists()&&s.val().password===p){user=s.val();user.punkt=user.punkt||'49';localStorage.setItem('ozon_user',JSON.stringify(user));document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';updateProfileUI();loadChat();loadAllData();loadHistory();loadNotifications();
+// Слушаем уведомления
+db.ref('notifications').orderByChild('user').equalTo(user.name).limitToLast(1).on('child_added',function(s){var x=s.val();notifyMe('🔔 Уведомление',x.text)});
+// Слушаем чат
+db.ref('chat').limitToLast(1).on('child_added',function(s){var x=s.val();if(x.user!==user.name&&x.user!=='📢 '+user.name){notifyMe('💬 Чат',x.user+': '+x.text)}});
+}else alert('Неверно!')})}
 function register(){var n=document.getElementById('regName').value.trim(),pk=document.getElementById('regPunkt').value.trim(),p=document.getElementById('regPass').value.trim();if(!n||!p||!pk){alert('Заполни все поля!');return}db.ref('users/'+n).once('value',function(s){if(s.exists()){alert('Уже есть!');return}db.ref('users/'+n).set({name:n,punkt:pk,password:p,bonus:0,avatar:regAvatarData||''},function(){alert('✅');document.getElementById('registerCard').style.display='none';document.getElementById('login').style.display='block'})})}
 function previewPhotos(){photoBase64=[];document.getElementById('photoPreviews').innerHTML='';var files=document.getElementById('photos').files;for(var i=0;i<Math.min(files.length,5);i++){(function(file){var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var c=document.createElement('canvas'),mw=200,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);var thumb=c.toDataURL('image/jpeg',0.6);photoBase64.push({full:e.target.result,thumb:thumb});var pv=document.createElement('img');pv.src=thumb;document.getElementById('photoPreviews').appendChild(pv)};img.src=e.target.result};r.readAsDataURL(file)})(files[i])}}
 function startShift(){onShift=!0;localStorage.setItem('ozon_onShift','1');document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block';var t=new Date().toLocaleTimeString('ru-RU');db.ref('chat').push({user:'📢 '+user.name,text:'🔵 Пункт '+user.punkt+' на смене! ('+t+')',timestamp:Date.now()})}
