@@ -11,7 +11,7 @@ body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; heigh
 .card { background: rgba(22,33,62,0.85); padding: 16px; border-radius: 14px; margin: 8px 0; backdrop-filter: blur(10px); }
 input, button, select, textarea { width: 100%; padding: 14px; font-size: 16px; margin: 4px 0; border-radius: 10px; border: 1px solid #444; background: #1a1a2e; color: #fff; }
 button { border: none; font-weight: bold; cursor: pointer; }
-.btn-green { background: #4CAF50; } .btn-blue { background: #2196F3; } .btn-red { background: #e94560; } .btn-gray { background: #555; } .btn-purple { background: #9C27B0; } .btn-orange { background: #FF9800; } .btn-cyan { background: #00BCD4; }
+.btn-green { background: #4CAF50; } .btn-blue { background: #2196F3; } .btn-red { background: #e94560; } .btn-gray { background: #555; } .btn-purple { background: #9C27B0; } .btn-orange { background: #FF9800; } .btn-cyan { background: #00BCD4; } .btn-gold { background: #f5c518; color: #000; }
 .tabs { display: flex; gap: 4px; margin: 10px 0; }
 .tabs button { flex: 1; padding: 12px; background: #333; font-size: 13px; color: #aaa; }
 .tabs button.active { background: #4CAF50; color: #fff; }
@@ -25,6 +25,10 @@ button { border: none; font-weight: bold; cursor: pointer; }
 #chat .del-msg { position: absolute; top: 0; right: 0; background: #e94560; color: #fff; border-radius: 50%; width: 16px; height: 16px; font-size: 10px; line-height: 16px; text-align: center; cursor: pointer; display: none; }
 #chat p:hover .del-msg { display: block; }
 .avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; }
+.status-badge { font-size: 14px; font-weight: bold; padding: 4px 12px; border-radius: 12px; display: inline-block; margin: 4px 0; }
+.progress-bar { height: 6px; background: #333; border-radius: 3px; margin-top: 4px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
+.progress-text { font-size: 11px; color: #aaa; }
 </style>
 </head>
 <body>
@@ -39,7 +43,12 @@ button { border: none; font-weight: bold; cursor: pointer; }
 <div id="app" style="display:none">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
     <img id="godAvatar" class="avatar" src="" style="display:none">
-    <div style="flex:1"><b id="godName">Бог</b></div>
+    <div style="flex:1">
+      <b id="godName">Бог</b>
+      <span id="godStatusBadge" class="status-badge"></span>
+      <div class="progress-bar"><div id="godProgressFill" class="progress-fill" style="width:0%"></div></div>
+      <div id="godProgressText" class="progress-text"></div>
+    </div>
     <button class="btn-gray" onclick="openSettings()" style="width:auto;padding:8px 12px">⚙️</button>
   </div>
   <div class="tabs">
@@ -63,21 +72,68 @@ button { border: none; font-weight: bold; cursor: pointer; }
   <div style="display:flex;gap:4px"><input id="chatInput" placeholder="Чат..."><button class="btn-green" onclick="sendChat()" style="width:auto">➤</button></div>
 </div>
 
-<div id="addShiftCard" style="display:none"><div class="card"><h4 style="text-align:center">+ Новая смена: <span id="addShiftUser"></span></h4><input id="shiftDate" type="date"><input id="shiftFrom" value="9" placeholder="Начало"><input id="shiftTo" value="21" placeholder="Конец"><input id="shiftTovar" type="number" placeholder="Товаров"><button class="btn-green" onclick="saveShift()">💾 Сохранить</button><button class="btn-gray" onclick="backToApp()">↩ Назад</button></div></div>
-<div id="punishCard" style="display:none"><div class="card"><h4 style="text-align:center">⚠️ Штрафы: <span id="punishUser"></span></h4><div id="punishList"></div><div style="display:flex;gap:4px"><input id="punishAmount" type="number" placeholder="Сумма" style="flex:1"><input id="punishReason" placeholder="Причина" style="flex:2"></div><button class="btn-red" onclick="addPunish()">+ Штраф</button><button class="btn-gray" onclick="backToApp()">↩ Назад</button></div></div>
-<div id="settingsCard" style="display:none"><div class="card"><h4 style="text-align:center">⚙️ Настройки бога</h4><input id="newGodName" placeholder="Имя"><input id="newGodPass" type="password" placeholder="Новый пароль"><label>Аватарка</label><input id="newGodAvatar" type="file" accept="image/*" onchange="previewAvatar()"><div id="avatarPreview" style="text-align:center;margin:6px 0"></div><button class="btn-green" onclick="saveSettings()">💾 Сохранить</button><button class="btn-gray" onclick="backToApp()">↩ Назад</button></div></div>
+<div id="addShiftCard" style="display:none"><div class="card"><h4>+ Новая смена: <span id="addShiftUser"></span></h4><input id="shiftDate" type="date"><input id="shiftFrom" value="9"><input id="shiftTo" value="21"><input id="shiftTovar" type="number" placeholder="Товаров"><button class="btn-green" onclick="saveShift()">💾 Сохранить</button><button class="btn-gray" onclick="backToApp()">↩ Назад</button></div></div>
+<div id="punishCard" style="display:none"><div class="card"><h4>⚠️ Штрафы: <span id="punishUser"></span></h4><div id="punishList"></div><div style="display:flex;gap:4px"><input id="punishAmount" type="number" placeholder="Сумма"><input id="punishReason" placeholder="Причина"></div><button class="btn-red" onclick="addPunish()">+ Штраф</button><button class="btn-gray" onclick="backToApp()">↩ Назад</button></div></div>
+<div id="premiumCard" style="display:none"><div class="card"><h4>🎁 Премия: <span id="premiumUser"></span></h4><input id="premiumAmount" type="number" placeholder="Сумма"><button class="btn-gold" onclick="addPremium()">🎁 Выдать премию</button><button class="btn-gray" onclick="backToApp()">↩ Назад</button></div></div>
+<div id="settingsCard" style="display:none"><div class="card"><h4>⚙️ Настройки бога</h4><input id="newGodName" placeholder="Имя"><input id="newGodPass" type="password" placeholder="Новый пароль"><label>Аватарка</label><input id="newGodAvatar" type="file" accept="image/*" onchange="previewAvatar()"><div id="avatarPreview" style="text-align:center;margin:6px 0"></div><button class="btn-green" onclick="saveSettings()">💾 Сохранить</button><button class="btn-gray" onclick="backToApp()">↩ Назад</button></div></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <script>
 firebase.initializeApp({apiKey:"AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",authDomain:"ozon-grafik-4ad9f.firebaseapp.com",databaseURL:"https://ozon-grafik-4ad9f-default-rtdb.europe-west1.firebasedatabase.app",projectId:"ozon-grafik-4ad9f",storageBucket:"ozon-grafik-4ad9f.firebasestorage.app",messagingSenderId:"798009068634",appId:"1:798009068634:web:4b70eea3cce6c96f4f5c63"});
-var db=firebase.database(),godPass=null,allShifts=[],lastCalc=null,currentPunish=null,godName='Бог',godAvatarData=null,newAvatarData=null,currentAddUser=null;
+var db=firebase.database(),godPass=null,allShifts=[],lastCalc=null,currentPunish=null,godName='Бог',godAvatarData=null,newAvatarData=null,currentAddUser=null,currentPremiumUser=null;
+var godRating=0;
+
+var GOD_STATUSES=[
+  {name:'💩 Дерьмодемон',color:'#8B4513',min:0,max:1},
+  {name:'🕍 Еврей',color:'#4169E1',min:2,max:4},
+  {name:'👔 Руководитель',color:'#808080',min:5,max:7},
+  {name:'💼 Мистер Бизнес',color:'#000080',min:8,max:14},
+  {name:'🗿 Сигма',color:'#2F4F4F',min:15,max:20},
+  {name:'🌌 Господь',color:'#FFD700',min:21,max:999}
+];
+
+var PREMIUM_TEXTS={
+  '💩 Дерьмодемон':['💩 Из кучи навоза выпало +{sum}₽! Чудо, не иначе!','💩 Твоя аура настолько убога, что Дерьмодемон дал +{sum}₽ из жалости.','💩 Дерьмодемон перепутал тебя с кем-то достойным. +{sum}₽. Не переубеждай!','💩 Ты сегодня не воняешь. +{sum}₽. Дерьмодемон оценил!','💩 Дерьмодемон подтерся твоим чеком. +{sum}₽. Скажи спасибо!','💩 Выплата из навозного фонда! +{sum}₽. Радуйся, пока не передумали!','💩 Дерьмодемон пукнул в твою сторону. +{sum}₽. Почти не пахнут!'],
+  '🕍 Еврей':['📈 Инвестиция в тебя окупилась! +{sum}₽','💎 Редкий случай щедрости! +{sum}₽','💔 От сердца оторвал! +{sum}₽','📝 Будешь должен! +{sum}₽'],
+  '👔 Руководитель':['👔 Руководитель в хорошем настроении. +{sum}₽','👔 Кто-то должен получить премию. Сегодня — ты. +{sum}₽','👔 Твой черёд быть любимчиком. +{sum}₽'],
+  '💼 Мистер Бизнес':['💼 Активы перераспределены в твою пользу. +{sum}₽. Временно.','💼 Я уронил пачку купюр. +{sum}₽. Поднял — твоё.','💼 Ты сегодня в плюсе. +{sum}₽. Завтра посмотрим.','💼 Бизнес-ланч за счёт фирмы. +{sum}₽. Не привыкай.','💼 Карманные расходы. +{sum}₽. Потрать на ерунду.'],
+  '🗿 Сигма':['🗿 На. +{sum}₽.','🗿 Держи. +{sum}₽.','🗿 +{sum}₽.','🗿 Твоё. +{sum}₽.'],
+  '🌌 Господь':['🙏 Благословение свыше. +{sum}₽.','🙏 Молитвы услышаны. +{sum}₽.','🙏 Небесная канцелярия одобрила. +{sum}₽.','🙏 Да воздастся тебе. +{sum}₽.','🙏 С небес на карту. +{sum}₽.','🙏 Господь расщедрился. +{sum}₽.','🙏 На добрые дела. +{sum}₽.','🙏 Святая премия. +{sum}₽. Не греши.']
+};
+
+var PUNISH_TEXTS={
+  '💩 Дерьмодемон':['💩 Кара навозная! -{sum}₽. Заслужил!','💩 Минус {sum}₽. Дерьмодемон сказал: ты говно!','💩 Дерьмодемон проиграл в карты твои -{sum}₽. Бывает!','💩 -{sum}₽ списано в пользу ада. Дерьмодемон доволен, а ты — нет!'],
+  '🕍 Еврей':['📉 Бюджет не резиновый! -{sum}₽','💔 Чтоб я так жил! Штраф -{sum}₽','🪦 Похороны твоей премии! -{sum}₽','🧘 Деньги — не главное... -{sum}₽'],
+  '👔 Руководитель':['👔 Штраф за то, что Руководителю скучно. -{sum}₽','👔 Не понравился твой аватар. -{sum}₽','👔 Руководитель не выспался. Крайний — ты. -{sum}₽'],
+  '💼 Мистер Бизнес':['💼 Кризис. Но только у тебя. -{sum}₽.','💼 Машина сама себя не заправит. -{sum}₽.','💼 Я разбил бокал. Штраф на всех. -{sum}₽.','💼 Сокращение штата. -{sum}₽. Шутка. Или нет.'],
+  '🗿 Сигма':['🗿 Сам знаешь за что. -{sum}₽.','🗿 Не заслужил. -{sum}₽.','🗿 Просто. -{sum}₽.','🗿 Ты понял. -{sum}₽.'],
+  '🌌 Господь':['🙏 Испытание веры. -{sum}₽.','🙏 В книгу грехов записано. -{sum}₽.','🙏 Гнев господень. -{sum}₽.','🙏 Небесная канцелярия вычла. -{sum}₽.','🙏 Карма. -{sum}₽.','🙏 По грехам твоим. -{sum}₽.','🙏 Господь недоволен. -{sum}₽. Искупай.','🙏 Покаяния недостаточно. -{sum}₽.']
+};
+
+function getGodStatus(n){for(var i=GOD_STATUSES.length-1;i>=0;i--){if(n>=GOD_STATUSES[i].min)return GOD_STATUSES[i];}return GOD_STATUSES[0];}
+function updateGodStatusUI(){
+  var st=getGodStatus(godRating),ns=null;
+  for(var i=0;i<GOD_STATUSES.length;i++){if(GOD_STATUSES[i].min>godRating){ns=GOD_STATUSES[i];break;}}
+  var b=document.getElementById('godStatusBadge');b.textContent=st.name;b.style.background=st.color;b.style.color='#fff';
+  var p=ns?((godRating-st.min)/(ns.min-st.min)*100):100;
+  document.getElementById('godProgressFill').style.width=p+'%';document.getElementById('godProgressFill').style.background=st.color;
+  document.getElementById('godProgressText').textContent=ns?godRating+'/'+ns.min+' до '+ns.name:'⭐ Максимум!';
+}
+function randomText(arr,sum){return arr[Math.floor(Math.random()*arr.length)].replace('{sum}',sum);}
+
+// Загружаем рейтинг: премии +2, штрафы -1
 db.ref('godPassword').once('value',function(s){godPass=s.val()});
 db.ref('godSettings').once('value',function(s){if(s.exists()){godName=s.val().name||'Бог';godAvatarData=s.val().avatar||null} if(localStorage.getItem('god_logged')==='1'&&godPass) enter()});
+// Считаем рейтинг
+db.ref('premiums').once('value',function(s){godRating+=s.numChildren()*2});
+db.ref('punishes').once('value',function(s){godRating-=s.numChildren()});
+if(godRating<0)godRating=0;
+
 function msg(t){document.getElementById('msg').textContent=t}
-function backToApp(){['addShiftCard','punishCard','settingsCard'].forEach(function(id){document.getElementById(id).style.display='none'});document.getElementById('app').style.display='block'}
+function backToApp(){['addShiftCard','punishCard','premiumCard','settingsCard'].forEach(function(id){document.getElementById(id).style.display='none'});document.getElementById('app').style.display='block'}
 function login(){var p=document.getElementById('godPass').value.trim();if(!godPass){db.ref('godPassword').set(p);godPass=p;localStorage.setItem('god_logged','1');enter()}else if(p===godPass){localStorage.setItem('god_logged','1');enter()}else msg('Неверный пароль!')}
-function enter(){document.getElementById('loginCard').style.display='none';document.getElementById('app').style.display='block';updateUI();tab('punkts');loadChat()}
+function enter(){document.getElementById('loginCard').style.display='none';document.getElementById('app').style.display='block';updateUI();tab('punkts');loadChat();updateGodStatusUI()}
 function updateUI(){document.getElementById('godName').textContent=godName;if(godAvatarData){document.getElementById('godAvatar').src=godAvatarData;document.getElementById('godAvatar').style.display='inline'}}
 function openSettings(){document.getElementById('app').style.display='none';document.getElementById('settingsCard').style.display='block';document.getElementById('newGodName').value=godName;document.getElementById('newGodPass').value='';document.getElementById('avatarPreview').innerHTML=godAvatarData?'<img class="avatar" src="'+godAvatarData+'">':'';newAvatarData=null}
 function previewAvatar(){var f=document.getElementById('newGodAvatar').files[0];if(!f)return;var r=new FileReader();r.onload=function(e){newAvatarData=e.target.result;document.getElementById('avatarPreview').innerHTML='<img class="avatar" src="'+newAvatarData+'">'};r.readAsDataURL(f)}
@@ -87,19 +143,38 @@ function loadPunkts(){db.ref('punkts').once('value',function(s){var h='';s.forEa
 function addPunkt(){var id=prompt('Номер пункта:');if(!id)return;db.ref('punkts/'+id).set({rate:parseInt(prompt('Ставка (₽/ч):','210'))||210});loadPunkts()}
 function editPunkt(id,cur){var r=parseInt(prompt('Ставка для '+id+':',cur));if(r&&!isNaN(r)){db.ref('punkts/'+id+'/rate').set(r);loadPunkts()}}
 function deletePunkt(id){if(confirm('Удалить '+id+'?')){db.ref('punkts/'+id).remove();loadPunkts()}}
-function loadWorkers(){var fp=document.getElementById('filterPunkt').value;db.ref('users').once('value',function(s){var h='',pk={};s.forEach(function(c){var w=c.val();if(w.punkt)pk[w.punkt]=true;if(fp&&w.punkt!==fp)return;h+='<div class="worker-row"><span><b>'+w.name+'</b><br>Пункт '+(w.punkt||'?')+' | Надбавка: '+(w.bonus||0)+' ₽</span><span><button class="btn-orange" onclick="setBonus(\''+c.key+'\',\''+w.name+'\','+(w.bonus||0)+')">💰</button><button class="btn-purple" onclick="openPunish(\''+w.name+'\')">⚠️</button><button class="btn-red" onclick="deleteWorker(\''+c.key+'\',\''+w.name+'\')">✕</button></span></div>'});document.getElementById('workersList').innerHTML=h||'<p>Нет сотрудников</p>';var sel=document.getElementById('filterPunkt');sel.innerHTML='<option value="">Все пункты</option>';Object.keys(pk).forEach(function(p){if(p)sel.innerHTML+='<option value="'+p+'">'+p+'</option>'})})}
+function loadWorkers(){var fp=document.getElementById('filterPunkt').value;db.ref('users').once('value',function(s){var h='',pk={};s.forEach(function(c){var w=c.val();if(w.punkt)pk[w.punkt]=true;if(fp&&w.punkt!==fp)return;h+='<div class="worker-row"><span><b>'+w.name+'</b><br>Пункт '+(w.punkt||'?')+' | Надбавка: '+(w.bonus||0)+' ₽</span><span><button class="btn-orange" onclick="setBonus(\''+c.key+'\',\''+w.name+'\','+(w.bonus||0)+')">💰</button><button class="btn-gold" onclick="openPremium(\''+w.name+'\')">🎁</button><button class="btn-purple" onclick="openPunish(\''+w.name+'\')">⚠️</button><button class="btn-red" onclick="deleteWorker(\''+c.key+'\',\''+w.name+'\')">✕</button></span></div>'});document.getElementById('workersList').innerHTML=h||'<p>Нет сотрудников</p>';var sel=document.getElementById('filterPunkt');sel.innerHTML='<option value="">Все пункты</option>';Object.keys(pk).forEach(function(p){if(p)sel.innerHTML+='<option value="'+p+'">'+p+'</option>'})})}
 function setBonus(key,name,cur){var b=prompt('Надбавка для '+name+':',cur);if(b!==null&&!isNaN(parseInt(b))){db.ref('users/'+key+'/bonus').set(parseInt(b));loadWorkers()}}
 function deleteWorker(key,name){if(!confirm('Удалить '+name+'?'))return;db.ref('shifts').orderByChild('user').equalTo(name).once('value',function(s){s.forEach(function(c){db.ref('shifts/'+c.key).remove()})});db.ref('users/'+key).remove();loadWorkers()}
+
+function openPremium(user){currentPremiumUser=user;document.getElementById('app').style.display='none';document.getElementById('premiumCard').style.display='block';document.getElementById('premiumUser').textContent=user}
+function addPremium(){var am=parseInt(document.getElementById('premiumAmount').value);if(!am||isNaN(am)){alert('Введи сумму!');return}
+  var st=getGodStatus(godRating);
+  var texts=PREMIUM_TEXTS[st.name]||['+{sum}₽'];
+  var msg=randomText(texts,am);
+  db.ref('premiums').push({user:currentPremiumUser,amount:am,timestamp:Date.now()});
+  db.ref('notifications').push({user:currentPremiumUser,text:msg,timestamp:Date.now()});
+  godRating+=2;updateGodStatusUI();
+  alert('✅ Премия выдана!');backToApp()}
+
 function openPunish(user){currentPunish=user;document.getElementById('app').style.display='none';document.getElementById('punishCard').style.display='block';document.getElementById('punishUser').textContent=user;loadPunishes()}
 function loadPunishes(){if(!currentPunish)return;db.ref('punishes').orderByChild('user').equalTo(currentPunish).on('value',function(s){var h='';s.forEach(function(c){h+='<div class="punish-row"><span>'+c.val().amount+' ₽ — '+c.val().reason+'</span><button class="btn-red" onclick="delPunish(\''+c.key+'\')" style="width:auto;padding:4px 8px;font-size:10px">✕</button></div>'});document.getElementById('punishList').innerHTML=h||'<p>Нет штрафов</p>'})}
-function addPunish(){var am=parseInt(document.getElementById('punishAmount').value),r=document.getElementById('punishReason').value.trim();if(!am||isNaN(am)||!r){alert('Введи сумму и причину!');return};db.ref('punishes').push({user:currentPunish,amount:am,reason:r,timestamp:Date.now()});document.getElementById('punishAmount').value='';document.getElementById('punishReason').value=''}
+function addPunish(){var am=parseInt(document.getElementById('punishAmount').value),r=document.getElementById('punishReason').value.trim();if(!am||isNaN(am)||!r){alert('Введи сумму и причину!');return}
+  var st=getGodStatus(godRating);
+  var texts=PUNISH_TEXTS[st.name]||['-{sum}₽'];
+  var msg=randomText(texts,am);
+  db.ref('punishes').push({user:currentPunish,amount:am,reason:r,timestamp:Date.now()});
+  db.ref('notifications').push({user:currentPunish,text:msg,timestamp:Date.now()});
+  godRating-=1;if(godRating<0)godRating=0;updateGodStatusUI();
+  document.getElementById('punishAmount').value='';document.getElementById('punishReason').value=''}
 function delPunish(id){if(confirm('Удалить штраф?')){db.ref('punishes/'+id).remove()}}
+
 function loadCalcUsers(){db.ref('users').once('value',function(s){var sel=document.getElementById('calcUser');sel.innerHTML='<option value="">-- Выбери --</option>';s.forEach(function(c){sel.innerHTML+='<option value="'+c.val().name+'">'+c.val().name+'</option>'})})}
 function onCalcSelect(){var u=document.getElementById('calcUser').value;document.getElementById('calcBlock').style.display=u?'block':'none';if(u){var n=new Date(),t=new Date(n.getTime()-14*24*60*60*1000);document.getElementById('calcFrom').value=t.toISOString().split('T')[0];document.getElementById('calcTo').value=n.toISOString().split('T')[0];document.getElementById('zpResult').style.display='none';loadShifts(u)}}
 function addShift(){var u=document.getElementById('calcUser').value;if(!u){alert('Сначала выбери сотрудника!');return};currentAddUser=u;document.getElementById('addShiftUser').textContent=u;document.getElementById('shiftDate').value=new Date().toISOString().split('T')[0];document.getElementById('app').style.display='none';document.getElementById('addShiftCard').style.display='block'}
 function saveShift(){var d=document.getElementById('shiftDate').value,tf=document.getElementById('shiftFrom').value||'9',tt=document.getElementById('shiftTo').value||'21',tv=parseInt(document.getElementById('shiftTovar').value)||0;if(!d){alert('Выбери дату!');return};db.ref('shifts/'+currentAddUser+'_'+Date.now()).set({user:currentAddUser,punkt:'49',date:new Date(d).toLocaleDateString('ru-RU'),timeFrom:tf,timeTo:tt,hours:parseInt(tt)-parseInt(tf),tovar:tv,paid:false,timestamp:new Date(d).toISOString()});alert('✅');backToApp();loadShifts(currentAddUser)}
 function loadShifts(user){db.ref('shifts').orderByChild('user').equalTo(user).once('value',function(s){allShifts=[];s.forEach(function(c){var x=c.val();x._id=c.key;allShifts.push(x)})})}
-function calcZP(){var u=document.getElementById('calcUser').value,from=new Date(document.getElementById('calcFrom').value),to=new Date(document.getElementById('calcTo').value);to.setHours(23,59,59);if(!u||isNaN(from)||isNaN(to)){alert('Заполни!');return};db.ref('punkts').once('value',function(pkSnap){var rates={};pkSnap.forEach(function(c){rates[c.key]=c.val().rate||0});db.ref('users/'+u).once('value',function(uSnap){var bonus=uSnap.exists()?uSnap.val().bonus||0:0;db.ref('punishes').orderByChild('user').equalTo(u).once('value',function(pnSnap){var totalPunish=0;pnSnap.forEach(function(c){var p=c.val();if(new Date(p.timestamp)>=from&&new Date(p.timestamp)<=to)totalPunish+=p.amount||0});var shifts=allShifts.filter(function(s){var t=new Date(s.timestamp);return t>=from&&t<=to&&!s.paid});var th=0,tt=0,tz=0;shifts.forEach(function(s){var h=s.hours||0,tv=s.tovar||0;th+=h;tt+=tv;tz+=h*(rates[s.punkt]||0)+tv+bonus});document.getElementById('zpResult').style.display='block';document.getElementById('zpResult').innerHTML='📊 <b>'+u+'</b>\n'+from.toLocaleDateString('ru-RU')+' – '+to.toLocaleDateString('ru-RU')+'\n\nЧасов: '+th+'\nТоваров: '+tt+'\nЗП: '+tz+' ₽\nШтрафы: -'+totalPunish+' ₽\n<b>Итого: '+(tz-totalPunish)+' ₽</b>';lastCalc={user:u,from:from.toISOString(),to:to.toISOString(),shifts:shifts.map(function(s){return s._id}),total:tz-totalPunish}})})})}
+function calcZP(){var u=document.getElementById('calcUser').value,from=new Date(document.getElementById('calcFrom').value),to=new Date(document.getElementById('calcTo').value);to.setHours(23,59,59);if(!u||isNaN(from)||isNaN(to)){alert('Заполни!');return};db.ref('punkts').once('value',function(pkSnap){var rates={};pkSnap.forEach(function(c){rates[c.key]=c.val().rate||0});db.ref('users/'+u).once('value',function(uSnap){var bonus=uSnap.exists()?uSnap.val().bonus||0:0;db.ref('punishes').orderByChild('user').equalTo(u).once('value',function(pnSnap){var totalPunish=0;pnSnap.forEach(function(c){var p=c.val();if(new Date(p.timestamp)>=from&&new Date(p.timestamp)<=to)totalPunish+=p.amount||0});db.ref('premiums').orderByChild('user').equalTo(u).once('value',function(prSnap){var totalPremium=0;prSnap.forEach(function(c){var p=c.val();if(new Date(p.timestamp)>=from&&new Date(p.timestamp)<=to)totalPremium+=p.amount||0});var shifts=allShifts.filter(function(s){var t=new Date(s.timestamp);return t>=from&&t<=to&&!s.paid});var th=0,tt=0,tz=0;shifts.forEach(function(s){var h=s.hours||0,tv=s.tovar||0;th+=h;tt+=tv;tz+=h*(rates[s.punkt]||0)+tv+bonus});tz+=totalPremium;document.getElementById('zpResult').style.display='block';document.getElementById('zpResult').innerHTML='📊 <b>'+u+'</b>\n'+from.toLocaleDateString('ru-RU')+' – '+to.toLocaleDateString('ru-RU')+'\n\nЧасов: '+th+'\nТоваров: '+tt+'\nЗП: '+(tz-totalPremium)+' ₽\nПремии: +'+totalPremium+' ₽\nШтрафы: -'+totalPunish+' ₽\n<b>Итого: '+(tz-totalPunish)+' ₽</b>';lastCalc={user:u,from:from.toISOString(),to:to.toISOString(),shifts:shifts.map(function(s){return s._id}),total:tz-totalPunish}})})})})}
 function markPaid(){if(!lastCalc||!lastCalc.shifts.length){alert('Сначала Посчитать!');return};if(!confirm('Оплачено?\n'+lastCalc.total+' ₽'))return;db.ref('payments').push({user:lastCalc.user,dateFrom:lastCalc.from,dateTo:lastCalc.to,total:lastCalc.total,timestamp:Date.now()});lastCalc.shifts.forEach(function(id){db.ref('shifts/'+id+'/paid').set(true)});alert('✅');document.getElementById('zpResult').style.display='none';lastCalc=null}
 function loadChat(){db.ref('chat').limitToLast(30).on('value',function(s){var h='';s.forEach(function(c){h+='<p><span class="del-msg" onclick="delChatMsg(\''+c.key+'\')">✕</span><b>'+(c.val().user||'?')+':</b> '+c.val().text+'</p>'});document.getElementById('chat').innerHTML=h;document.getElementById('chat').scrollTop=document.getElementById('chat').scrollHeight})}
 function delChatMsg(key){if(confirm('Удалить?')){db.ref('chat/'+key).remove()}}
