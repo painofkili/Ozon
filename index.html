@@ -46,6 +46,7 @@ button:disabled { opacity: 0.5; cursor: default; }
 .calendar .today { border: 2px solid #2196F3; }
 .calendar .header { font-weight: bold; background: #333; }
 label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
+.notify-item { padding: 6px; border-bottom: 1px solid #333; font-size: 13px; }
 </style>
 </head>
 <body>
@@ -102,6 +103,7 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
     <button id="tabShift" class="active" onclick="showTab('shift')">🔵 Смена</button>
     <button id="tabStats" onclick="showTab('stats')">📊 Статистика</button>
     <button id="tabHistory" onclick="showTab('history')">💳 Выплаты</button>
+    <button id="tabNotify" onclick="showTab('notify')">🔔</button>
   </div>
   
   <div id="shiftTab">
@@ -135,6 +137,11 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
   <div id="historyTab" style="display:none">
     <h4 style="text-align:center">💳 История выплат</h4>
     <div id="historyContent"></div>
+  </div>
+  
+  <div id="notifyTab" style="display:none">
+    <h4 style="text-align:center">🔔 Уведомления</h4>
+    <div id="notifyContent"></div>
   </div>
 </div>
 
@@ -182,7 +189,7 @@ var saved = localStorage.getItem('ozon_user');
 if (saved) {
   user = JSON.parse(saved); user.punkt = user.punkt || '49';
   document.getElementById('login').style.display = 'none'; document.getElementById('app').style.display = 'block';
-  updateProfileUI(); loadChat(); loadAllData(); loadHistory();
+  updateProfileUI(); loadChat(); loadAllData(); loadHistory(); loadNotifications();
   if (localStorage.getItem('ozon_onShift') === '1') {
     onShift = true; document.getElementById('startBtn').style.display='none'; document.getElementById('onShiftBtn').style.display='block'; document.getElementById('shift').style.display='block';
   }
@@ -194,9 +201,21 @@ function showTab(tab) {
   document.getElementById('shiftTab').style.display = tab==='shift'?'block':'none';
   document.getElementById('statsTab').style.display = tab==='stats'?'block':'none';
   document.getElementById('historyTab').style.display = tab==='history'?'block':'none';
-  ['tabShift','tabStats','tabHistory'].forEach(function(id) { document.getElementById(id).classList.remove('active'); });
+  document.getElementById('notifyTab').style.display = tab==='notify'?'block':'none';
+  ['tabShift','tabStats','tabHistory','tabNotify'].forEach(function(id) { document.getElementById(id).classList.remove('active'); });
   document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
-  if (tab==='stats') renderCalendar(); if (tab==='history') loadHistory();
+  if (tab==='stats') renderCalendar(); if (tab==='history') loadHistory(); if (tab==='notify') loadNotifications();
+}
+
+function loadNotifications() {
+  if (!user) return;
+  db.ref('notifications').orderByChild('user').equalTo(user.name).once('value', function(s) {
+    var arr = []; s.forEach(function(c) { arr.push(c.val()); });
+    arr.sort(function(a,b) { return b.timestamp - a.timestamp; });
+    document.getElementById('notifyContent').innerHTML = arr.length ? arr.map(function(x) {
+      return '<div class="notify-item">' + x.text + ' <small style="color:#999">' + new Date(x.timestamp).toLocaleString('ru-RU') + '</small></div>';
+    }).join('') : '<p>Нет уведомлений</p>';
+  });
 }
 
 function loadAllData() {
@@ -254,7 +273,7 @@ function previewRegAvatar() { var f = document.getElementById('regAvatar').files
 function previewNewAvatar() { var f = document.getElementById('newAvatar').files[0]; if (!f) return; var r = new FileReader(); r.onload = function(e) { newAvatarData = e.target.result; document.getElementById('newAvatarPreview').innerHTML = '<img class="avatar" src="' + newAvatarData + '">'; }; r.readAsDataURL(f); }
 function showRegister() { document.getElementById('login').style.display='none'; document.getElementById('registerCard').style.display='block'; }
 
-function login() { var n = document.getElementById('name').value.trim(), p = document.getElementById('pass').value.trim(); db.ref('users/' + n).once('value', function(s) { if (s.exists() && s.val().password === p) { user = s.val(); user.punkt = user.punkt || '49'; localStorage.setItem('ozon_user', JSON.stringify(user)); document.getElementById('login').style.display='none'; document.getElementById('app').style.display='block'; updateProfileUI(); loadChat(); loadAllData(); loadHistory(); } else alert('Неверно!'); }); }
+function login() { var n = document.getElementById('name').value.trim(), p = document.getElementById('pass').value.trim(); db.ref('users/' + n).once('value', function(s) { if (s.exists() && s.val().password === p) { user = s.val(); user.punkt = user.punkt || '49'; localStorage.setItem('ozon_user', JSON.stringify(user)); document.getElementById('login').style.display='none'; document.getElementById('app').style.display='block'; updateProfileUI(); loadChat(); loadAllData(); loadHistory(); loadNotifications(); } else alert('Неверно!'); }); }
 function register() { var n = document.getElementById('regName').value.trim(), pk = document.getElementById('regPunkt').value.trim(), p = document.getElementById('regPass').value.trim(); if (!n || !p || !pk) { alert('Заполни все поля!'); return; } db.ref('users/' + n).once('value', function(s) { if (s.exists()) { alert('Уже есть!'); return; } db.ref('users/' + n).set({ name: n, punkt: pk, password: p, bonus: 0, avatar: regAvatarData || '' }, function() { alert('✅'); document.getElementById('registerCard').style.display='none'; document.getElementById('login').style.display='block'; }); }); }
 
 function previewPhotos() { photoBase64 = []; document.getElementById('photoPreviews').innerHTML = ''; var files = document.getElementById('photos').files; for (var i = 0; i < Math.min(files.length, 5); i++) { (function(file) { var r = new FileReader(); r.onload = function(e) { var img = new Image(); img.onload = function() { var c = document.createElement('canvas'), mw = 200, s = mw / img.width; c.width = mw; c.height = img.height * s; c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); var thumb = c.toDataURL('image/jpeg', 0.6); photoBase64.push({ full: e.target.result, thumb: thumb }); var pv = document.createElement('img'); pv.src = thumb; document.getElementById('photoPreviews').appendChild(pv); }; img.src = e.target.result; }; r.readAsDataURL(file); })(files[i]); } }
@@ -265,11 +284,9 @@ function endShift() {
   var tf = document.getElementById('timeFrom').value || '9', tt = document.getElementById('timeTo').value || '21', tv = parseInt(document.getElementById('tov').value)||0, hh = parseInt(tt)-parseInt(tf), t = new Date().toLocaleTimeString('ru-RU'), ph = photoBase64.slice(0, 5);
   db.ref('shifts/' + user.name + '_' + Date.now()).set({ user: user.name, punkt: user.punkt||'49', date: new Date().toLocaleDateString('ru-RU'), timeFrom: tf, timeTo: tt, hours: hh, tovar: tv, photos: ph, paid: false, timestamp: new Date().toISOString() });
   db.ref('chat').push({ user: '📢 ' + user.name, text: '🔴 Пункт ' + user.punkt + ' с ' + tf + ' до ' + tt + ', товаров: ' + tv, timestamp: Date.now(), photos: ph });
-  
   var os = getStatus(allMyShifts.length);
   var ns = getStatus(allMyShifts.length + 1);
   if (os.name !== ns.name) { db.ref('chat').push({ user: '🎉 СИСТЕМА', text: user.name + ' получил статус ' + ns.name + '!', timestamp: Date.now() }); }
-  
   onShift = false; localStorage.removeItem('ozon_onShift'); document.getElementById('shift').style.display='none'; document.getElementById('onShiftBtn').style.display='none'; document.getElementById('startBtn').style.display='block';
   document.getElementById('tov').value=''; document.getElementById('photos').value=''; document.getElementById('photoPreviews').innerHTML=''; photoBase64 = [];
 }
