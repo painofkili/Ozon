@@ -20,8 +20,7 @@ button { border: none; font-weight: bold; cursor: pointer; }
 .zp-result { background: #1a3a1a; padding: 10px; border-radius: 8px; margin-top: 8px; font-size: 14px; white-space: pre-line; }
 .punish-row { display: flex; justify-content: space-between; align-items: center; padding: 6px; font-size: 13px; border-bottom: 1px solid #333; }
 .punish-row button { width: auto; padding: 4px 8px; font-size: 10px; }
-#chat { max-height: 220px; overflow-y: auto; padding: 8px; border-radius: 8px; margin: 8px 0; background: rgba(0,0,0,0.3); font-size: 13px; transition: max-height 0.3s; }
-#chat.expanded { max-height: 500px; }
+#chat { max-height: 300px; overflow-y: auto; padding: 8px; border-radius: 8px; margin: 8px 0; background: rgba(0,0,0,0.3); font-size: 13px; }
 #chat p { margin: 2px 0; position: relative; }
 #chat .chat-img { max-width: 100%; border-radius: 8px; margin: 4px 0; cursor: pointer; }
 #chat .thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; cursor: pointer; margin: 2px; }
@@ -112,10 +111,8 @@ function showTab(t){
   if(active&&active.id==='tab'+t.charAt(0).toUpperCase()+t.slice(1)){
     document.getElementById(tabs[t]).style.display='none';
     active.classList.remove('active');
-    document.getElementById('chat').classList.add('expanded');
     return;
   }
-  document.getElementById('chat').classList.remove('expanded');
   Object.keys(tabs).forEach(function(k){document.getElementById(tabs[k]).style.display='none'});
   document.getElementById(tabs[t]).style.display='block';
   ['tabPunkts','tabWorkers','tabCalc'].forEach(function(id){document.getElementById(id).classList.remove('active')});
