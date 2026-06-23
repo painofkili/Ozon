@@ -41,7 +41,7 @@ button { border: none; font-weight: bold; cursor: pointer; }
 </head>
 <body>
 <h2 style="text-align:center">👑 Режим бога</h2>
-
+<div id="photoViewer" onclick="this.style.display='none'" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);display:none;align-items:center;justify-content:center;z-index:1000"><img id="photoViewerImg" src="" style="max-width:95%;max-height:90%;border-radius:10px"></div>
 <div id="loginCard"><input id="godPass" type="password" placeholder="Пароль бога"><button class="btn-green" onclick="login()">Войти</button><div id="msg" style="color:red;text-align:center;margin-top:4px"></div></div>
 
 <div id="app" style="display:none">
@@ -161,7 +161,7 @@ function calcZP(){var u=document.getElementById('calcUser').value,from=new Date(
 return s._id}),total:tz-totalPunish}})})})})}
 function markPaid(){if(!lastCalc||!lastCalc.shifts.length){alert('Сначала нажми Посчитать!');return}if(!confirm('Оплачено?\n'+lastCalc.total+' ₽'))return;db.ref('payments').push({user:lastCalc.user,dateFrom:lastCalc.from,dateTo:lastCalc.to,total:lastCalc.total,timestamp:Date.now()});lastCalc.shifts.forEach(function(id){db.ref('shifts/'+id+'/paid').set(!0)});alert('✅');document.getElementById('zpResult').style.display='none';lastCalc=null}
 function loadChat(){db.ref('chat').limitToLast(30).on('value',function(s){var h='';s.forEach(function(c){var m=c.val(),sn=(m.user||'').replace('📢 ',''),av=allUsers[sn]||allUsers[m.user]||'',ah=av?'<img src="'+av+'" style="width:24px;height:24px;border-radius:50%;object-fit:cover;margin-right:4px;vertical-align:middle">':'';h+='<p><span class="del-msg" onclick="delChatMsg(\''+c.key+'\')">✕</span>'+ah+'<b>'+(m.user||'?')+':</b> '+(m.text||'');if(m.photo){h+='<br><img src="'+m.photo+'" style="max-width:200px;border-radius:8px;margin:4px 0;cursor:pointer" onclick="viewFull(\''+m.photo+'\')">'}if(m.photos&&m.photos.length){var ft=typeof m.photos[0]==='object'?m.photos[0].thumb:m.photos[0];h+='<br><img src="'+ft+'" style="width:60px;height:60px;object-fit:cover;border-radius:6px;cursor:pointer;margin:2px" onclick="viewFull(\''+(typeof m.photos[0]==='object'?m.photos[0].full:m.photos[0])+'\')">';if(m.photos.length>1)h+=' <span style="font-size:11px;color:#999">+ ещё '+(m.photos.length-1)+'</span>'}h+='</p>'});document.getElementById('chat').innerHTML=h;document.getElementById('chat').scrollTop=document.getElementById('chat').scrollHeight})}
-function viewFull(url){var w=window.open('');w.document.write('<img src="'+url+'" style="max-width:100%">')}
+function viewFull(url){document.getElementById('photoViewerImg').src=url;document.getElementById('photoViewer').style.display='flex'}
 function delChatMsg(key){if(confirm('Удалить?')){db.ref('chat/'+key).remove()}}
 function sendChat(){var t=document.getElementById('chatInput').value.trim();if(!t)return;db.ref('chat').push({user:'👑 '+godName,text:t,timestamp:Date.now()});document.getElementById('chatInput').value=''}
 document.getElementById('chatInput').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();sendChat()}});
