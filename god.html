@@ -157,11 +157,17 @@ function viewPack(pd){var ph=JSON.parse(pd.replace(/&quot;/g,'"').replace(/&#39;
 function delChatMsg(key){if(confirm('Удалить?')){db.ref('chat/'+key).remove()}}
 function sendChat(){var t=document.getElementById('chatInput').value.trim();if(!t)return;
   var mentions=t.match(/@(\S+)/g);
-  if(mentions&&godVkId){
-    for(var i=0;i<mentions.length;i++){
-      var name=mentions[i].replace('@','');
-      if(name===godName||name==='Бог'||name==='бог'){sendVkNotify(godVkId,'📢 Упоминание в чате Ozon:\n'+t)}
-    }
+  if(mentions){
+    db.ref('users').once('value',function(snap){
+      var vkIds={};
+      snap.forEach(function(c){vkIds[c.val().name]=c.val().vkId||''});
+      if(godVkId)vkIds[godName]=godVkId;
+      for(var i=0;i<mentions.length;i++){
+        var name=mentions[i].replace('@','');
+        var vkId=vkIds[name];
+        if(vkId){sendVkNotify(vkId,'📢 Начальник упомянул вас в чате Ozon:\n'+t)}
+      }
+    });
   }
   db.ref('chat').push({user:'👑 '+godName,text:t,timestamp:Date.now()});document.getElementById('chatInput').value='';
 }
