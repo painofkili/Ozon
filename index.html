@@ -189,14 +189,18 @@ function viewPhoto(url){document.getElementById('photoViewerImg').src=url;docume
 function viewPack(pd){var ph=JSON.parse(pd.replace(/&quot;/g,'"').replace(/&#39;/g,"'")),v=document.getElementById('photoViewer'),im=document.getElementById('photoViewerImg'),idx=0;im.src=ph[0];v.style.display='flex';v.onclick=function(e){if(e.target===v){v.style.display='none';v.onclick=null}};im.onclick=function(e){e.stopPropagation();idx++;if(idx<ph.length)im.src=ph[idx];else v.style.display='none'}}
 function delChatMsg(key){if(confirm('Удалить?')){db.ref('chat/'+key).remove()}}
 function send(){var t=document.getElementById('msg').value.trim();if(!t||!user)return;
-  // Проверяем упоминания @имя
   var mentions=t.match(/@(\S+)/g);
   if(mentions){
-    for(var i=0;i<mentions.length;i++){
-      var name=mentions[i].replace('@','');
-      var vkId=allVkIds[name];
-      if(vkId){sendVkNotify(vkId,'📢 '+user.name+' упомянул вас в чате Ozon:\n'+t)}
-    }
+    // Сначала обновляем ВК ID из базы
+    db.ref('users').once('value',function(snap){
+      var vkIds={};
+      snap.forEach(function(c){vkIds[c.val().name]=c.val().vkId||''});
+      for(var i=0;i<mentions.length;i++){
+        var name=mentions[i].replace('@','');
+        var vkId=vkIds[name];
+        if(vkId){sendVkNotify(vkId,'📢 '+user.name+' упомянул вас в чате Ozon:\n'+t)}
+      }
+    });
   }
   db.ref('chat').push({user:user.name,text:t,timestamp:Date.now()});document.getElementById('msg').value='';
 }
