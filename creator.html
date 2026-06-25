@@ -7,10 +7,10 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: Arial; background: #1a1a2e url('https://raw.githubusercontent.com/painofkili/ozon/main/bg.jpg') center/cover fixed; color: #eee; padding: 10px; max-width: 450px; margin: 0 auto; font-size: 16px; }
-body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(26,26,46,0.7); z-index: -1; }
-.card { background: rgba(22,33,62,0.85); padding: 16px; border-radius: 14px; margin: 8px 0; backdrop-filter: blur(10px); }
+body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(26,26,46,0.75); z-index: -1; }
+.card { background: rgba(22,33,62,0.85); padding: 16px; border-radius: 14px; margin: 8px 0; backdrop-filter: blur(10px); border: 1px solid rgba(138,43,226,0.2); }
 input, select, textarea { width: 100%; padding: 14px; font-size: 16px; margin: 4px 0; border-radius: 10px; border: 1px solid #444; background: rgba(26,26,46,0.8); color: #fff; }
-button { border: none; font-weight: bold; cursor: pointer; border-radius: 10px; }
+button { border: none; font-weight: bold; cursor: pointer; border-radius: 10px; transition: all 0.2s; }
 button:active { animation: electricPulse 0.4s ease-out; }
 @keyframes electricPulse { 0% { box-shadow: 0 0 0 0 rgba(138, 43, 226, 0.8); } 40% { box-shadow: 0 0 0 12px rgba(245, 197, 24, 0.5), 0 0 0 25px rgba(138, 43, 226, 0.2); } 100% { box-shadow: 0 0 0 0 transparent; } }
 .btn-green { background: #4CAF50; color: #fff; padding: 14px; font-size: 16px; margin: 4px 0; width: 100%; }
@@ -23,27 +23,38 @@ button:disabled { opacity: 0.5; cursor: default; }
 .avatar-creator { border: 3px solid transparent; background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF, #f5c518); background-size: 400% 400%; animation: galaxyGlow 3s infinite; box-shadow: 0 0 25px rgba(138, 43, 226, 0.7), 0 0 50px rgba(0, 191, 255, 0.4); }
 @keyframes galaxyGlow { 0% { background-position: 0% 50%; box-shadow: 0 0 25px rgba(138, 43, 226, 0.7); } 50% { background-position: 100% 50%; box-shadow: 0 0 40px rgba(245, 197, 24, 0.9), 0 0 70px rgba(138, 43, 226, 0.6); } 100% { background-position: 0% 50%; box-shadow: 0 0 25px rgba(138, 43, 226, 0.7); } }
 .avatar-mini { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; margin-right: 6px; vertical-align: middle; cursor: pointer; }
-.avatar-mini-creator { border: 2px solid #8B00FF; box-shadow: 0 0 10px rgba(138, 43, 226, 0.6); }
+.avatar-mini-creator { border: 2px solid #8B00FF; box-shadow: 0 0 12px rgba(138, 43, 226, 0.6); }
 .profile-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .creator-badge { font-size: 14px; font-weight: bold; padding: 4px 12px; border-radius: 12px; background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; animation: galaxyGlow 3s infinite; display: inline-block; }
 .creator-name { background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
 .progress-bar { height: 6px; background: #333; border-radius: 3px; margin-top: 4px; overflow: hidden; }
 .progress-fill { height: 100%; border-radius: 3px; background: linear-gradient(135deg, #f5c518, #8B00FF); width: 100%; }
-.tabs { display: flex; gap: 4px; margin: 10px 0; justify-content: center; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.tabs { display: flex; gap: 4px; margin: 10px 0; justify-content: center; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
 .tabs button { width: 42px; height: 42px; display: flex; align-items: center; gap: 0.5rem; overflow: hidden; border-radius: 999px; transition: width .35s cubic-bezier(.22, 1, .36, 1), background .3s ease, box-shadow .3s ease; background: #333; color: #aaa; border: none; cursor: pointer; padding: 0 10px; font-size: 12px; white-space: nowrap; flex-shrink: 0; }
 .tabs button:hover { width: 115px; background: rgba(255, 255, 255, 0.12); box-shadow: 0 0 20px rgba(138, 43, 226, 0.22); color: #fff; }
 .tabs button.active { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; width: 115px; }
 .tabs button .menu-icon { font-size: 18px; flex-shrink: 0; }
 .tabs button .menu-label { opacity: 0; max-width: 0; transform: translateX(-6px); transition: opacity .2s ease, max-width .35s ease, transform .3s ease; }
 .tabs button:hover .menu-label, .tabs button.active .menu-label { opacity: 1; max-width: 80px; transform: translateX(0); }
-.chat-header { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; background: rgba(0,0,0,0.3); border-radius: 8px; margin: 8px 0; }
-.chat-header .chat-badge { background: #e94560; color: #fff; border-radius: 50%; width: 22px; height: 22px; font-size: 11px; text-align: center; line-height: 22px; }
-#chat { overflow: hidden; padding: 8px; border-radius: 10px; margin: 8px 0; background: rgba(0,0,0,0.2); font-size: 13px; transition: max-height 0.4s ease, padding 0.4s ease, margin 0.4s ease; max-height: 300px; overflow-y: auto; }
-#chat.hidden { max-height: 0 !important; padding-top: 0 !important; padding-bottom: 0 !important; margin-top: 0 !important; margin-bottom: 0 !important; overflow: hidden; }
-.chat-bubble-group { margin: 4px 0; position: relative; }
-.chat-bubble { background: rgba(30,30,50,0.9); padding: 6px 10px; border-radius: 12px; margin: 1px 0; display: inline-block; max-width: 90%; font-size: 13px; word-break: break-word; }
-.chat-bubble.mine { background: rgba(76,175,80,0.25); }
-.chat-msg-creator { background: linear-gradient(135deg, rgba(245,197,24,0.2), rgba(138,43,226,0.2)); border-left: 3px solid #8B00FF; padding: 8px 12px; border-radius: 8px; margin: 2px 0; }
+
+/* Чат в общем стиле */
+.chat-section { margin: 8px 0; }
+.chat-header-bar { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 12px 16px; background: rgba(22,33,62,0.85); border-radius: 14px; border: 1px solid rgba(138,43,226,0.3); backdrop-filter: blur(10px); transition: all 0.3s; }
+.chat-header-bar:hover { border-color: rgba(138,43,226,0.6); box-shadow: 0 0 20px rgba(138,43,226,0.2); }
+.chat-header-bar .chat-icon { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #f5c518, #8B00FF); display: flex; align-items: center; justify-content: center; font-size: 18px; animation: galaxyGlow 3s infinite; }
+.chat-header-bar .chat-label { flex: 1; font-weight: bold; font-size: 15px; background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.chat-header-bar .chat-arrow { color: #aaa; font-size: 14px; transition: transform 0.3s; }
+.chat-header-bar .chat-arrow.open { transform: rotate(180deg); }
+.chat-header-bar .chat-badge { background: #e94560; color: #fff; border-radius: 50%; min-width: 22px; height: 22px; font-size: 11px; text-align: center; line-height: 22px; padding: 0 5px; }
+
+#chat { overflow: hidden; padding: 8px; border-radius: 10px; margin: 4px 0; background: rgba(22,33,62,0.5); font-size: 13px; transition: max-height 0.4s ease, padding 0.4s ease, margin 0.4s ease, opacity 0.3s; max-height: 300px; overflow-y: auto; border: 1px solid rgba(138,43,226,0.15); }
+#chat.hidden { max-height: 0 !important; padding-top: 0 !important; padding-bottom: 0 !important; margin-top: 0 !important; margin-bottom: 0 !important; overflow: hidden; opacity: 0; border: none; }
+.chat-bubble-group { margin: 3px 0; position: relative; }
+.chat-bubble { background: rgba(30,30,55,0.8); padding: 6px 10px 6px 10px; border-radius: 12px; margin: 1px 0; display: inline-block; max-width: 90%; font-size: 13px; word-break: break-word; border: 1px solid rgba(255,255,255,0.05); }
+.chat-bubble.mine { background: rgba(76,175,80,0.2); border: 1px solid rgba(76,175,80,0.3); }
+.chat-msg-creator { background: linear-gradient(135deg, rgba(245,197,24,0.15), rgba(138,43,226,0.2)); border: 1px solid rgba(138,43,226,0.4); padding: 8px 12px; border-radius: 10px; margin: 2px 0; animation: creatorBubblePulse 2s infinite alternate; }
+@keyframes creatorBubblePulse { 0% { box-shadow: 0 0 8px rgba(138,43,226,0.3), inset 0 0 8px rgba(138,43,226,0.1); } 100% { box-shadow: 0 0 18px rgba(245,197,24,0.4), inset 0 0 12px rgba(138,43,226,0.2); } }
 .chat-msg-creator .author { background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
 #chat .chat-img { max-width: 100%; border-radius: 8px; margin: 4px 0; cursor: pointer; }
 #chat .thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; cursor: pointer; margin: 2px; }
@@ -51,45 +62,59 @@ button:disabled { opacity: 0.5; cursor: default; }
 .chat-bubble-group:hover .del-msg-btn { display: block; }
 .pin-msg-btn { position: absolute; top: 2px; right: 22px; background: #f5c518; color: #000; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; line-height: 18px; text-align: center; cursor: pointer; display: none; z-index: 2; border: none; padding: 0; }
 .chat-bubble-group:hover .pin-msg-btn { display: block; }
-.pinned { background: rgba(138,43,226,0.2); border-left: 3px solid #8B00FF; padding: 8px; margin: 4px 0; border-radius: 8px; }
-.announce-block { background: linear-gradient(135deg, #FFF9C4, #FFE082); color: #333; padding: 10px; border-radius: 10px; margin-bottom: 6px; font-size: 13px; text-align: center; border: 1px solid #f5c518; }
-.announce-block .announce-expiry { font-size: 10px; color: #888; margin-top: 4px; }
-.thought-block { background: linear-gradient(135deg, rgba(138,43,226,0.3), rgba(0,191,255,0.2), rgba(245,197,24,0.2)); background-size: 400% 400%; animation: galaxyGlow 3s infinite; color: #fff; padding: 10px; border-radius: 10px; margin-bottom: 6px; font-size: 14px; text-align: center; border: 1px solid #8B00FF; font-style: italic; }
+
+/* Лайки */
+.like-btn { position: absolute; bottom: 2px; right: 2px; background: transparent; border: none; cursor: pointer; font-size: 14px; padding: 2px 4px; border-radius: 8px; display: none; z-index: 2; transition: all 0.2s; }
+.chat-bubble-group:hover .like-btn { display: block; }
+.like-btn:hover { transform: scale(1.3); }
+.like-count { font-size: 10px; color: #aaa; margin-left: 2px; }
+
+.pinned { background: rgba(138,43,226,0.2); border: 1px solid rgba(138,43,226,0.4); padding: 10px 12px; margin: 4px 0; border-radius: 10px; }
+
+/* Объявления */
+.announce-block { background: linear-gradient(135deg, rgba(255,249,196,0.15), rgba(255,224,130,0.1)); border: 1px solid rgba(245,197,24,0.4); color: #FFE082; padding: 12px; border-radius: 12px; margin-bottom: 6px; font-size: 13px; text-align: center; position: relative; }
+.announce-block .announce-expiry { font-size: 10px; color: #aaa; margin-top: 4px; }
+.announce-del { position: absolute; top: 6px; right: 8px; background: #e94560; color: #fff; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; line-height: 20px; text-align: center; cursor: pointer; border: none; padding: 0; }
+
+.thought-block { background: linear-gradient(135deg, rgba(138,43,226,0.3), rgba(0,191,255,0.2), rgba(245,197,24,0.2)); background-size: 400% 400%; animation: galaxyGlow 3s infinite; color: #fff; padding: 12px; border-radius: 12px; margin-bottom: 6px; font-size: 14px; text-align: center; border: 1px solid rgba(138,43,226,0.5); position: relative; }
 .thought-block .thought-text { background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; font-size: 15px; }
 .thought-block .thought-expiry { font-size: 10px; color: #aaa; margin-top: 4px; }
+.thought-del { position: absolute; top: 6px; right: 8px; background: #e94560; color: #fff; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; line-height: 20px; text-align: center; cursor: pointer; border: none; padding: 0; }
+
 .photo-preview { display: flex; gap: 4px; flex-wrap: wrap; }
 .photo-preview img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; }
 #photoViewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 1000; }
 #photoViewer img { max-width: 95%; max-height: 90%; border-radius: 10px; }
-.stat-card { background: rgba(26,26,46,0.8); padding: 8px; border-radius: 10px; margin: 4px 0; font-size: 13px; }
+.stat-card { background: rgba(22,33,62,0.7); padding: 10px 12px; border-radius: 10px; margin: 4px 0; font-size: 13px; border: 1px solid rgba(138,43,226,0.15); }
 .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 12px; }
 .calendar div { padding: 6px; border-radius: 4px; }
 .calendar .shift-day { background: #4CAF50; color: #fff; font-weight: bold; }
 .calendar .today { border: 2px solid #2196F3; }
 .calendar .header { font-weight: bold; background: #333; }
 label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
-.notify-item { padding: 6px; border-bottom: 1px solid #333; font-size: 13px; }
+.notify-item { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; background: rgba(22,33,62,0.5); border-radius: 8px; margin: 4px 0; }
 .creator-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
 .creator-actions button { flex: 1; min-width: 100px; font-size: 12px; padding: 10px; }
-.hall-item { display: flex; align-items: center; gap: 8px; padding: 6px; border-bottom: 1px solid #333; font-size: 13px; }
-.hall-medal { font-size: 20px; width: 30px; text-align: center; }
+.hall-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
+.hall-medal { font-size: 22px; width: 32px; text-align: center; }
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 999; }
-.modal-card { background: rgba(22,33,62,0.95); padding: 20px; border-radius: 14px; width: 90%; max-width: 400px; }
+.modal-card { background: rgba(22,33,62,0.95); padding: 20px; border-radius: 14px; width: 90%; max-width: 400px; border: 1px solid rgba(138,43,226,0.3); }
 .expiry-row { display: flex; gap: 8px; align-items: center; }
 .expiry-row select, .expiry-row input { flex: 1; padding: 10px; font-size: 14px; }
+.section-title { background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; text-align: center; margin-bottom: 8px; }
 </style>
 </head>
 <body>
 
 <div id="login">
-  <h3 style="text-align:center">🌌 Вход Создателя</h3>
+  <h3 class="section-title" style="font-size:18px">🌌 Вход Создателя</h3>
   <input id="creatorPass" type="password" placeholder="Пароль Создателя">
   <button class="btn-gold" onclick="creatorLogin()">🌌 Войти</button>
   <div id="loginMsg" style="color:red;text-align:center;margin-top:4px"></div>
 </div>
 
 <div id="settingsCard" style="display:none">
-  <div class="card"><h3 style="text-align:center">⚙️ Настройки</h3>
+  <div class="card"><h3 class="section-title">⚙️ Настройки</h3>
     <input id="newName" placeholder="Новое имя"><input id="newPass" type="password" placeholder="Новый пароль"><select id="newPunkt"></select>
     <input id="newVkId" placeholder="ВК ID (цифры)">
     <label>Аватарка</label><input id="newAvatar" type="file" accept="image/*" onchange="previewNewAvatar()">
@@ -151,11 +176,11 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
     </div>
     <button class="btn-gray" onclick="logout()" style="margin-top:8px">↩ Выйти</button>
   </div>
-  <div id="statsTab" style="display:none"><h4>📅 Календарь</h4><div id="calHeader"></div><div class="calendar" id="calendar"></div><div class="stat-card" id="statsSummary"></div><button class="btn-red" onclick="clearMyShifts()">🗑 Очистить</button></div>
-  <div id="historyTab" style="display:none"><h4>💳 Выплаты</h4><div id="historyContent"></div></div>
-  <div id="notifyTab" style="display:none"><h4>🔔 Уведомления</h4><div id="notifyContent"></div><button class="btn-red" onclick="clearNotifications()">🗑 Очистить</button></div>
+  <div id="statsTab" style="display:none"><h4 class="section-title">📅 Календарь</h4><div id="calHeader"></div><div class="calendar" id="calendar"></div><div class="stat-card" id="statsSummary"></div><button class="btn-red" onclick="clearMyShifts()">🗑 Очистить</button></div>
+  <div id="historyTab" style="display:none"><h4 class="section-title">💳 Выплаты</h4><div id="historyContent"></div></div>
+  <div id="notifyTab" style="display:none"><h4 class="section-title">🔔 Уведомления</h4><div id="notifyContent"></div><button class="btn-red" onclick="clearNotifications()">🗑 Очистить</button></div>
   <div id="hallTab" style="display:none">
-    <h4 style="text-align:center">🏆 Доска почёта</h4>
+    <h4 class="section-title">🏆 Доска почёта</h4>
     <div class="stat-card"><b>⏱ Топ по часам</b><div id="hallHours"></div></div>
     <div class="stat-card"><b>📦 Топ по товарам</b><div id="hallTovar"></div></div>
     <div class="stat-card"><b>🌟 Работник месяца</b><div id="hallBest"></div></div>
@@ -163,7 +188,7 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
     <div class="stat-card"><b>🎁 Любимчик бога</b><div id="hallPremium"></div></div>
   </div>
   <div id="creatorTab" style="display:none">
-    <h4>🌌 Сила Создателя</h4>
+    <h4 class="section-title">🌌 Сила Создателя</h4>
     <div class="creator-actions">
       <button class="btn-gold" onclick="summonBoss()">👔 Вызвать</button>
       <button class="btn-gold" onclick="monkeySomeone()">🐒 Обезьяна</button>
@@ -172,10 +197,17 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
     </div>
   </div>
   <div id="pinnedMessage" class="pinned" style="display:none"></div>
-  <div class="chat-header" onclick="toggleChat()">💬 Чат <span id="chatBadge" class="chat-badge" style="display:none">0</span></div>
-  <div id="chat"></div>
+  <div class="chat-section">
+    <div class="chat-header-bar" onclick="toggleChat()">
+      <div class="chat-icon">💬</div>
+      <span class="chat-label">Общий чат</span>
+      <span id="chatBadge" class="chat-badge" style="display:none">0</span>
+      <span id="chatArrow" class="chat-arrow">▼</span>
+    </div>
+    <div id="chat"></div>
+  </div>
   <div style="display:flex;gap:4px">
-    <input id="chatMsgInput" placeholder="Чат..." style="flex:1">
+    <input id="chatMsgInput" placeholder="Сообщение..." style="flex:1">
     <button class="btn-gray" onclick="document.getElementById('chatPhoto').click()" style="width:auto;padding:14px">📎</button>
     <input id="chatPhoto" type="file" accept="image/*" multiple onchange="sendPhoto()" style="display:none">
     <button class="btn-gold" onclick="sendMsg()" style="width:auto;padding:14px 18px">➤</button>
@@ -188,7 +220,7 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <script>
 firebase.initializeApp({apiKey:"AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",authDomain:"ozon-grafik-4ad9f.firebaseapp.com",databaseURL:"https://ozon-grafik-4ad9f-default-rtdb.europe-west1.firebasedatabase.app",projectId:"ozon-grafik-4ad9f",storageBucket:"ozon-grafik-4ad9f.firebasestorage.app",messagingSenderId:"798009068634",appId:"1:798009068634:web:4b70eea3cce6c96f4f5c63"});
-var db=firebase.database(),_user=null,onShift=!1,photoBase64=[],newAvatarData=null,allMyShifts=[],allUsers={},CREATOR_PASS='2706',unreadCount=0,chatOpened=!1;
+var db=firebase.database(),_user=null,onShift=!1,photoBase64=[],newAvatarData=null,allMyShifts=[],allUsers={},CREATOR_PASS='2706',unreadCount=0,chatOpened=!0;
 var VK_TOKEN="vk1.a.1ccqIy8pmM0W_RnIymI9XOMvA6ILX5yxNfZZAiF5HHBdjHK_vOAimgsyljky-TCiReMgJRAlaRvpYEypifmF-iUonUGvldlw5LvDWAOSUpN1WDcnS_7Uit-Yh3BuUF5Ic5NoZ48Qhlmu4ErB87fpTplEI7E3sarTm9LC-Vd8zTbeQp4xgyB1s5yg6oBxTBaNZAFp-ioqBWG25jR8GREmWw";
 
 if('Notification' in window && Notification.permission==='default'){Notification.requestPermission()}
@@ -197,7 +229,12 @@ function sendVkNotify(vkId,msg){if(!vkId)return;fetch('https://api.vk.com/method
 
 function toggleChat(){
   var chat=document.getElementById('chat');
-  if(chat.classList.contains('hidden')){chat.classList.remove('hidden');chatOpened=!0}else{chat.classList.add('hidden');chatOpened=!1}
+  var arrow=document.getElementById('chatArrow');
+  if(chat.classList.contains('hidden')){
+    chat.classList.remove('hidden');chatOpened=!0;arrow.classList.add('open');
+  }else{
+    chat.classList.add('hidden');chatOpened=!1;arrow.classList.remove('open');
+  }
   unreadCount=0;updateChatBadge();
 }
 function updateChatBadge(){var badge=document.getElementById('chatBadge');if(unreadCount>0){badge.style.display='inline';badge.textContent=unreadCount}else{badge.style.display='none'}}
@@ -212,7 +249,7 @@ function creatorLogin(){
       if(s.exists()){_user=s.val();_user.role='creator'}else{_user={name:'Костя',punkt:'49',avatar:'',vkId:'',role:'creator'}}
       localStorage.setItem('creator_user',JSON.stringify(_user));
       document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';
-      chatOpened=!0;
+      chatOpened=!0;document.getElementById('chatArrow').classList.add('open');
       updateProfileUI();loadChat();loadAllData();loadHistory();loadNotifications();loadPinned();loadAnnounce();loadThought();
       db.ref('activeShifts/'+_user.name).once('value',function(s){if(s.exists()&&s.val().active){onShift=!0;document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block'}});
     });
@@ -220,7 +257,7 @@ function creatorLogin(){
 }
 
 var saved=localStorage.getItem('creator_user');
-if(saved){_user=JSON.parse(saved);document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';chatOpened=!0;updateProfileUI();loadChat();loadAllData();loadHistory();loadNotifications();loadPinned();loadAnnounce();loadThought()}
+if(saved){_user=JSON.parse(saved);document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';chatOpened=!0;document.getElementById('chatArrow').classList.add('open');updateProfileUI();loadChat();loadAllData();loadHistory();loadNotifications();loadPinned();loadAnnounce();loadThought()}
 
 function updateProfileUI(){document.getElementById('uname').textContent=_user.name;document.getElementById('upunkt').textContent=_user.punkt||'?';if(_user.avatar){var pa=document.getElementById('profileAvatar');pa.src=_user.avatar;pa.style.display='inline';pa.onclick=function(){viewPhoto(_user.avatar)}}}
 function showTab(tab){
@@ -257,18 +294,42 @@ function loadChat(){
       if(curUser!==lastUser&&lastUser!==''){h+='</div>'}
       if(curUser!==lastUser){h+='<div class="chat-bubble-group">';lastUser=curUser}
       var sn=(m.user||'').replace('📢 ','').replace('🌌 ',''),av=allUsers[sn]||'';
+      // Кнопка удаления
       h+='<button class="del-msg-btn" onclick="delChatMsg(\''+c.key+'\',\''+(isCreatorMsg?'creator':'normal')+'\')">✕</button>';
       if(isCreatorMsg){h+='<button class="pin-msg-btn" onclick="pinMsg(\''+c.key+'\')">📌</button>'}
+      // Лайк
+      var likes=m.likes||{};
+      var likeCount=Object.keys(likes).length;
+      var myLike=likes[_user.name]||(likes['🌌 '+_user.name]);
+      var likeEmoji='❤️';
+      if(myLike){likeEmoji=myLike==='creator'?'🌌':myLike==='god'?'👑':'❤️';}
+      h+='<button class="like-btn" onclick="likeMsg(\''+c.key+'\')">'+likeEmoji+' <span class="like-count">'+(likeCount||'')+'</span></button>';
+      
       if(isCreatorMsg){h+='<div class="chat-msg-creator">'}else{var cls='chat-bubble';h+='<div class="'+cls+'">'}
       if(av)h+='<img class="avatar-mini'+(isCreatorMsg?' avatar-mini-creator':'')+'" src="'+av+'">';
-      h+='<b class="'+(isCreatorMsg?'author':'')+'">'+(isCreatorMsg?'🌌 ':'')+(m.user||'?')+':</b> '+(m.text||'');
+      h+='<b class="'+(isCreatorMsg?'author':'')+'">'+(m.user||'?')+':</b> '+(m.text||'');
       if(m.photo){h+='<br><img class="chat-img" src="'+(m.thumb||m.photo)+'" onclick="event.stopPropagation();viewPhoto(\''+m.photo+'\')">'}
       if(m.photos&&m.photos.length){var ft=typeof m.photos[0]==='object'?m.photos[0].thumb:m.photos[0];h+='<br><img class="thumb" src="'+ft+'" onclick="event.stopPropagation();viewPack(\''+JSON.stringify(m.photos.map(function(p){return typeof p==='object'?p.full:p}).join('|||')).replace(/'/g,"&#39;").replace(/"/g,'&quot;')+'\')">';if(m.photos.length>1)h+=' <span style="font-size:11px;color:#999">+ ещё '+(m.photos.length-1)+'</span>'}h+='</div>'});
     if(lastUser!==''){h+='</div>'}
     document.getElementById('chat').innerHTML=h;document.getElementById('chat').scrollTop=document.getElementById('chat').scrollHeight;
   });
 }
-// Отслеживание новых сообщений для уведомлений (только если чат свёрнут)
+// Лайк сообщения
+function likeMsg(key){
+  if(!_user)return;
+  db.ref('chat/'+key+'/likes').once('value',function(s){
+    var likes=s.val()||{};
+    var myKey=_user.name;
+    // Определяем тип лайка
+    var likeType='user';
+    if(_user.role==='creator')likeType='creator';
+    // Убираем старый лайк этого пользователя если есть
+    if(likes[myKey]){delete likes[myKey];}
+    else{likes[myKey]=likeType;}
+    db.ref('chat/'+key+'/likes').set(likes);
+  });
+}
+// Уведомления чата только когда свёрнут
 db.ref('chat').limitToLast(1).on('child_added',function(s){
   if(chatOpened)return;
   var m=s.val();
@@ -283,18 +344,11 @@ function viewPhoto(url){document.getElementById('photoViewerImg').src=url;docume
 function viewPack(pd){var parts=pd.split('|||'),v=document.getElementById('photoViewer'),im=document.getElementById('photoViewerImg'),idx=0;im.src=parts[0];v.style.display='flex';v.onclick=function(e){if(e.target===v){v.style.display='none';v.onclick=null}};im.onclick=function(e){e.stopPropagation();idx++;if(idx<parts.length)im.src=parts[idx];else v.style.display='none'}}
 function delChatMsg(key, type){
   if(_user && _user.role==='creator'){
-    if(confirm('Удалить сообщение?')){
-      db.ref('chat/'+key).remove();
-    }
+    if(confirm('Удалить сообщение?')){db.ref('chat/'+key).remove();}
     return;
   }
-  if(type==='creator'){
-    alert('🚫 Знай своё место!');
-    return;
-  }
-  if(confirm('Удалить сообщение?')){
-    db.ref('chat/'+key).remove();
-  }
+  if(type==='creator'){alert('🚫 Знай своё место!');return;}
+  if(confirm('Удалить сообщение?')){db.ref('chat/'+key).remove();}
 }
 function pinMsg(key){db.ref('chat/'+key).once('value',function(s){if(s.exists()){db.ref('pinned').set(s.val());alert('📌 Закреплено!')}})}
 function loadPinned(){db.ref('pinned').on('value',function(s){var b=document.getElementById('pinnedMessage');if(!s.exists()){b.style.display='none';return}var m=s.val();b.style.display='block';b.innerHTML='📌 <b>'+(m.user||'?')+':</b> '+m.text})}
@@ -304,7 +358,7 @@ function sendMsg(){
   if(!t||!_user)return;
   var mentions=t.match(/@(\S+)/g);
   if(mentions){db.ref('users').once('value',function(snap){var vkIds={};snap.forEach(function(c){vkIds[c.val().name]=c.val().vkId||''});for(var i=0;i<mentions.length;i++){var name=mentions[i].replace('@','');var vkId=vkIds[name];if(vkId){sendVkNotify(vkId,'📢 Создатель упомянул вас в чате Ozon:\n'+t)}}})}
-  db.ref('chat').push({user:'🌌 '+_user.name,text:t,timestamp:Date.now(),creator:!0});
+  db.ref('chat').push({user:'🌌 '+_user.name,text:t,timestamp:Date.now(),creator:!0,likes:{}});
   input.value='';
 }
 document.getElementById('chatMsgInput').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();sendMsg()}});
@@ -342,9 +396,10 @@ function loadThought(){
     if(t.expiry&&Date.now()>t.expiry){db.ref('creatorThought').remove();b.style.display='none';return}
     b.style.display='block';
     var expText=t.expiry?'Исчезнет: '+new Date(t.expiry).toLocaleString('ru-RU'):'Навсегда';
-    b.innerHTML='<div class="thought-text">💭 '+t.text+'</div><div class="thought-expiry">'+expText+'</div>';
+    b.innerHTML='<div class="thought-text">💭 '+t.text+'</div><div class="thought-expiry">'+expText+'</div><button class="thought-del" onclick="delThought()">✕</button>';
   });
 }
+function delThought(){if(confirm('Удалить мысль?')){db.ref('creatorThought').remove()}}
 
 // === ОБЪЯВЛЕНИЯ ===
 function loadAnnounce(){
@@ -355,9 +410,10 @@ function loadAnnounce(){
     if(last.expiry&&Date.now()>last.expiry){db.ref('announce/'+last._key).remove();b.style.display='none';return}
     b.style.display='block';
     var expText=last.expiry?'Актуально до: '+new Date(last.expiry).toLocaleString('ru-RU'):'Бессрочно';
-    b.innerHTML='<b>📢 '+last.text+'</b><br><small class="announce-expiry">'+expText+' • '+new Date(last.timestamp).toLocaleString('ru-RU')+'</small>';
+    b.innerHTML='<b>📢 '+last.text+'</b><br><small class="announce-expiry">'+expText+' • '+new Date(last.timestamp).toLocaleString('ru-RU')+'</small><button class="announce-del" onclick="delAnnounce(\''+last._key+'\')">✕</button>';
   });
 }
+function delAnnounce(key){if(_user&&_user.role==='creator'){if(confirm('Удалить объявление?')){db.ref('announce/'+key).remove()}}else{alert('🚫 Только Создатель может удалять объявления!')}}
 
 // === ДОСКА ПОЧЁТА ===
 function loadHall(){
