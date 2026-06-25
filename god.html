@@ -39,6 +39,8 @@ button { border: none; font-weight: bold; cursor: pointer; }
 .shift-edit-row { display: flex; gap: 4px; align-items: center; margin: 4px 0; }
 .shift-edit-row input { flex: 1; padding: 8px; font-size: 13px; }
 .shift-edit-row button { width: auto; padding: 8px 12px; font-size: 12px; }
+.creator-row { background: rgba(245,197,24,0.15); border-left: 3px solid #f5c518; }
+.creator-badge { font-size: 10px; background: #f5c518; color: #000; padding: 2px 6px; border-radius: 8px; margin-left: 4px; }
 </style>
 </head>
 <body>
@@ -94,9 +96,23 @@ db.ref('godSettings').on('value',function(s){if(s.exists()){godName=s.val().name
 
 function recountRating(){godRating=0;db.ref('premiums').once('value',function(s){godRating+=s.numChildren()*2;db.ref('punishes').once('value',function(p){godRating-=p.numChildren();if(godRating<0)godRating=0;updateGodStatusUI()})})}
 
-var GOD_STATUSES=[{name:'💩 Дерьмодемон',color:'#8B4513',min:0,max:1},{name:'🕍 Еврей',color:'#4169E1',min:2,max:4},{name:'👔 Руководитель',color:'#808080',min:5,max:7},{name:'💼 Мистер Бизнес',color:'#000080',min:8,max:14},{name:'🗿 Сигма',color:'#2F4F4F',min:15,max:20},{name:'🌌 Господь',color:'#FFD700',min:21,max:999}];
-var PREMIUM_TEXTS={'💩 Дерьмодемон':['💩 Из кучи навоза выпало +{sum}₽!','💩 Твоя аура настолько убога, что Дерьмодемон дал +{sum}₽.','💩 Дерьмодемон перепутал тебя с кем-то достойным. +{sum}₽.'],'🕍 Еврей':['📈 Инвестиция окупилась! +{sum}₽','💎 Редкий случай щедрости! +{sum}₽','💔 От сердца оторвал! +{sum}₽'],'👔 Руководитель':['👔 Руководитель в хорошем настроении. +{sum}₽','👔 Твой черёд быть любимчиком. +{sum}₽'],'💼 Мистер Бизнес':['💼 Активы перераспределены. +{sum}₽','💼 Ты сегодня в плюсе. +{sum}₽','💼 Карманные расходы. +{sum}₽'],'🗿 Сигма':['🗿 На. +{sum}₽.','🗿 Держи. +{sum}₽.','🗿 Твоё. +{sum}₽.'],'🌌 Господь':['🙏 Благословение свыше. +{sum}₽.','🙏 Молитвы услышаны. +{sum}₽.','🙏 Небесная канцелярия одобрила. +{sum}₽.']};
-var PUNISH_TEXTS={'💩 Дерьмодемон':['💩 Кара навозная! -{sum}₽','💩 Минус {sum}₽. Ты говно!'],'🕍 Еврей':['📉 Бюджет не резиновый! -{sum}₽','💔 Чтоб я так жил! -{sum}₽'],'👔 Руководитель':['👔 Штраф за скуку. -{sum}₽','👔 Не понравился аватар. -{sum}₽'],'💼 Мистер Бизнес':['💼 Кризис. -{sum}₽.','💼 Сокращение штата. -{sum}₽.'],'🗿 Сигма':['🗿 Сам знаешь. -{sum}₽.','🗿 Не заслужил. -{sum}₽.'],'🌌 Господь':['🙏 Испытание веры. -{sum}₽.','🙏 В книгу грехов. -{sum}₽.','🙏 Гнев господень. -{sum}₽.']};
+var GOD_STATUSES=[{name:'🐣 Мини-босс',color:'#8B4513',min:0,max:1},{name:'💰 Эконом',color:'#4169E1',min:2,max:4},{name:'👔 Руководитель',color:'#808080',min:5,max:7},{name:'💼 Мистер Бизнес',color:'#000080',min:8,max:14},{name:'🗿 Сигма',color:'#2F4F4F',min:15,max:20},{name:'🌌 Господь',color:'#FFD700',min:21,max:999}];
+var PREMIUM_TEXTS={
+  '🐣 Мини-босс':['🐣 Мини-босс вылупился и дал +{sum}₽!','🐣 Из скорлупы выпало +{sum}₽!','🐣 Маленький, но щедрый! +{sum}₽','🐣 Мини-босс подрос! Держи +{sum}₽','🐣 Клюнул на +{sum}₽!'],
+  '💰 Эконом':['💰 Эконом расщедрился! +{sum}₽','💰 Нашёл в заначке! +{sum}₽','💰 Лимит увеличен! +{sum}₽','💰 Бюджет позволяет! +{sum}₽','💰 Редкая щедрость! +{sum}₽'],
+  '👔 Руководитель':['👔 Руководитель в хорошем настроении. +{sum}₽','👔 Твой черёд быть любимчиком. +{sum}₽'],
+  '💼 Мистер Бизнес':['💼 Активы перераспределены. +{sum}₽','💼 Ты сегодня в плюсе. +{sum}₽','💼 Карманные расходы. +{sum}₽'],
+  '🗿 Сигма':['🗿 На. +{sum}₽.','🗿 Держи. +{sum}₽.','🗿 Твоё. +{sum}₽.'],
+  '🌌 Господь':['🙏 Благословение свыше. +{sum}₽.','🙏 Молитвы услышаны. +{sum}₽.','🙏 Небесная канцелярия одобрила. +{sum}₽.']
+};
+var PUNISH_TEXTS={
+  '🐣 Мини-босс':['🐣 Мини-босс топнул ножкой! -{sum}₽','🐣 Не расстраивай малыша! -{sum}₽','🐣 Мини-босс обиделся! -{sum}₽','🐣 Клюнул на -{sum}₽!'],
+  '💰 Эконом':['💰 Бюджет урезан! -{sum}₽','💰 Эконом сказал: хватит! -{sum}₽','💰 Кризис! -{sum}₽','💰 Затянем пояса! -{sum}₽'],
+  '👔 Руководитель':['👔 Штраф за скуку. -{sum}₽','👔 Не понравился аватар. -{sum}₽'],
+  '💼 Мистер Бизнес':['💼 Кризис. -{sum}₽.','💼 Сокращение штата. -{sum}₽.'],
+  '🗿 Сигма':['🗿 Сам знаешь. -{sum}₽.','🗿 Не заслужил. -{sum}₽.'],
+  '🌌 Господь':['🙏 Испытание веры. -{sum}₽.','🙏 В книгу грехов. -{sum}₽.','🙏 Гнев господень. -{sum}₽.']
+};
 
 function getGodStatus(n){for(var i=GOD_STATUSES.length-1;i>=0;i--){if(n>=GOD_STATUSES[i].min)return GOD_STATUSES[i]}return GOD_STATUSES[0]}
 function updateGodStatusUI(){var st=getGodStatus(godRating),ns=null;for(var i=0;i<GOD_STATUSES.length;i++){if(GOD_STATUSES[i].min>godRating){ns=GOD_STATUSES[i];break}}var b=document.getElementById('godStatusBadge');if(!b)return;b.textContent=st.name;b.style.background=st.color;b.style.color='#fff';var p=ns?((godRating-st.min)/(ns.min-st.min)*100):100;document.getElementById('godProgressFill').style.width=p+'%';document.getElementById('godProgressFill').style.background=st.color;document.getElementById('godProgressText').textContent=ns?godRating+'/'+ns.min+' до '+ns.name:'⭐ Максимум!'}
@@ -108,7 +124,8 @@ recountRating();
 function msg(t){document.getElementById('msg').textContent=t}
 function backToApp(){['addShiftCard','punishCard','premiumCard','settingsCard'].forEach(function(id){document.getElementById(id).style.display='none'});document.getElementById('app').style.display='block'}
 function login(){var p=document.getElementById('godPass').value.trim();if(!godPass){db.ref('godPassword').set(p);godPass=p;localStorage.setItem('god_logged','1');enter()}else if(p===godPass){localStorage.setItem('god_logged','1');enter()}else msg('Неверный!')}
-function enter(){document.getElementById('loginCard').style.display='none';document.getElementById('app').style.display='block';updateUI();showTab('punkts');loadChat();updateGodStatusUI();allUsers['👑 '+godName]=godAvatarData||'';}function updateUI(){document.getElementById('godName').textContent=godName;if(godAvatarData){var pa=document.getElementById('godAvatar');pa.src=godAvatarData;pa.style.display='inline';pa.onclick=function(){viewFull(godAvatarData)}}allUsers['👑 '+godName]=godAvatarData||'';}
+function enter(){document.getElementById('loginCard').style.display='none';document.getElementById('app').style.display='block';updateUI();showTab('punkts');loadChat();updateGodStatusUI();allUsers['👑 '+godName]=godAvatarData||'';}
+function updateUI(){document.getElementById('godName').textContent=godName;if(godAvatarData){var pa=document.getElementById('godAvatar');pa.src=godAvatarData;pa.style.display='inline';pa.onclick=function(){viewFull(godAvatarData)}}allUsers['👑 '+godName]=godAvatarData||'';}
 function openSettings(){document.getElementById('app').style.display='none';document.getElementById('settingsCard').style.display='block';document.getElementById('newGodName').value=godName;document.getElementById('newGodPass').value='';document.getElementById('newGodVkId').value=godVkId||'';document.getElementById('avatarPreview').innerHTML=godAvatarData?'<img class="avatar" src="'+godAvatarData+'">':'';newAvatarData=null}
 function previewAvatar(){var f=document.getElementById('newGodAvatar').files[0];if(!f)return;var r=new FileReader();r.onload=function(e){newAvatarData=e.target.result;document.getElementById('avatarPreview').innerHTML='<img class="avatar" src="'+newAvatarData+'">'};r.readAsDataURL(f)}
 function saveSettings(){var nn=document.getElementById('newGodName').value.trim(),np=document.getElementById('newGodPass').value.trim(),nvk=document.getElementById('newGodVkId').value.trim(),up={};if(nn){up.name=nn;godName=nn;allUsers['👑 '+godName]=godAvatarData||''}if(np){db.ref('godPassword').set(np);godPass=np}if(newAvatarData){up.avatar=newAvatarData;godAvatarData=newAvatarData;allUsers['👑 '+godName]=newAvatarData}else{up.avatar=godAvatarData||''}if(nvk){up.vkId=nvk;godVkId=nvk}if(Object.keys(up).length>0)db.ref('godSettings').update(up);updateUI();backToApp();alert('✅')}
@@ -126,14 +143,23 @@ function loadPunkts(){db.ref('punkts').once('value',function(s){var h='';s.forEa
 function addPunkt(){var id=prompt('Номер пункта:');if(!id)return;db.ref('punkts/'+id).set({rate:parseInt(prompt('Ставка (₽/ч):','210'))||210});loadPunkts()}
 function editPunkt(id,cur){var r=parseInt(prompt('Ставка для '+id+':',cur));if(r&&!isNaN(r)){db.ref('punkts/'+id+'/rate').set(r);loadPunkts()}}
 function deletePunkt(id){if(confirm('Удалить '+id+'?')){db.ref('punkts/'+id).remove();loadPunkts()}}
-function loadWorkers(){var fp=document.getElementById('filterPunkt').value;db.ref('users').once('value',function(s){var h='',pk={};s.forEach(function(c){var w=c.val();if(w.punkt)pk[w.punkt]=!0;if(fp&&w.punkt!==fp)return;var wav=w.avatar?'<img src="'+w.avatar+'" style="width:30px;height:30px;border-radius:50%;object-fit:cover;margin-right:6px;vertical-align:middle">':'';h+='<div class="worker-row"><span>'+wav+'<b>'+w.name+'</b><br>Пункт '+(w.punkt||'?')+' | Надбавка: '+(w.bonus||0)+' ₽</span><span><button class="btn-orange" onclick="setBonus(\''+c.key+'\',\''+w.name+'\','+(w.bonus||0)+')">💰</button><button class="btn-gold" onclick="openPremium(\''+w.name+'\')">🎁</button><button class="btn-purple" onclick="openPunish(\''+w.name+'\')">⚠️</button><button class="btn-red" onclick="deleteWorker(\''+c.key+'\',\''+w.name+'\')">✕</button></span></div>'});document.getElementById('workersList').innerHTML=h||'<p>Нет сотрудников</p>';var sel=document.getElementById('filterPunkt');sel.innerHTML='<option value="">Все пункты</option>';Object.keys(pk).forEach(function(p){if(p)sel.innerHTML+='<option value="'+p+'">'+p+'</option>'})})}
-function setBonus(key,name,cur){var b=prompt('Надбавка для '+name+':',cur);if(b!==null&&!isNaN(parseInt(b))){db.ref('users/'+key+'/bonus').set(parseInt(b));loadWorkers()}}
-function deleteWorker(key,name){if(!confirm('Удалить '+name+'?'))return;db.ref('shifts').orderByChild('user').equalTo(name).once('value',function(s){s.forEach(function(c){db.ref('shifts/'+c.key).remove()})});db.ref('users/'+key).remove();loadWorkers()}
-function openPremium(user){currentPremiumUser=user;document.getElementById('app').style.display='none';document.getElementById('premiumCard').style.display='block';document.getElementById('premiumUser').textContent=user;loadPremiums()}
+function loadWorkers(){var fp=document.getElementById('filterPunkt').value;db.ref('users').once('value',function(s){var h='',pk={};s.forEach(function(c){var w=c.val();if(w.punkt)pk[w.punkt]=!0;if(fp&&w.punkt!==fp)return;var isCreator=w.name==='Костя';var wav=w.avatar?'<img src="'+w.avatar+'" style="width:30px;height:30px;border-radius:50%;object-fit:cover;margin-right:6px;vertical-align:middle">':'';h+='<div class="worker-row'+(isCreator?' creator-row':'')+'"><span>'+wav+'<b>'+w.name+'</b>'+(isCreator?'<span class="creator-badge">🌌 Создатель</span>':'')+'<br>Пункт '+(w.punkt||'?')+' | Надбавка: '+(w.bonus||0)+' ₽</span><span><button class="btn-orange" onclick="setBonus(\''+c.key+'\',\''+w.name+'\','+(w.bonus||0)+')">💰</button><button class="btn-gold" onclick="openPremium(\''+w.name+'\')">🎁</button><button class="btn-purple" onclick="openPunish(\''+w.name+'\')">⚠️</button><button class="btn-red" onclick="deleteWorker(\''+c.key+'\',\''+w.name+'\')">✕</button></span></div>'});document.getElementById('workersList').innerHTML=h||'<p>Нет сотрудников</p>';var sel=document.getElementById('filterPunkt');sel.innerHTML='<option value="">Все пункты</option>';Object.keys(pk).forEach(function(p){if(p)sel.innerHTML+='<option value="'+p+'">'+p+'</option>'})})}function setBonus(key,name,cur){
+  var b=prompt('Надбавка для '+name+':',cur);if(b!==null&&!isNaN(parseInt(b))){db.ref('users/'+key+'/bonus').set(parseInt(b));loadWorkers()}
+}
+function deleteWorker(key,name){
+  if(name==='Костя'){alert('🚫 Создателя нельзя удалить! Знай своё место!');return}
+  if(!confirm('Удалить '+name+'?'))return;db.ref('shifts').orderByChild('user').equalTo(name).once('value',function(s){s.forEach(function(c){db.ref('shifts/'+c.key).remove()})});db.ref('users/'+key).remove();loadWorkers()
+}
+function openPremium(user){
+  currentPremiumUser=user;document.getElementById('app').style.display='none';document.getElementById('premiumCard').style.display='block';document.getElementById('premiumUser').textContent=user;loadPremiums()
+}
+function openPunish(user){
+  if(user==='Костя'){alert('🚫 Создателя нельзя штрафовать! Знай своё место!');return}
+  currentPunish=user;document.getElementById('app').style.display='none';document.getElementById('punishCard').style.display='block';document.getElementById('punishUser').textContent=user;loadPunishes()
+}
 function loadPremiums(){if(!currentPremiumUser)return;db.ref('premiums').orderByChild('user').equalTo(currentPremiumUser).on('value',function(s){var h='';s.forEach(function(c){h+='<div class="punish-row"><span>'+c.val().amount+' ₽</span><button class="btn-red" onclick="delPremium(\''+c.key+'\')" style="width:auto;padding:4px 8px;font-size:10px">✕</button></div>'});document.getElementById('premiumList').innerHTML=h||'<p>Нет премий</p>'})}
 function addPremium(){var am=parseInt(document.getElementById('premiumAmount').value);if(!am||isNaN(am)){alert('Введи сумму!');return}var st=getGodStatus(godRating),texts=PREMIUM_TEXTS[st.name]||['+{sum}₽'],msg=randomText(texts,am);db.ref('premiums').push({user:currentPremiumUser,amount:am,timestamp:Date.now()});db.ref('notifications').push({user:currentPremiumUser,text:msg,timestamp:Date.now()});godRating+=2;updateGodStatusUI();document.getElementById('premiumAmount').value=''}
 function delPremium(id){if(confirm('Удалить премию?')){db.ref('premiums/'+id).remove();recountRating()}}
-function openPunish(user){currentPunish=user;document.getElementById('app').style.display='none';document.getElementById('punishCard').style.display='block';document.getElementById('punishUser').textContent=user;loadPunishes()}
 function loadPunishes(){if(!currentPunish)return;db.ref('punishes').orderByChild('user').equalTo(currentPunish).on('value',function(s){var h='';s.forEach(function(c){h+='<div class="punish-row"><span>'+c.val().amount+' ₽ — '+c.val().reason+'</span><button class="btn-red" onclick="delPunish(\''+c.key+'\')" style="width:auto;padding:4px 8px;font-size:10px">✕</button></div>'});document.getElementById('punishList').innerHTML=h||'<p>Нет штрафов</p>'})}
 function addPunish(){var am=parseInt(document.getElementById('punishAmount').value),r=document.getElementById('punishReason').value.trim();if(!am||isNaN(am)||!r){alert('Введи сумму и причину!');return}var st=getGodStatus(godRating),texts=PUNISH_TEXTS[st.name]||['-{sum}₽'],msg=randomText(texts,am);db.ref('punishes').push({user:currentPunish,amount:am,reason:r,timestamp:Date.now()});db.ref('notifications').push({user:currentPunish,text:msg,timestamp:Date.now()});godRating-=1;if(godRating<0)godRating=0;updateGodStatusUI();document.getElementById('punishAmount').value='';document.getElementById('punishReason').value=''}
 function delPunish(id){if(confirm('Удалить штраф?')){db.ref('punishes/'+id).remove();recountRating()}}
@@ -151,24 +177,18 @@ function markPaid(){if(!lastCalc||!lastCalc.shifts.length){alert('Сначала
 function postAnnounce(){var t=document.getElementById('announceText').value.trim();if(!t)return;db.ref('announce').push({text:t,timestamp:Date.now()});document.getElementById('announceText').value='';alert('✅ Опубликовано!')}
 function clearAnnounce(){if(!confirm('Удалить все объявления?'))return;db.ref('announce').remove();alert('✅ Удалено')}
 function sendGodPhoto(){var files=document.getElementById('godChatPhoto').files;if(!files.length)return;var photos=[],count=Math.min(files.length,5);for(var i=0;i<count;i++){(function(file){var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var c=document.createElement('canvas'),mw=300,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);var thumb=c.toDataURL('image/jpeg',0.6);photos.push({full:e.target.result,thumb:thumb});if(photos.length===count){db.ref('chat').push({user:'👑 '+godName,text:'📷 '+count+' фото',photos:photos,timestamp:Date.now()})}};img.src=e.target.result};r.readAsDataURL(file)})(files[i])}document.getElementById('godChatPhoto').value=''}
-function loadChat(){db.ref('chat').limitToLast(30).on('value',function(s){var h='';s.forEach(function(c){var m=c.val(),sn=(m.user||'').replace('📢 ',''),av=allUsers[sn]||allUsers[m.user]||'',ah=av?'<img src="'+av+'" style="width:24px;height:24px;border-radius:50%;object-fit:cover;margin-right:4px;vertical-align:middle">':'';h+='<p><span class="del-msg" onclick="delChatMsg(\''+c.key+'\')">✕</span>'+ah+'<b>'+(m.user||'?')+':</b> '+(m.text||'');if(m.photo){h+='<br><img class="chat-img" src="'+(m.thumb||m.photo)+'" onclick="event.stopPropagation();viewFull(\''+m.photo+'\')">'}if(m.photos&&m.photos.length){var ft=typeof m.photos[0]==='object'?m.photos[0].thumb:m.photos[0],af=[];for(var i=0;i<m.photos.length;i++){af.push(typeof m.photos[i]==='object'?m.photos[i].full:m.photos[i])}var pd=JSON.stringify(af).replace(/'/g,"&#39;").replace(/"/g,'&quot;');h+='<br><img class="thumb" src="'+ft+'" onclick="event.stopPropagation();viewPack(\''+pd+'\')">';if(m.photos.length>1)h+=' <span style="font-size:11px;color:#999">+ ещё '+(m.photos.length-1)+'</span>'}h+='</p>'});document.getElementById('chat').innerHTML=h;document.getElementById('chat').scrollTop=document.getElementById('chat').scrollHeight})}
+function loadChat(){db.ref('chat').limitToLast(30).on('value',function(s){var h='';s.forEach(function(c){var m=c.val(),sn=(m.user||'').replace('📢 ','').replace('🌌 ',''),av=allUsers[sn]||allUsers[m.user]||'',ah=av?'<img src="'+av+'" style="width:24px;height:24px;border-radius:50%;object-fit:cover;margin-right:4px;vertical-align:middle">':'';h+='<p><span class="del-msg" onclick="delChatMsg(\''+c.key+'\')">✕</span>'+ah+'<b>'+(m.user||'?')+':</b> '+(m.text||'');if(m.photo){h+='<br><img class="chat-img" src="'+(m.thumb||m.photo)+'" onclick="event.stopPropagation();viewFull(\''+m.photo+'\')">'}if(m.photos&&m.photos.length){var ft=typeof m.photos[0]==='object'?m.photos[0].thumb:m.photos[0],af=[];for(var i=0;i<m.photos.length;i++){af.push(typeof m.photos[i]==='object'?m.photos[i].full:m.photos[i])}var pd=JSON.stringify(af).replace(/'/g,"&#39;").replace(/"/g,'&quot;');h+='<br><img class="thumb" src="'+ft+'" onclick="event.stopPropagation();viewPack(\''+pd+'\')">';if(m.photos.length>1)h+=' <span style="font-size:11px;color:#999">+ ещё '+(m.photos.length-1)+'</span>'}h+='</p>'});document.getElementById('chat').innerHTML=h;document.getElementById('chat').scrollTop=document.getElementById('chat').scrollHeight})}
 function viewFull(url){document.getElementById('photoViewerImg').src=url;document.getElementById('photoViewer').style.display='flex'}
 function viewPack(pd){var ph=JSON.parse(pd.replace(/&quot;/g,'"').replace(/&#39;/g,"'")),v=document.getElementById('photoViewer'),im=document.getElementById('photoViewerImg'),idx=0;im.src=ph[0];v.style.display='flex';v.onclick=function(e){if(e.target===v){v.style.display='none';v.onclick=null}};im.onclick=function(e){e.stopPropagation();idx++;if(idx<ph.length)im.src=ph[idx];else v.style.display='none'}}
-function delChatMsg(key){if(confirm('Удалить?')){db.ref('chat/'+key).remove()}}
+function delChatMsg(key){
+  db.ref('chat/'+key).once('value',function(s){
+    if(s.val()&&s.val().user&&s.val().user.indexOf('🌌')===0){alert('🚫 Сообщения Создателя нельзя удалить!');return}
+    if(confirm('Удалить?')){db.ref('chat/'+key).remove()}
+  });
+}
 function sendChat(){var t=document.getElementById('chatInput').value.trim();if(!t)return;
   var mentions=t.match(/@(\S+)/g);
-  if(mentions){
-    db.ref('users').once('value',function(snap){
-      var vkIds={};
-      snap.forEach(function(c){vkIds[c.val().name]=c.val().vkId||''});
-      if(godVkId)vkIds[godName]=godVkId;
-      for(var i=0;i<mentions.length;i++){
-        var name=mentions[i].replace('@','');
-        var vkId=vkIds[name];
-        if(vkId){sendVkNotify(vkId,'📢 Начальник упомянул вас в чате Ozon:\n'+t)}
-      }
-    });
-  }
+  if(mentions){db.ref('users').once('value',function(snap){var vkIds={};snap.forEach(function(c){vkIds[c.val().name]=c.val().vkId||''});if(godVkId)vkIds[godName]=godVkId;for(var i=0;i<mentions.length;i++){var name=mentions[i].replace('@','');var vkId=vkIds[name];if(vkId){sendVkNotify(vkId,'📢 Начальник упомянул вас в чате Ozon:\n'+t)}}})}
   db.ref('chat').push({user:'👑 '+godName,text:t,timestamp:Date.now()});document.getElementById('chatInput').value='';
 }
 document.getElementById('chatInput').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();sendChat()}});
