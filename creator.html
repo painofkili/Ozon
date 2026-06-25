@@ -11,37 +11,33 @@ body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; heigh
 .card { background: rgba(22,33,62,0.85); padding: 16px; border-radius: 14px; margin: 8px 0; backdrop-filter: blur(10px); }
 input, select { width: 100%; padding: 14px; font-size: 16px; margin: 4px 0; border-radius: 10px; border: 1px solid #444; background: rgba(26,26,46,0.8); color: #fff; }
 button { width: 100%; padding: 14px; font-size: 16px; margin: 4px 0; border-radius: 10px; border: none; color: #fff; font-weight: bold; cursor: pointer; }
-.btn-green { background: #4CAF50; } .btn-blue { background: #2196F3; } .btn-red { background: #e94560; } .btn-gray { background: #555; } .btn-gold { background: linear-gradient(135deg, #f5c518, #ff8c00); color: #000; }
+.btn-green { background: #4CAF50; } .btn-blue { background: #2196F3; } .btn-red { background: #e94560; } .btn-gray { background: #555; } .btn-gold { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; }
 button:disabled { opacity: 0.5; cursor: default; }
-.avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; cursor: pointer; border: 3px solid transparent; }
-.avatar-creator { border: 3px solid #f5c518; box-shadow: 0 0 15px rgba(245,197,24,0.6); animation: glow 2s infinite; }
-@keyframes glow { 0%, 100% { box-shadow: 0 0 15px rgba(245,197,24,0.6); } 50% { box-shadow: 0 0 30px rgba(245,197,24,1); } }
+.avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; cursor: pointer; }
+.avatar-creator { border: 3px solid transparent; background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF, #f5c518); background-size: 400% 400%; animation: galaxyGlow 3s infinite; box-shadow: 0 0 25px rgba(138, 43, 226, 0.7), 0 0 50px rgba(0, 191, 255, 0.4); }
+@keyframes galaxyGlow { 0% { background-position: 0% 50%; box-shadow: 0 0 25px rgba(138, 43, 226, 0.7); } 50% { background-position: 100% 50%; box-shadow: 0 0 40px rgba(245, 197, 24, 0.9), 0 0 70px rgba(138, 43, 226, 0.6); } 100% { background-position: 0% 50%; box-shadow: 0 0 25px rgba(138, 43, 226, 0.7); } }
 .avatar-mini { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; margin-right: 6px; vertical-align: middle; cursor: pointer; }
-.avatar-mini-creator { border: 2px solid #f5c518; }
+.avatar-mini-creator { border: 2px solid #8B00FF; box-shadow: 0 0 10px rgba(138, 43, 226, 0.6); }
 .profile-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.creator-badge { font-size: 14px; font-weight: bold; padding: 4px 12px; border-radius: 12px; background: linear-gradient(135deg, #f5c518, #ff8c00); color: #000; animation: glow 2s infinite; }
+.creator-badge { font-size: 14px; font-weight: bold; padding: 4px 12px; border-radius: 12px; background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; animation: galaxyGlow 3s infinite; }
+.creator-name { background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
 .progress-bar { height: 6px; background: #333; border-radius: 3px; margin-top: 4px; overflow: hidden; }
-.progress-fill { height: 100%; border-radius: 3px; transition: width 0.5s; background: linear-gradient(135deg, #f5c518, #ff8c00); width: 100%; }
-.progress-text { font-size: 11px; color: #f5c518; }
+.progress-fill { height: 100%; border-radius: 3px; background: linear-gradient(135deg, #f5c518, #8B00FF); width: 100%; }
+.progress-text { font-size: 11px; color: #8B00FF; }
 .tabs { display: flex; gap: 6px; margin: 10px 0; }
 .tabs button { flex: 1; padding: 12px; background: #333; font-size: 13px; color: #aaa; }
-.tabs button.active { background: linear-gradient(135deg, #f5c518, #ff8c00); color: #000; }
-.chat-header { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; background: rgba(26,26,46,0.8); border-radius: 10px; margin: 8px 0; }
-.chat-header .chat-badge { background: #e94560; color: #fff; border-radius: 50%; width: 22px; height: 22px; font-size: 11px; text-align: center; line-height: 22px; }
-#chat { max-height: 300px; overflow-y: auto; padding: 8px; border-radius: 10px; margin: 8px 0; background: rgba(26,26,46,0.8); font-size: 13px; display: none; }
-#chat.open { display: block; }
-.chat-msg-creator { background: rgba(245,197,24,0.15); border-left: 3px solid #f5c518; padding: 6px 10px; border-radius: 8px; font-style: italic; }
-.chat-msg-creator .author { color: #f5c518; font-weight: bold; }
+.tabs button.active { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; }
+#chat { max-height: 300px; overflow-y: auto; padding: 8px; border-radius: 10px; margin: 8px 0; background: rgba(26,26,46,0.8); font-size: 13px; }
+.chat-msg-creator { background: linear-gradient(135deg, rgba(245,197,24,0.1), rgba(138,43,226,0.1)); border-left: 3px solid #8B00FF; padding: 6px 10px; border-radius: 8px; }
+.chat-msg-creator .author { background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
+#chat p { margin: 3px 0; position: relative; }
 #chat .chat-img { max-width: 100%; border-radius: 8px; margin: 4px 0; cursor: pointer; }
 #chat .thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; cursor: pointer; margin: 2px; }
 #chat .del-msg { position: absolute; top: 0; right: 0; background: #e94560; color: #fff; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; line-height: 18px; text-align: center; cursor: pointer; display: none; }
 #chat p:hover .del-msg { display: block; }
 #chat .pin-msg { position: absolute; top: 0; right: 20px; background: #f5c518; color: #000; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; line-height: 18px; text-align: center; cursor: pointer; display: none; }
 #chat p:hover .pin-msg { display: block; }
-.thought-bubble { background: linear-gradient(135deg, #1a0033, #0d0040); color: #e0b0ff; padding: 12px; border-radius: 14px; margin: 8px 0; font-style: italic; text-align: center; animation: thoughtFloat 3s ease-in-out; position: relative; }
-.thought-bubble::before { content: '💭 Мысль Создателя'; display: block; font-size: 10px; color: #9966cc; margin-bottom: 4px; }
-@keyframes thoughtFloat { 0% { opacity: 0; transform: translateY(20px); } 50% { opacity: 1; transform: translateY(-5px); } 100% { opacity: 1; transform: translateY(0); } }
-.pinned { background: rgba(245,197,24,0.2); border-left: 3px solid #f5c518; padding: 8px; margin: 4px 0; border-radius: 8px; }
+.pinned { background: rgba(138,43,226,0.2); border-left: 3px solid #8B00FF; padding: 8px; margin: 4px 0; border-radius: 8px; }
 .photo-preview { display: flex; gap: 4px; flex-wrap: wrap; }
 .photo-preview img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; }
 #photoViewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 1000; }
@@ -56,8 +52,6 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
 .notify-item { padding: 6px; border-bottom: 1px solid #333; font-size: 13px; }
 .creator-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
 .creator-actions button { flex: 1; min-width: 100px; font-size: 12px; padding: 10px; }
-.hall-item { display: flex; align-items: center; gap: 8px; padding: 6px; border-bottom: 1px solid #333; font-size: 13px; }
-.hall-medal { font-size: 20px; width: 30px; text-align: center; }
 </style>
 </head>
 <body>
@@ -70,12 +64,10 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
 </div>
 
 <div id="app" style="display:none">
-  <div id="announceBlock" style="display:none;background:#FFF9C4;color:#333;padding:10px;border-radius:10px;margin-bottom:8px;font-size:14px;text-align:center;position:relative"></div>
-  <div id="thoughtBlock"></div>
   <div class="profile-row">
     <img id="profileAvatar" class="avatar avatar-creator" src="" style="display:none">
     <div style="flex:1">
-      <b style="font-size:17px;background:linear-gradient(135deg,#f5c518,#ff8c00);-webkit-background-clip:text;-webkit-text-fill-color:transparent"><span id="uname"></span> 👑</b> 
+      <b class="creator-name" style="font-size:17px"><span id="uname"></span> 🌌</b> 
       <span class="creator-badge">🌌 Создатель</span><br>
       <span style="font-size:12px;color:#aaa">📍 Пункт <span id="upunkt"></span></span>
       <div class="progress-bar"><div class="progress-fill"></div></div>
@@ -89,7 +81,6 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
     <button id="tabHistory" onclick="showTab('history')">💳</button>
     <button id="tabNotify" onclick="showTab('notify')">🔔</button>
     <button id="tabCreator" onclick="showTab('creator')">🌌</button>
-    <button id="tabHall" onclick="showTab('hall')">🏆</button>
   </div>
   <div id="shiftTab">
     <button id="startBtn" class="btn-green" onclick="startShift()">🔵 НА СМЕНУ</button>
@@ -108,41 +99,19 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
   <div id="creatorTab" style="display:none">
     <h4 style="text-align:center">🌌 Сила Создателя</h4>
     <div class="creator-actions">
-      <button class="btn-gold" onclick="summonBoss()">👔 На ковёр</button>
-      <button class="btn-gold" onclick="monkeySomeone()">🐒 Обезьяна</button>
-      <button class="btn-gold" onclick="clownSomeone()">🤡 Клоун</button>
-      <button class="btn-gold" onclick="thinkCreator()">💭 Мысль</button>
+      <button class="btn-gold" onclick="summonBoss()">👔 Вызвать на ковёр</button>
+      <button class="btn-gold" onclick="monkeySomeone()">🐒 Обезьяна дня</button>
+      <button class="btn-gold" onclick="clownSomeone()">🤡 Клоун дня</button>
+      <button class="btn-gold" onclick="thinkCreator()">💭 Мысли</button>
     </div>
-    <div class="creator-actions">
-      <button class="btn-red" onclick="deleteAnnounce()">🗑 Удалить объявления</button>
-    </div>
-  </div>
-  <div id="hallTab" style="display:none">
-    <h4 style="text-align:center">🏆 Доска почёта</h4>
-    <div class="stat-card"><b>⏱ Топ по часам</b><div id="hallHours"></div></div>
-    <div class="stat-card"><b>📦 Топ по товарам</b><div id="hallTovar"></div></div>
-    <div class="stat-card"><b>🌟 Работник месяца</b><div id="hallBest"></div></div>
-    <div class="stat-card"><b>💀 Штрафник месяца</b><div id="hallWorst"></div></div>
-    <div class="stat-card"><b>🎁 Любимчик бога</b><div id="hallPremium"></div></div>
   </div>
   <div id="pinnedMessage" class="pinned" style="display:none"></div>
-  <div class="chat-header" onclick="toggleChat()">💬 Чат <span id="chatBadge" class="chat-badge" style="display:none">0</span></div>
-  <div id="chat" class="open"></div>
+  <div id="chat"></div>
   <div style="display:flex;gap:4px">
     <input id="msg" placeholder="Чат..." style="flex:1">
     <button class="btn-gray" onclick="document.getElementById('chatPhoto').click()" style="width:auto;padding:14px">📎</button>
     <input id="chatPhoto" type="file" accept="image/*" multiple onchange="sendPhoto()" style="display:none">
     <button class="btn-gold" onclick="send()" style="width:auto;padding:14px 18px">➤</button>
-  </div>
-</div>
-
-<div id="settingsCard" style="display:none">
-  <div class="card"><h4>⚙️ Настройки</h4>
-    <input id="newName" placeholder="Имя"><input id="newPass" type="password" placeholder="Пароль"><select id="newPunkt"></select>
-    <label>Аватарка</label><input id="newAvatar" type="file" accept="image/*" onchange="previewNewAvatar()">
-    <div id="newAvatarPreview" style="text-align:center;margin:6px 0"></div>
-    <button class="btn-gold" onclick="saveSettings()">💾 Сохранить</button>
-    <button class="btn-gray" onclick="closeSettings()">↩ Назад</button>
   </div>
 </div>
 
@@ -152,7 +121,7 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <script>
 firebase.initializeApp({apiKey:"AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",authDomain:"ozon-grafik-4ad9f.firebaseapp.com",databaseURL:"https://ozon-grafik-4ad9f-default-rtdb.europe-west1.firebasedatabase.app",projectId:"ozon-grafik-4ad9f",storageBucket:"ozon-grafik-4ad9f.firebasestorage.app",messagingSenderId:"798009068634",appId:"1:798009068634:web:4b70eea3cce6c96f4f5c63"});
-var db=firebase.database(),user=null,onShift=!1,photoBase64=[],newAvatarData=null,allMyShifts=[],allUsers={},CREATOR_PASS='2706',unreadCount=0;
+var db=firebase.database(),user=null,onShift=!1,photoBase64=[],newAvatarData=null,allMyShifts=[],allUsers={},CREATOR_PASS='2706';
 var VK_TOKEN="vk1.a.1ccqIy8pmM0W_RnIymI9XOMvA6ILX5yxNfZZAiF5HHBdjHK_vOAimgsyljky-TCiReMgJRAlaRvpYEypifmF-iUonUGvldlw5LvDWAOSUpN1WDcnS_7Uit-Yh3BuUF5Ic5NoZ48Qhlmu4ErB87fpTplEI7E3sarTm9LC-Vd8zTbeQp4xgyB1s5yg6oBxTBaNZAFp-ioqBWG25jR8GREmWw";
 
 if('Notification' in window && Notification.permission==='default'){Notification.requestPermission()}
@@ -163,17 +132,6 @@ db.ref('users').on('value',function(s){s.forEach(function(c){allUsers[c.key]=c.v
 
 function loadPunkts(cb){db.ref('punkts').once('value',function(s){var p=[];s.forEach(function(c){p.push(c.key)});if(cb)cb(p)})}
 
-function toggleChat(){
-  var chat=document.getElementById('chat');
-  chat.classList.toggle('open');
-  unreadCount=0;
-  updateChatBadge();
-}
-function updateChatBadge(){
-  var badge=document.getElementById('chatBadge');
-  if(unreadCount>0){badge.style.display='inline';badge.textContent=unreadCount}else{badge.style.display='none'}
-}
-
 function creatorLogin(){
   var p=document.getElementById('creatorPass').value.trim();
   if(p===CREATOR_PASS){
@@ -182,25 +140,25 @@ function creatorLogin(){
       if(s.exists()){user=s.val();user.role='creator'}
       localStorage.setItem('creator_user',JSON.stringify(user));
       document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';
-      updateProfileUI();loadChat();loadAllData();loadHistory();loadNotifications();loadPinned();loadAnnounce();loadHall();
+      updateProfileUI();loadChat();loadAllData();loadHistory();loadNotifications();loadPinned();
       db.ref('activeShifts/'+user.name).once('value',function(s){if(s.exists()&&s.val().active){onShift=!0;document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block'}});
     });
   }else{alert('Неверный пароль!')}
 }
 
 var saved=localStorage.getItem('creator_user');
-if(saved){user=JSON.parse(saved);document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';updateProfileUI();loadChat();loadAllData();loadHistory();loadNotifications();loadPinned();loadAnnounce();loadHall()}
+if(saved){user=JSON.parse(saved);document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';updateProfileUI();loadChat();loadAllData();loadHistory();loadNotifications();loadPinned()}
 
 function updateProfileUI(){document.getElementById('uname').textContent=user.name;document.getElementById('upunkt').textContent=user.punkt||'?';if(user.avatar){var pa=document.getElementById('profileAvatar');pa.src=user.avatar;pa.style.display='inline';pa.onclick=function(){viewPhoto(user.avatar)}}}
 function showTab(tab){
-  var tabs={shift:'shiftTab',stats:'statsTab',history:'historyTab',notify:'notifyTab',creator:'creatorTab',hall:'hallTab'};
+  var tabs={shift:'shiftTab',stats:'statsTab',history:'historyTab',notify:'notifyTab',creator:'creatorTab'};
   var active=document.querySelector('.tabs button.active');
   if(active&&active.id==='tab'+tab.charAt(0).toUpperCase()+tab.slice(1)){document.getElementById(tabs[tab]).style.display='none';active.classList.remove('active');return;}
   Object.keys(tabs).forEach(function(t){document.getElementById(tabs[t]).style.display='none'});
   document.getElementById(tabs[tab]).style.display='block';
-  ['tabShift','tabStats','tabHistory','tabNotify','tabCreator','tabHall'].forEach(function(id){document.getElementById(id).classList.remove('active')});
+  ['tabShift','tabStats','tabHistory','tabNotify','tabCreator'].forEach(function(id){document.getElementById(id).classList.remove('active')});
   document.getElementById('tab'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('active');
-  if(tab==='stats')renderCalendar();if(tab==='history')loadHistory();if(tab==='notify')loadNotifications();if(tab==='hall')loadHall();
+  if(tab==='stats')renderCalendar();if(tab==='history')loadHistory();if(tab==='notify')loadNotifications();
 }
 function loadNotifications(){if(!user)return;db.ref('notifications').orderByChild('user').equalTo(user.name).once('value',function(s){var arr=[];s.forEach(function(c){arr.push(c.val())});arr.sort(function(a,b){return b.timestamp-a.timestamp});document.getElementById('notifyContent').innerHTML=arr.length?arr.map(function(x){return'<div class="notify-item">'+x.text+' <small style="color:#999">'+new Date(x.timestamp).toLocaleString('ru-RU')+'</small></div>'}).join(''):'<p>Нет уведомлений</p>'})}
 function loadAllData(){if(!user)return;db.ref('shifts').orderByChild('user').equalTo(user.name).on('value',function(s){allMyShifts=[];s.forEach(function(c){var x=c.val();x._id=c.key;allMyShifts.push(x)});allMyShifts.sort(function(a,b){return new Date(b.timestamp)-new Date(a.timestamp)});if(document.getElementById('statsTab').style.display!=='none')renderCalendar()})}
@@ -209,49 +167,26 @@ function loadHistory(){if(!user)return;db.ref('payments').orderByChild('user').e
 function clearMyShifts(){if(!confirm('Удалить все смены?'))return;db.ref('shifts').orderByChild('user').equalTo(user.name).once('value',function(s){s.forEach(function(c){db.ref('shifts/'+c.key).remove()})});alert('✅')}
 function openSettings(){document.getElementById('app').style.display='none';document.getElementById('settingsCard').style.display='block';loadPunkts(function(p){var s=document.getElementById('newPunkt');s.innerHTML='<option value="">Не менять</option>';for(var i=0;i<p.length;i++){s.innerHTML+='<option value="'+p[i]+'">'+p[i]+'</option>'}})}
 function closeSettings(){document.getElementById('settingsCard').style.display='none';document.getElementById('app').style.display='block'}
-function saveSettings(){var nn=document.getElementById('newName').value.trim(),np=document.getElementById('newPass').value.trim(),npu=document.getElementById('newPunkt').value,ok=user.name,up={};if(nn&&nn!==user.name){up['users/'+nn]={name:nn,punkt:npu||user.punkt,password:user.password,bonus:user.bonus||0,avatar:newAvatarData||user.avatar||''};if(np)up['users/'+nn+'/password']=np;up['users/'+ok]=null;user.name=nn;if(npu)user.punkt=npu}else{var uu={name:user.name,punkt:user.punkt,avatar:user.avatar||''};if(np)uu.password=np;if(newAvatarData)uu.avatar=newAvatarData;if(npu)uu.punkt=npu;up['users/'+ok]=uu;if(npu)user.punkt=npu}if(Object.keys(up).length===0){closeSettings();return}db.ref().update(up,function(err){if(err){alert('Ошибка');return}if(np)user.password=np;if(newAvatarData)user.avatar=newAvatarData;else if(!user.avatar&&uu)user.avatar=uu.avatar||'';localStorage.setItem('creator_user',JSON.stringify(user));updateProfileUI();closeSettings();alert('✅')})}
-function previewNewAvatar(){var f=document.getElementById('newAvatar').files[0];if(!f)return;var r=new FileReader();r.onload=function(e){newAvatarData=e.target.result;document.getElementById('newAvatarPreview').innerHTML='<img class="avatar" src="'+newAvatarData+'">'};r.readAsDataURL(f)}
 function previewPhotos(){photoBase64=[];document.getElementById('photoPreviews').innerHTML='';var files=document.getElementById('photos').files;for(var i=0;i<Math.min(files.length,5);i++){(function(file){var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var c=document.createElement('canvas'),mw=400,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);var thumb=c.toDataURL('image/jpeg',0.6);photoBase64.push({full:e.target.result,thumb:thumb});var pv=document.createElement('img');pv.src=thumb;document.getElementById('photoPreviews').appendChild(pv)};img.src=e.target.result};r.readAsDataURL(file)})(files[i])}}
 function startShift(){onShift=!0;var t=new Date().toLocaleTimeString('ru-RU');db.ref('activeShifts/'+user.name).set({active:!0,startTime:t});document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block';db.ref('chat').push({user:'🌌 '+user.name,text:'🔵 Пункт '+user.punkt+' на смене! ('+t+')',timestamp:Date.now()})}
 function endShift(){var tf=document.getElementById('timeFrom').value||'9',tt=document.getElementById('timeTo').value||'21',tv=parseInt(document.getElementById('tov').value)||0,hh=parseInt(tt)-parseInt(tf),t=new Date().toLocaleTimeString('ru-RU'),ph=photoBase64.slice(0,5);db.ref('shifts/'+user.name+'_'+Date.now()).set({user:user.name,punkt:user.punkt||'49',date:new Date().toLocaleDateString('ru-RU'),timeFrom:tf,timeTo:tt,hours:hh,tovar:tv,photos:ph,paid:!1,timestamp:new Date().toISOString()});db.ref('chat').push({user:'🌌 '+user.name,text:'🔴 Пункт '+user.punkt+' с '+tf+' до '+tt+', товаров: '+tv,timestamp:Date.now(),photos:ph});db.ref('activeShifts/'+user.name).remove();onShift=!1;document.getElementById('shift').style.display='none';document.getElementById('onShiftBtn').style.display='none';document.getElementById('startBtn').style.display='block';document.getElementById('tov').value='';document.getElementById('photos').value='';document.getElementById('photoPreviews').innerHTML='';photoBase64=[]}
-function sendPhoto(){var files=document.getElementById('chatPhoto').files;if(!files.length||!user)return;var photos=[],count=Math.min(files.length,5);for(var i=0;i<count;i++){(function(file){var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var c=document.createElement('canvas'),mw=300,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);var thumb=c.toDataURL('image/jpeg',0.6);photos.push({full:e.target.result,thumb:thumb});if(photos.length===count){db.ref('chat').push({user:'🌌 '+user.name,text:'📷 '+count+' фото',photos:photos,timestamp:Date.now()})}};img.src=e.target.result};r.readAsDataURL(file)})(files[i])}document.getElementById('chatPhoto').value=''}
-function logout(){user=null;onShift=!1;localStorage.removeItem('creator_user');document.getElementById('app').style.display='none';document.getElementById('settingsCard').style.display='none';document.getElementById('login').style.display='block'}
-function loadChat(){db.ref('chat').limitToLast(30).on('value',function(s){var h='';s.forEach(function(c){var m=c.val(),isCreator=m.user&&m.user.indexOf('🌌')===0,sn=(m.user||'').replace('📢 ','').replace('🌌 ',''),av=allUsers[sn]||'',ah=av?'<img class="avatar-mini'+(isCreator?' avatar-mini-creator':'')+'" src="'+av+'">':'';if(isCreator){h+='<div class="chat-msg-creator">'}else{h+='<p>'}h+='<span class="del-msg" onclick="delChatMsg(\''+c.key+'\')">✕</span>'+(isCreator?'<span class="pin-msg" onclick="pinMsg(\''+c.key+'\')">📌</span>':'')+ah+'<b class="'+(isCreator?'author':'')+'">'+(isCreator?'👑 ':'')+(m.user||'?')+':</b> '+(m.text||'');if(m.photo){h+='<br><img class="chat-img" src="'+(m.thumb||m.photo)+'" onclick="event.stopPropagation();viewPhoto(\''+m.photo+'\')">'}if(m.photos&&m.photos.length){var ft=typeof m.photos[0]==='object'?m.photos[0].thumb:m.photos[0],af=[];for(var i=0;i<m.photos.length;i++){af.push(typeof m.photos[i]==='object'?m.photos[i].full:m.photos[i])}var pd=JSON.stringify(af).replace(/'/g,"&#39;").replace(/"/g,'&quot;');h+='<br><img class="thumb" src="'+ft+'" onclick="event.stopPropagation();viewPack(\''+pd+'\')">';if(m.photos.length>1)h+=' <span style="font-size:11px;color:#999">+ ещё '+(m.photos.length-1)+'</span>'}h+=isCreator?'</div>':'</p>'});document.getElementById('chat').innerHTML=h;document.getElementById('chat').scrollTop=document.getElementById('chat').scrollHeight})}
+function sendPhoto(){var files=document.getElementById('chatPhoto').files;if(!files.length||!user)return;var photos=[],count=Math.min(files.length,5);for(var i=0;i<count;i++){(function(file){var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var c=document.createElement('canvas'),mw=300,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);var thumb=c.toDataURL('image/jpeg',0.6);photos.push({full:e.target.result,thumb:thumb});if(photos.length===count){db.ref('chat').push({user:'🌌 '+user.name,text:'📷 '+count+' фото',photos:photos,timestamp:Date.now(),creator:!0})}};img.src=e.target.result};r.readAsDataURL(file)})(files[i])}document.getElementById('chatPhoto').value=''}
+function logout(){user=null;onShift=!1;localStorage.removeItem('creator_user');document.getElementById('app').style.display='none';document.getElementById('login').style.display='block'}
+function loadChat(){db.ref('chat').limitToLast(30).on('value',function(s){var h='';s.forEach(function(c){var m=c.val(),isCreator=m.user&&m.user.indexOf('🌌')===0,sn=(m.user||'').replace('📢 ','').replace('🌌 ',''),av=allUsers[sn]||'',ah=av?'<img class="avatar-mini'+(isCreator?' avatar-mini-creator':'')+'" src="'+av+'">':'';if(isCreator){h+='<div class="chat-msg-creator">'}else{h+='<p>'}h+=(!isCreator?'<span class="del-msg" onclick="delChatMsg(\''+c.key+'\')">✕</span>':'')+(isCreator?'<span class="pin-msg" onclick="pinMsg(\''+c.key+'\')">📌</span>':'');h+=ah+'<b class="'+(isCreator?'author':'')+'">'+(isCreator?'🌌 ':'')+(m.user||'?')+':</b> '+(m.text||'');if(m.photo){h+='<br><img class="chat-img" src="'+(m.thumb||m.photo)+'" onclick="event.stopPropagation();viewPhoto(\''+m.photo+'\')">'}if(m.photos&&m.photos.length){var ft=typeof m.photos[0]==='object'?m.photos[0].thumb:m.photos[0],af=[];for(var i=0;i<m.photos.length;i++){af.push(typeof m.photos[i]==='object'?m.photos[i].full:m.photos[i])}var pd=JSON.stringify(af).replace(/'/g,"&#39;").replace(/"/g,'&quot;');h+='<br><img class="thumb" src="'+ft+'" onclick="event.stopPropagation();viewPack(\''+pd+'\')">';if(m.photos.length>1)h+=' <span style="font-size:11px;color:#999">+ ещё '+(m.photos.length-1)+'</span>'}h+=isCreator?'</div>':'</p>'});document.getElementById('chat').innerHTML=h;document.getElementById('chat').scrollTop=document.getElementById('chat').scrollHeight})}
 function viewPhoto(url){document.getElementById('photoViewerImg').src=url;document.getElementById('photoViewer').style.display='flex'}
 function viewPack(pd){var ph=JSON.parse(pd.replace(/&quot;/g,'"').replace(/&#39;/g,"'")),v=document.getElementById('photoViewer'),im=document.getElementById('photoViewerImg'),idx=0;im.src=ph[0];v.style.display='flex';v.onclick=function(e){if(e.target===v){v.style.display='none';v.onclick=null}};im.onclick=function(e){e.stopPropagation();idx++;if(idx<ph.length)im.src=ph[idx];else v.style.display='none'}}
-function delChatMsg(key){if(confirm('Удалить?')){db.ref('chat/'+key).remove()}}
+function delChatMsg(key){db.ref('chat/'+key).once('value',function(s){if(s.val()&&s.val().user&&s.val().user.indexOf('🌌')===0){alert('🚫 Сообщения Создателя нельзя удалить!');return}if(confirm('Удалить?')){db.ref('chat/'+key).remove()}})}
 function pinMsg(key){db.ref('chat/'+key).once('value',function(s){if(s.exists()){db.ref('pinned').set(s.val());alert('📌 Закреплено!')}})}
-function loadPinned(){db.ref('pinned').on('value',function(s){var b=document.getElementById('pinnedMessage');if(!s.exists()){b.style.display='none';return}var m=s.val();b.style.display='block';b.innerHTML='📌 <b>'+(m.user||'?')+':</b> '+m.text+' <button class="btn-red" onclick="clearPinned()" style="width:auto;padding:2px 8px;font-size:10px">✕</button>'})}
-function clearPinned(){if(confirm('Открепить?')){db.ref('pinned').remove()}}
-function loadAnnounce(){db.ref('announce').limitToLast(1).on('value',function(s){var b=document.getElementById('announceBlock');if(!s.exists()){b.style.display='none';return}var l=null;s.forEach(function(c){l=c.val()});b.style.display='block';b.innerHTML='<b>📢 '+l.text+'</b><br><small>'+new Date(l.timestamp).toLocaleString('ru-RU')+'</small> <button class="btn-red" onclick="deleteAnnounce()" style="width:auto;padding:2px 8px;font-size:10px">✕</button>'})}
-function deleteAnnounce(){if(!confirm('Удалить все объявления?'))return;db.ref('announce').remove();alert('✅ Удалено')}
-function loadHall(){
-  db.ref('shifts').once('value',function(snap){var users={};snap.forEach(function(c){var s=c.val();if(!users[s.user])users[s.user]={hours:0,tovar:0};users[s.user].hours+=s.hours||0;users[s.user].tovar+=s.tovar||0});var arr=[];for(var n in users)arr.push({name:n,hours:users[n].hours,tovar:users[n].tovar});arr.sort(function(a,b){return b.hours-a.hours});var hh='';for(var i=0;i<Math.min(arr.length,5);i++){var m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'📌';hh+='<div class="hall-item"><span class="hall-medal">'+m+'</span> '+arr[i].name+' — <b>'+arr[i].hours+'ч</b></div>'}document.getElementById('hallHours').innerHTML=hh||'Нет данных';arr.sort(function(a,b){return b.tovar-a.tovar});var ht='';for(var i=0;i<Math.min(arr.length,5);i++){var m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'📌';ht+='<div class="hall-item"><span class="hall-medal">'+m+'</span> '+arr[i].name+' — <b>'+arr[i].tovar+' шт</b></div>'}document.getElementById('hallTovar').innerHTML=ht||'Нет данных';arr.sort(function(a,b){return(b.hours+b.tovar)-(a.hours+a.tovar)});document.getElementById('hallBest').innerHTML=arr.length?'<div class="hall-item"><span class="hall-medal">🌟</span> '+arr[0].name+' — '+arr[0].hours+'ч / '+arr[0].tovar+' шт</div>':'Нет данных';db.ref('punishes').once('value',function(ps){var pusers={};ps.forEach(function(c){var p=c.val();if(!pusers[p.user])pusers[p.user]=0;pusers[p.user]+=p.amount||0});var parr=[];for(var n in pusers)parr.push({name:n,amount:pusers[n]});parr.sort(function(a,b){return b.amount-a.amount});document.getElementById('hallWorst').innerHTML=parr.length?'<div class="hall-item"><span class="hall-medal">💀</span> '+parr[0].name+' — <b>'+parr[0].amount+' ₽</b></div>':'Нет данных'});db.ref('premiums').once('value',function(prs){var prusers={};prs.forEach(function(c){var p=c.val();if(!prusers[p.user])prusers[p.user]=0;prusers[p.user]+=p.amount||0});var prarr=[];for(var n in prusers)prarr.push({name:n,amount:prusers[n]});prarr.sort(function(a,b){return b.amount-a.amount});document.getElementById('hallPremium').innerHTML=prarr.length?'<div class="hall-item"><span class="hall-medal">🎁</span> '+prarr[0].name+' — <b>'+prarr[0].amount+' ₽</b></div>':'Нет данных'})})}
+function loadPinned(){db.ref('pinned').on('value',function(s){var b=document.getElementById('pinnedMessage');if(!s.exists()){b.style.display='none';return}var m=s.val();b.style.display='block';b.innerHTML='📌 <b>'+(m.user||'?')+':</b> '+m.text})}
 function send(){var t=document.getElementById('msg').value.trim();if(!t||!user)return;
   var mentions=t.match(/@(\S+)/g);
   if(mentions){db.ref('users').once('value',function(snap){var vkIds={};snap.forEach(function(c){vkIds[c.val().name]=c.val().vkId||''});for(var i=0;i<mentions.length;i++){var name=mentions[i].replace('@','');var vkId=vkIds[name];if(vkId){sendVkNotify(vkId,'📢 Создатель упомянул вас в чате Ozon:\n'+t)}}})}
-  db.ref('chat').push({user:'🌌 '+user.name,text:t,timestamp:Date.now()});document.getElementById('msg').value='';
+  db.ref('chat').push({user:'🌌 '+user.name,text:t,timestamp:Date.now(),creator:!0});document.getElementById('msg').value='';
 }
-
-// Функции Создателя
-function summonBoss(){
-  db.ref('users').once('value',function(snap){var users=[];snap.forEach(function(c){users.push(c.val().name)});var name=prompt('Кого вызвать на ковёр?\n'+users.join(', '));if(name){db.ref('users').once('value',function(snap){var vkId='';snap.forEach(function(c){if(c.val().name===name)vkId=c.val().vkId||''});if(vkId){sendVkNotify(vkId,'👔 Создатель вызывает тебя на ковёр! Немедленно явись в чат!')}alert('✅ '+name+' вызван на ковёр!')})}})
-}
-function monkeySomeone(){
-  db.ref('users').once('value',function(snap){var users=[];snap.forEach(function(c){users.push(c.val().name)});var name=prompt('Кого превратить в обезьяну?\n'+users.join(', '));if(name){db.ref('chat').push({user:'🌌 '+user.name,text:'🐒 '+name+' теперь обезьяна! Добро пожаловать в джунгли!',timestamp:Date.now()});alert('✅ '+name+' — обезьяна!')}})
-}
-function clownSomeone(){
-  db.ref('users').once('value',function(snap){var users=[];snap.forEach(function(c){users.push(c.val().name)});var name=prompt('Кого назначить клоуном?\n'+users.join(', '));if(name){db.ref('chat').push({user:'🌌 '+user.name,text:'🤡 '+name+' — клоун дня! Аплодисменты!',timestamp:Date.now()});alert('✅ '+name+' — клоун дня!')}})
-}
-function thinkCreator(){
-  var thought=prompt('💭 О чём думает Создатель?');
-  if(thought){
-    var block=document.getElementById('thoughtBlock');
-    block.innerHTML='<div class="thought-bubble">'+thought+'</div>';
-    db.ref('chat').push({user:'🌌 '+user.name,text:'💭 '+thought,timestamp:Date.now()});
-    setTimeout(function(){block.innerHTML=''},10000);
-  }
-}
+function summonBoss(){var bossVk=prompt('ВК ID начальника:');if(bossVk){sendVkNotify(bossVk,'👔 Создатель хочет тебя видеть. Зайди в чат.');alert('✅ Вызов отправлен!')}}
+function monkeySomeone(){var name=prompt('Кого превратить в обезьяну?');if(name){db.ref('users/'+name).once('value',function(s){if(s.exists()){var origAv=s.val().avatar;db.ref('users/'+name+'/avatar').set('https://raw.githubusercontent.com/painofkili/ozon/main/monkey.png');db.ref('chat').push({user:'🌌 '+user.name,text:'🐒 '+name+' теперь обезьяна на 24 часа!',timestamp:Date.now()});setTimeout(function(){db.ref('users/'+name+'/avatar').set(origAv)},86400000);alert('✅ '+name+' — обезьяна!')}else{alert('Не найден!')}})}}
+function clownSomeone(){var name=prompt('Кого назначить клоуном дня?');if(name){db.ref('chat').push({user:'🌌 '+user.name,text:'🤡 '+name+' — клоун дня!',timestamp:Date.now()});alert('✅ '+name+' — клоун дня!')}}
+function thinkCreator(){var thoughts=['Зачем я это создал?','Где мои деньги?','Надо бы поесть...','А начальник точно не обидится?','Почему я не выбрал карьеру в IT?','Сколько смен отработано?','Кто украл мой обед?'];alert('💭 '+thoughts[Math.floor(Math.random()*thoughts.length)])}
 document.getElementById('msg').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();send()}});
 function clearNotifications(){if(!confirm('Удалить все уведомления?'))return;db.ref('notifications').orderByChild('user').equalTo(user.name).once('value',function(s){s.forEach(function(c){db.ref('notifications/'+c.key).remove()})});alert('✅')}
 </script>
