@@ -38,7 +38,7 @@ button:disabled { opacity: 0.5; cursor: default; }
 .tabs button .menu-label { opacity: 0; max-width: 0; transform: translateX(-6px); transition: opacity .2s ease, max-width .35s ease, transform .3s ease; }
 .tabs button:hover .menu-label, .tabs button.active .menu-label { opacity: 1; max-width: 80px; transform: translateX(0); }
 
-/* Чат в общем стиле */
+/* Чат */
 .chat-section { margin: 8px 0; }
 .chat-header-bar { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 12px 16px; background: rgba(22,33,62,0.85); border-radius: 14px; border: 1px solid rgba(138,43,226,0.3); backdrop-filter: blur(10px); transition: all 0.3s; }
 .chat-header-bar:hover { border-color: rgba(138,43,226,0.6); box-shadow: 0 0 20px rgba(138,43,226,0.2); }
@@ -50,37 +50,40 @@ button:disabled { opacity: 0.5; cursor: default; }
 
 #chat { overflow: hidden; padding: 8px; border-radius: 10px; margin: 4px 0; background: rgba(22,33,62,0.5); font-size: 13px; transition: max-height 0.4s ease, padding 0.4s ease, margin 0.4s ease, opacity 0.3s; max-height: 300px; overflow-y: auto; border: 1px solid rgba(138,43,226,0.15); }
 #chat.hidden { max-height: 0 !important; padding-top: 0 !important; padding-bottom: 0 !important; margin-top: 0 !important; margin-bottom: 0 !important; overflow: hidden; opacity: 0; border: none; }
-.chat-bubble-group { margin: 3px 0; position: relative; }
-.chat-bubble { background: rgba(30,30,55,0.8); padding: 6px 10px 6px 10px; border-radius: 12px; margin: 1px 0; display: inline-block; max-width: 90%; font-size: 13px; word-break: break-word; border: 1px solid rgba(255,255,255,0.05); }
+
+.chat-bubble-group { margin: 3px 0; position: relative; cursor: pointer; }
+.chat-bubble { background: rgba(30,30,55,0.8); padding: 6px 10px; border-radius: 12px; margin: 1px 0; display: inline-block; max-width: 90%; font-size: 13px; word-break: break-word; border: 1px solid rgba(255,255,255,0.05); }
 .chat-bubble.mine { background: rgba(76,175,80,0.2); border: 1px solid rgba(76,175,80,0.3); }
 .chat-msg-creator { background: linear-gradient(135deg, rgba(245,197,24,0.15), rgba(138,43,226,0.2)); border: 1px solid rgba(138,43,226,0.4); padding: 8px 12px; border-radius: 10px; margin: 2px 0; animation: creatorBubblePulse 2s infinite alternate; }
 @keyframes creatorBubblePulse { 0% { box-shadow: 0 0 8px rgba(138,43,226,0.3), inset 0 0 8px rgba(138,43,226,0.1); } 100% { box-shadow: 0 0 18px rgba(245,197,24,0.4), inset 0 0 12px rgba(138,43,226,0.2); } }
 .chat-msg-creator .author { background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
 #chat .chat-img { max-width: 100%; border-radius: 8px; margin: 4px 0; cursor: pointer; }
 #chat .thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; cursor: pointer; margin: 2px; }
-.del-msg-btn { position: absolute; top: 2px; right: 2px; background: #e94560; color: #fff; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; line-height: 18px; text-align: center; cursor: pointer; display: none; z-index: 2; border: none; padding: 0; }
-.chat-bubble-group:hover .del-msg-btn { display: block; }
-.pin-msg-btn { position: absolute; top: 2px; right: 22px; background: #f5c518; color: #000; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; line-height: 18px; text-align: center; cursor: pointer; display: none; z-index: 2; border: none; padding: 0; }
-.chat-bubble-group:hover .pin-msg-btn { display: block; }
 
-/* Лайки */
-.like-btn { position: absolute; bottom: 2px; right: 2px; background: transparent; border: none; cursor: pointer; font-size: 14px; padding: 2px 4px; border-radius: 8px; display: none; z-index: 2; transition: all 0.2s; }
-.chat-bubble-group:hover .like-btn { display: block; }
-.like-btn:hover { transform: scale(1.3); }
-.like-count { font-size: 10px; color: #aaa; margin-left: 2px; }
+/* Менюшка при дабл-клике */
+.msg-action-menu { position: absolute; top: -30px; right: 0; background: rgba(30,30,50,0.95); border-radius: 20px; padding: 4px 6px; display: none; gap: 2px; z-index: 5; border: 1px solid rgba(138,43,226,0.4); white-space: nowrap; }
+.msg-action-menu.show { display: flex; }
+.msg-action-menu button { width: 30px; height: 30px; border-radius: 50%; border: none; cursor: pointer; font-size: 14px; padding: 0; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); transition: all 0.2s; }
+.msg-action-menu button:hover { transform: scale(1.15); }
+.msg-action-menu .btn-like { color: #e94560; }
+.msg-action-menu .btn-like:hover { background: rgba(233,69,96,0.3); }
+.msg-action-menu .btn-like.liked { background: rgba(233,69,96,0.4); }
+.msg-action-menu .btn-pin { color: #f5c518; }
+.msg-action-menu .btn-pin:hover { background: rgba(245,197,24,0.3); }
+.msg-action-menu .btn-del { color: #ff4444; }
+.msg-action-menu .btn-del:hover { background: rgba(255,68,68,0.3); }
+
+.like-indicator { position: absolute; bottom: -2px; right: 4px; font-size: 10px; background: rgba(0,0,0,0.6); border-radius: 8px; padding: 1px 5px; display: none; z-index: 1; }
+.like-indicator.has-likes { display: block; }
 
 .pinned { background: rgba(138,43,226,0.2); border: 1px solid rgba(138,43,226,0.4); padding: 10px 12px; margin: 4px 0; border-radius: 10px; }
-
-/* Объявления */
 .announce-block { background: linear-gradient(135deg, rgba(255,249,196,0.15), rgba(255,224,130,0.1)); border: 1px solid rgba(245,197,24,0.4); color: #FFE082; padding: 12px; border-radius: 12px; margin-bottom: 6px; font-size: 13px; text-align: center; position: relative; }
 .announce-block .announce-expiry { font-size: 10px; color: #aaa; margin-top: 4px; }
 .announce-del { position: absolute; top: 6px; right: 8px; background: #e94560; color: #fff; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; line-height: 20px; text-align: center; cursor: pointer; border: none; padding: 0; }
-
 .thought-block { background: linear-gradient(135deg, rgba(138,43,226,0.3), rgba(0,191,255,0.2), rgba(245,197,24,0.2)); background-size: 400% 400%; animation: galaxyGlow 3s infinite; color: #fff; padding: 12px; border-radius: 12px; margin-bottom: 6px; font-size: 14px; text-align: center; border: 1px solid rgba(138,43,226,0.5); position: relative; }
 .thought-block .thought-text { background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; font-size: 15px; }
 .thought-block .thought-expiry { font-size: 10px; color: #aaa; margin-top: 4px; }
 .thought-del { position: absolute; top: 6px; right: 8px; background: #e94560; color: #fff; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; line-height: 20px; text-align: center; cursor: pointer; border: none; padding: 0; }
-
 .photo-preview { display: flex; gap: 4px; flex-wrap: wrap; }
 .photo-preview img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; }
 #photoViewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 1000; }
@@ -202,7 +205,7 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
       <div class="chat-icon">💬</div>
       <span class="chat-label">Общий чат</span>
       <span id="chatBadge" class="chat-badge" style="display:none">0</span>
-      <span id="chatArrow" class="chat-arrow">▼</span>
+      <span id="chatArrow" class="chat-arrow open">▼</span>
     </div>
     <div id="chat"></div>
   </div>
@@ -220,7 +223,7 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <script>
 firebase.initializeApp({apiKey:"AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",authDomain:"ozon-grafik-4ad9f.firebaseapp.com",databaseURL:"https://ozon-grafik-4ad9f-default-rtdb.europe-west1.firebasedatabase.app",projectId:"ozon-grafik-4ad9f",storageBucket:"ozon-grafik-4ad9f.firebasestorage.app",messagingSenderId:"798009068634",appId:"1:798009068634:web:4b70eea3cce6c96f4f5c63"});
-var db=firebase.database(),_user=null,onShift=!1,photoBase64=[],newAvatarData=null,allMyShifts=[],allUsers={},CREATOR_PASS='2706',unreadCount=0,chatOpened=!0;
+var db=firebase.database(),_user=null,onShift=!1,photoBase64=[],newAvatarData=null,allMyShifts=[],allUsers={},CREATOR_PASS='2706',unreadCount=0,chatOpened=!0,lastChatTimestamp=0,activeMenu=null;
 var VK_TOKEN="vk1.a.1ccqIy8pmM0W_RnIymI9XOMvA6ILX5yxNfZZAiF5HHBdjHK_vOAimgsyljky-TCiReMgJRAlaRvpYEypifmF-iUonUGvldlw5LvDWAOSUpN1WDcnS_7Uit-Yh3BuUF5Ic5NoZ48Qhlmu4ErB87fpTplEI7E3sarTm9LC-Vd8zTbeQp4xgyB1s5yg6oBxTBaNZAFp-ioqBWG25jR8GREmWw";
 
 if('Notification' in window && Notification.permission==='default'){Notification.requestPermission()}
@@ -232,12 +235,15 @@ function toggleChat(){
   var arrow=document.getElementById('chatArrow');
   if(chat.classList.contains('hidden')){
     chat.classList.remove('hidden');chatOpened=!0;arrow.classList.add('open');
+    lastChatTimestamp=Date.now();unreadCount=0;updateChatBadge();
   }else{
     chat.classList.add('hidden');chatOpened=!1;arrow.classList.remove('open');
   }
-  unreadCount=0;updateChatBadge();
 }
 function updateChatBadge(){var badge=document.getElementById('chatBadge');if(unreadCount>0){badge.style.display='inline';badge.textContent=unreadCount}else{badge.style.display='none'}}
+
+// Закрытие меню при клике вне
+document.addEventListener('click',function(e){if(activeMenu&&!e.target.closest('.msg-action-menu')&&!e.target.closest('.chat-bubble-group')){activeMenu.classList.remove('show');activeMenu=null}});
 
 db.ref('users').on('value',function(s){s.forEach(function(c){allUsers[c.key]=c.val().avatar||''})});
 function loadPunkts(cb){db.ref('punkts').once('value',function(s){var p=[];s.forEach(function(c){p.push(c.key)});if(cb)cb(p)})}
@@ -249,7 +255,7 @@ function creatorLogin(){
       if(s.exists()){_user=s.val();_user.role='creator'}else{_user={name:'Костя',punkt:'49',avatar:'',vkId:'',role:'creator'}}
       localStorage.setItem('creator_user',JSON.stringify(_user));
       document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';
-      chatOpened=!0;document.getElementById('chatArrow').classList.add('open');
+      chatOpened=!0;lastChatTimestamp=Date.now();document.getElementById('chatArrow').classList.add('open');
       updateProfileUI();loadChat();loadAllData();loadHistory();loadNotifications();loadPinned();loadAnnounce();loadThought();
       db.ref('activeShifts/'+_user.name).once('value',function(s){if(s.exists()&&s.val().active){onShift=!0;document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block'}});
     });
@@ -257,7 +263,7 @@ function creatorLogin(){
 }
 
 var saved=localStorage.getItem('creator_user');
-if(saved){_user=JSON.parse(saved);document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';chatOpened=!0;document.getElementById('chatArrow').classList.add('open');updateProfileUI();loadChat();loadAllData();loadHistory();loadNotifications();loadPinned();loadAnnounce();loadThought()}
+if(saved){_user=JSON.parse(saved);document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';chatOpened=!0;lastChatTimestamp=Date.now();document.getElementById('chatArrow').classList.add('open');updateProfileUI();loadChat();loadAllData();loadHistory();loadNotifications();loadPinned();loadAnnounce();loadThought()}
 
 function updateProfileUI(){document.getElementById('uname').textContent=_user.name;document.getElementById('upunkt').textContent=_user.punkt||'?';if(_user.avatar){var pa=document.getElementById('profileAvatar');pa.src=_user.avatar;pa.style.display='inline';pa.onclick=function(){viewPhoto(_user.avatar)}}}
 function showTab(tab){
@@ -282,28 +288,41 @@ function previewNewAvatar(){var f=document.getElementById('newAvatar').files[0];
 function previewPhotos(){photoBase64=[];document.getElementById('photoPreviews').innerHTML='';var files=document.getElementById('photos').files;for(var i=0;i<Math.min(files.length,5);i++){(function(file){var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var c=document.createElement('canvas'),mw=400,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);var thumb=c.toDataURL('image/jpeg',0.6);photoBase64.push({full:e.target.result,thumb:thumb});var pv=document.createElement('img');pv.src=thumb;document.getElementById('photoPreviews').appendChild(pv)};img.src=e.target.result};r.readAsDataURL(file)})(files[i])}}
 function startShift(){onShift=!0;var t=new Date().toLocaleTimeString('ru-RU');db.ref('activeShifts/'+_user.name).set({active:!0,startTime:t});document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block';db.ref('chat').push({user:'🌌 '+_user.name,text:'🔵 Пункт '+_user.punkt+' на смене! ('+t+')',timestamp:Date.now()})}
 function endShift(){var tf=document.getElementById('timeFrom').value||'9',tt=document.getElementById('timeTo').value||'21',tv=parseInt(document.getElementById('tov').value)||0,hh=parseInt(tt)-parseInt(tf),t=new Date().toLocaleTimeString('ru-RU'),ph=photoBase64.slice(0,5);db.ref('shifts/'+_user.name+'_'+Date.now()).set({user:_user.name,punkt:_user.punkt||'49',date:new Date().toLocaleDateString('ru-RU'),timeFrom:tf,timeTo:tt,hours:hh,tovar:tv,photos:ph,paid:!1,timestamp:new Date().toISOString()});db.ref('chat').push({user:'🌌 '+_user.name,text:'🔴 Пункт '+_user.punkt+' с '+tf+' до '+tt+', товаров: '+tv,timestamp:Date.now(),photos:ph});db.ref('activeShifts/'+_user.name).remove();onShift=!1;document.getElementById('shift').style.display='none';document.getElementById('onShiftBtn').style.display='none';document.getElementById('startBtn').style.display='block';document.getElementById('tov').value='';document.getElementById('photos').value='';document.getElementById('photoPreviews').innerHTML='';photoBase64=[]}
-function sendPhoto(){var files=document.getElementById('chatPhoto').files;if(!files.length||!_user)return;var photos=[],count=Math.min(files.length,5);for(var i=0;i<count;i++){(function(file){var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var c=document.createElement('canvas'),mw=300,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);var thumb=c.toDataURL('image/jpeg',0.6);photos.push({full:e.target.result,thumb:thumb});if(photos.length===count){db.ref('chat').push({user:'🌌 '+_user.name,text:'📷 '+count+' фото',photos:photos,timestamp:Date.now(),creator:!0})}};img.src=e.target.result};r.readAsDataURL(file)})(files[i])}document.getElementById('chatPhoto').value=''}
+function sendPhoto(){var files=document.getElementById('chatPhoto').files;if(!files.length||!_user)return;var photos=[],count=Math.min(files.length,5);for(var i=0;i<count;i++){(function(file){var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var c=document.createElement('canvas'),mw=300,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);var thumb=c.toDataURL('image/jpeg',0.6);photos.push({full:e.target.result,thumb:thumb});if(photos.length===count){db.ref('chat').push({user:'🌌 '+_user.name,text:'📷 '+count+' фото',photos:photos,timestamp:Date.now(),creator:!0,likes:{}})}};img.src=e.target.result};r.readAsDataURL(file)})(files[i])}document.getElementById('chatPhoto').value=''}
 function logout(){_user=null;onShift=!1;chatOpened=!1;localStorage.removeItem('creator_user');document.getElementById('app').style.display='none';document.getElementById('login').style.display='block'}
+
+// ====== ЗАГРУЗКА ЧАТА С ГРУППИРОВКОЙ ======
 function loadChat(){
   var cs=localStorage.getItem('chatSize')||'300';var cf=localStorage.getItem('chatFont')||'13';
-  document.getElementById('chat').style.maxHeight=cs+'px';document.getElementById('chat').style.fontSize=cf+'px';
+  var chatEl=document.getElementById('chat');
+  var wasAtBottom=chatEl.scrollHeight-chatEl.scrollTop-chatEl.clientHeight<60;
+  chatEl.style.maxHeight=cs+'px';chatEl.style.fontSize=cf+'px';
   db.ref('chat').limitToLast(50).on('value',function(s){
     var h='',lastUser='';
     s.forEach(function(c){
       var m=c.val(),isCreatorMsg=m.user&&m.user.indexOf('🌌')===0,curUser=m.user||'';
+      // Группировка: если юзер тот же — продолжаем группу
       if(curUser!==lastUser&&lastUser!==''){h+='</div>'}
-      if(curUser!==lastUser){h+='<div class="chat-bubble-group">';lastUser=curUser}
+      if(curUser!==lastUser){h+='<div class="chat-bubble-group" data-key="'+c.key+'" data-creator="'+(isCreatorMsg?'1':'0')+'" ondblclick="showActionMenu(event,\''+c.key+'\',\''+(isCreatorMsg?'creator':'normal')+'\')">';lastUser=curUser}
       var sn=(m.user||'').replace('📢 ','').replace('🌌 ',''),av=allUsers[sn]||'';
-      // Кнопка удаления
-      h+='<button class="del-msg-btn" onclick="delChatMsg(\''+c.key+'\',\''+(isCreatorMsg?'creator':'normal')+'\')">✕</button>';
-      if(isCreatorMsg){h+='<button class="pin-msg-btn" onclick="pinMsg(\''+c.key+'\')">📌</button>'}
-      // Лайк
+      
+      // Лайки
       var likes=m.likes||{};
       var likeCount=Object.keys(likes).length;
-      var myLike=likes[_user.name]||(likes['🌌 '+_user.name]);
-      var likeEmoji='❤️';
-      if(myLike){likeEmoji=myLike==='creator'?'🌌':myLike==='god'?'👑':'❤️';}
-      h+='<button class="like-btn" onclick="likeMsg(\''+c.key+'\')">'+likeEmoji+' <span class="like-count">'+(likeCount||'')+'</span></button>';
+      var myLikeKey=_user.name;
+      var isLiked=!!likes[myLikeKey];
+      var likeIcon='❤️';
+      if(isLiked){var lt=likes[myLikeKey];likeIcon=lt==='creator'?'🌌':lt==='god'?'👑':'❤️';}
+      
+      // Меню (скрытое)
+      h+='<div class="msg-action-menu" data-menu="'+c.key+'">';
+      h+='<button class="btn-like'+(isLiked?' liked':'')+'" onclick="event.stopPropagation();likeMsg(\''+c.key+'\')">'+likeIcon+'</button>';
+      h+='<button class="btn-pin" onclick="event.stopPropagation();pinMsg(\''+c.key+'\')">📌</button>';
+      h+='<button class="btn-del" onclick="event.stopPropagation();delChatMsg(\''+c.key+'\',\''+(isCreatorMsg?'creator':'normal')+'\')">✕</button>';
+      h+='</div>';
+      
+      // Индикатор лайков
+      if(likeCount>0){h+='<div class="like-indicator has-likes">'+likeIcon+' '+likeCount+'</div>'}
       
       if(isCreatorMsg){h+='<div class="chat-msg-creator">'}else{var cls='chat-bubble';h+='<div class="'+cls+'">'}
       if(av)h+='<img class="avatar-mini'+(isCreatorMsg?' avatar-mini-creator':'')+'" src="'+av+'">';
@@ -311,38 +330,62 @@ function loadChat(){
       if(m.photo){h+='<br><img class="chat-img" src="'+(m.thumb||m.photo)+'" onclick="event.stopPropagation();viewPhoto(\''+m.photo+'\')">'}
       if(m.photos&&m.photos.length){var ft=typeof m.photos[0]==='object'?m.photos[0].thumb:m.photos[0];h+='<br><img class="thumb" src="'+ft+'" onclick="event.stopPropagation();viewPack(\''+JSON.stringify(m.photos.map(function(p){return typeof p==='object'?p.full:p}).join('|||')).replace(/'/g,"&#39;").replace(/"/g,'&quot;')+'\')">';if(m.photos.length>1)h+=' <span style="font-size:11px;color:#999">+ ещё '+(m.photos.length-1)+'</span>'}h+='</div>'});
     if(lastUser!==''){h+='</div>'}
-    document.getElementById('chat').innerHTML=h;document.getElementById('chat').scrollTop=document.getElementById('chat').scrollHeight;
+    chatEl.innerHTML=h;
+    if(wasAtBottom||document.activeElement===document.getElementById('chatMsgInput')){chatEl.scrollTop=chatEl.scrollHeight}
   });
 }
-// Лайк сообщения
+
+// ====== МЕНЮ ПРИ ДАБЛ-КЛИКЕ ======
+function showActionMenu(e,key,type){
+  e.stopPropagation();
+  if(activeMenu){activeMenu.classList.remove('show');activeMenu=null}
+  var menu=document.querySelector('[data-menu="'+key+'"]');
+  if(!menu)return;
+  if(menu.classList.contains('show')){menu.classList.remove('show');return}
+  menu.classList.add('show');
+  activeMenu=menu;
+  // Обновить иконку лайка
+  db.ref('chat/'+key+'/likes').once('value',function(s){
+    var likes=s.val()||{};
+    var myLikeKey=_user.name;
+    var isLiked=!!likes[myLikeKey];
+    var likeIcon='❤️';
+    if(isLiked){var lt=likes[myLikeKey];likeIcon=lt==='creator'?'🌌':lt==='god'?'👑':'❤️';}
+    var btn=menu.querySelector('.btn-like');
+    if(btn){btn.textContent=likeIcon;if(isLiked)btn.classList.add('liked');else btn.classList.remove('liked')}
+  });
+}
+
+// ====== ЛАЙК ======
 function likeMsg(key){
   if(!_user)return;
   db.ref('chat/'+key+'/likes').once('value',function(s){
     var likes=s.val()||{};
     var myKey=_user.name;
-    // Определяем тип лайка
-    var likeType='user';
-    if(_user.role==='creator')likeType='creator';
-    // Убираем старый лайк этого пользователя если есть
-    if(likes[myKey]){delete likes[myKey];}
-    else{likes[myKey]=likeType;}
+    var likeType=_user.role==='creator'?'creator':'user';
+    if(likes[myKey]){delete likes[myKey]}else{likes[myKey]=likeType}
     db.ref('chat/'+key+'/likes').set(likes);
   });
 }
-// Уведомления чата только когда свёрнут
+
+// ====== УВЕДОМЛЕНИЯ (без спама) ======
 db.ref('chat').limitToLast(1).on('child_added',function(s){
   if(chatOpened)return;
   var m=s.val();
   if(!m||!_user)return;
+  if(m.timestamp<=lastChatTimestamp)return;
   var isMine=m.user==='🌌 '+_user.name||m.user===_user.name||m.user==='📢 '+_user.name;
   if(isMine)return;
+  lastChatTimestamp=Math.max(lastChatTimestamp,m.timestamp||0);
   unreadCount++;
   updateChatBadge();
   notifyMe('💬 Чат',(m.user||'?')+': '+(m.text||'📷 Фото'));
 });
+
 function viewPhoto(url){document.getElementById('photoViewerImg').src=url;document.getElementById('photoViewer').style.display='flex'}
 function viewPack(pd){var parts=pd.split('|||'),v=document.getElementById('photoViewer'),im=document.getElementById('photoViewerImg'),idx=0;im.src=parts[0];v.style.display='flex';v.onclick=function(e){if(e.target===v){v.style.display='none';v.onclick=null}};im.onclick=function(e){e.stopPropagation();idx++;if(idx<parts.length)im.src=parts[idx];else v.style.display='none'}}
 function delChatMsg(key, type){
+  if(activeMenu){activeMenu.classList.remove('show');activeMenu=null}
   if(_user && _user.role==='creator'){
     if(confirm('Удалить сообщение?')){db.ref('chat/'+key).remove();}
     return;
@@ -350,7 +393,7 @@ function delChatMsg(key, type){
   if(type==='creator'){alert('🚫 Знай своё место!');return;}
   if(confirm('Удалить сообщение?')){db.ref('chat/'+key).remove();}
 }
-function pinMsg(key){db.ref('chat/'+key).once('value',function(s){if(s.exists()){db.ref('pinned').set(s.val());alert('📌 Закреплено!')}})}
+function pinMsg(key){if(activeMenu){activeMenu.classList.remove('show');activeMenu=null}db.ref('chat/'+key).once('value',function(s){if(s.exists()){db.ref('pinned').set(s.val());alert('📌 Закреплено!')}})}
 function loadPinned(){db.ref('pinned').on('value',function(s){var b=document.getElementById('pinnedMessage');if(!s.exists()){b.style.display='none';return}var m=s.val();b.style.display='block';b.innerHTML='📌 <b>'+(m.user||'?')+':</b> '+m.text})}
 function sendMsg(){
   var input=document.getElementById('chatMsgInput');
