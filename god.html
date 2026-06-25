@@ -12,9 +12,13 @@ body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; heigh
 input, button, select, textarea { width: 100%; padding: 14px; font-size: 16px; margin: 4px 0; border-radius: 10px; border: 1px solid #444; background: #1a1a2e; color: #fff; }
 button { border: none; font-weight: bold; cursor: pointer; }
 .btn-green { background: #4CAF50; } .btn-blue { background: #2196F3; } .btn-red { background: #e94560; } .btn-gray { background: #555; } .btn-purple { background: #9C27B0; } .btn-orange { background: #FF9800; } .btn-cyan { background: #00BCD4; } .btn-gold { background: #f5c518; color: #000; }
-.tabs { display: flex; gap: 4px; margin: 10px 0; }
-.tabs button { flex: 1; padding: 12px; background: #333; font-size: 13px; color: #aaa; }
-.tabs button.active { background: #4CAF50; color: #fff; }
+.tabs { display: flex; gap: 8px; margin: 10px 0; justify-content: center; }
+.tabs button { width: 48px; height: 48px; display: flex; align-items: center; gap: 0.75rem; overflow: hidden; border-radius: 999px; transition: width .45s cubic-bezier(.22, 1, .36, 1), background .3s ease, box-shadow .3s ease; background: #333; color: #aaa; border: none; cursor: pointer; padding: 0 12px; font-size: 13px; white-space: nowrap; }
+.tabs button:hover { width: 130px; background: rgba(255, 255, 255, 0.12); box-shadow: 0 0 28px rgba(76, 175, 80, 0.22); color: #fff; }
+.tabs button.active { background: #4CAF50; color: #fff; width: 130px; }
+.tabs button .menu-icon { font-size: 20px; flex-shrink: 0; }
+.tabs button .menu-label { opacity: 0; max-width: 0; transform: translateX(-8px); transition: opacity .25s ease, max-width .45s ease, transform .35s ease; }
+.tabs button:hover .menu-label, .tabs button.active .menu-label { opacity: 1; max-width: 100px; transform: translateX(0); }
 .worker-row { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #333; gap: 4px; flex-wrap: wrap; }
 .worker-row button { width: auto; padding: 6px 10px; font-size: 11px; }
 .zp-result { background: #1a3a1a; padding: 10px; border-radius: 8px; margin-top: 8px; font-size: 14px; white-space: pre-line; }
@@ -61,7 +65,13 @@ button { border: none; font-weight: bold; cursor: pointer; }
 
 <div id="app" style="display:none">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><img id="godAvatar" class="avatar" src="" style="display:none"><div style="flex:1"><b id="godName">Бог</b><span id="godStatusBadge" class="status-badge"></span><div class="progress-bar"><div id="godProgressFill" class="progress-fill" style="width:0%"></div></div><div id="godProgressText" class="progress-text"></div></div><button class="btn-gray" onclick="openSettings()" style="width:auto;padding:8px 12px">⚙️</button></div>
-  <div class="tabs"><button id="tabPunkts" class="active" onclick="showTab('punkts')">📍</button><button id="tabWorkers" onclick="showTab('workers')">👥</button><button id="tabCalc" onclick="showTab('calc')">💰</button><button id="tabAnnounce" onclick="showTab('announce')">📢</button><button id="tabHall" onclick="showTab('hall')">🏆</button></div>
+  <div class="tabs">
+    <button id="tabPunkts" class="active" onclick="showTab('punkts')"><span class="menu-icon">📍</span><span class="menu-label">Пункты</span></button>
+    <button id="tabWorkers" onclick="showTab('workers')"><span class="menu-icon">👥</span><span class="menu-label">Сотрудники</span></button>
+    <button id="tabCalc" onclick="showTab('calc')"><span class="menu-icon">💰</span><span class="menu-label">Расчёт</span></button>
+    <button id="tabAnnounce" onclick="showTab('announce')"><span class="menu-icon">📢</span><span class="menu-label">Объявления</span></button>
+    <button id="tabHall" onclick="showTab('hall')"><span class="menu-icon">🏆</span><span class="menu-label">Доска</span></button>
+  </div>
   <div id="punktsTab"><button class="btn-green" onclick="addPunkt()">+ Пункт</button><div id="punktsList"></div></div>
   <div id="workersTab" style="display:none"><select id="filterPunkt" onchange="loadWorkers()"><option value="">Все пункты</option></select><div id="workersList"></div></div>
   <div id="calcTab" style="display:none">
@@ -109,14 +119,11 @@ var db=firebase.database(),godPass=null,allShifts=[],lastCalc=null,currentPunish
 var VK_TOKEN="vk1.a.1ccqIy8pmM0W_RnIymI9XOMvA6ILX5yxNfZZAiF5HHBdjHK_vOAimgsyljky-TCiReMgJRAlaRvpYEypifmF-iUonUGvldlw5LvDWAOSUpN1WDcnS_7Uit-Yh3BuUF5Ic5NoZ48Qhlmu4ErB87fpTplEI7E3sarTm9LC-Vd8zTbeQp4xgyB1s5yg6oBxTBaNZAFp-ioqBWG25jR8GREmWw";
 
 function sendVkNotify(vkId,msg){if(!vkId)return;fetch('https://api.vk.com/method/messages.send?v=5.131&access_token='+VK_TOKEN+'&user_id='+vkId+'&random_id='+Date.now()+'&message='+encodeURIComponent(msg))}
-
 function toggleChat(){var chat=document.getElementById('chat');chat.classList.toggle('open');unreadCount=0;updateChatBadge();}
 function updateChatBadge(){var badge=document.getElementById('chatBadge');if(unreadCount>0){badge.style.display='inline';badge.textContent=unreadCount}else{badge.style.display='none'}}
 
 var workerStatuses={};
-function loadWorkerStatuses(cb){
-  db.ref('shifts').once('value',function(s){var counts={};s.forEach(function(c){var u=c.val().user;counts[u]=(counts[u]||0)+1});var STATUSES=[{name:'📦 Штрих',min:0},{name:'🚚 ПВЗюк',min:4},{name:'🏭 Пунктовой',min:8},{name:'🚀 Озонавт',min:13},{name:'👑 Озоний',min:21}];for(var n in counts){var st=STATUSES[0];for(var i=STATUSES.length-1;i>=0;i--){if(counts[n]>=STATUSES[i].min){st=STATUSES[i];break}}workerStatuses[n]=st.name}if(cb)cb();});
-}
+function loadWorkerStatuses(cb){db.ref('shifts').once('value',function(s){var counts={};s.forEach(function(c){var u=c.val().user;counts[u]=(counts[u]||0)+1});var STATUSES=[{name:'📦 Штрих',min:0},{name:'🚚 ПВЗюк',min:4},{name:'🏭 Пунктовой',min:8},{name:'🚀 Озонавт',min:13},{name:'👑 Озоний',min:21}];for(var n in counts){var st=STATUSES[0];for(var i=STATUSES.length-1;i>=0;i--){if(counts[n]>=STATUSES[i].min){st=STATUSES[i];break}}workerStatuses[n]=st.name}if(cb)cb();});}
 
 db.ref('users').on('value',function(s){s.forEach(function(c){allUsers[c.key]=c.val().avatar||''})});
 db.ref('godSettings').on('value',function(s){if(s.exists()){godName=s.val().name||'Бог';godAvatarData=s.val().avatar||null;godVkId=s.val().vkId||'';allUsers['👑 '+godName]=godAvatarData||''}});
@@ -146,8 +153,7 @@ function updateGodStatusUI(){var st=getGodStatus(godRating),ns=null;for(var i=0;
 function randomText(arr,sum){return arr[Math.floor(Math.random()*arr.length)].replace('{sum}',sum)}
 
 db.ref('godPassword').once('value',function(s){godPass=s.val();if(localStorage.getItem('god_logged')==='1'&&godPass)enter()});
-recountRating();
-loadWorkerStatuses();
+recountRating();loadWorkerStatuses();
 
 function msg(t){document.getElementById('msg').textContent=t}
 function backToApp(){['addShiftCard','punishCard','premiumCard','settingsCard'].forEach(function(id){document.getElementById(id).style.display='none'});document.getElementById('app').style.display='block'}
@@ -202,11 +208,7 @@ function loadChat(){db.ref('chat').limitToLast(30).on('value',function(s){var h=
 function viewFull(url){document.getElementById('photoViewerImg').src=url;document.getElementById('photoViewer').style.display='flex'}
 function viewPack(pd){var ph=JSON.parse(pd.replace(/&quot;/g,'"').replace(/&#39;/g,"'")),v=document.getElementById('photoViewer'),im=document.getElementById('photoViewerImg'),idx=0;im.src=ph[0];v.style.display='flex';v.onclick=function(e){if(e.target===v){v.style.display='none';v.onclick=null}};im.onclick=function(e){e.stopPropagation();idx++;if(idx<ph.length)im.src=ph[idx];else v.style.display='none'}}
 function delChatMsg(key){db.ref('chat/'+key).once('value',function(s){if(s.val()&&s.val().user&&s.val().user.indexOf('🌌')===0){alert('🚫 Сообщения Создателя нельзя удалить!');return}if(confirm('Удалить?')){db.ref('chat/'+key).remove()}})}
-function sendChat(){var t=document.getElementById('chatInput').value.trim();if(!t)return;
-  var mentions=t.match(/@(\S+)/g);
-  if(mentions){db.ref('users').once('value',function(snap){var vkIds={};snap.forEach(function(c){vkIds[c.val().name]=c.val().vkId||''});if(godVkId)vkIds[godName]=godVkId;for(var i=0;i<mentions.length;i++){var name=mentions[i].replace('@','');var vkId=vkIds[name];if(vkId){sendVkNotify(vkId,'📢 Начальник упомянул вас в чате Ozon:\n'+t)}}})}
-  db.ref('chat').push({user:'👑 '+godName,text:t,timestamp:Date.now()});document.getElementById('chatInput').value='';
-}
+function sendChat(){var t=document.getElementById('chatInput').value.trim();if(!t)return;var mentions=t.match(/@(\S+)/g);if(mentions){db.ref('users').once('value',function(snap){var vkIds={};snap.forEach(function(c){vkIds[c.val().name]=c.val().vkId||''});if(godVkId)vkIds[godName]=godVkId;for(var i=0;i<mentions.length;i++){var name=mentions[i].replace('@','');var vkId=vkIds[name];if(vkId){sendVkNotify(vkId,'📢 Начальник упомянул вас в чате Ozon:\n'+t)}}})}db.ref('chat').push({user:'👑 '+godName,text:t,timestamp:Date.now()});document.getElementById('chatInput').value='';}
 document.getElementById('chatInput').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();sendChat()}});
 </script>
 </body>
