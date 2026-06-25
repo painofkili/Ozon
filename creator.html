@@ -40,8 +40,8 @@ button:disabled { opacity: 0.5; cursor: default; }
 .chat-header .chat-badge { background: #e94560; color: #fff; border-radius: 50%; width: 22px; height: 22px; font-size: 11px; text-align: center; line-height: 22px; }
 #chat { overflow: hidden; padding: 8px; border-radius: 10px; margin: 8px 0; background: rgba(0,0,0,0.2); font-size: 13px; transition: max-height 0.4s ease, padding 0.4s ease, margin 0.4s ease; max-height: 300px; overflow-y: auto; }
 #chat.hidden { max-height: 0 !important; padding-top: 0 !important; padding-bottom: 0 !important; margin-top: 0 !important; margin-bottom: 0 !important; overflow: hidden; }
-.chat-bubble-group { margin: 2px 0; position: relative; }
-.chat-bubble { background: rgba(30,30,50,0.9); padding: 6px 10px; border-radius: 12px; margin: 1px 0; display: inline-block; max-width: 90%; font-size: 13px; }
+.chat-bubble-group { margin: 4px 0; position: relative; }
+.chat-bubble { background: rgba(30,30,50,0.9); padding: 6px 10px; border-radius: 12px; margin: 1px 0; display: inline-block; max-width: 90%; font-size: 13px; word-break: break-word; }
 .chat-bubble.mine { background: rgba(76,175,80,0.25); }
 .chat-msg-creator { background: linear-gradient(135deg, rgba(245,197,24,0.2), rgba(138,43,226,0.2)); border-left: 3px solid #8B00FF; padding: 8px 12px; border-radius: 8px; margin: 2px 0; }
 .chat-msg-creator .author { background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
@@ -252,15 +252,16 @@ function loadChat(){
   db.ref('chat').limitToLast(50).on('value',function(s){
     var h='',lastUser='';
     s.forEach(function(c){
-      var m=c.val(),isCreator=m.user&&m.user.indexOf('🌌')===0,curUser=m.user||'';
+      var m=c.val(),isCreatorMsg=m.user&&m.user.indexOf('🌌')===0,curUser=m.user||'';
       if(curUser!==lastUser&&lastUser!==''){h+='</div>'}
       if(curUser!==lastUser){h+='<div class="chat-bubble-group">';lastUser=curUser}
       var sn=(m.user||'').replace('📢 ','').replace('🌌 ',''),av=allUsers[sn]||'';
-      h+='<button class="del-msg-btn" onclick="delChatMsg(\''+c.key+'\',\''+(isCreator?'creator':'')+'\')">✕</button>';
-      if(isCreator){h+='<button class="pin-msg-btn" onclick="pinMsg(\''+c.key+'\')">📌</button>'}
-      if(isCreator){h+='<div class="chat-msg-creator">'}else{var cls='chat-bubble';h+='<div class="'+cls+'">'}
-      if(av)h+='<img class="avatar-mini'+(isCreator?' avatar-mini-creator':'')+'" src="'+av+'">';
-      h+='<b class="'+(isCreator?'author':'')+'">'+(isCreator?'🌌 ':'')+(m.user||'?')+':</b> '+(m.text||'');
+      // Кнопка удаления — всегда показываем, но проверка внутри delChatMsg
+      h+='<button class="del-msg-btn" onclick="delChatMsg(\''+c.key+'\',\''+(isCreatorMsg?'creator':'normal')+'\')">✕</button>';
+      if(isCreatorMsg){h+='<button class="pin-msg-btn" onclick="pinMsg(\''+c.key+'\')">📌</button>'}
+      if(isCreatorMsg){h+='<div class="chat-msg-creator">'}else{var cls='chat-bubble';h+='<div class="'+cls+'">'}
+      if(av)h+='<img class="avatar-mini'+(isCreatorMsg?' avatar-mini-creator':'')+'" src="'+av+'">';
+      h+='<b class="'+(isCreatorMsg?'author':'')+'">'+(isCreatorMsg?'🌌 ':'')+(m.user||'?')+':</b> '+(m.text||'');
       if(m.photo){h+='<br><img class="chat-img" src="'+(m.thumb||m.photo)+'" onclick="event.stopPropagation();viewPhoto(\''+m.photo+'\')">'}
       if(m.photos&&m.photos.length){var ft=typeof m.photos[0]==='object'?m.photos[0].thumb:m.photos[0];h+='<br><img class="thumb" src="'+ft+'" onclick="event.stopPropagation();viewPack(\''+JSON.stringify(m.photos.map(function(p){return typeof p==='object'?p.full:p}).join('|||')).replace(/'/g,"&#39;").replace(/"/g,'&quot;')+'\')">';if(m.photos.length>1)h+=' <span style="font-size:11px;color:#999">+ ещё '+(m.photos.length-1)+'</span>'}h+='</div>'});
     if(lastUser!==''){h+='</div>'}
@@ -269,7 +270,24 @@ function loadChat(){
 }
 function viewPhoto(url){document.getElementById('photoViewerImg').src=url;document.getElementById('photoViewer').style.display='flex'}
 function viewPack(pd){var parts=pd.split('|||'),v=document.getElementById('photoViewer'),im=document.getElementById('photoViewerImg'),idx=0;im.src=parts[0];v.style.display='flex';v.onclick=function(e){if(e.target===v){v.style.display='none';v.onclick=null}};im.onclick=function(e){e.stopPropagation();idx++;if(idx<parts.length)im.src=parts[idx];else v.style.display='none'}}
-function delChatMsg(key,type){if(type==='creator'){alert('🚫 Сообщения Создателя нельзя удалить!');return}if(confirm('Удалить сообщение?')){db.ref('chat/'+key).remove()}}
+// === УДАЛЕНИЕ: Создатель может удалять всё, остальные не могут удалять сообщения Создателя ===
+function delChatMsg(key, type){
+  // Создатель может удалять любые сообщения
+  if(_user && _user.role==='creator'){
+    if(confirm('Удалить сообщение?')){
+      db.ref('chat/'+key).remove();
+    }
+    return;
+  }
+  // Для не-Создателей: нельзя удалять сообщения Создателя
+  if(type==='creator'){
+    alert('🚫 Знай своё место!');
+    return;
+  }
+  if(confirm('Удалить сообщение?')){
+    db.ref('chat/'+key).remove();
+  }
+}
 function pinMsg(key){db.ref('chat/'+key).once('value',function(s){if(s.exists()){db.ref('pinned').set(s.val());alert('📌 Закреплено!')}})}
 function loadPinned(){db.ref('pinned').on('value',function(s){var b=document.getElementById('pinnedMessage');if(!s.exists()){b.style.display='none';return}var m=s.val();b.style.display='block';b.innerHTML='📌 <b>'+(m.user||'?')+':</b> '+m.text})}
 function sendMsg(){
