@@ -10,8 +10,12 @@ body { font-family: Arial; background: #1a1a2e url('https://raw.githubuserconten
 body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(26,26,46,0.7); z-index: -1; }
 .card { background: rgba(22,33,62,0.85); padding: 16px; border-radius: 14px; margin: 8px 0; backdrop-filter: blur(10px); }
 input, select { width: 100%; padding: 14px; font-size: 16px; margin: 4px 0; border-radius: 10px; border: 1px solid #444; background: rgba(26,26,46,0.8); color: #fff; }
-button { width: 100%; padding: 14px; font-size: 16px; margin: 4px 0; border-radius: 10px; border: none; color: #fff; font-weight: bold; cursor: pointer; }
-.btn-green { background: #4CAF50; } .btn-blue { background: #2196F3; } .btn-red { background: #e94560; } .btn-gray { background: #555; } .btn-gold { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; }
+button { border: none; font-weight: bold; cursor: pointer; border-radius: 10px; }
+.btn-green { background: #4CAF50; color: #fff; padding: 14px; font-size: 16px; margin: 4px 0; width: 100%; }
+.btn-blue { background: #2196F3; color: #fff; padding: 14px; font-size: 16px; margin: 4px 0; width: 100%; }
+.btn-red { background: #e94560; color: #fff; padding: 14px; font-size: 16px; margin: 4px 0; width: 100%; }
+.btn-gray { background: #555; color: #fff; padding: 14px; font-size: 16px; margin: 4px 0; width: 100%; }
+.btn-gold { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; padding: 14px; font-size: 16px; margin: 4px 0; width: 100%; }
 button:disabled { opacity: 0.5; cursor: default; }
 .avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; cursor: pointer; }
 .avatar-creator { border: 3px solid transparent; background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF, #f5c518); background-size: 400% 400%; animation: galaxyGlow 3s infinite; box-shadow: 0 0 25px rgba(138, 43, 226, 0.7), 0 0 50px rgba(0, 191, 255, 0.4); }
@@ -19,18 +23,18 @@ button:disabled { opacity: 0.5; cursor: default; }
 .avatar-mini { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; margin-right: 6px; vertical-align: middle; cursor: pointer; }
 .avatar-mini-creator { border: 2px solid #8B00FF; box-shadow: 0 0 10px rgba(138, 43, 226, 0.6); }
 .profile-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.creator-badge { font-size: 14px; font-weight: bold; padding: 4px 12px; border-radius: 12px; background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; animation: galaxyGlow 3s infinite; }
+.creator-badge { font-size: 14px; font-weight: bold; padding: 4px 12px; border-radius: 12px; background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; animation: galaxyGlow 3s infinite; display: inline-block; }
 .creator-name { background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
 .progress-bar { height: 6px; background: #333; border-radius: 3px; margin-top: 4px; overflow: hidden; }
 .progress-fill { height: 100%; border-radius: 3px; background: linear-gradient(135deg, #f5c518, #8B00FF); width: 100%; }
 .progress-text { font-size: 11px; color: #8B00FF; }
-<div class="tabs">
-  <button id="tabShift" class="active" onclick="showTab('shift')"><span class="menu-icon">🔵</span><span class="menu-label">Смена</span></button>
-  <button id="tabStats" onclick="showTab('stats')"><span class="menu-icon">📊</span><span class="menu-label">Статистика</span></button>
-  <button id="tabHistory" onclick="showTab('history')"><span class="menu-icon">💳</span><span class="menu-label">Выплаты</span></button>
-  <button id="tabNotify" onclick="showTab('notify')"><span class="menu-icon">🔔</span><span class="menu-label">Уведомления</span></button>
-  <button id="tabCreator" onclick="showTab('creator')"><span class="menu-icon">🌌</span><span class="menu-label">Сила</span></button>
-</div>
+.tabs { display: flex; gap: 8px; margin: 10px 0; justify-content: center; }
+.tabs button { width: 48px; height: 48px; display: flex; align-items: center; gap: 0.75rem; overflow: hidden; border-radius: 999px; transition: width .45s cubic-bezier(.22, 1, .36, 1), background .3s ease, box-shadow .3s ease; background: #333; color: #aaa; border: none; cursor: pointer; padding: 0 12px; font-size: 13px; white-space: nowrap; }
+.tabs button:hover { width: 130px; background: rgba(255, 255, 255, 0.12); box-shadow: 0 0 28px rgba(138, 43, 226, 0.22); color: #fff; }
+.tabs button.active { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; width: 130px; }
+.tabs button .menu-icon { font-size: 20px; flex-shrink: 0; }
+.tabs button .menu-label { opacity: 0; max-width: 0; transform: translateX(-8px); transition: opacity .25s ease, max-width .45s ease, transform .35s ease; }
+.tabs button:hover .menu-label, .tabs button.active .menu-label { opacity: 1; max-width: 100px; transform: translateX(0); }
 #chat { max-height: 300px; overflow-y: auto; padding: 8px; border-radius: 10px; margin: 8px 0; background: rgba(26,26,46,0.8); font-size: 13px; }
 .chat-msg-creator { background: linear-gradient(135deg, rgba(245,197,24,0.1), rgba(138,43,226,0.1)); border-left: 3px solid #8B00FF; padding: 6px 10px; border-radius: 8px; }
 .chat-msg-creator .author { background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
@@ -60,13 +64,66 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
 </head>
 <body>
 
-<div class="tabs">
+<div id="login">
+  <h3 style="text-align:center">🌌 Вход Создателя</h3>
+  <input id="creatorPass" type="password" placeholder="Пароль Создателя">
+  <button class="btn-gold" onclick="creatorLogin()">🌌 Войти</button>
+  <div id="msg" style="color:red;text-align:center;margin-top:4px"></div>
+</div>
+
+<div id="app" style="display:none">
+  <div class="profile-row">
+    <img id="profileAvatar" class="avatar avatar-creator" src="" style="display:none">
+    <div style="flex:1">
+      <b class="creator-name" style="font-size:17px"><span id="uname"></span> 🌌</b> 
+      <span class="creator-badge">🌌 Создатель</span><br>
+      <span style="font-size:12px;color:#aaa">📍 Пункт <span id="upunkt"></span></span>
+      <div class="progress-bar"><div class="progress-fill"></div></div>
+      <div class="progress-text">♾️ Бесконечность</div>
+    </div>
+    <button class="btn-gray" onclick="openSettings()" style="width:auto;padding:8px 12px">⚙️</button>
+  </div>
+  <div class="tabs">
     <button id="tabShift" class="active" onclick="showTab('shift')"><span class="menu-icon">🔵</span><span class="menu-label">Смена</span></button>
     <button id="tabStats" onclick="showTab('stats')"><span class="menu-icon">📊</span><span class="menu-label">Статистика</span></button>
     <button id="tabHistory" onclick="showTab('history')"><span class="menu-icon">💳</span><span class="menu-label">Выплаты</span></button>
     <button id="tabNotify" onclick="showTab('notify')"><span class="menu-icon">🔔</span><span class="menu-label">Уведомления</span></button>
     <button id="tabCreator" onclick="showTab('creator')"><span class="menu-icon">🌌</span><span class="menu-label">Сила</span></button>
   </div>
+  <div id="shiftTab">
+    <button id="startBtn" class="btn-green" onclick="startShift()">🔵 НА СМЕНУ</button>
+    <button id="onShiftBtn" class="btn-blue" style="display:none" disabled>🟢 НА СМЕНЕ</button>
+    <div id="shift" style="display:none">
+      <input id="timeFrom" value="9" placeholder="Начало"><input id="timeTo" value="21" placeholder="Конец"><input id="tov" placeholder="Товары">
+      <label>📸 Фотоотчёт (до 5)</label><input id="photos" type="file" accept="image/*" multiple onchange="previewPhotos()">
+      <div id="photoPreviews" class="photo-preview"></div>
+      <button class="btn-red" onclick="endShift()">🔴 СО СМЕНЫ</button>
+    </div>
+    <button class="btn-gray" onclick="logout()" style="margin-top:8px">↩ Выйти</button>
+  </div>
+  <div id="statsTab" style="display:none"><h4 style="text-align:center">📅 Календарь смен</h4><div id="calHeader" style="text-align:center;margin-bottom:4px"></div><div class="calendar" id="calendar"></div><div class="stat-card" id="statsSummary"></div><button class="btn-red" onclick="clearMyShifts()">🗑 Очистить мои смены</button></div>
+  <div id="historyTab" style="display:none"><h4 style="text-align:center">💳 История выплат</h4><div id="historyContent"></div></div>
+  <div id="notifyTab" style="display:none"><h4 style="text-align:center">🔔 Уведомления</h4><div id="notifyContent"></div><button class="btn-red" onclick="clearNotifications()" style="margin-top:8px">🗑 Очистить уведомления</button></div>
+  <div id="creatorTab" style="display:none">
+    <h4 style="text-align:center">🌌 Сила Создателя</h4>
+    <div class="creator-actions">
+      <button class="btn-gold" onclick="summonBoss()">👔 Вызвать на ковёр</button>
+      <button class="btn-gold" onclick="monkeySomeone()">🐒 Обезьяна дня</button>
+      <button class="btn-gold" onclick="clownSomeone()">🤡 Клоун дня</button>
+      <button class="btn-gold" onclick="thinkCreator()">💭 Мысли</button>
+    </div>
+  </div>
+  <div id="pinnedMessage" class="pinned" style="display:none"></div>
+  <div id="chat"></div>
+  <div style="display:flex;gap:4px">
+    <input id="msg" placeholder="Чат..." style="flex:1">
+    <button class="btn-gray" onclick="document.getElementById('chatPhoto').click()" style="width:auto;padding:14px">📎</button>
+    <input id="chatPhoto" type="file" accept="image/*" multiple onchange="sendPhoto()" style="display:none">
+    <button class="btn-gold" onclick="send()" style="width:auto;padding:14px 18px">➤</button>
+  </div>
+</div>
+
+<div id="photoViewer" onclick="this.style.display='none'"><img id="photoViewerImg" src=""></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
