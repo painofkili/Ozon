@@ -58,10 +58,21 @@ button { border: none; font-weight: bold; cursor: pointer; border-radius: 12px; 
 button:disabled { opacity: 0.5; cursor: default; }
 
 /* АВАТАРКА С ОРЕОЛОМ И ОРБИТАМИ */
+@property --angle {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: 0deg;
+}
+@property --z {
+  syntax: '<integer>';
+  inherits: true;
+  initial-value: 0;
+}
+
 .avatar-wrapper { 
   position: relative; display: inline-block; 
   width: 56px; height: 56px; flex-shrink: 0; 
-  perspective: 400px;
+  perspective: 300px;
   transform-style: preserve-3d;
 }
 .avatar { 
@@ -69,8 +80,13 @@ button:disabled { opacity: 0.5; cursor: default; }
   object-fit: cover; cursor: pointer; 
   position: absolute; top: 0; left: 0;
   z-index: 3; display: block; 
+  animation: avatarSpin 20s linear infinite;
 }
 .avatar-creator { border-radius: 50%; overflow: hidden; }
+
+@keyframes avatarSpin {
+  100% { transform: rotate(360deg); }
+}
 
 .avatar-halo {
   position: absolute;
@@ -101,30 +117,39 @@ button:disabled { opacity: 0.5; cursor: default; }
   border-radius: 50%;
 }
 .moon1 {
-  width: 7px; height: 7px;
-  top: -3.5px; left: 50%;
-  margin-left: -3.5px;
+  width: 6px; height: 6px;
+  top: -3px; left: 50%;
+  margin-left: -3px;
   background: #fff;
-  box-shadow: 0 0 10px #fff, 0 0 20px #00BFFF, 0 0 35px rgba(0,191,255,0.7);
+  box-shadow: 0 0 8px #fff, 0 0 16px #00BFFF, 0 0 28px rgba(0,191,255,0.7);
 }
 .moon2 {
-  width: 5px; height: 5px;
-  top: -2.5px; left: 50%;
-  margin-left: -2.5px;
+  width: 4px; height: 4px;
+  top: -2px; left: 50%;
+  margin-left: -2px;
   background: #fff;
-  box-shadow: 0 0 7px #fff, 0 0 15px #8B00FF, 0 0 25px rgba(138,43,226,0.7);
+  box-shadow: 0 0 6px #fff, 0 0 12px #8B00FF, 0 0 20px rgba(138,43,226,0.7);
 }
 .moon3 {
   width: 3px; height: 3px;
   top: -1.5px; left: 50%;
   margin-left: -1.5px;
   background: #fff;
-  box-shadow: 0 0 5px #fff, 0 0 10px #f5c518, 0 0 18px rgba(245,197,24,0.7);
+  box-shadow: 0 0 4px #fff, 0 0 8px #f5c518, 0 0 14px rgba(245,197,24,0.7);
 }
 
-@keyframes spin1 { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
-@keyframes spin2 { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
-@keyframes spin3 { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+@keyframes revolve1 {
+  from { --angle: 0deg; }
+  to { --angle: 360deg; }
+}
+@keyframes revolve2 {
+  from { --angle: 120deg; --z: -1; }
+  to { --angle: 480deg; --z: 1; }
+}
+@keyframes revolve3 {
+  from { --angle: 240deg; --z: 1; }
+  to { --angle: 600deg; --z: -1; }
+}
 
 .avatar-mini { width: 42px !important; height: 42px !important; border-radius: 50%; object-fit: cover; margin-right: 6px; vertical-align: middle; }
 .avatar-mini-creator { border: 2px solid #8B00FF; box-shadow: 0 0 12px rgba(138, 43, 226, 0.6); }
@@ -340,33 +365,39 @@ function createSatellites(){
   halo.className='avatar-halo';
   wrapper.appendChild(halo);
   
+  // Орбита 1 — перед (всегда видна)
   var orbit1=document.createElement('div');
   orbit1.className='avatar-orbit orbit-front';
-  orbit1.style.width='80px';orbit1.style.height='80px';
-  orbit1.style.animation='spin1 3s linear infinite';
+  orbit1.style.width='70px';orbit1.style.height='70px';
+  orbit1.style.animation='revolve1 3s linear infinite';
+  orbit1.style.transform='translate(-50%, -50%) rotate(var(--angle))';
   var moon1=document.createElement('div');
   moon1.className='avatar-moon moon1';
-  moon1.style.transform='translateY(-40px)';
+  moon1.style.transform='translateY(-35px)';
   orbit1.appendChild(moon1);
   wrapper.appendChild(orbit1);
   
+  // Орбита 2 — с 3D (уходит за аву)
   var orbit2=document.createElement('div');
   orbit2.className='avatar-orbit orbit-back';
-  orbit2.style.width='92px';orbit2.style.height='92px';
-  orbit2.style.animation='spin2 4.5s linear infinite';
+  orbit2.style.width='78px';orbit2.style.height='78px';
+  orbit2.style.animation='revolve2 4.5s linear infinite';
+  orbit2.style.transform='translate(-50%, -50%) rotate(var(--angle)) translateZ(calc(var(--z) * 10px))';
   var moon2=document.createElement('div');
   moon2.className='avatar-moon moon2';
-  moon2.style.transform='translateY(-46px)';
+  moon2.style.transform='translateY(-39px)';
   orbit2.appendChild(moon2);
   wrapper.appendChild(orbit2);
   
+  // Орбита 3 — с 3D (уходит за аву)
   var orbit3=document.createElement('div');
   orbit3.className='avatar-orbit orbit-back';
-  orbit3.style.width='72px';orbit3.style.height='72px';
-  orbit3.style.animation='spin3 3.8s linear infinite';
+  orbit3.style.width='66px';orbit3.style.height='66px';
+  orbit3.style.animation='revolve3 3.8s linear infinite';
+  orbit3.style.transform='translate(-50%, -50%) rotate(var(--angle)) translateZ(calc(var(--z) * 12px))';
   var moon3=document.createElement('div');
   moon3.className='avatar-moon moon3';
-  moon3.style.transform='translateY(-36px)';
+  moon3.style.transform='translateY(-33px)';
   orbit3.appendChild(moon3);
   wrapper.appendChild(orbit3);
 }
