@@ -193,8 +193,6 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
 <div id="thoughtModal" class="modal-overlay"><div class="modal-card"><h4 style="text-align:center"><span class="thought-emoji">💭</span> <span style="color:#f5c518;font-weight:bold">Мысль Создателя</span></h4><textarea id="thoughtText" placeholder="О чём думаешь?" rows="3" style="resize:vertical"></textarea><label>Срок действия</label><div class="expiry-row"><select id="thoughtExpiryType" onchange="toggleExpiryInput('thought')"><option value="forever">Навсегда</option><option value="hours">Часы</option><option value="days">Дни</option></select><input id="thoughtExpiryValue" type="number" placeholder="Кол-во" value="24" style="display:none"></div><button class="btn-gold" onclick="sendThought()">🚀 Отправить</button><button class="btn-gray" onclick="closeThoughtModal()">↩ Отмена</button></div></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-<script>
 firebase.initializeApp({apiKey:"AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",authDomain:"ozon-grafik-4ad9f.firebaseapp.com",databaseURL:"https://ozon-grafik-4ad9f-default-rtdb.europe-west1.firebasedatabase.app",projectId:"ozon-grafik-4ad9f",storageBucket:"ozon-grafik-4ad9f.firebasestorage.app",messagingSenderId:"798009068634",appId:"1:798009068634:web:4b70eea3cce6c96f4f5c63"});
 var db=firebase.database(),_user=null,onShift=!1,photoBase64=[],newAvatarData=null,allMyShifts=[],allUsers={},allUserData={},activeShifts={},godData=null,CREATOR_PASS='2706',unreadCount=0,chatOpened=!0,lastChatTimestamp=0,selectedProfile=null,privateChatWith=null,openDropdown=null;
 var VK_TOKEN="vk1.a.1ccqIy8pmM0W_RnIymI9XOMvA6ILX5yxNfZZAiF5HHBdjHK_vOAimgsyljky-TCiReMgJRAlaRvpYEypifmF-iUonUGvldlw5LvDWAOSUpN1WDcnS_7Uit-Yh3BuUF5Ic5NoZ48Qhlmu4ErB87fpTplEI7E3sarTm9LC-Vd8zTbeQp4xgyB1s5yg6oBxTBaNZAFp-ioqBWG25jR8GREmWw";
@@ -223,10 +221,8 @@ document.addEventListener('mousemove',function(e){
 });
 
 function createSatellites(){
-  var wrapper=document.getElementById('avatarWrapper');
-  if(!wrapper)return;
-  var old=wrapper.querySelectorAll('.avatar-orbit,.avatar-halo,.avatar-atmosphere');
-  old.forEach(function(el){el.remove()});
+  var wrapper=document.getElementById('avatarWrapper');if(!wrapper)return;
+  var old=wrapper.querySelectorAll('.avatar-orbit,.avatar-halo,.avatar-atmosphere');old.forEach(function(el){el.remove()});
   var atmos=document.createElement('div');atmos.className='avatar-atmosphere';wrapper.appendChild(atmos);
   var halo=document.createElement('div');halo.className='avatar-halo';wrapper.appendChild(halo);
   var o1=document.createElement('div');o1.className='avatar-orbit orbit-front';o1.style.width='60px';o1.style.height='60px';o1.style.animation='spin1 2.8s linear infinite';
@@ -424,7 +420,8 @@ function loadHall(){
   arr.sort(function(a,b){return b.tovar-a.tovar});var ht='';for(var i=0;i<Math.min(arr.length,5);i++){var m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'📌';ht+='<div class="hall-item"><span class="hall-medal">'+m+'</span> '+arr[i].name+' — <b>'+arr[i].tovar+' шт</b></div>'}document.getElementById('hallTovar').innerHTML=ht||'Нет данных';
   arr.sort(function(a,b){return(b.hours+b.tovar)-(a.hours+a.tovar)});document.getElementById('hallBest').innerHTML=arr.length?'<div class="hall-item"><span class="hall-medal">🌟</span> '+arr[0].name+' — '+arr[0].hours+'ч / '+arr[0].tovar+' шт</div>':'Нет данных';
   db.ref('punishes').once('value',function(ps){var pusers={};ps.forEach(function(c){var p=c.val();if(!pusers[p.user])pusers[p.user]=0;pusers[p.user]+=p.amount||0});var parr=[];for(var n in pusers)parr.push({name:n,amount:pusers[n]});parr.sort(function(a,b){return b.amount-a.amount});document.getElementById('hallWorst').innerHTML=parr.length?'<div class="hall-item"><span class="hall-medal">💀</span> '+parr[0].name+' — <b>'+parr[0].amount+' ₽</b></div>':'Нет данных'});
-  db.ref('premiums').once('value',function(prs){var prusers={};prs.forEach(function(c){var p=c.val();if(!prusers[p.user])prusers[p.user]=0;prusers[p.user]+=p.amount||0});var prarr=[];for(var n in prusers)prarr.push({name:n,amount:prusers[n]});prarr.sort(function(a,b){return b.amount-a.amount});document.getElementById('hallPremium').innerHTML=prarr.length?'<div class="hall-item"><span class="hall-medal">🎁</span> '+prarr[0].name+' — <b>'+prarr[0].amount+' ₽</b></div>':'Нет данных'})
+  db.ref('premiums').once('value',function(prs){var prusers={};prs.forEach(function(c){var p=c.val();if(!prusers[p.user])prusers[p.user]=0;prusers[p.user]+=p.amount||0});var prarr=[];for(var n in prusers)prarr.push({name:n,amount:prusers[n]});prarr.sort(function(a,b){return b.amount-a.amount});document.getElementById('hallPremium').innerHTML=prarr.length?'<div class="hall-item"><span class="hall-medal">🎁</span> '+prarr[0].name+' — <b>'+prarr[0].amount+' ₽</b></div>':'Нет данных'});
+}
 </script>
 </body>
 </html>
