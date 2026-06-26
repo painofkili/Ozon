@@ -52,52 +52,18 @@ button { border: none; font-weight: bold; cursor: pointer; border-radius: 12px; 
 button:disabled { opacity: 0.5; cursor: default; }
 
 /* НЕЙТРОННАЯ ЗВЕЗДА */
-.avatar-wrapper { position: relative; display: inline-block; width: 64px; height: 64px; flex-shrink: 0; }
-.avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer; position: absolute; top: 12px; left: 12px; z-index: 3; display: block; box-shadow: 0 0 6px #fff, 0 0 14px #fff, 0 0 30px rgba(0,191,255,0.9), 0 0 60px rgba(0,191,255,0.5), 0 0 90px rgba(138,43,226,0.3); }
+.avatar-wrapper { position: relative; display: inline-block; width: 64px; height: 64px; flex-shrink: 0; overflow: visible; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer; position: absolute; top: 14px; left: 12px; z-index: 3; display: block; box-shadow: 0 0 6px #fff, 0 0 14px #fff, 0 0 30px rgba(0,191,255,0.9), 0 0 60px rgba(0,191,255,0.5), 0 0 90px rgba(138,43,226,0.3); }
 .avatar-creator { border-radius: 50%; overflow: hidden; }
 
-.avatar-disk { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 14px; border: 2px solid rgba(0,191,255,0.3); border-radius: 50%; pointer-events: none; z-index: 1; box-shadow: 0 0 8px rgba(0,191,255,0.25), 0 0 16px rgba(138,43,226,0.15); animation: diskGlow 3s ease-in-out infinite; }
-@keyframes diskGlow { 0%, 100% { box-shadow: 0 0 8px rgba(0,191,255,0.25), 0 0 16px rgba(138,43,226,0.15); } 50% { box-shadow: 0 0 12px rgba(0,191,255,0.5), 0 0 28px rgba(138,43,226,0.35); } }
+.avatar-disk { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 62px; height: 4px; border: none; border-radius: 50%; pointer-events: none; z-index: 1; box-shadow: 0 0 6px rgba(0,191,255,0.25), 0 0 14px rgba(0,191,255,0.12), 0 0 22px rgba(138,43,226,0.08); animation: diskGlow 3s ease-in-out infinite; }
+@keyframes diskGlow { 0%, 100% { box-shadow: 0 0 6px rgba(0,191,255,0.25), 0 0 14px rgba(0,191,255,0.12); } 50% { box-shadow: 0 0 10px rgba(0,191,255,0.5), 0 0 24px rgba(0,191,255,0.3); } }
 
-/* Частицы со шлейфом */
-.avatar-particle { position: absolute; border-radius: 50%; pointer-events: none; background: #00BFFF; box-shadow: 0 0 6px #00BFFF, 0 0 14px #00BFFF; }
-.avatar-particle::before { content: ''; position: absolute; top: 50%; left: 50%; width: 2px; height: 20px; background: linear-gradient(to top, #00BFFF, transparent); transform-origin: center bottom; border-radius: 1px; opacity: 0.6; }
-.avatar-particle::after { content: ''; position: absolute; top: 50%; left: 50%; width: 2px; height: 14px; background: linear-gradient(to top, rgba(0,191,255,0.5), transparent); transform-origin: center bottom; border-radius: 1px; opacity: 0.3; }
+/* Одна частица — рисует орбиту шлейфом */
+.avatar-particle { position: absolute; width: 5px; height: 5px; border-radius: 50%; pointer-events: none; background: #fff; box-shadow: 0 0 4px #fff, 0 0 10px #00BFFF, 0 0 20px #00BFFF; z-index: 4; top: 50%; left: 50%; margin-top: -2.5px; margin-left: -2.5px; animation: protonOrbit 1.8s linear infinite; }
+.avatar-particle::after { content: ''; position: absolute; top: 50%; left: 0; width: 56px; height: 2px; background: linear-gradient(to left, rgba(0,191,255,0.9) 0%, rgba(0,191,255,0.3) 40%, transparent 70%); border-radius: 1px; transform: translateY(-50%) translateX(-56px); opacity: 0.7; }
 
-.p1 { width: 4px; height: 4px; z-index: 4; animation: orbit1 2.5s linear infinite; }
-.p1::before { animation: trailSpin1 2.5s linear infinite; }
-.p1::after { animation: trailSpin1b 2.5s linear infinite; }
-
-.p2 { width: 3px; height: 3px; z-index: 4; animation: orbit2 2.5s linear infinite 0.4s; }
-.p2::before { animation: trailSpin2 2.5s linear infinite 0.4s; }
-.p2::after { animation: trailSpin2b 2.5s linear infinite 0.4s; }
-
-.p3 { width: 3px; height: 3px; z-index: 4; animation: orbit3 2.5s linear infinite 0.8s; }
-.p3::before { animation: trailSpin3 2.5s linear infinite 0.8s; }
-.p3::after { animation: trailSpin3b 2.5s linear infinite 0.8s; }
-
-.p4 { width: 3px; height: 3px; z-index: 2; animation: orbit4 2.5s linear infinite 1.2s; }
-.p5 { width: 4px; height: 4px; z-index: 2; animation: orbit5 2.5s linear infinite 1.6s; }
-.p6 { width: 2px; height: 2px; z-index: 4; animation: orbit6 2.5s linear infinite 2.0s; }
-.p6::before { animation: trailSpin6 2.5s linear infinite 2.0s; }
-.p6::after { animation: trailSpin6b 2.5s linear infinite 2.0s; }
-
-@keyframes orbit1 { 0% { top: 6px; left: 50%; } 25% { top: 50%; left: 58px; } 50% { top: 58px; left: 50%; } 75% { top: 50%; left: 2px; } 100% { top: 6px; left: 50%; } }
-@keyframes orbit2 { 0% { top: 14px; left: 56px; } 25% { top: 54px; left: 56px; } 50% { top: 54px; left: 4px; } 75% { top: 14px; left: 4px; } 100% { top: 14px; left: 56px; } }
-@keyframes orbit3 { 0% { top: 50%; left: 58px; } 25% { top: 58px; left: 50%; } 50% { top: 50%; left: 2px; } 75% { top: 6px; left: 50%; } 100% { top: 50%; left: 58px; } }
-@keyframes orbit4 { 0% { top: 54px; left: 50%; } 25% { top: 50%; left: 2px; } 50% { top: 6px; left: 50%; } 75% { top: 50%; left: 58px; } 100% { top: 54px; left: 50%; } }
-@keyframes orbit5 { 0% { top: 50%; left: 2px; } 25% { top: 6px; left: 50%; } 50% { top: 50%; left: 58px; } 75% { top: 58px; left: 50%; } 100% { top: 50%; left: 2px; } }
-@keyframes orbit6 { 0% { top: 8px; left: 8px; } 25% { top: 8px; left: 56px; } 50% { top: 56px; left: 56px; } 75% { top: 56px; left: 8px; } 100% { top: 8px; left: 8px; } }
-
-/* Шлейфы */
-@keyframes trailSpin1 { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-@keyframes trailSpin1b { 0% { transform: rotate(0deg); } 100% { transform: rotate(-360deg); } }
-@keyframes trailSpin2 { 0% { transform: rotate(45deg); } 100% { transform: rotate(405deg); } }
-@keyframes trailSpin2b { 0% { transform: rotate(-45deg); } 100% { transform: rotate(-405deg); } }
-@keyframes trailSpin3 { 0% { transform: rotate(90deg); } 100% { transform: rotate(450deg); } }
-@keyframes trailSpin3b { 0% { transform: rotate(-90deg); } 100% { transform: rotate(-450deg); } }
-@keyframes trailSpin6 { 0% { transform: rotate(180deg); } 100% { transform: rotate(540deg); } }
-@keyframes trailSpin6b { 0% { transform: rotate(-180deg); } 100% { transform: rotate(-540deg); } }
+@keyframes protonOrbit { 0% { transform: translate(-50%, -50%) rotate(0deg) translateX(28px) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg) translateX(28px) rotate(-360deg); } }
 
 .avatar-mini { width: 42px !important; height: 42px !important; border-radius: 50%; object-fit: cover; margin-right: 6px; vertical-align: middle; }
 .avatar-mini-creator { border: 2px solid #8B00FF; box-shadow: 0 0 12px rgba(138,43,226,0.6); }
@@ -270,7 +236,7 @@ function createSatellites(){
   var wrapper=document.getElementById('avatarWrapper');if(!wrapper)return;
   var old=wrapper.querySelectorAll('.avatar-disk,.avatar-particle');old.forEach(function(el){el.remove()});
   var disk=document.createElement('div');disk.className='avatar-disk';wrapper.appendChild(disk);
-  for(var i=1;i<=6;i++){var p=document.createElement('div');p.className='avatar-particle p'+i;wrapper.appendChild(p)}
+  var p=document.createElement('div');p.className='avatar-particle';wrapper.appendChild(p);
 }
 
 document.addEventListener('click',function(e){if(openDropdown&&!e.target.closest('.msg-dropdown')&&!e.target.closest('.msg-menu-btn')){openDropdown.classList.remove('show');openDropdown=null}});
