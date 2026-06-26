@@ -305,16 +305,18 @@ function showMiniProfile(name){
   if(name===godData?.name){
     document.getElementById('mpStatus').textContent='👑 Начальник';
     document.getElementById('mpPunkt').textContent='🟢 Всегда на связи';
+    document.getElementById('mpCalendar').innerHTML=''; // Без календаря
   } else {
     var sc=0;allMyShifts.forEach(function(s){if(s.user===name)sc++;});
     var st=['📦 Штрих','🚚 ПВЗюк','🏭 Пунктовой','🚀 Озонавт','👑 Озоний'][sc>=21?4:sc>=13?3:sc>=8?2:sc>=4?1:0];
     document.getElementById('mpStatus').textContent=st;
     var isOnline=!!activeShifts[name];
     document.getElementById('mpPunkt').textContent=isOnline?'🟢 На смене (Пункт '+(d.punkt||'?')+')':'🔴 Выходной';
+    // Календарь для обычных сотрудников
+    var now=new Date(),calH='',startD=new Date(now.getTime()-13*86400000);
+    for(var i=0;i<14;i++){var dd=new Date(startD.getTime()+i*86400000),ds=dd.toLocaleDateString('ru-RU'),isShift=false;allMyShifts.forEach(function(s){if(s.user===name&&s.date===ds)isShift=true;});calH+='<div class="'+(isShift?'mp-shift':'')+'">'+dd.getDate()+'</div>';}
+    document.getElementById('mpCalendar').innerHTML=calH;
   }
-  var now=new Date(),calH='',startD=new Date(now.getTime()-13*86400000);
-  for(var i=0;i<14;i++){var dd=new Date(startD.getTime()+i*86400000),ds=dd.toLocaleDateString('ru-RU'),isShift=false;allMyShifts.forEach(function(s){if(s.user===name&&s.date===ds)isShift=true;});calH+='<div class="'+(isShift?'mp-shift':'')+'">'+dd.getDate()+'</div>';}
-  document.getElementById('mpCalendar').innerHTML=calH;
   document.getElementById('mpChatBtn').style.display='block';
   mp.classList.add('show');
   clearTimeout(mp._timeout);mp._timeout=setTimeout(function(){mp.classList.remove('show')},5000);
