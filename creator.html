@@ -51,31 +51,34 @@ button { border: none; font-weight: bold; cursor: pointer; border-radius: 12px; 
 .btn-gold { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; padding: 14px; font-size: 16px; margin: 4px 0; width: 100%; }
 button:disabled { opacity: 0.5; cursor: default; }
 
-.avatar-wrapper { position: relative; display: inline-block; width: 64px; height: 64px; flex-shrink: 0; perspective: 400px; transform-style: preserve-3d; }
+/* АВАТАР + СПУТНИКИ */
+.avatar-wrapper { position: relative; display: inline-block; width: 64px; height: 64px; flex-shrink: 0; perspective: 300px; transform-style: preserve-3d; }
 .avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; cursor: pointer; position: absolute; top: 0; left: 0; z-index: 3; display: block; }
 .avatar-creator { border-radius: 50%; overflow: hidden; }
 
 .avatar-atmosphere { position: absolute; top: 0; left: 0; width: 64px; height: 64px; border-radius: 50%; overflow: hidden; pointer-events: none; z-index: 4; }
-.avatar-atmosphere::before { content: ''; position: absolute; top: -10px; left: -10px; width: 84px; height: 84px; background: radial-gradient(ellipse at 30% 25%, rgba(138,43,226,0.4) 0%, transparent 35%), radial-gradient(ellipse at 65% 70%, rgba(0,191,255,0.35) 0%, transparent 30%), radial-gradient(ellipse at 50% 40%, rgba(255,255,255,0.2) 0%, transparent 45%), radial-gradient(ellipse at 20% 60%, rgba(245,197,24,0.2) 0%, transparent 40%); animation: atmosSpin 10s linear infinite; }
+.avatar-atmosphere::before { content: ''; position: absolute; top: -8px; left: -8px; width: 80px; height: 80px; background: radial-gradient(ellipse at 30% 25%, rgba(138,43,226,0.4) 0%, transparent 35%), radial-gradient(ellipse at 65% 70%, rgba(0,191,255,0.35) 0%, transparent 30%), radial-gradient(ellipse at 50% 40%, rgba(255,255,255,0.2) 0%, transparent 45%), radial-gradient(ellipse at 20% 60%, rgba(245,197,24,0.2) 0%, transparent 40%); animation: atmosSpin 10s linear infinite; }
 @keyframes atmosSpin { 100% { transform: rotate(360deg); } }
 
-.avatar-halo { position: absolute; inset: -8px; border-radius: 50%; box-shadow: 0 0 18px rgba(255,255,255,0.3), 0 0 35px rgba(255,255,255,0.12); animation: haloGlow 3s ease-in-out infinite; pointer-events: none; z-index: 0; }
-@keyframes haloGlow { 0%, 100% { box-shadow: 0 0 18px rgba(255,255,255,0.3), 0 0 35px rgba(255,255,255,0.12); } 50% { box-shadow: 0 0 25px rgba(255,255,255,0.5), 0 0 50px rgba(255,255,255,0.22); } }
+.avatar-halo { position: absolute; inset: -6px; border-radius: 50%; box-shadow: 0 0 15px rgba(255,255,255,0.3), 0 0 30px rgba(255,255,255,0.12); animation: haloGlow 3s ease-in-out infinite; pointer-events: none; z-index: 0; }
+@keyframes haloGlow { 0%, 100% { box-shadow: 0 0 15px rgba(255,255,255,0.3), 0 0 30px rgba(255,255,255,0.12); } 50% { box-shadow: 0 0 22px rgba(255,255,255,0.5), 0 0 45px rgba(255,255,255,0.2); } }
 
+/* Орбиты — компактные */
 .avatar-orbit { position: absolute; top: 50%; left: 50%; border-radius: 50%; pointer-events: none; transform-style: preserve-3d; }
 .orbit-front { z-index: 5; }
 
 .avatar-moon { position: absolute; border-radius: 50%; }
-.moon1 { width: 6px; height: 6px; top: -3px; left: 50%; margin-left: -3px; background: #00BFFF; box-shadow: 0 0 6px #00BFFF, 0 0 14px #00BFFF, 0 0 22px rgba(0,191,255,0.8); }
-.moon2 { width: 5px; height: 5px; top: -2.5px; left: 50%; margin-left: -2.5px; background: #8B00FF; box-shadow: 0 0 5px #8B00FF, 0 0 12px #8B00FF, 0 0 20px rgba(138,43,226,0.8); }
-.moon3 { width: 4px; height: 4px; top: -2px; left: 50%; margin-left: -2px; background: #f5c518; box-shadow: 0 0 4px #f5c518, 0 0 10px #f5c518, 0 0 18px rgba(245,197,24,0.8); }
+.moon1 { width: 5px; height: 5px; top: -2.5px; left: 50%; margin-left: -2.5px; background: #00BFFF; box-shadow: 0 0 5px #00BFFF, 0 0 12px #00BFFF, 0 0 18px rgba(0,191,255,0.8); }
+.moon2 { width: 4px; height: 4px; top: -2px; left: 50%; margin-left: -2px; background: #8B00FF; box-shadow: 0 0 4px #8B00FF, 0 0 10px #8B00FF, 0 0 16px rgba(138,43,226,0.8); }
+.moon3 { width: 3px; height: 3px; top: -1.5px; left: 50%; margin-left: -1.5px; background: #f5c518; box-shadow: 0 0 3px #f5c518, 0 0 8px #f5c518, 0 0 14px rgba(245,197,24,0.8); }
 
-@keyframes spin1 { 100% { transform: translate(-50%, -50%) rotateX(10deg) rotate(360deg); } }
+@keyframes spin1 { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
 @keyframes spin2 { 100% { transform: translate(-50%, -50%) rotateX(55deg) rotate(360deg); } }
 @keyframes spin3 { 100% { transform: translate(-50%, -50%) rotateX(-40deg) rotate(360deg); } }
 
-@keyframes zSwitch1 { 0%, 30% { z-index: 5; } 40%, 80% { z-index: 1; } 90%, 100% { z-index: 5; } }
-@keyframes zSwitch2 { 0%, 20% { z-index: 1; } 30%, 70% { z-index: 5; } 80%, 100% { z-index: 1; } }
+/* Плавное переключение z-index */
+@keyframes zSwitch1 { 0%, 35% { z-index: 5; } 45%, 85% { z-index: 1; } 95%, 100% { z-index: 5; } }
+@keyframes zSwitch2 { 0%, 25% { z-index: 1; } 35%, 75% { z-index: 5; } 85%, 100% { z-index: 1; } }
 
 .avatar-mini { width: 42px !important; height: 42px !important; border-radius: 50%; object-fit: cover; margin-right: 6px; vertical-align: middle; }
 .avatar-mini-creator { border: 2px solid #8B00FF; box-shadow: 0 0 12px rgba(138,43,226,0.6); }
@@ -153,7 +156,6 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
 .section-title { background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; display: inline; }
 .section-emoji { font-size: 20px; }
 .announce-expiry, .thought-expiry { font-size: 10px; color: #aaa; margin-top: 4px; }
-
 @media (max-width: 768px) {
   .avatar-wrapper { perspective: none; transform-style: flat; }
   .avatar-orbit { transform-style: flat; }
@@ -251,19 +253,19 @@ function createSatellites(){
   var old=wrapper.querySelectorAll('.avatar-orbit,.avatar-halo,.avatar-atmosphere');old.forEach(function(el){el.remove()});
   var atmos=document.createElement('div');atmos.className='avatar-atmosphere';wrapper.appendChild(atmos);
   var halo=document.createElement('div');halo.className='avatar-halo';wrapper.appendChild(halo);
-  // Спутник 1 — всегда перед авой
+  // Спутник 1 — всегда перед авой (голубой)
   var o1=document.createElement('div');o1.className='avatar-orbit orbit-front';
-  o1.style.width='62px';o1.style.height='62px';o1.style.animation='spin1 3s linear infinite';
-  var m1=document.createElement('div');m1.className='avatar-moon moon1';m1.style.transform='translateY(-31px)';o1.appendChild(m1);wrapper.appendChild(o1);
-  // Спутник 2 — пересекает аву (z-index переключается)
+  o1.style.width='56px';o1.style.height='56px';o1.style.animation='spin1 3s linear infinite';
+  var m1=document.createElement('div');m1.className='avatar-moon moon1';m1.style.transform='translateY(-28px)';o1.appendChild(m1);wrapper.appendChild(o1);
+  // Спутник 2 — пересекает аву (фиолетовый)
   var o2=document.createElement('div');o2.className='avatar-orbit';
-  o2.style.width='60px';o2.style.height='60px';o2.style.animation='spin2 4.5s linear infinite';
-  var m2=document.createElement('div');m2.className='avatar-moon moon2';m2.style.transform='translateY(-30px)';
+  o2.style.width='54px';o2.style.height='54px';o2.style.animation='spin2 4.5s linear infinite';
+  var m2=document.createElement('div');m2.className='avatar-moon moon2';m2.style.transform='translateY(-27px)';
   m2.style.animation='zSwitch1 4.5s linear infinite';o2.appendChild(m2);wrapper.appendChild(o2);
-  // Спутник 3 — пересекает аву
+  // Спутник 3 — пересекает аву (золотой)
   var o3=document.createElement('div');o3.className='avatar-orbit';
-  o3.style.width='58px';o3.style.height='58px';o3.style.animation='spin3 3.8s linear infinite';
-  var m3=document.createElement('div');m3.className='avatar-moon moon3';m3.style.transform='translateY(-29px)';
+  o3.style.width='52px';o3.style.height='52px';o3.style.animation='spin3 3.8s linear infinite';
+  var m3=document.createElement('div');m3.className='avatar-moon moon3';m3.style.transform='translateY(-26px)';
   m3.style.animation='zSwitch2 3.8s linear infinite';o3.appendChild(m3);wrapper.appendChild(o3);
 }
 
