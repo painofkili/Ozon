@@ -157,15 +157,23 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
 @media (max-width: 768px) {
   .avatar-wrapper { perspective: none; transform-style: flat; }
   .avatar-orbit { transform-style: flat; }
-  .main-content { -webkit-transform: translateZ(0); transform: translateZ(0); }
+  .main-content { -webkit-transform: translateZ(0); transform: translateZ(0); padding: 8px 8px; }
   .app-container { -webkit-transform: translateZ(0); }
   #chat, .stat-card, .card { transform: translateZ(0); -webkit-transform: translateZ(0); }
+  .main-content { max-width: 100% !important; }
 }
 @media (max-width: 500px) {
-  .avatar-carousel { width: 55px; min-width: 55px; padding: 10px 2px; }
-  .avatar-item { width: 38px; height: 38px; min-height: 38px; }
-  .mini-profile { right: 60px; width: 200px; }
-  .main-content { padding: 8px 10px; }
+  .avatar-carousel { width: 50px; min-width: 50px; padding: 8px 1px; }
+  .avatar-item { width: 36px; height: 36px; min-height: 36px; margin: 4px 0; }
+  .mini-profile { right: 55px; width: 190px; padding: 12px; }
+  .main-content { padding: 6px 8px; }
+  .profile-row { gap: 8px; }
+  .avatar-mini { width: 32px !important; height: 32px !important; }
+  .tabs button { width: 38px; height: 38px; }
+  .tabs button .menu-icon { font-size: 16px; }
+  #chat { max-height: 200px; font-size: 12px; }
+  .chat-bubble { max-width: 78%; font-size: 12px; }
+  input, select, textarea, button { padding: 10px; font-size: 14px; }
 }
 @media (min-width: 800px) { .main-content { max-width: 600px; margin: 0 auto; } }
 @media (min-width: 1200px) { .main-content { max-width: 700px; } }
@@ -243,16 +251,19 @@ function createSatellites(){
   var old=wrapper.querySelectorAll('.avatar-orbit,.avatar-halo,.avatar-atmosphere');old.forEach(function(el){el.remove()});
   var atmos=document.createElement('div');atmos.className='avatar-atmosphere';wrapper.appendChild(atmos);
   var halo=document.createElement('div');halo.className='avatar-halo';wrapper.appendChild(halo);
+  // Спутник 1 — всегда перед авой
   var o1=document.createElement('div');o1.className='avatar-orbit orbit-front';
-  o1.style.width='70px';o1.style.height='70px';o1.style.animation='spin1 3s linear infinite';
-  var m1=document.createElement('div');m1.className='avatar-moon moon1';m1.style.transform='translateY(-35px)';o1.appendChild(m1);wrapper.appendChild(o1);
+  o1.style.width='62px';o1.style.height='62px';o1.style.animation='spin1 3s linear infinite';
+  var m1=document.createElement('div');m1.className='avatar-moon moon1';m1.style.transform='translateY(-31px)';o1.appendChild(m1);wrapper.appendChild(o1);
+  // Спутник 2 — пересекает аву (z-index переключается)
   var o2=document.createElement('div');o2.className='avatar-orbit';
-  o2.style.width='68px';o2.style.height='68px';o2.style.animation='spin2 4.5s linear infinite';
-  var m2=document.createElement('div');m2.className='avatar-moon moon2';m2.style.transform='translateY(-34px)';
+  o2.style.width='60px';o2.style.height='60px';o2.style.animation='spin2 4.5s linear infinite';
+  var m2=document.createElement('div');m2.className='avatar-moon moon2';m2.style.transform='translateY(-30px)';
   m2.style.animation='zSwitch1 4.5s linear infinite';o2.appendChild(m2);wrapper.appendChild(o2);
+  // Спутник 3 — пересекает аву
   var o3=document.createElement('div');o3.className='avatar-orbit';
-  o3.style.width='66px';o3.style.height='66px';o3.style.animation='spin3 3.8s linear infinite';
-  var m3=document.createElement('div');m3.className='avatar-moon moon3';m3.style.transform='translateY(-33px)';
+  o3.style.width='58px';o3.style.height='58px';o3.style.animation='spin3 3.8s linear infinite';
+  var m3=document.createElement('div');m3.className='avatar-moon moon3';m3.style.transform='translateY(-29px)';
   m3.style.animation='zSwitch2 3.8s linear infinite';o3.appendChild(m3);wrapper.appendChild(o3);
 }
 
