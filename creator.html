@@ -51,12 +51,7 @@ button { border: none; font-weight: bold; cursor: pointer; border-radius: 12px; 
 .btn-gold { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; padding: 14px; font-size: 16px; margin: 4px 0; width: 100%; }
 button:disabled { opacity: 0.5; cursor: default; }
 
-.avatar-wrapper { 
-  position: relative; display: inline-block; 
-  width: 64px; height: 64px; flex-shrink: 0; 
-  perspective: 300px;
-  transform-style: preserve-3d;
-}
+.avatar-wrapper { position: relative; display: inline-block; width: 64px; height: 64px; flex-shrink: 0; perspective: 400px; transform-style: preserve-3d; }
 .avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; cursor: pointer; position: absolute; top: 0; left: 0; z-index: 3; display: block; }
 .avatar-creator { border-radius: 50%; overflow: hidden; }
 
@@ -67,44 +62,38 @@ button:disabled { opacity: 0.5; cursor: default; }
 .avatar-halo { position: absolute; inset: -8px; border-radius: 50%; box-shadow: 0 0 18px rgba(255,255,255,0.3), 0 0 35px rgba(255,255,255,0.12); animation: haloGlow 3s ease-in-out infinite; pointer-events: none; z-index: 0; }
 @keyframes haloGlow { 0%, 100% { box-shadow: 0 0 18px rgba(255,255,255,0.3), 0 0 35px rgba(255,255,255,0.12); } 50% { box-shadow: 0 0 25px rgba(255,255,255,0.5), 0 0 50px rgba(255,255,255,0.22); } }
 
+/* 3D-контейнер для протонов */
+.proton-container { position: absolute; top: 0; left: 0; width: 64px; height: 64px; transform-style: preserve-3d; z-index: 5; pointer-events: none; }
+
 /* Протоны */
-.avatar-moon { position: absolute; border-radius: 50%; top: 50%; left: 50%; margin-top: -3px; margin-left: -3px; width: 6px; height: 6px; }
-.moon1 { background: #00BFFF; box-shadow: 0 0 8px #00BFFF, 0 0 16px #00BFFF, 0 0 24px rgba(0,191,255,0.8); }
-.moon2 { background: #8B00FF; width: 5px; height: 5px; margin-top: -2.5px; margin-left: -2.5px; box-shadow: 0 0 6px #8B00FF, 0 0 14px #8B00FF, 0 0 20px rgba(138,43,226,0.8); }
-.moon3 { background: #f5c518; width: 4px; height: 4px; margin-top: -2px; margin-left: -2px; box-shadow: 0 0 5px #f5c518, 0 0 10px #f5c518, 0 0 16px rgba(245,197,24,0.8); }
+.avatar-moon { position: absolute; border-radius: 50%; top: 50%; left: 50%; }
+.moon1 { width: 7px; height: 7px; margin-top: -3.5px; margin-left: -3.5px; background: #00BFFF; box-shadow: 0 0 10px #00BFFF, 0 0 20px #00BFFF, 0 0 30px rgba(0,191,255,0.8); }
+.moon2 { width: 5px; height: 5px; margin-top: -2.5px; margin-left: -2.5px; background: #8B00FF; box-shadow: 0 0 8px #8B00FF, 0 0 16px #8B00FF, 0 0 24px rgba(138,43,226,0.8); }
+.moon3 { width: 4px; height: 4px; margin-top: -2px; margin-left: -2px; background: #f5c518; box-shadow: 0 0 6px #f5c518, 0 0 12px #f5c518, 0 0 20px rgba(245,197,24,0.8); }
 
 @keyframes proton-orbit-1 {
-  0%   { transform: rotateX(60deg) rotateY(0deg) translateZ(38px) rotateY(0deg); z-index: 5; }
-  24%  { z-index: 5; }
-  25%  { transform: rotateX(60deg) rotateY(90deg) translateZ(38px) rotateY(-90deg); z-index: 1; }
-  49%  { z-index: 1; }
-  50%  { transform: rotateX(60deg) rotateY(180deg) translateZ(38px) rotateY(-180deg); }
-  74%  { z-index: 1; }
-  75%  { transform: rotateX(60deg) rotateY(270deg) translateZ(38px) rotateY(-270deg); z-index: 5; }
-  99%  { z-index: 5; }
-  100% { transform: rotateX(60deg) rotateY(360deg) translateZ(38px) rotateY(-360deg); z-index: 5; }
+  0%   { transform: rotateX(60deg) rotateY(0deg) translateZ(38px) rotateY(0deg); z-index: 1; }
+  24%  { z-index: 1; }
+  25%  { transform: rotateX(60deg) rotateY(90deg) translateZ(38px) rotateY(-90deg); z-index: -1; }
+  74%  { z-index: -1; }
+  75%  { transform: rotateX(60deg) rotateY(270deg) translateZ(38px) rotateY(-270deg); z-index: 1; }
+  100% { transform: rotateX(60deg) rotateY(360deg) translateZ(38px) rotateY(-360deg); z-index: 1; }
 }
 @keyframes proton-orbit-2 {
-  0%   { transform: rotateX(70deg) rotateY(0deg) translateZ(36px) rotateY(0deg); z-index: 1; }
-  24%  { z-index: 1; }
-  25%  { transform: rotateX(70deg) rotateY(90deg) translateZ(36px) rotateY(-90deg); z-index: 5; }
-  49%  { z-index: 5; }
-  50%  { transform: rotateX(70deg) rotateY(180deg) translateZ(36px) rotateY(-180deg); }
-  74%  { z-index: 5; }
-  75%  { transform: rotateX(70deg) rotateY(270deg) translateZ(36px) rotateY(-270deg); z-index: 1; }
-  99%  { z-index: 1; }
-  100% { transform: rotateX(70deg) rotateY(360deg) translateZ(36px) rotateY(-360deg); z-index: 1; }
+  0%   { transform: rotateX(70deg) rotateY(0deg) translateZ(36px) rotateY(0deg); z-index: -1; }
+  24%  { z-index: -1; }
+  25%  { transform: rotateX(70deg) rotateY(90deg) translateZ(36px) rotateY(-90deg); z-index: 1; }
+  74%  { z-index: 1; }
+  75%  { transform: rotateX(70deg) rotateY(270deg) translateZ(36px) rotateY(-270deg); z-index: -1; }
+  100% { transform: rotateX(70deg) rotateY(360deg) translateZ(36px) rotateY(-360deg); z-index: -1; }
 }
 @keyframes proton-orbit-3 {
-  0%   { transform: rotateX(55deg) rotateY(0deg) translateZ(40px) rotateY(0deg); z-index: 5; }
-  24%  { z-index: 5; }
-  25%  { transform: rotateX(55deg) rotateY(90deg) translateZ(40px) rotateY(-90deg); z-index: 1; }
-  49%  { z-index: 1; }
-  50%  { transform: rotateX(55deg) rotateY(180deg) translateZ(40px) rotateY(-180deg); }
-  74%  { z-index: 1; }
-  75%  { transform: rotateX(55deg) rotateY(270deg) translateZ(40px) rotateY(-270deg); z-index: 5; }
-  99%  { z-index: 5; }
-  100% { transform: rotateX(55deg) rotateY(360deg) translateZ(40px) rotateY(-360deg); z-index: 5; }
+  0%   { transform: rotateX(55deg) rotateY(0deg) translateZ(40px) rotateY(0deg); z-index: 1; }
+  24%  { z-index: 1; }
+  25%  { transform: rotateX(55deg) rotateY(90deg) translateZ(40px) rotateY(-90deg); z-index: -1; }
+  74%  { z-index: -1; }
+  75%  { transform: rotateX(55deg) rotateY(270deg) translateZ(40px) rotateY(-270deg); z-index: 1; }
+  100% { transform: rotateX(55deg) rotateY(360deg) translateZ(40px) rotateY(-360deg); z-index: 1; }
 }
 
 .avatar-mini { width: 42px !important; height: 42px !important; border-radius: 50%; object-fit: cover; margin-right: 6px; vertical-align: middle; }
@@ -186,7 +175,7 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
 
 @media (max-width: 768px) {
   .avatar-wrapper { perspective: none; transform-style: flat; }
-  .avatar-moon { animation: none !important; display: none; }
+  .proton-container { display: none; }
   .main-content { -webkit-transform: translateZ(0); transform: translateZ(0); padding: 8px 8px; }
   .app-container { -webkit-transform: translateZ(0); }
   #chat, .stat-card, .card { transform: translateZ(0); -webkit-transform: translateZ(0); }
@@ -278,15 +267,14 @@ document.addEventListener('mousemove',function(e){
 
 function createSatellites(){
   var wrapper=document.getElementById('avatarWrapper');if(!wrapper)return;
-  var old=wrapper.querySelectorAll('.avatar-moon,.avatar-halo,.avatar-atmosphere');old.forEach(function(el){el.remove()});
+  var old=wrapper.querySelectorAll('.proton-container,.avatar-halo,.avatar-atmosphere');old.forEach(function(el){el.remove()});
   var atmos=document.createElement('div');atmos.className='avatar-atmosphere';wrapper.appendChild(atmos);
   var halo=document.createElement('div');halo.className='avatar-halo';wrapper.appendChild(halo);
-  var p1=document.createElement('div');p1.className='avatar-moon moon1';
-  p1.style.animation='proton-orbit-1 4s linear infinite';wrapper.appendChild(p1);
-  var p2=document.createElement('div');p2.className='avatar-moon moon2';
-  p2.style.animation='proton-orbit-2 5.5s linear infinite';wrapper.appendChild(p2);
-  var p3=document.createElement('div');p3.className='avatar-moon moon3';
-  p3.style.animation='proton-orbit-3 4.8s linear infinite';wrapper.appendChild(p3);
+  var container=document.createElement('div');container.className='proton-container';
+  var p1=document.createElement('div');p1.className='avatar-moon moon1';p1.style.animation='proton-orbit-1 4s linear infinite';container.appendChild(p1);
+  var p2=document.createElement('div');p2.className='avatar-moon moon2';p2.style.animation='proton-orbit-2 5.5s linear infinite';container.appendChild(p2);
+  var p3=document.createElement('div');p3.className='avatar-moon moon3';p3.style.animation='proton-orbit-3 4.8s linear infinite';container.appendChild(p3);
+  wrapper.appendChild(container);
 }
 
 document.addEventListener('click',function(e){if(openDropdown&&!e.target.closest('.msg-dropdown')&&!e.target.closest('.msg-menu-btn')){openDropdown.classList.remove('show');openDropdown=null}});
