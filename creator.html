@@ -45,17 +45,16 @@ button { border: none; font-weight: bold; cursor: pointer; border-radius: 12px; 
 .btn-gold { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; padding: 14px; font-size: 16px; margin: 4px 0; width: 100%; }
 button:disabled { opacity: 0.5; cursor: default; }
 
-/* АВАТАРКА С КОЛЬЦАМИ ПЛАЗМЫ */
+/* АВАТАРКА С БЕЛЫМИ КОЛЬЦАМИ */
 .avatar-wrapper { position: relative; display: inline-block; width: 56px; height: 56px; flex-shrink: 0; }
 .avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; cursor: pointer; position: relative; z-index: 2; display: block; }
 .avatar-creator { border-radius: 50%; overflow: hidden; }
-
 .avatar-wrapper::before,
 .avatar-wrapper::after {
   content: "";
   position: absolute;
   inset: -6px;
-  border: 3px solid #7B2FFF;
+  border: 3px solid #FFFFFF;
   border-radius: 50%;
   animation: pulseRing 2s ease-out infinite;
   opacity: 0;
@@ -63,11 +62,10 @@ button:disabled { opacity: 0.5; cursor: default; }
   z-index: 0;
 }
 .avatar-wrapper::after { animation-delay: 1s; }
-
 @keyframes pulseRing {
-  0% { transform: scale(0.9); opacity: 1; box-shadow: 0 0 15px #7B2FFF, 0 0 30px #00BFFF, 0 0 50px #f5c518; }
-  50% { opacity: 0.6; box-shadow: 0 0 25px #7B2FFF, 0 0 50px #00BFFF, 0 0 70px #f5c518; }
-  100% { transform: scale(1.6); opacity: 0; box-shadow: 0 0 5px #7B2FFF; }
+  0% { transform: scale(0.9); opacity: 1; box-shadow: 0 0 15px #FFFFFF, 0 0 30px #FFFFFF; }
+  50% { opacity: 0.6; box-shadow: 0 0 25px #FFFFFF, 0 0 50px #FFFFFF, 0 0 70px #FFFFFF; }
+  100% { transform: scale(1.6); opacity: 0; box-shadow: 0 0 5px #FFFFFF; }
 }
 
 .avatar-mini { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; margin-right: 5px; vertical-align: middle; }
