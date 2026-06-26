@@ -51,30 +51,29 @@ button { border: none; font-weight: bold; cursor: pointer; border-radius: 12px; 
 .btn-gold { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; padding: 14px; font-size: 16px; margin: 4px 0; width: 100%; }
 button:disabled { opacity: 0.5; cursor: default; }
 
-/* НЕЙТРОННАЯ ЗВЕЗДА + ПЛАНЕТЫ */
-.avatar-wrapper { position: relative; display: inline-block; width: 64px; height: 64px; flex-shrink: 0; perspective: 200px; transform-style: preserve-3d; }
-.avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; cursor: pointer; position: absolute; top: 0; left: 0; z-index: 3; display: block; box-shadow: 0 0 20px rgba(255,255,255,0.5), 0 0 40px rgba(245,197,24,0.4), 0 0 80px rgba(138,43,226,0.3), 0 0 120px rgba(0,191,255,0.15); }
+/* НЕЙТРОННАЯ ЗВЕЗДА */
+.avatar-wrapper { position: relative; display: inline-block; width: 64px; height: 64px; flex-shrink: 0; }
+.avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; cursor: pointer; position: absolute; top: 8px; left: 8px; z-index: 3; display: block; box-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 40px rgba(0,191,255,0.8), 0 0 80px rgba(0,191,255,0.4), 0 0 120px rgba(138,43,226,0.2); }
 .avatar-creator { border-radius: 50%; overflow: hidden; }
-.avatar-atmosphere { position: absolute; top: 0; left: 0; width: 64px; height: 64px; border-radius: 50%; overflow: hidden; pointer-events: none; z-index: 4; }
-.avatar-atmosphere::before { content: ''; position: absolute; top: -6px; left: -6px; width: 76px; height: 76px; background: radial-gradient(circle at 35% 30%, rgba(138,43,226,0.6) 0%, transparent 30%), radial-gradient(circle at 65% 65%, rgba(0,191,255,0.5) 0%, transparent 28%), radial-gradient(circle at 50% 50%, rgba(255,255,255,0.3) 0%, transparent 40%), radial-gradient(circle at 25% 55%, rgba(245,197,24,0.35) 0%, transparent 35%); animation: atmosSpin 8s linear infinite; }
-@keyframes atmosSpin { 100% { transform: rotate(360deg); } }
-.avatar-halo { position: absolute; inset: -12px; border-radius: 50%; box-shadow: 0 0 25px rgba(255,255,255,0.35), 0 0 50px rgba(245,197,24,0.25), 0 0 80px rgba(138,43,226,0.2); animation: haloGlow 3s ease-in-out infinite; pointer-events: none; z-index: 0; }
-@keyframes haloGlow { 0%, 100% { box-shadow: 0 0 25px rgba(255,255,255,0.35), 0 0 50px rgba(245,197,24,0.25), 0 0 80px rgba(138,43,226,0.2); } 50% { box-shadow: 0 0 35px rgba(255,255,255,0.55), 0 0 65px rgba(245,197,24,0.4), 0 0 100px rgba(138,43,226,0.3); } }
-.avatar-orbit { position: absolute; top: 50%; left: 50%; border: 1px solid rgba(255,255,255,0.06); border-radius: 50%; pointer-events: none; transform-style: preserve-3d; }
-.orbit-front { z-index: 5; border-color: rgba(255,255,255,0.12); }
-.avatar-moon { position: absolute; border-radius: 50%; }
-.moon1 { width: 7px; height: 7px; top: -3.5px; left: 50%; margin-left: -3.5px; background: #fff; box-shadow: 0 0 4px #00BFFF, 0 0 10px #00BFFF, 0 0 18px rgba(0,191,255,0.7), 0 0 28px rgba(0,191,255,0.3); }
-.moon2 { width: 5px; height: 5px; top: -2.5px; left: 50%; margin-left: -2.5px; background: #fff; box-shadow: 0 0 3px #FF6B6B, 0 0 8px #FF6B6B, 0 0 15px rgba(255,107,107,0.7), 0 0 24px rgba(255,107,107,0.3); }
-.moon3 { width: 4px; height: 4px; top: -2px; left: 50%; margin-left: -2px; background: #fff; box-shadow: 0 0 3px #f5c518, 0 0 7px #f5c518, 0 0 12px rgba(245,197,24,0.7), 0 0 20px rgba(245,197,24,0.3); }
-.moon4 { width: 3px; height: 3px; top: -1.5px; left: 50%; margin-left: -1.5px; background: #fff; box-shadow: 0 0 2px #00FF88, 0 0 6px #00FF88, 0 0 10px rgba(0,255,136,0.7), 0 0 16px rgba(0,255,136,0.3); }
-@keyframes spin1 { 100% { transform: translate(-50%, -50%) rotateX(5deg) rotate(360deg); } }
-@keyframes spin2 { 100% { transform: translate(-50%, -50%) rotateX(-8deg) rotate(360deg); } }
-@keyframes spin3 { 100% { transform: translate(-50%, -50%) rotateY(6deg) rotate(-360deg); } }
-@keyframes spin4 { 100% { transform: translate(-50%, -50%) rotateX(10deg) rotateY(-5deg) rotate(360deg); } }
-@keyframes zSwitch1 { 0%, 25% { z-index: 5; } 35%, 85% { z-index: 0; } 95%, 100% { z-index: 5; } }
-@keyframes zSwitch2 { 0%, 20% { z-index: 5; } 30%, 80% { z-index: 0; } 90%, 100% { z-index: 5; } }
-@keyframes zSwitch3 { 0%, 35% { z-index: 5; } 45%, 75% { z-index: 0; } 85%, 100% { z-index: 5; } }
-@keyframes zSwitch4 { 0%, 15% { z-index: 5; } 25%, 70% { z-index: 0; } 80%, 100% { z-index: 5; } }
+
+.avatar-jet-top, .avatar-jet-bottom { position: absolute; left: 50%; transform: translateX(-50%); width: 4px; background: linear-gradient(to top, rgba(0,191,255,0.9), rgba(138,43,226,0.6), transparent); pointer-events: none; z-index: 2; animation: jetPulse 2s ease-in-out infinite; }
+.avatar-jet-top { top: -20px; height: 28px; border-radius: 2px 2px 0 0; }
+.avatar-jet-bottom { bottom: -20px; height: 28px; border-radius: 0 0 2px 2px; background: linear-gradient(to bottom, rgba(0,191,255,0.9), rgba(138,43,226,0.6), transparent); }
+@keyframes jetPulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+
+.avatar-disk { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 18px; border: 2px solid rgba(0,191,255,0.4); border-radius: 50%; pointer-events: none; z-index: 1; box-shadow: 0 0 10px rgba(0,191,255,0.3), 0 0 20px rgba(138,43,226,0.2); animation: diskGlow 3s ease-in-out infinite; }
+@keyframes diskGlow { 0%, 100% { box-shadow: 0 0 10px rgba(0,191,255,0.3), 0 0 20px rgba(138,43,226,0.2); } 50% { box-shadow: 0 0 18px rgba(0,191,255,0.6), 0 0 35px rgba(138,43,226,0.4); } }
+
+.avatar-particle { position: absolute; border-radius: 50%; background: #fff; pointer-events: none; z-index: 4; }
+.p1 { width: 3px; height: 3px; box-shadow: 0 0 6px #00BFFF, 0 0 12px #00BFFF; animation: particle1 1.8s linear infinite; }
+.p2 { width: 2px; height: 2px; box-shadow: 0 0 5px #8B00FF, 0 0 10px #8B00FF; animation: particle2 2.4s linear infinite; }
+.p3 { width: 2px; height: 2px; box-shadow: 0 0 4px #f5c518, 0 0 8px #f5c518; animation: particle3 3s linear infinite; }
+.p4 { width: 3px; height: 3px; box-shadow: 0 0 5px #fff, 0 0 10px #00BFFF; animation: particle4 2.1s linear infinite; }
+
+@keyframes particle1 { 0% { top: 0; left: 2px; opacity: 1; } 40% { top: 28px; left: 50px; opacity: 0.8; } 60% { top: 40px; left: 58px; opacity: 0.3; } 80% { top: 28px; left: 50px; opacity: 0.8; } 100% { top: 0; left: 2px; opacity: 1; } }
+@keyframes particle2 { 0% { top: 64px; left: 2px; opacity: 1; } 40% { top: 36px; left: 55px; opacity: 0.8; } 60% { top: 24px; left: 62px; opacity: 0.3; } 80% { top: 36px; left: 55px; opacity: 0.8; } 100% { top: 64px; left: 2px; opacity: 1; } }
+@keyframes particle3 { 0% { top: 8px; left: 60px; opacity: 1; } 40% { top: 28px; left: 8px; opacity: 0.8; } 60% { top: 40px; left: 2px; opacity: 0.3; } 80% { top: 28px; left: 8px; opacity: 0.8; } 100% { top: 8px; left: 60px; opacity: 1; } }
+@keyframes particle4 { 0% { top: 55px; left: 58px; opacity: 1; } 40% { top: 36px; left: 6px; opacity: 0.8; } 60% { top: 20px; left: 2px; opacity: 0.3; } 80% { top: 36px; left: 6px; opacity: 0.8; } 100% { top: 55px; left: 58px; opacity: 1; } }
 
 .avatar-mini { width: 42px !important; height: 42px !important; border-radius: 50%; object-fit: cover; margin-right: 6px; vertical-align: middle; }
 .avatar-mini-creator { border: 2px solid #8B00FF; box-shadow: 0 0 12px rgba(138,43,226,0.6); }
@@ -154,7 +153,6 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
 .announce-expiry, .thought-expiry { font-size: 10px; color: #aaa; margin-top: 4px; }
 @media (max-width: 768px) {
   .avatar-wrapper { perspective: none; transform-style: flat; }
-  .avatar-orbit { transform-style: flat; }
   .main-content { -webkit-transform: translateZ(0); transform: translateZ(0); padding: 8px 8px; }
   .app-container { -webkit-transform: translateZ(0); }
   #chat, .stat-card, .card { transform: translateZ(0); -webkit-transform: translateZ(0); }
@@ -246,32 +244,12 @@ document.addEventListener('mousemove',function(e){
 
 function createSatellites(){
   var wrapper=document.getElementById('avatarWrapper');if(!wrapper)return;
-  var old=wrapper.querySelectorAll('.avatar-orbit,.avatar-halo,.avatar-atmosphere');old.forEach(function(el){el.remove()});
-  var atmos=document.createElement('div');atmos.className='avatar-atmosphere';wrapper.appendChild(atmos);
-  var halo=document.createElement('div');halo.className='avatar-halo';wrapper.appendChild(halo);
-
-  // Планета 1 — Голубой гигант (всегда перед звездой)
-  var o1=document.createElement('div');o1.className='avatar-orbit orbit-front';
-  o1.style.width='52px';o1.style.height='52px';o1.style.animation='spin1 2.6s linear infinite';
-  var m1=document.createElement('div');m1.className='avatar-moon moon1';m1.style.transform='translateY(-26px)';o1.appendChild(m1);wrapper.appendChild(o1);
-
-  // Планета 2 — Красный карлик (пересекает звезду)
-  var o2=document.createElement('div');o2.className='avatar-orbit';
-  o2.style.width='50px';o2.style.height='50px';o2.style.animation='spin2 3.8s linear infinite';
-  var m2=document.createElement('div');m2.className='avatar-moon moon2';m2.style.transform='translateY(-25px)';
-  m2.style.animation='zSwitch1 3.8s linear infinite';o2.appendChild(m2);wrapper.appendChild(o2);
-
-  // Планета 3 — Золотой астероид (пересекает)
-  var o3=document.createElement('div');o3.className='avatar-orbit';
-  o3.style.width='48px';o3.style.height='48px';o3.style.animation='spin3 3.2s linear infinite';
-  var m3=document.createElement('div');m3.className='avatar-moon moon3';m3.style.transform='translateY(-24px)';
-  m3.style.animation='zSwitch2 3.2s linear infinite';o3.appendChild(m3);wrapper.appendChild(o3);
-
-  // Планета 4 — Изумрудная крошка (пересекает)
-  var o4=document.createElement('div');o4.className='avatar-orbit';
-  o4.style.width='46px';o4.style.height='46px';o4.style.animation='spin4 4.4s linear infinite';
-  var m4=document.createElement('div');m4.className='avatar-moon moon4';m4.style.transform='translateY(-23px)';
-  m4.style.animation='zSwitch3 4.4s linear infinite';o4.appendChild(m4);wrapper.appendChild(o4);
+  var old=wrapper.querySelectorAll('.avatar-jet-top,.avatar-jet-bottom,.avatar-disk,.avatar-particle,.avatar-halo');
+  old.forEach(function(el){el.remove()});
+  var jt=document.createElement('div');jt.className='avatar-jet-top';wrapper.appendChild(jt);
+  var jb=document.createElement('div');jb.className='avatar-jet-bottom';wrapper.appendChild(jb);
+  var disk=document.createElement('div');disk.className='avatar-disk';wrapper.appendChild(disk);
+  for(var i=1;i<=4;i++){var p=document.createElement('div');p.className='avatar-particle p'+i;wrapper.appendChild(p)}
 }
 
 document.addEventListener('click',function(e){if(openDropdown&&!e.target.closest('.msg-dropdown')&&!e.target.closest('.msg-menu-btn')){openDropdown.classList.remove('show');openDropdown=null}});
