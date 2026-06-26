@@ -51,31 +51,32 @@ button { border: none; font-weight: bold; cursor: pointer; border-radius: 12px; 
 .btn-gold { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; padding: 14px; font-size: 16px; margin: 4px 0; width: 100%; }
 button:disabled { opacity: 0.5; cursor: default; }
 
-/* ГИРОСКОП — только частицы, без рам */
+/* ГИРОСКОП — частицы с дуговым шлейфом */
 .avatar-wrapper { position: relative; display: inline-block; width: 64px; height: 64px; flex-shrink: 0; perspective: 300px; transform-style: preserve-3d; }
 .avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; cursor: pointer; position: absolute; top: 14px; left: 14px; z-index: 10; display: block; box-shadow: 0 0 8px #fff, 0 0 18px #fff, 0 0 35px rgba(0,191,255,0.9), 0 0 65px rgba(0,191,255,0.5), 0 0 100px rgba(138,43,226,0.3); }
 .avatar-creator { border-radius: 50%; overflow: hidden; }
 
 /* Орбиты-невидимки */
 .gyro-orbit { position: absolute; top: 50%; left: 50%; border-radius: 50%; pointer-events: none; transform-style: preserve-3d; }
-/* Частицы */
+/* Частица */
 .gyro-particle { position: absolute; border-radius: 50%; pointer-events: none; background: #fff; box-shadow: 0 0 4px #fff, 0 0 10px #00BFFF, 0 0 20px #00BFFF; }
-.gyro-particle::after { content: ''; position: absolute; top: 50%; height: 2px; background: linear-gradient(to right, rgba(0,191,255,0.8), transparent); border-radius: 1px; transform-origin: left center; opacity: 0.55; }
+/* Дуговой шлейф через border */
+.gyro-particle::after { content: ''; position: absolute; top: 50%; left: 50%; width: 28px; height: 28px; border: 1.5px solid transparent; border-top-color: rgba(0,191,255,0.7); border-right-color: rgba(0,191,255,0.4); border-radius: 50%; transform: translate(-50%, -50%) rotate(-45deg); opacity: 0.6; }
 
 /* Орбита 1 — горизонтальная */
 .o1 { width: 58px; height: 58px; margin-top: -29px; margin-left: -29px; animation: spin1 2.5s linear infinite; }
 .o1 .gyro-particle { width: 5px; height: 5px; top: -2.5px; left: 50%; margin-left: -2.5px; }
-.o1 .gyro-particle::after { width: 28px; transform: translateY(-50%) rotate(180deg); }
+.o1 .gyro-particle::after { width: 30px; height: 30px; }
 
 /* Орбита 2 — наклон X */
 .o2 { width: 56px; height: 56px; margin-top: -28px; margin-left: -28px; animation: spin2 3.2s linear infinite; }
 .o2 .gyro-particle { width: 4px; height: 4px; top: -2px; left: 50%; margin-left: -2px; }
-.o2 .gyro-particle::after { width: 24px; transform: translateY(-50%) rotate(180deg); }
+.o2 .gyro-particle::after { width: 26px; height: 26px; }
 
 /* Орбита 3 — наклон Y */
 .o3 { width: 54px; height: 54px; margin-top: -27px; margin-left: -27px; animation: spin3 3.8s linear infinite; }
 .o3 .gyro-particle { width: 3px; height: 3px; top: -1.5px; left: 50%; margin-left: -1.5px; }
-.o3 .gyro-particle::after { width: 20px; transform: translateY(-50%) rotate(180deg); }
+.o3 .gyro-particle::after { width: 22px; height: 22px; }
 
 @keyframes spin1 { 100% { transform: rotate(360deg); } }
 @keyframes spin2 { 100% { transform: rotateX(60deg) rotate(360deg); } }
