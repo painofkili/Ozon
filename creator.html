@@ -46,15 +46,44 @@ button { border: none; font-weight: bold; cursor: pointer; border-radius: 12px; 
 button:disabled { opacity: 0.5; cursor: default; }
 
 /* АВАТАРКА С МОЛНИЯМИ */
-.avatar-wrapper { position: relative; display: inline-block; width: 56px; height: 56px; }
-.avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; cursor: pointer; position: relative; z-index: 2; }
+.avatar-wrapper { position: relative; display: inline-block; width: 56px; height: 56px; flex-shrink: 0; }
+.avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; cursor: pointer; position: relative; z-index: 2; display: block; }
 .avatar-creator { border: 3px solid transparent; background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); border-radius: 50%; overflow: hidden; }
 .avatar-wrapper::before,
-.avatar-wrapper::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 140%; height: 140%; border-radius: 50%; pointer-events: none; z-index: 0; }
-.avatar-wrapper::before { background: radial-gradient(circle, rgba(245,197,24,0.9) 0%, transparent 60%); animation: lightning1 3s ease-in-out infinite; opacity: 0; }
-.avatar-wrapper::after { background: radial-gradient(circle, rgba(138,43,226,0.9) 0%, transparent 60%); animation: lightning2 3s ease-in-out infinite; opacity: 0; }
-@keyframes lightning1 { 0%,80%,100% { opacity:0;transform:translate(-50%,-50%) scale(0.5) } 82% { opacity:0.7;transform:translate(-50%,-50%) scale(1.7) } 84% { opacity:1;transform:translate(-50%,-50%) scale(2.0) } 86% { opacity:0.4;transform:translate(-50%,-50%) scale(1.2) } 88% { opacity:0.9;transform:translate(-50%,-50%) scale(1.8) } 90% { opacity:0;transform:translate(-50%,-50%) scale(1.0) } }
-@keyframes lightning2 { 0%,40%,100% { opacity:0;transform:translate(-50%,-50%) scale(0.5) } 42% { opacity:0.7;transform:translate(-50%,-50%) scale(1.7) } 44% { opacity:1;transform:translate(-50%,-50%) scale(2.1) } 46% { opacity:0.3;transform:translate(-50%,-50%) scale(1.1) } 48% { opacity:0.9;transform:translate(-50%,-50%) scale(1.9) } 50% { opacity:0;transform:translate(-50%,-50%) scale(1.0) } }
+.avatar-wrapper::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none; z-index: 0; }
+.avatar-wrapper::before {
+  width: 160%; height: 160%;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(245,197,24,0.9) 10deg, transparent 20deg, transparent 180deg, rgba(245,197,24,0.9) 190deg, transparent 200deg);
+  animation: lightning1 2.5s ease-in-out infinite;
+  opacity: 0;
+}
+.avatar-wrapper::after {
+  width: 170%; height: 170%;
+  background: conic-gradient(from 120deg, transparent 0deg, rgba(138,43,226,0.9) 15deg, transparent 25deg, transparent 180deg, rgba(138,43,226,0.9) 195deg, transparent 210deg);
+  animation: lightning2 2.5s ease-in-out infinite;
+  opacity: 0;
+}
+@keyframes lightning1 {
+  0%,78%,100% { opacity:0;transform:translate(-50%,-50%) scale(0.6) rotate(0deg) }
+  80% { opacity:0.6;transform:translate(-50%,-50%) scale(1.0) rotate(5deg) }
+  82% { opacity:1;transform:translate(-50%,-50%) scale(1.1) rotate(-5deg) }
+  84% { opacity:0.5;transform:translate(-50%,-50%) scale(0.9) rotate(3deg) }
+  86% { opacity:0.9;transform:translate(-50%,-50%) scale(1.05) rotate(-2deg) }
+  88% { opacity:0;transform:translate(-50%,-50%) scale(1.0) rotate(0deg) }
+}
+@keyframes lightning2 {
+  0%,38%,100% { opacity:0;transform:translate(-50%,-50%) scale(0.6) rotate(0deg) }
+  40% { opacity:0.6;transform:translate(-50%,-50%) scale(1.0) rotate(-5deg) }
+  42% { opacity:1;transform:translate(-50%,-50%) scale(1.15) rotate(5deg) }
+  44% { opacity:0.4;transform:translate(-50%,-50%) scale(0.85) rotate(-3deg) }
+  46% { opacity:0.9;transform:translate(-50%,-50%) scale(1.08) rotate(2deg) }
+  48% { opacity:0;transform:translate(-50%,-50%) scale(1.0) rotate(0deg) }
+}
+.avatar-wrapper { animation: avatarPulse 2.5s ease-in-out infinite; }
+@keyframes avatarPulse {
+  0%,100% { filter: brightness(1) drop-shadow(0 0 8px rgba(138,43,226,0.5)); }
+  50% { filter: brightness(1.05) drop-shadow(0 0 18px rgba(245,197,24,0.7)); }
+}
 
 .avatar-mini { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; margin-right: 5px; vertical-align: middle; }
 .avatar-mini-creator { border: 2px solid #8B00FF; box-shadow: 0 0 12px rgba(138, 43, 226, 0.6); }
@@ -319,16 +348,21 @@ function creatorLogin(){
     document.getElementById('login').style.display='none';document.getElementById('app').style.display='flex';
     chatOpened=!0;lastChatTimestamp=Date.now();
     updateProfileUI();loadChat();loadPinned();loadAnnounce();loadThought();
-    db.ref('activeShifts/'+_user.name).once('value',function(s){if(s.exists()&&s.val().active){onShift=!0;document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block'}});
+    // Восстановление состояния смены
+    db.ref('activeShifts/'+_user.name).once('value',function(s){
+      if(s.exists()&&s.val().active){onShift=!0;document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block';}
+    });
     buildCarousel();
   })}else{alert('Неверный пароль!')}
 }
 var saved=localStorage.getItem('creator_user');
-if(saved){_user=JSON.parse(saved);document.getElementById('login').style.display='none';document.getElementById('app').style.display='flex';chatOpened=!0;lastChatTimestamp=Date.now();updateProfileUI();loadChat();loadPinned();loadAnnounce();loadThought();buildCarousel();}
+if(saved){_user=JSON.parse(saved);document.getElementById('login').style.display='none';document.getElementById('app').style.display='flex';chatOpened=!0;lastChatTimestamp=Date.now();updateProfileUI();loadChat();loadPinned();loadAnnounce();loadThought();
+  db.ref('activeShifts/'+_user.name).once('value',function(s){if(s.exists()&&s.val().active){onShift=!0;document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block';}});
+  buildCarousel();}
 
 function updateProfileUI(){document.getElementById('uname').textContent=_user.name;document.getElementById('upunkt').textContent=_user.punkt||'?';
   var pa=document.getElementById('profileAvatar');
-  if(_user.avatar){pa.src=_user.avatar;pa.style.display='inline';}else{pa.style.display='none';}
+  if(_user.avatar){pa.src=_user.avatar;pa.style.display='block';}else{pa.style.display='none';}
   pa.onclick=function(){viewPhoto(_user.avatar)};}
 
 function showTab(tab){
@@ -370,7 +404,7 @@ function saveSettings(){
 }
 function previewNewAvatar(){var f=document.getElementById('newAvatar').files[0];if(!f)return;var r=new FileReader();r.onload=function(e){newAvatarData=e.target.result;document.getElementById('newAvatarPreview').innerHTML='<img class="avatar" src="'+newAvatarData+'">'};r.readAsDataURL(f)}
 function previewPhotos(){photoBase64=[];document.getElementById('photoPreviews').innerHTML='';var files=document.getElementById('photos').files;for(var i=0;i<Math.min(files.length,5);i++){(function(file){var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var c=document.createElement('canvas'),mw=400,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);var thumb=c.toDataURL('image/jpeg',0.6);photoBase64.push({full:e.target.result,thumb:thumb});var pv=document.createElement('img');pv.src=thumb;document.getElementById('photoPreviews').appendChild(pv)};img.src=e.target.result};r.readAsDataURL(file)})(files[i])}}
-function startShift(){onShift=!0;var t=new Date().toLocaleTimeString('ru-RU');db.ref('activeShifts/'+_user.name).set({active:!0,startTime:t});document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block';db.ref('chat').push({user:'🌌 '+_user.name,text:'🔵 Пункт '+_user.punkt+' на смене! ('+t+')',timestamp:Date.now()})}
+function startShift(){onShift=!0;var t=new Date().toLocaleTimeString('ru-RU');db.ref('activeShifts/'+_user.name).set({active:!0,startTime:t,punct:_user.punkt});document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block';db.ref('chat').push({user:'🌌 '+_user.name,text:'🔵 Пункт '+_user.punkt+' на смене! ('+t+')',timestamp:Date.now()})}
 function endShift(){var tf=document.getElementById('timeFrom').value||'9',tt=document.getElementById('timeTo').value||'21',tv=parseInt(document.getElementById('tov').value)||0,hh=parseInt(tt)-parseInt(tf),ph=photoBase64.slice(0,5);db.ref('shifts/'+_user.name+'_'+Date.now()).set({user:_user.name,punkt:_user.punkt||'49',date:new Date().toLocaleDateString('ru-RU'),timeFrom:tf,timeTo:tt,hours:hh,tovar:tv,photos:ph,paid:!1,timestamp:new Date().toISOString()});db.ref('chat').push({user:'🌌 '+_user.name,text:'🔴 Пункт '+_user.punkt+' с '+tf+' до '+tt+', товаров: '+tv,timestamp:Date.now(),photos:ph});db.ref('activeShifts/'+_user.name).remove();onShift=!1;document.getElementById('shift').style.display='none';document.getElementById('onShiftBtn').style.display='none';document.getElementById('startBtn').style.display='block';document.getElementById('tov').value='';document.getElementById('photos').value='';document.getElementById('photoPreviews').innerHTML='';photoBase64=[]}
 function sendPhoto(){var files=document.getElementById('chatPhoto').files;if(!files.length||!_user)return;var photos=[],count=Math.min(files.length,5);for(var i=0;i<count;i++){(function(file){var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var c=document.createElement('canvas'),mw=300,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);var thumb=c.toDataURL('image/jpeg',0.6);photos.push({full:e.target.result,thumb:thumb});if(photos.length===count){var ref=privateChatWith?getPrivateChatRef():db.ref('chat');ref.push({user:'🌌 '+_user.name,text:'📷 '+count+' фото',photos:photos,timestamp:Date.now(),creator:!0,likes:{}})}};img.src=e.target.result};r.readAsDataURL(file)})(files[i])}document.getElementById('chatPhoto').value=''}
 function logout(){_user=null;onShift=!1;chatOpened=!1;localStorage.removeItem('creator_user');document.getElementById('app').style.display='none';document.getElementById('login').style.display='flex'}
