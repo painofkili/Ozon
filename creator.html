@@ -45,23 +45,29 @@ button { border: none; font-weight: bold; cursor: pointer; border-radius: 12px; 
 .btn-gold { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; padding: 14px; font-size: 16px; margin: 4px 0; width: 100%; }
 button:disabled { opacity: 0.5; cursor: default; }
 
-/* АВАТАРКА С МОЛНИЯМИ */
+/* АВАТАРКА С КОЛЬЦАМИ-МОЛНИЯМИ */
 .avatar-wrapper { position: relative; display: inline-block; width: 56px; height: 56px; flex-shrink: 0; }
 .avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; cursor: pointer; position: relative; z-index: 2; display: block; }
 .avatar-creator { border: 3px solid transparent; background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); border-radius: 50%; overflow: hidden; }
+
 .avatar-wrapper::before,
-.avatar-wrapper::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none; z-index: 0; }
-.avatar-wrapper::before {
-  width: 160%; height: 160%;
-  background: conic-gradient(from 0deg, transparent 0deg, rgba(245,197,24,0.9) 10deg, transparent 20deg, transparent 180deg, rgba(245,197,24,0.9) 190deg, transparent 200deg);
-  animation: lightning1 2.5s ease-in-out infinite;
-  opacity: 0;
-}
 .avatar-wrapper::after {
-  width: 170%; height: 170%;
-  background: conic-gradient(from 120deg, transparent 0deg, rgba(138,43,226,0.9) 15deg, transparent 25deg, transparent 180deg, rgba(138,43,226,0.9) 195deg, transparent 210deg);
-  animation: lightning2 2.5s ease-in-out infinite;
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border: 3px solid #8B00FF;
+  border-radius: 50%;
+  animation: pulseRing 2s ease-out infinite;
   opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.avatar-wrapper::after { animation-delay: 1s; }
+
+@keyframes pulseRing {
+  0% { transform: scale(0.9); opacity: 1; box-shadow: 0 0 15px #8B00FF, 0 0 30px #8B00FF; }
+  50% { opacity: 0.6; box-shadow: 0 0 25px #8B00FF, 0 0 50px #8B00FF, 0 0 70px #f5c518; }
+  100% { transform: scale(1.6); opacity: 0; box-shadow: 0 0 5px #8B00FF; }
 }
 @keyframes lightning1 {
   0%,78%,100% { opacity:0;transform:translate(-50%,-50%) scale(0.6) rotate(0deg) }
