@@ -11,7 +11,7 @@ body { font-family: 'Trebuchet MS', Helvetica, sans-serif; color: #eee; padding:
 
 /* ФОН */
 .bg { width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; background: #0a0a1a; z-index: -1000; }
-.z-1, .z-2, .z-3 { position: absolute; width: 150vw; height: 150vw; left: -50vw; top: -50vw; transform-origin: center; }
+.z-1, .z-2, .z-3 { position: absolute; width: 150vw; height: 150vw; left: -50vw; top: -50vw; transform-origin: center; transition: transform 0.1s ease-out; }
 .tile { overflow: hidden; position: absolute; opacity: 0; top: 0; left: 0; width: 100%; height: 100%; background-repeat: repeat; background-size: 512px 512px; }
 .top-left { background-image: url("https://raw.githubusercontent.com/painofkili/ozon/main/topleft.png"); }
 .top-right { background-image: url("https://raw.githubusercontent.com/painofkili/ozon/main/topright.png"); }
@@ -57,49 +57,58 @@ button { border: none; font-weight: bold; cursor: pointer; border-radius: 12px; 
 .btn-gold { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; padding: 14px; font-size: 16px; margin: 4px 0; width: 100%; }
 button:disabled { opacity: 0.5; cursor: default; }
 
-/* АВАТАРКА С ОРБИТОЙ И СПУТНИКОМ */
+/* АВАТАРКА С ОРЕОЛОМ И ТРЕМЯ СПУТНИКАМИ */
 .avatar-wrapper { position: relative; display: inline-block; width: 56px; height: 56px; flex-shrink: 0; }
 .avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; cursor: pointer; position: relative; z-index: 2; display: block; }
 .avatar-creator { border-radius: 50%; overflow: hidden; }
 
-/* Орбита */
+/* Белый ореол вокруг аватарки */
 .avatar-wrapper::before {
   content: "";
   position: absolute;
-  top: 50%; left: 50%;
-  width: 80px; height: 80px;
-  margin-top: -40px; margin-left: -40px;
-  border: 1px solid rgba(255,255,255,0.15);
+  inset: -8px;
   border-radius: 50%;
-  animation: orbitSpin 4s linear infinite;
+  background: transparent;
+  box-shadow: 0 0 15px rgba(255,255,255,0.3), 0 0 30px rgba(255,255,255,0.1);
+  animation: haloGlow 3s ease-in-out infinite;
   pointer-events: none;
-  z-index: 0;
+  z-index: 1;
+}
+@keyframes haloGlow {
+  0%, 100% { box-shadow: 0 0 15px rgba(255,255,255,0.3), 0 0 30px rgba(255,255,255,0.1); }
+  50% { box-shadow: 0 0 25px rgba(255,255,255,0.5), 0 0 50px rgba(255,255,255,0.2); }
 }
 
-/* Спутник */
-.avatar-wrapper::after {
-  content: "";
+/* Три спутника — через доп. элементы в JS */
+.avatar-satellite {
   position: absolute;
-  top: 50%; left: 50%;
-  width: 8px; height: 8px;
-  margin-top: -4px; margin-left: -4px;
-  background: #f5c518;
   border-radius: 50%;
-  box-shadow: 0 0 10px #f5c518, 0 0 20px #f5c518, 0 0 40px rgba(245,197,24,0.5);
-  animation: orbitSpin 4s linear infinite, satelliteGlow 2s ease-in-out infinite;
   pointer-events: none;
   z-index: 3;
 }
+.sat1 { width: 5px; height: 5px; background: #fff; box-shadow: 0 0 8px #fff, 0 0 20px #00BFFF, 0 0 35px rgba(0,191,255,0.7); animation: orbit1 3s linear infinite; }
+.sat2 { width: 4px; height: 4px; background: #fff; box-shadow: 0 0 6px #fff, 0 0 15px #8B00FF, 0 0 25px rgba(138,43,226,0.7); animation: orbit2 4.5s linear infinite; }
+.sat3 { width: 3px; height: 3px; background: #fff; box-shadow: 0 0 5px #fff, 0 0 12px #f5c518, 0 0 20px rgba(245,197,24,0.7); animation: orbit3 3.8s linear infinite reverse; }
 
-@keyframes orbitSpin {
-  0% { transform: rotate(0deg) translateX(40px) rotate(0deg); }
-  100% { transform: rotate(360deg) translateX(40px) rotate(-360deg); }
+@keyframes orbit1 {
+  0% { transform: rotate(0deg) translateX(36px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(36px) rotate(-360deg); }
+}
+@keyframes orbit2 {
+  0% { transform: rotate(60deg) translateX(42px) rotate(-60deg); }
+  100% { transform: rotate(420deg) translateX(42px) rotate(-420deg); }
+}
+@keyframes orbit3 {
+  0% { transform: rotate(180deg) translateX(30px) rotate(-180deg); }
+  100% { transform: rotate(-180deg) translateX(30px) rotate(180deg); }
 }
 
-@keyframes satelliteGlow {
-  0%, 100% { box-shadow: 0 0 10px #f5c518, 0 0 20px #f5c518, 0 0 40px rgba(245,197,24,0.5); }
-  50% { box-shadow: 0 0 15px #fff, 0 0 30px #f5c518, 0 0 60px rgba(245,197,24,0.8); }
-}
+.avatar-mini { width: 24px !important; height: 24px !important; border-radius: 50%; object-fit: cover; margin-right: 5px; vertical-align: middle; }
+.avatar-mini-creator { border: 2px solid #8B00FF; box-shadow: 0 0 12px rgba(138, 43, 226, 0.6); }
+.profile-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; overflow: visible; padding: 8px 0; }
+.creator-badge { font-size: 13px; font-weight: bold; padding: 4px 12px; border-radius: 14px; background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; animation: badgePulse 2s ease-in-out infinite; display: inline-block; }
+@keyframes badgePulse { 0%, 100% { box-shadow: 0 0 10px rgba(245,197,24,0.5); } 50% { box-shadow: 0 0 25px rgba(138,43,226,0.8); } }
+.creator-name { background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
 
 .tabs { display: flex; gap: 5px; margin: 10px 0; overflow-x: auto; scrollbar-width: none; }
 .tabs::-webkit-scrollbar { display: none; }
@@ -232,7 +241,7 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
     <div id="announceBlock" class="announce-block" style="display:none"></div>
     <div id="thoughtBlock" class="thought-block" style="display:none"></div>
     <div class="profile-row">
-      <div class="avatar-wrapper">
+      <div class="avatar-wrapper" id="avatarWrapper">
         <img id="profileAvatar" class="avatar avatar-creator" src="" style="display:none" crossorigin="anonymous">
       </div>
       <div style="flex:1"><b class="creator-name" style="font-size:18px"><span id="uname"></span></b> <span class="creator-badge">🌌 Создатель</span><br><span style="font-size:12px;color:#aaa">📍 Пункт <span id="upunkt"></span></span></div>
@@ -287,6 +296,31 @@ var VK_TOKEN="vk1.a.1ccqIy8pmM0W_RnIymI9XOMvA6ILX5yxNfZZAiF5HHBdjHK_vOAimgsyljky
 if('Notification' in window && Notification.permission==='default'){Notification.requestPermission()}
 function notifyMe(title,body){if('Notification' in window && Notification.permission==='granted'){try{new Notification(title,{body:body,icon:'https://raw.githubusercontent.com/painofkili/ozon/main/на%20смену.png'})}catch(e){}}}
 function sendVkNotify(vkId,msg){if(!vkId)return;fetch('https://api.vk.com/method/messages.send?v=5.131&access_token='+VK_TOKEN+'&user_id='+vkId+'&random_id='+Date.now()+'&message='+encodeURIComponent(msg))}
+
+// Параллакс фона
+document.addEventListener('mousemove',function(e){
+  var x=e.clientX/window.innerWidth-0.5;
+  var y=e.clientY/window.innerHeight-0.5;
+  var z1=document.querySelector('.z-1');
+  var z2=document.querySelector('.z-2');
+  var z3=document.querySelector('.z-3');
+  if(z1)z1.style.transform='translate('+(x*20)+'px,'+(y*20)+'px)';
+  if(z2)z2.style.transform='translate('+(x*35)+'px,'+(y*35)+'px) rotate(60deg)';
+  if(z3)z3.style.transform='translate('+(x*50)+'px,'+(y*50)+'px) rotate(120deg)';
+});
+
+// Спутники
+function createSatellites(){
+  var wrapper=document.getElementById('avatarWrapper');
+  if(!wrapper)return;
+  var existing=wrapper.querySelectorAll('.avatar-satellite');
+  existing.forEach(function(el){el.remove()});
+  for(var i=1;i<=3;i++){
+    var sat=document.createElement('div');
+    sat.className='avatar-satellite sat'+i;
+    wrapper.appendChild(sat);
+  }
+}
 
 document.addEventListener('click',function(e){if(openDropdown&&!e.target.closest('.msg-dropdown')&&!e.target.closest('.msg-menu-btn')){openDropdown.classList.remove('show');openDropdown=null}});
 
@@ -380,18 +414,18 @@ function creatorLogin(){
     chatOpened=!0;lastChatTimestamp=Date.now();
     updateProfileUI();loadChat();loadPinned();loadAnnounce();loadThought();
     db.ref('activeShifts/'+_user.name).once('value',function(s){if(s.exists()&&s.val().active){onShift=!0;document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block';}});
-    buildCarousel();
+    buildCarousel();createSatellites();
   })}else{alert('Неверный пароль!')}
 }
 var saved=localStorage.getItem('creator_user');
 if(saved){_user=JSON.parse(saved);document.getElementById('login').style.display='none';document.getElementById('app').style.display='flex';chatOpened=!0;lastChatTimestamp=Date.now();updateProfileUI();loadChat();loadPinned();loadAnnounce();loadThought();
   db.ref('activeShifts/'+_user.name).once('value',function(s){if(s.exists()&&s.val().active){onShift=!0;document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block';}});
-  buildCarousel();}
+  buildCarousel();createSatellites();}
 
 function updateProfileUI(){document.getElementById('uname').textContent=_user.name;document.getElementById('upunkt').textContent=_user.punkt||'?';
   var pa=document.getElementById('profileAvatar');
   if(_user.avatar){pa.src=_user.avatar;pa.style.display='block';}else{pa.style.display='none';}
-  pa.onclick=function(){viewPhoto(_user.avatar)};}
+  pa.onclick=function(){viewPhoto(_user.avatar)};createSatellites();}
 
 function showTab(tab){
   var tabs={shift:'shiftTab',stats:'statsTab',history:'historyTab',notify:'notifyTab',hall:'hallTab',creator:'creatorTab'};
