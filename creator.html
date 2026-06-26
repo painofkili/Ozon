@@ -393,6 +393,7 @@ function loadChat(){
     chatEl.innerHTML=h;if(wasAtBottom||document.activeElement===document.getElementById('chatMsgInput'))chatEl.scrollTop=chatEl.scrollHeight
   })
 }
+}
 function toggleMsgDropdown(e,key,type){e.stopPropagation();if(openDropdown)openDropdown.classList.remove('show');var dd=document.querySelector('[data-dropdown="'+key+'"]');if(!dd)return;if(dd===openDropdown){dd.classList.remove('show');openDropdown=null;return}dd.classList.add('show');openDropdown=dd}
 function likeMsg(key){if(!_user)return;var ref=privateChatWith?getPrivateChatRef().child(key+'/likes'):db.ref('chat/'+key+'/likes');ref.once('value',function(s){var likes=s.val()||{},myKey=_user.name,likeType=_user.role==='creator'?'creator':'user';if(likes[myKey])delete likes[myKey];else likes[myKey]=likeType;ref.set(likes)});if(openDropdown){openDropdown.classList.remove('show');openDropdown=null}}
 function viewPhoto(url){document.getElementById('photoViewerImg').src=url;document.getElementById('photoViewer').style.display='flex'}
