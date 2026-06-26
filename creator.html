@@ -57,53 +57,73 @@ button { border: none; font-weight: bold; cursor: pointer; border-radius: 12px; 
 .btn-gold { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; padding: 14px; font-size: 16px; margin: 4px 0; width: 100%; }
 button:disabled { opacity: 0.5; cursor: default; }
 
-/* АВАТАРКА С ОРЕОЛОМ И ТРЕМЯ СПУТНИКАМИ */
-.avatar-wrapper { position: relative; display: inline-block; width: 56px; height: 56px; flex-shrink: 0; }
-.avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; cursor: pointer; position: relative; z-index: 2; display: block; }
+/* АВАТАРКА С ОРЕОЛОМ И СПУТНИКАМИ */
+.avatar-wrapper { position: relative; display: inline-block; width: 56px; height: 56px; flex-shrink: 0; z-index: 0; }
+.avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; cursor: pointer; position: relative; z-index: 3; display: block; }
 .avatar-creator { border-radius: 50%; overflow: hidden; }
 
-/* Белый ореол вокруг аватарки */
+/* Ореол */
 .avatar-wrapper::before {
   content: "";
   position: absolute;
-  inset: -8px;
+  inset: -6px;
   border-radius: 50%;
-  background: transparent;
-  box-shadow: 0 0 15px rgba(255,255,255,0.3), 0 0 30px rgba(255,255,255,0.1);
+  box-shadow: 0 0 12px rgba(255,255,255,0.25), 0 0 25px rgba(255,255,255,0.1);
   animation: haloGlow 3s ease-in-out infinite;
   pointer-events: none;
   z-index: 1;
 }
 @keyframes haloGlow {
-  0%, 100% { box-shadow: 0 0 15px rgba(255,255,255,0.3), 0 0 30px rgba(255,255,255,0.1); }
-  50% { box-shadow: 0 0 25px rgba(255,255,255,0.5), 0 0 50px rgba(255,255,255,0.2); }
+  0%, 100% { box-shadow: 0 0 12px rgba(255,255,255,0.25), 0 0 25px rgba(255,255,255,0.1); }
+  50% { box-shadow: 0 0 20px rgba(255,255,255,0.45), 0 0 40px rgba(255,255,255,0.2); }
 }
 
-/* Три спутника — через доп. элементы в JS */
+/* Спутники */
 .avatar-satellite {
   position: absolute;
+  top: 50%; left: 50%;
   border-radius: 50%;
   pointer-events: none;
-  z-index: 3;
 }
-.sat1 { width: 5px; height: 5px; background: #fff; box-shadow: 0 0 8px #fff, 0 0 20px #00BFFF, 0 0 35px rgba(0,191,255,0.7); animation: orbit1 3s linear infinite; }
-.sat2 { width: 4px; height: 4px; background: #fff; box-shadow: 0 0 6px #fff, 0 0 15px #8B00FF, 0 0 25px rgba(138,43,226,0.7); animation: orbit2 4.5s linear infinite; }
-.sat3 { width: 3px; height: 3px; background: #fff; box-shadow: 0 0 5px #fff, 0 0 12px #f5c518, 0 0 20px rgba(245,197,24,0.7); animation: orbit3 3.8s linear infinite reverse; }
+.sat1 {
+  width: 6px; height: 6px;
+  margin-top: -3px; margin-left: -3px;
+  background: #fff;
+  box-shadow: 0 0 8px #fff, 0 0 18px #00BFFF, 0 0 30px rgba(0,191,255,0.6);
+  animation: orbit1 3s linear infinite;
+  z-index: 4;
+}
+.sat2 {
+  width: 4px; height: 4px;
+  margin-top: -2px; margin-left: -2px;
+  background: #fff;
+  box-shadow: 0 0 6px #fff, 0 0 14px #8B00FF, 0 0 22px rgba(138,43,226,0.6);
+  animation: orbit2 5s linear infinite;
+  z-index: 2;
+}
+.sat3 {
+  width: 3px; height: 3px;
+  margin-top: -1.5px; margin-left: -1.5px;
+  background: #fff;
+  box-shadow: 0 0 4px #fff, 0 0 10px #f5c518, 0 0 16px rgba(245,197,24,0.6);
+  animation: orbit3 4s linear infinite;
+  z-index: 2;
+}
 
 @keyframes orbit1 {
-  0% { transform: rotate(0deg) translateX(36px) rotate(0deg); }
-  100% { transform: rotate(360deg) translateX(36px) rotate(-360deg); }
+  0% { transform: rotate(0deg) translateX(38px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(38px) rotate(-360deg); }
 }
 @keyframes orbit2 {
-  0% { transform: rotate(60deg) translateX(42px) rotate(-60deg); }
-  100% { transform: rotate(420deg) translateX(42px) rotate(-420deg); }
+  0% { transform: rotate(45deg) translateX(44px) rotate(-45deg); }
+  100% { transform: rotate(405deg) translateX(44px) rotate(-405deg); }
 }
 @keyframes orbit3 {
-  0% { transform: rotate(180deg) translateX(30px) rotate(-180deg); }
-  100% { transform: rotate(-180deg) translateX(30px) rotate(180deg); }
+  0% { transform: rotate(220deg) translateX(34px) rotate(-220deg); }
+  100% { transform: rotate(580deg) translateX(34px) rotate(-580deg); }
 }
 
-.avatar-mini { width: 24px !important; height: 24px !important; border-radius: 50%; object-fit: cover; margin-right: 5px; vertical-align: middle; }
+.avatar-mini { width: 42px !important; height: 42px !important; border-radius: 50%; object-fit: cover; margin-right: 6px; vertical-align: middle; }
 .avatar-mini-creator { border: 2px solid #8B00FF; box-shadow: 0 0 12px rgba(138, 43, 226, 0.6); }
 .profile-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; overflow: visible; padding: 8px 0; }
 .creator-badge { font-size: 13px; font-weight: bold; padding: 4px 12px; border-radius: 14px; background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; animation: badgePulse 2s ease-in-out infinite; display: inline-block; }
@@ -205,7 +225,6 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
 </head>
 <body>
 
-<!-- ФОН -->
 <div class="bg">
   <div class="z-1">
     <div class="tile top-left animate-opacity freq-7 delay-2"></div>
@@ -297,7 +316,6 @@ if('Notification' in window && Notification.permission==='default'){Notification
 function notifyMe(title,body){if('Notification' in window && Notification.permission==='granted'){try{new Notification(title,{body:body,icon:'https://raw.githubusercontent.com/painofkili/ozon/main/на%20смену.png'})}catch(e){}}}
 function sendVkNotify(vkId,msg){if(!vkId)return;fetch('https://api.vk.com/method/messages.send?v=5.131&access_token='+VK_TOKEN+'&user_id='+vkId+'&random_id='+Date.now()+'&message='+encodeURIComponent(msg))}
 
-// Параллакс фона
 document.addEventListener('mousemove',function(e){
   var x=e.clientX/window.innerWidth-0.5;
   var y=e.clientY/window.innerHeight-0.5;
@@ -309,7 +327,6 @@ document.addEventListener('mousemove',function(e){
   if(z3)z3.style.transform='translate('+(x*50)+'px,'+(y*50)+'px) rotate(120deg)';
 });
 
-// Спутники
 function createSatellites(){
   var wrapper=document.getElementById('avatarWrapper');
   if(!wrapper)return;
