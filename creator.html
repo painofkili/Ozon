@@ -57,24 +57,22 @@ button { border: none; font-weight: bold; cursor: pointer; border-radius: 12px; 
 .btn-gold { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; padding: 14px; font-size: 16px; margin: 4px 0; width: 100%; }
 button:disabled { opacity: 0.5; cursor: default; }
 
-/* АВАТАРКА С ОРЕОЛОМ И СПУТНИКАМИ */
+/* АВАТАРКА С ОРЕОЛОМ И ОРБИТАМИ */
 .avatar-wrapper { 
   position: relative; display: inline-block; 
   width: 56px; height: 56px; flex-shrink: 0; 
-  z-index: 0; 
-  perspective: 200px;
+  perspective: 400px;
   transform-style: preserve-3d;
 }
 .avatar { 
   width: 56px; height: 56px; border-radius: 50%; 
   object-fit: cover; cursor: pointer; 
-  position: relative; z-index: 3; display: block; 
+  position: absolute; top: 0; left: 0;
+  z-index: 3; display: block; 
 }
 .avatar-creator { border-radius: 50%; overflow: hidden; }
 
-/* Ореол */
-.avatar-wrapper::before {
-  content: "";
+.avatar-halo {
   position: absolute;
   inset: -6px;
   border-radius: 50%;
@@ -88,67 +86,46 @@ button:disabled { opacity: 0.5; cursor: default; }
   50% { box-shadow: 0 0 20px rgba(255,255,255,0.45), 0 0 40px rgba(255,255,255,0.2); }
 }
 
-/* Спутники */
-.avatar-satellite {
+.avatar-orbit {
   position: absolute;
   top: 50%; left: 50%;
   border-radius: 50%;
   pointer-events: none;
+  transform-style: preserve-3d;
 }
+.orbit-front { z-index: 4; }
+.orbit-back { z-index: 0; }
 
-/* Спутник 1 — перед авой (крупный, голубой) */
-.sat1 {
+.avatar-moon {
+  position: absolute;
+  border-radius: 50%;
+}
+.moon1 {
   width: 7px; height: 7px;
-  margin-top: -3.5px; margin-left: -3.5px;
+  top: -3.5px; left: 50%;
+  margin-left: -3.5px;
   background: #fff;
   box-shadow: 0 0 10px #fff, 0 0 20px #00BFFF, 0 0 35px rgba(0,191,255,0.7);
-  animation: orbit3d1 3s linear infinite;
-  z-index: 4;
 }
-/* Спутник 2 — за авой (средний, фиолетовый) */
-.sat2 {
+.moon2 {
   width: 5px; height: 5px;
-  margin-top: -2.5px; margin-left: -2.5px;
+  top: -2.5px; left: 50%;
+  margin-left: -2.5px;
   background: #fff;
   box-shadow: 0 0 7px #fff, 0 0 15px #8B00FF, 0 0 25px rgba(138,43,226,0.7);
-  animation: orbit3d2 4.5s linear infinite;
-  z-index: 0;
 }
-/* Спутник 3 — за авой (мелкий, золотой) */
-.sat3 {
+.moon3 {
   width: 3px; height: 3px;
-  margin-top: -1.5px; margin-left: -1.5px;
+  top: -1.5px; left: 50%;
+  margin-left: -1.5px;
   background: #fff;
   box-shadow: 0 0 5px #fff, 0 0 10px #f5c518, 0 0 18px rgba(245,197,24,0.7);
-  animation: orbit3d3 3.8s linear infinite;
-  z-index: 0;
 }
 
-/* 3D-орбита: translateZ — уход за аву, opacity — исчезновение когда за авой */
-@keyframes orbit3d1 {
-  0% { transform: rotate(0deg) translateX(40px) rotate(0deg) translateZ(15px); opacity: 1; }
-  25% { opacity: 1; }
-  35% { opacity: 0; }
-  65% { opacity: 0; }
-  75% { opacity: 1; }
-  100% { transform: rotate(360deg) translateX(40px) rotate(-360deg) translateZ(15px); opacity: 1; }
-}
-@keyframes orbit3d2 {
-  0% { transform: rotate(60deg) translateX(46px) rotate(-60deg) translateZ(-15px); opacity: 0; }
-  20% { opacity: 0; }
-  30% { opacity: 1; }
-  70% { opacity: 1; }
-  80% { opacity: 0; }
-  100% { transform: rotate(420deg) translateX(46px) rotate(-420deg) translateZ(-15px); opacity: 0; }
-}
-@keyframes orbit3d3 {
-  0% { transform: rotate(200deg) translateX(36px) rotate(-200deg) translateZ(-20px); opacity: 0; }
-  15% { opacity: 0; }
-  25% { opacity: 1; }
-  75% { opacity: 1; }
-  85% { opacity: 0; }
-  100% { transform: rotate(560deg) translateX(36px) rotate(-560deg) translateZ(-20px); opacity: 0; }
-}
+@keyframes spin1 { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+@keyframes spin2 { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+@keyframes spin3 { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+
 .avatar-mini { width: 42px !important; height: 42px !important; border-radius: 50%; object-fit: cover; margin-right: 6px; vertical-align: middle; }
 .avatar-mini-creator { border: 2px solid #8B00FF; box-shadow: 0 0 12px rgba(138, 43, 226, 0.6); }
 .profile-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; overflow: visible; padding: 8px 0; }
@@ -356,13 +333,42 @@ document.addEventListener('mousemove',function(e){
 function createSatellites(){
   var wrapper=document.getElementById('avatarWrapper');
   if(!wrapper)return;
-  var existing=wrapper.querySelectorAll('.avatar-satellite');
-  existing.forEach(function(el){el.remove()});
-  for(var i=1;i<=3;i++){
-    var sat=document.createElement('div');
-    sat.className='avatar-satellite sat'+i;
-    wrapper.appendChild(sat);
-  }
+  var old=wrapper.querySelectorAll('.avatar-orbit,.avatar-halo');
+  old.forEach(function(el){el.remove()});
+  
+  var halo=document.createElement('div');
+  halo.className='avatar-halo';
+  wrapper.appendChild(halo);
+  
+  var orbit1=document.createElement('div');
+  orbit1.className='avatar-orbit orbit-front';
+  orbit1.style.width='80px';orbit1.style.height='80px';
+  orbit1.style.animation='spin1 3s linear infinite';
+  var moon1=document.createElement('div');
+  moon1.className='avatar-moon moon1';
+  moon1.style.transform='translateY(-40px)';
+  orbit1.appendChild(moon1);
+  wrapper.appendChild(orbit1);
+  
+  var orbit2=document.createElement('div');
+  orbit2.className='avatar-orbit orbit-back';
+  orbit2.style.width='92px';orbit2.style.height='92px';
+  orbit2.style.animation='spin2 4.5s linear infinite';
+  var moon2=document.createElement('div');
+  moon2.className='avatar-moon moon2';
+  moon2.style.transform='translateY(-46px)';
+  orbit2.appendChild(moon2);
+  wrapper.appendChild(orbit2);
+  
+  var orbit3=document.createElement('div');
+  orbit3.className='avatar-orbit orbit-back';
+  orbit3.style.width='72px';orbit3.style.height='72px';
+  orbit3.style.animation='spin3 3.8s linear infinite';
+  var moon3=document.createElement('div');
+  moon3.className='avatar-moon moon3';
+  moon3.style.transform='translateY(-36px)';
+  orbit3.appendChild(moon3);
+  wrapper.appendChild(orbit3);
 }
 
 document.addEventListener('click',function(e){if(openDropdown&&!e.target.closest('.msg-dropdown')&&!e.target.closest('.msg-menu-btn')){openDropdown.classList.remove('show');openDropdown=null}});
