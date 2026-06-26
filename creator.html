@@ -418,11 +418,28 @@ function delThought(){db.ref('creatorThought').remove()}
 function loadAnnounce(){db.ref('announce').limitToLast(1).on('value',function(s){var b=document.getElementById('announceBlock');if(!s.exists()){b.style.display='none';return}var last=null;s.forEach(function(c){last=c.val();last._key=c.key});if(last.expiry&&Date.now()>last.expiry){db.ref('announce/'+last._key).remove();b.style.display='none';return}b.style.display='block';var expText=last.expiry?'Актуально до: '+new Date(last.expiry).toLocaleString('ru-RU'):'Бессрочно';b.innerHTML='<b>📢 '+last.text+'</b><br><small class="announce-expiry">'+expText+' • '+new Date(last.timestamp).toLocaleString('ru-RU')+'</small><button class="announce-del" onclick="delAnnounce(\''+last._key+'\')">✕</button>'})}
 function delAnnounce(key){if(_user&&_user.role==='creator')db.ref('announce/'+key).remove();else alert('🚫 Только Создатель может удалять объявления!')}
 function loadHall(){
-  db.ref('shifts').once('value',function(snap){var users={};snap.forEach(function(c){var s=c.val();if(!users[s.user])users[s.user]={hours:0,tovar:0};users[s.user].hours+=s.hours||0;users[s.user].tovar+=s.tovar||0});var arr=[];for(var n in users)arr.push({name:n,hours:users[n].hours,tovar:users[n].tovar});arr.sort(function(a,b){return b.hours-a.hours});var hh='';for(var i=0;i<Math.min(arr.length,5);i++){var m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'📌';hh+='<div class="hall-item"><span class="hall-medal">'+m+'</span> '+arr[i].name+' — <b>'+arr[i].hours+'ч</b></div>'}document.getElementById('hallHours').innerHTML=hh||'Нет данных';
-  arr.sort(function(a,b){return b.tovar-a.tovar});var ht='';for(var i=0;i<Math.min(arr.length,5);i++){var m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'📌';ht+='<div class="hall-item"><span class="hall-medal">'+m+'</span> '+arr[i].name+' — <b>'+arr[i].tovar+' шт</b></div>'}document.getElementById('hallTovar').innerHTML=ht||'Нет данных';
-  arr.sort(function(a,b){return(b.hours+b.tovar)-(a.hours+a.tovar)});document.getElementById('hallBest').innerHTML=arr.length?'<div class="hall-item"><span class="hall-medal">🌟</span> '+arr[0].name+' — '+arr[0].hours+'ч / '+arr[0].tovar+' шт</div>':'Нет данных';
-  db.ref('punishes').once('value',function(ps){var pusers={};ps.forEach(function(c){var p=c.val();if(!pusers[p.user])pusers[p.user]=0;pusers[p.user]+=p.amount||0});var parr=[];for(var n in pusers)parr.push({name:n,amount:pusers[n]});parr.sort(function(a,b){return b.amount-a.amount});document.getElementById('hallWorst').innerHTML=parr.length?'<div class="hall-item"><span class="hall-medal">💀</span> '+parr[0].name+' — <b>'+parr[0].amount+' ₽</b></div>':'Нет данных'});
-  db.ref('premiums').once('value',function(prs){var prusers={};prs.forEach(function(c){var p=c.val();if(!prusers[p.user])prusers[p.user]=0;prusers[p.user]+=p.amount||0});var prarr=[];for(var n in prusers)prarr.push({name:n,amount:prusers[n]});prarr.sort(function(a,b){return b.amount-a.amount});document.getElementById('hallPremium').innerHTML=prarr.length?'<div class="hall-item"><span class="hall-medal">🎁</span> '+prarr[0].name+' — <b>'+prarr[0].amount+' ₽</b></div>':'Нет данных'});
+  db.ref('shifts').once('value',function(snap){
+    var users={};snap.forEach(function(c){var s=c.val();if(!users[s.user])users[s.user]={hours:0,tovar:0};users[s.user].hours+=s.hours||0;users[s.user].tovar+=s.tovar||0});
+    var arr=[];for(var n in users)arr.push({name:n,hours:users[n].hours,tovar:users[n].tovar});
+    arr.sort(function(a,b){return b.hours-a.hours});
+    var hh='';for(var i=0;i<Math.min(arr.length,5);i++){var m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'📌';hh+='<div class="hall-item"><span class="hall-medal">'+m+'</span> '+arr[i].name+' — <b>'+arr[i].hours+'ч</b></div>'}document.getElementById('hallHours').innerHTML=hh||'Нет данных';
+    arr.sort(function(a,b){return b.tovar-a.tovar});
+    var ht='';for(var i=0;i<Math.min(arr.length,5);i++){var m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'📌';ht+='<div class="hall-item"><span class="hall-medal">'+m+'</span> '+arr[i].name+' — <b>'+arr[i].tovar+' шт</b></div>'}document.getElementById('hallTovar').innerHTML=ht||'Нет данных';
+    arr.sort(function(a,b){return(b.hours+b.tovar)-(a.hours+a.tovar)});
+    document.getElementById('hallBest').innerHTML=arr.length?'<div class="hall-item"><span class="hall-medal">🌟</span> '+arr[0].name+' — '+arr[0].hours+'ч / '+arr[0].tovar+' шт</div>':'Нет данных';
+    db.ref('punishes').once('value',function(ps){
+      var pusers={};ps.forEach(function(c){var p=c.val();if(!pusers[p.user])pusers[p.user]=0;pusers[p.user]+=p.amount||0});
+      var parr=[];for(var n in pusers)parr.push({name:n,amount:pusers[n]});
+      parr.sort(function(a,b){return b.amount-a.amount});
+      document.getElementById('hallWorst').innerHTML=parr.length?'<div class="hall-item"><span class="hall-medal">💀</span> '+parr[0].name+' — <b>'+parr[0].amount+' ₽</b></div>':'Нет данных'
+    });
+    db.ref('premiums').once('value',function(prs){
+      var prusers={};prs.forEach(function(c){var p=c.val();if(!prusers[p.user])prusers[p.user]=0;prusers[p.user]+=p.amount||0});
+      var prarr=[];for(var n in prusers)prarr.push({name:n,amount:prusers[n]});
+      prarr.sort(function(a,b){return b.amount-a.amount});
+      document.getElementById('hallPremium').innerHTML=prarr.length?'<div class="hall-item"><span class="hall-medal">🎁</span> '+prarr[0].name+' — <b>'+prarr[0].amount+' ₽</b></div>':'Нет данных'
+    })
+  })
 }
 </script>
 </body>
