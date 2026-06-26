@@ -217,8 +217,8 @@ label { font-size: 12px; color: #aaa; display: block; margin-top: 4px; }
 
 <div id="login" style="display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;min-height:100vh;max-width:450px;margin:0 auto;position:relative;z-index:1">
   <h3 style="text-align:center"><span class="section-emoji">🌌</span> <span class="section-title" style="font-size:20px">Вход Создателя</span></h3>
-  <input id="creatorPass" type="password" placeholder="Пароль Создателя" style="max-width:320px">
-  <button class="btn-gold" onclick="creatorLogin()" style="max-width:320px">🌌 Войти</button>
+  <input id="creatorPass" type="password" placeholder="Пароль Создателя" style="max-width:320px" onkeydown="if(event.key==='Enter')creatorLogin()" autocomplete="off">
+  <button class="btn-gold" onclick="creatorLogin()" style="max-width:320px" type="button">🌌 Войти</button>
   <div id="loginMsg" style="color:red;text-align:center;margin-top:6px"></div>
 </div>
 
@@ -269,6 +269,25 @@ if('Notification' in window && Notification.permission==='default'){Notification
 function notifyMe(title,body){if('Notification' in window && Notification.permission==='granted'){try{new Notification(title,{body:body,icon:'https://raw.githubusercontent.com/painofkili/ozon/main/на%20смену.png'})}catch(e){}}}
 function sendVkNotify(vkId,msg){if(!vkId)return;fetch('https://api.vk.com/method/messages.send?v=5.131&access_token='+VK_TOKEN+'&user_id='+vkId+'&random_id='+Date.now()+'&message='+encodeURIComponent(msg))}
 
+// Авто-логин при вводе правильного пароля (для мобильных)
+document.addEventListener('DOMContentLoaded', function() {
+  var passInput = document.getElementById('creatorPass');
+  if (passInput) {
+    var checkTimeout;
+    passInput.addEventListener('input', function() {
+      clearTimeout(checkTimeout);
+      var val = passInput.value.trim();
+      if (val === CREATOR_PASS) {
+        checkTimeout = setTimeout(function() {
+          creatorLogin();
+        }, 400);
+      }
+    });
+    // Фокус на поле при загрузке
+    setTimeout(function(){ passInput.focus(); }, 500);
+  }
+});
+
 document.addEventListener('mousemove',function(e){
   var x=e.clientX/window.innerWidth-0.5,y=e.clientY/window.innerHeight-0.5;
   var z1=document.querySelector('.z-1'),z2=document.querySelector('.z-2'),z3=document.querySelector('.z-3');
@@ -283,24 +302,19 @@ function createSatellites(){
   var old=wrapper.querySelectorAll('.avatar-orbit,.avatar-halo,.avatar-atmosphere');
   old.forEach(function(el){el.remove()});
   
-  // Атмосфера
   var atmos=document.createElement('div');atmos.className='avatar-atmosphere';wrapper.appendChild(atmos);
-  // Ореол
   var halo=document.createElement('div');halo.className='avatar-halo';wrapper.appendChild(halo);
   
-  // Орбита 1 — перед авой, голубой, радиус 30px
   var o1=document.createElement('div');o1.className='avatar-orbit orbit-front';
   o1.style.width='60px';o1.style.height='60px';o1.style.animation='spin1 2.8s linear infinite';
   var m1=document.createElement('div');m1.className='avatar-moon moon1';m1.style.transform='translateY(-30px)';
   o1.appendChild(m1);wrapper.appendChild(o1);
   
-  // Орбита 2 — за авой, фиолетовый, радиус 34px
   var o2=document.createElement('div');o2.className='avatar-orbit orbit-back';
   o2.style.width='68px';o2.style.height='68px';o2.style.animation='spin2 3.8s linear infinite';
   var m2=document.createElement('div');m2.className='avatar-moon moon2';m2.style.transform='translateY(-34px)';
   o2.appendChild(m2);wrapper.appendChild(o2);
   
-  // Орбита 3 — золотой с z-index анимацией, радиус 29px
   var o3=document.createElement('div');o3.className='avatar-orbit orbit-back';
   o3.style.width='58px';o3.style.height='58px';o3.style.animation='spin3 3.4s linear infinite';
   var m3=document.createElement('div');m3.className='avatar-moon moon3';
