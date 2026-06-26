@@ -57,36 +57,49 @@ button { border: none; font-weight: bold; cursor: pointer; border-radius: 12px; 
 .btn-gold { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; padding: 14px; font-size: 16px; margin: 4px 0; width: 100%; }
 button:disabled { opacity: 0.5; cursor: default; }
 
-/* АВАТАРКА С КОЛЬЦАМИ */
+/* АВАТАРКА С ОРБИТОЙ И СПУТНИКОМ */
 .avatar-wrapper { position: relative; display: inline-block; width: 56px; height: 56px; flex-shrink: 0; }
 .avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; cursor: pointer; position: relative; z-index: 2; display: block; }
 .avatar-creator { border-radius: 50%; overflow: hidden; }
 
-.avatar-wrapper::before,
-.avatar-wrapper::after {
+/* Орбита */
+.avatar-wrapper::before {
   content: "";
   position: absolute;
-  inset: -6px;
-  border: 2px solid rgba(255,255,255,0.5);
+  top: 50%; left: 50%;
+  width: 80px; height: 80px;
+  margin-top: -40px; margin-left: -40px;
+  border: 1px solid rgba(255,255,255,0.15);
   border-radius: 50%;
-  animation: pulseRing 2.5s linear infinite;
-  opacity: 0;
+  animation: orbitSpin 4s linear infinite;
   pointer-events: none;
   z-index: 0;
 }
-.avatar-wrapper::after { animation-delay: 1.25s; }
 
-@keyframes pulseRing {
-  0% { transform: scale(0.9); opacity: 0.8; box-shadow: 0 0 8px rgba(255,255,255,0.4); }
-  100% { transform: scale(1.35); opacity: 0; box-shadow: 0 0 20px rgba(255,255,255,0); }
+/* Спутник */
+.avatar-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 8px; height: 8px;
+  margin-top: -4px; margin-left: -4px;
+  background: #f5c518;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #f5c518, 0 0 20px #f5c518, 0 0 40px rgba(245,197,24,0.5);
+  animation: orbitSpin 4s linear infinite, satelliteGlow 2s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 3;
 }
 
-.avatar-mini { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; margin-right: 5px; vertical-align: middle; }
-.avatar-mini-creator { border: 2px solid #8B00FF; box-shadow: 0 0 12px rgba(138, 43, 226, 0.6); }
-.profile-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; overflow: visible; padding: 8px 0; }
-.creator-badge { font-size: 13px; font-weight: bold; padding: 4px 12px; border-radius: 14px; background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; animation: badgePulse 2s ease-in-out infinite; display: inline-block; }
-@keyframes badgePulse { 0%, 100% { box-shadow: 0 0 10px rgba(245,197,24,0.5); } 50% { box-shadow: 0 0 25px rgba(138,43,226,0.8); } }
-.creator-name { background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
+@keyframes orbitSpin {
+  0% { transform: rotate(0deg) translateX(40px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(40px) rotate(-360deg); }
+}
+
+@keyframes satelliteGlow {
+  0%, 100% { box-shadow: 0 0 10px #f5c518, 0 0 20px #f5c518, 0 0 40px rgba(245,197,24,0.5); }
+  50% { box-shadow: 0 0 15px #fff, 0 0 30px #f5c518, 0 0 60px rgba(245,197,24,0.8); }
+}
 
 .tabs { display: flex; gap: 5px; margin: 10px 0; overflow-x: auto; scrollbar-width: none; }
 .tabs::-webkit-scrollbar { display: none; }
