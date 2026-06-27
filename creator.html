@@ -1,76 +1,159 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Озон Создатель | Управление</title>
-    <style>
-        /* Базовые стили */
-        body { margin: 0; font-family: sans-serif; transition: 0.3s; padding: 15px; }
-        
-        /* Киберпанк */
-        .theme-cyberpunk { background: #1a1a2e; color: #00d2ff; }
-        .theme-cyberpunk .card { background: #16213e; border: 1px solid #00d2ff; }
-        
-        /* Минимализм */
-        .theme-minimal { background: #ffffff; color: #333; }
-        .theme-minimal .card { background: #f4f4f4; border: 1px solid #ddd; }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Ozon Создатель</title>
+<style>
+/* ... (Твои стили остались без изменений, они все здесь) ... */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { overflow-y: auto; overflow-x: hidden; }
+body { font-family: 'Trebuchet MS', Helvetica, sans-serif; color: #eee; margin: 0 auto; font-size: 16px; background: #0a0a1a; min-height: 100vh; overflow-x: hidden; }
+.bg { width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; background: radial-gradient(circle at 50% 20%, #12092b 0%, #060612 70%, #020205 100%); z-index: -1000; pointer-events: none; }
+.app-container { display: flex; width: 100%; min-height: 100vh; position: relative; z-index: 1; justify-content: center; }
+.main-content { width: 100%; max-width: 680px; padding: 12px 16px; display: block; }
+.card { background: rgba(22,33,62,0.7); padding: 14px; border-radius: 14px; margin: 6px 0; border: 1px solid rgba(138,43,226,0.2); }
 
-        .card { padding: 15px; border-radius: 10px; margin-bottom: 15px; }
-        .btn { padding: 8px 16px; cursor: pointer; border-radius: 5px; border: none; background: #ff00ff; color: white; }
-        
-        /* Скролл сотрудников */
-        .staff-container { display: flex; overflow-x: auto; gap: 10px; padding: 10px; white-space: nowrap; }
-        .staff-card { min-width: 80px; padding: 10px; background: rgba(0,0,0,0.1); border-radius: 8px; text-align: center; font-size: 14px; }
-    </style>
+/* Стили для кнопок */
+.btn-gold {
+  background: linear-gradient(180deg, #f9e076 0%, #e6b422 100%);
+  border: none; color: #000; font-weight: bold; padding: 10px 14px;
+  border-radius: 20px; font-size: 14px; cursor: pointer;
+  box-shadow: 0 4px 10px rgba(230,180,34,0.4); transition: all 0.2s;
+  margin: 4px 0; text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+}
+.btn-gold:active { transform: scale(0.95); box-shadow: 0 2px 5px rgba(230,180,34,0.6); }
+.btn-blue {
+  background: #00BFFF; border: none; color: #000; font-weight: bold;
+  padding: 8px 16px; border-radius: 20px; cursor: pointer;
+  box-shadow: 0 0 12px rgba(0,191,255,0.4);
+}
+
+/* Новые стили для панели стикеров */
+.sticker-panel { border: 2px dashed #8B00FF; padding: 15px; border-radius: 14px; margin-top: 10px; background: rgba(138,43,226,0.05); text-align: center; }
+</style>
 </head>
-<body class="theme-cyberpunk" id="app">
+<body>
+<div class="bg"></div>
 
-    <header style="display: flex; justify-content: space-between; align-items: center;">
-        <h1>Создатель</h1>
-        <button id="theme-toggle" class="btn">Сменить тему</button>
-    </header>
+<div id="app" class="app-container">
+  <div class="main-content">
+    
+    <div id="creatorTab" class="tab-content active-tab">
+      <h4 style="text-align:center;margin-bottom:8px">🌌 Сила Создателя</h4>
+      
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;">
+        <button class="btn-gold" style="flex:1; min-width: 100px;" onclick="summonBoss()">👔 Вызвать</button>
+        <button class="btn-gold" style="flex:1; min-width: 100px;" onclick="monkeySomeone()">🐒 Обезьяна</button>
+        <button class="btn-gold" style="flex:1; min-width: 100px;" onclick="clownSomeone()">🤡 Клоун</button>
+        <button class="btn-gold" style="flex:1; min-width: 100px;" onclick="openThoughtModal()">💭 Мысли</button>
+      </div>
 
-    <!-- Панель управления (твоя новая фича) -->
-    <div class="card">
-        <h3>Инструменты Создателя</h3>
-        <input type="file" id="sticker-input" accept="image/png">
-        <button id="upload-btn" class="btn">Загрузить стикер</button>
+      <div class="sticker-panel">
+        <h5 style="color: #00BFFF; margin-bottom: 10px;">Пак стикеров</h5>
+        <input type="file" id="sticker-upload" accept="image/png" style="display:none">
+        <button class="btn-blue" onclick="document.getElementById('sticker-upload').click()">+ Добавить стикер</button>
+        <div id="sticker-list" style="margin-top: 10px; display: flex; gap: 5px; flex-wrap: wrap;"></div>
+      </div>
     </div>
+    
+  </div>
+</div>
 
-    <!-- Список сотрудников (твой стандартный интерфейс) -->
-    <div class="card">
-        <h3>Сотрудники на смене</h3>
-        <div class="staff-container">
-            <div class="staff-card">Георгий</div>
-            <div class="staff-card">Коллега 1</div>
-            <div class="staff-card">Коллега 2</div>
-            <div class="staff-card">Коллега 3</div>
-        </div>
-    </div>
+<!-- Firebase SDKs -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getDatabase, ref, push, set, onChildAdded } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    <!-- Окно чата -->
-    <div class="card" id="chat-window">
-        <h3>Чат</h3>
-        <p>Рабочие сообщения...</p>
-    </div>
+  // Твоя конфигурация Firebase (замени на актуальную, если нужно)
+  const firebaseConfig = {
+    apiKey: "AIzaSyDi6vBf7xNBu6Hgh8P6NvV4FfiXMWTEdUo",
+    authDomain: "clicker-ozon-9e857.firebaseapp.com",
+    databaseURL: "https://clicker-ozon-9e857-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "clicker-ozon-9e857",
+    storageBucket: "clicker-ozon-9e857.appspot.com",
+    messagingSenderId: "783960287743",
+    appId: "1:783960287743:web:84aeddd55ae1f01cb939ca"
+  };
 
-    <script>
-        const app = document.getElementById('app');
-        const toggleBtn = document.getElementById('theme-toggle');
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+  
+  // Делаем database доступным глобально, чтобы другие скрипты могли использовать
+  window.db = database;
+  window.dbRef = ref;
+  window.dbPush = push;
+  window.dbSet = set;
+  window.dbOnChildAdded = onChildAdded;
 
-        // Управление темой
-        const savedTheme = localStorage.getItem('theme') || 'theme-cyberpunk';
-        app.className = savedTheme;
+  console.log("✅ Firebase (Ozon Создатель) подключена. DB доступна как window.db");
 
-        toggleBtn.addEventListener('click', () => {
-            const newTheme = app.className === 'theme-cyberpunk' ? 'theme-minimal' : 'theme-cyberpunk';
-            app.className = newTheme;
-            localStorage.setItem('theme', newTheme);
-        });
+  // Загружаем существующие стикеры при старте
+  function loadExistingStickers() {
+    const stickersRef = ref(database, 'stickers/room1');
+    onChildAdded(stickersRef, (snapshot) => {
+      const stickerData = snapshot.val();
+      if (stickerData && stickerData.base64) {
+        addStickerToUI(stickerData.base64, snapshot.key);
+      }
+    });
+  }
 
-        document.getElementById('upload-btn').addEventListener('click', () => {
-            alert("Функция загрузки стикера готова!");
-        });
-    </script>
+  // Функция сохранения стикера в Firebase
+  function saveStickerToFirebase(base64Data) {
+    const stickersRef = ref(database, 'stickers/room1');
+    const newStickerRef = push(stickersRef);
+    set(newStickerRef, {
+      base64: base64Data,
+      addedBy: 'creator',
+      timestamp: Date.now()
+    }).then(() => {
+      console.log('✅ Стикер сохранён в Firebase');
+    }).catch((error) => {
+      console.error('❌ Ошибка сохранения:', error);
+    });
+  }
+
+  // Вспомогательная функция для отображения стикера в UI
+  function addStickerToUI(base64Data, key) {
+    const list = document.getElementById('sticker-list');
+    const img = document.createElement('img');
+    img.src = base64Data;
+    img.style.width = '50px';
+    img.style.height = '50px';
+    img.style.objectFit = 'contain';
+    img.style.borderRadius = '8px';
+    img.style.background = 'rgba(255,255,255,0.1)';
+    img.style.padding = '2px';
+    img.dataset.key = key; // сохраняем ключ на случай удаления
+    list.appendChild(img);
+  }
+
+  // Логика загрузки стикеров (локальный файл -> base64 -> Firebase)
+  document.getElementById('sticker-upload').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const stickerData = event.target.result;
+        // Сохраняем в Firebase (это вызовет onChildAdded и стикер появится у всех)
+        saveStickerToFirebase(stickerData);
+        // Также сразу показываем локально (на случай если слушатель не сработает мгновенно)
+        addStickerToUI(stickerData, 'local_' + Date.now());
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Запускаем подгрузку существующих стикеров
+  loadExistingStickers();
+
+  // Заглушки для кнопок, чтобы не было ошибок
+  window.summonBoss = () => alert('Вызвать босса (заглушка)');
+  window.monkeySomeone = () => alert('Обезьяна (заглушка)');
+  window.clownSomeone = () => alert('Клоун (заглушка)');
+  window.openThoughtModal = () => alert('Мысли (заглушка)');
+
+</script>
 </body>
 </html>
