@@ -259,7 +259,6 @@
         .prog-fill { height: 100%; border-radius: 3px; transition: width .5s; }
         .prog-txt { font-size: 11px; color: #aaa; }
 
-        /* ===== ЧАТ ===== */
         .chat-section { display: flex; flex-direction: column; flex-shrink: 0; margin-top: auto; }
         .chat-head {
             display: flex; align-items: center; gap: 8px; cursor: pointer;
@@ -421,7 +420,6 @@
         }
         .emoji-item:hover { transform: scale(1.2); }
 
-        /* ===== САЙДБАР ===== */
         .side-wrap {
             width: 110px; background: rgba(10,10,25,0.95);
             border-left: 1px solid rgba(138,43,226,0.3);
@@ -489,7 +487,6 @@
             box-shadow: 0 0 8px rgba(76,175,80,0.8); z-index: 2;
         }
 
-        /* ===== МИНИ-ПРОФИЛЬ ===== */
         .mini-prof {
             position: fixed; right: 120px; top: 50%;
             transform: translateY(-50%);
@@ -535,7 +532,6 @@
         .mini-prof .mp-cal div { padding: 4px; border-radius: 3px; background: rgba(255,255,255,0.05); }
         .mini-prof .mp-cal .ms { background: #4CAF50; color: #fff; font-weight: bold; }
 
-        /* ===== КВАНТОВОЕ ЯДРО ===== */
         .ava-wr {
             position: relative; display: inline-block;
             width: 76px; height: 76px; flex-shrink: 0;
@@ -580,7 +576,6 @@
         @keyframes rr2 { 0% { transform: rotateX(70deg) rotateY(-30deg) rotateZ(360deg); } 100% { transform: rotateX(70deg) rotateY(-30deg) rotateZ(0deg); } }
         @keyframes rr3 { 0% { transform: rotateX(20deg) rotateY(80deg) rotateZ(0deg); } 100% { transform: rotateX(20deg) rotateY(80deg) rotateZ(360deg); } }
 
-        /* ===== ЭФФЕКТЫ БОГА ===== */
         .avatar-god-wrap {
             position: relative; display: inline-block; flex-shrink: 0;
         }
@@ -608,7 +603,6 @@
             50% { transform: translateX(-50%) translateY(-3px); opacity: 1; }
         }
 
-        /* Крылья (чистый CSS, настраиваемые) */
         .god-wings-wrap {
             position: absolute; top: 0; left: 50%;
             width: 100px; height: 80px;
@@ -825,7 +819,6 @@
 <div class="modal-bg" id="premiumModal"><div class="modal-card" id="premiumCard"></div></div>
 
 <script>
-// ==================== FIREBASE ====================
 firebase.initializeApp({
     apiKey: "AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",
     authDomain: "ozon-grafik-4ad9f.firebaseapp.com",
@@ -902,7 +895,9 @@ const A = {
     login() {
         const name = document.getElementById('loginName').value.trim();
         const pass = document.getElementById('loginPass').value.trim();
-        if (!name || !pass) { toast('Заполни поля', true); return; }
+        if (!name || !pass) { toast('Заполни имя и пароль', true); return; }
+
+        // 1. Проверка создателя (имя Костя + пароль создателя)
         if (name === 'Костя' && pass === CREATOR_PASS) {
             db.ref('users/Костя').once('value', s => {
                 const d = s.exists() ? s.val() : { name: 'Костя', punkt: '49', avatar: '', vkId: '' };
@@ -913,31 +908,42 @@ const A = {
             });
             return;
         }
-        db.ref('godPassword').once('value', s => {
-            if (pass === s.val()) {
-                db.ref('godSettings').once('value', gs => {
-                    const gd = gs.exists() ? gs.val() : {};
-                    const u = { name: gd.name || 'Бог', role: 'god', avatar: gd.avatar || '', vkId: gd.vkId || '', punkt: '' };
-                    S.user = u;
-                    localStorage.setItem('ozon_user', JSON.stringify(u));
-                    this.enter();
-                });
+
+        // 2. Проверка — есть ли такой пользователь в users
+        db.ref('users/' + name).once('value', s => {
+            if (s.exists() && s.val().password === pass) {
+                const d = s.val();
+                d.role = 'user';
+                d.punkt = d.punkt || '49';
+                S.user = d;
+                localStorage.setItem('ozon_user', JSON.stringify(d));
+                this.enter();
                 return;
             }
-            db.ref('users/' + name).once('value', s => {
-                if (s.exists() && s.val().password === pass) {
-                    const d = s.val();
-                    d.role = 'user';
-                    d.punkt = d.punkt || '49';
-                    S.user = d;
-                    localStorage.setItem('ozon_user', JSON.stringify(d));
-                    this.enter();
+
+            // 3. Пользователь не найден — может это бог?
+            db.ref('godPassword').once('value', gs => {
+                if (pass === gs.val()) {
+                    db.ref('godSettings').once('value', gdSnap => {
+                        const gd = gdSnap.exists() ? gdSnap.val() : {};
+                        const u = {
+                            name: gd.name || name || 'Бог',
+                            role: 'god',
+                            avatar: gd.avatar || '',
+                            vkId: gd.vkId || '',
+                            punkt: ''
+                        };
+                        S.user = u;
+                        localStorage.setItem('ozon_user', JSON.stringify(u));
+                        this.enter();
+                    });
                 } else {
                     toast('Неверное имя или пароль', true);
                 }
             });
         });
     },
+
     register() {
         const n = document.getElementById('regName').value.trim();
         const pk = document.getElementById('regPunkt').value.trim();
@@ -970,6 +976,9 @@ const A = {
     logout() {
         if (S.user && S.user.role !== 'creator' && S.user.role !== 'god') {
             db.ref('activeShifts/' + S.user.name).remove();
+        }
+        if (S.user && S.user.role === 'god') {
+            // Для бога просто выходим
         }
         S.user = null; S.onShift = false;
         localStorage.removeItem('ozon_user');
@@ -1381,7 +1390,8 @@ function renderProfile() {
             <img id="profAv" class="avatar" src="${S.user.avatar || ''}" style="display:${S.user.avatar?'block':'none'}" onclick="viewPhoto('${S.user.avatar}')">
         </div>
         <div style="flex:1"><b class="creator-name" style="font-size:18px">${S.user.name}</b> <span class="creator-badge">🌌 Создатель</span><br><span style="font-size:12px;color:#aaa">📍 Пункт ${S.user.punkt||'?'}</span></div>
-        <button class="btn-gray" onclick="openSettings()" style="width:auto;padding:8px 14px;font-size:13px">⚙️</button>`;
+        <button class="btn-gray" onclick="openSettings()" style="width:auto;padding:8px 14px;font-size:13px">⚙️</button>
+        <button class="btn-red" onclick="A.logout()" style="width:auto;padding:8px 14px;font-size:13px;margin-left:4px">↩</button>`;
     } else if (role === 'god') {
         h += `<div class="avatar-god-wrap" id="avaWr">
             <div class="god-halo"></div>
@@ -1392,12 +1402,14 @@ function renderProfile() {
             <img id="profAv" class="avatar" src="${S.user.avatar || ''}" style="display:${S.user.avatar?'block':'none'}" onclick="viewPhoto('${S.user.avatar}')">
         </div>
         <div style="flex:1"><b class="god-name" style="font-size:18px">${S.user.name}</b> <span class="god-badge">👑 Начальник</span><br><div class="prog-bar"><div id="godProg" class="prog-fill" style="width:0%"></div></div><div id="godProgTxt" class="prog-txt"></div></div>
-        <button class="btn-gray" onclick="openSettings()" style="width:auto;padding:8px 14px;font-size:13px">⚙️</button>`;
+        <button class="btn-gray" onclick="openSettings()" style="width:auto;padding:8px 14px;font-size:13px">⚙️</button>
+        <button class="btn-red" onclick="A.logout()" style="width:auto;padding:8px 14px;font-size:13px;margin-left:4px">↩</button>`;
     } else {
         const st = getStatus(S.allShifts.filter(s => s.user === S.user.name).length);
         h += `<img id="profAv" class="avatar" src="${S.user.avatar || ''}" style="display:${S.user.avatar?'inline':'none'}" onclick="viewPhoto('${S.user.avatar}')">
         <div style="flex:1"><b style="font-size:17px">${S.user.name}</b> <span class="st-badge" style="background:${st.color};color:#000">${st.name}</span><br><span style="font-size:12px;color:#aaa">📍 Пункт ${S.user.punkt||'?'}</span><div class="prog-bar"><div class="prog-fill" style="width:0%;background:${st.color}"></div></div></div>
-        <button class="btn-gray" onclick="openSettings()" style="width:auto;padding:8px 12px">⚙️</button>`;
+        <button class="btn-gray" onclick="openSettings()" style="width:auto;padding:8px 12px">⚙️</button>
+        <button class="btn-red" onclick="A.logout()" style="width:auto;padding:8px 12px;margin-left:4px">↩</button>`;
     }
     row.innerHTML = h;
     if (role === 'creator') {
@@ -2091,7 +2103,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
 
     const saved = localStorage.getItem('ozon_user');
-    if (saved) { S.user = JSON.parse(saved); A.enter(); }
+    if (saved) {
+        const parsed = JSON.parse(saved);
+        // Пускаем только если есть роль (creator/god/user)
+        if (parsed.role && parsed.name) {
+            S.user = parsed;
+            A.enter();
+        } else {
+            localStorage.removeItem('ozon_user');
+        }
+    }
 
     ['chatSize','chatFont','btnShape','btnSize'].forEach(k => {
         const v = localStorage.getItem(k);
