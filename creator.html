@@ -2,42 +2,56 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Озон Создатель | Панель управления</title>
+    <title>Озон Создатель | Управление</title>
     <style>
-        /* Общие стили */
-        body { margin: 0; font-family: sans-serif; transition: 0.3s; padding: 20px; }
+        /* Базовые стили */
+        body { margin: 0; font-family: sans-serif; transition: 0.3s; padding: 15px; }
         
         /* Киберпанк */
         .theme-cyberpunk { background: #1a1a2e; color: #00d2ff; }
-        .theme-cyberpunk .creator-panel { background: #16213e; border: 1px solid #00d2ff; }
+        .theme-cyberpunk .card { background: #16213e; border: 1px solid #00d2ff; }
         
         /* Минимализм */
         .theme-minimal { background: #ffffff; color: #333; }
-        .theme-minimal .creator-panel { background: #f4f4f4; border: 1px solid #ddd; }
+        .theme-minimal .card { background: #f4f4f4; border: 1px solid #ddd; }
 
-        .creator-panel { padding: 20px; border-radius: 15px; margin-bottom: 20px; }
-        .btn { padding: 10px 20px; cursor: pointer; border-radius: 5px; border: none; }
+        .card { padding: 15px; border-radius: 10px; margin-bottom: 15px; }
+        .btn { padding: 8px 16px; cursor: pointer; border-radius: 5px; border: none; background: #ff00ff; color: white; }
         
-        #sticker-upload-area { margin-top: 20px; padding: 20px; border: 2px dashed #ff00ff; }
+        /* Скролл сотрудников */
+        .staff-container { display: flex; overflow-x: auto; gap: 10px; padding: 10px; white-space: nowrap; }
+        .staff-card { min-width: 80px; padding: 10px; background: rgba(0,0,0,0.1); border-radius: 8px; text-align: center; font-size: 14px; }
     </style>
 </head>
 <body class="theme-cyberpunk" id="app">
 
-    <header>
-        <h1>Панель Создателя</h1>
+    <header style="display: flex; justify-content: space-between; align-items: center;">
+        <h1>Создатель</h1>
         <button id="theme-toggle" class="btn">Сменить тему</button>
     </header>
 
-    <div class="creator-panel">
-        <h2>Инструменты управления</h2>
-        <p>Здесь будут расширенные настройки для тебя.</p>
-    </div>
-
-    <div id="sticker-upload-area" class="creator-panel">
-        <h3>Мои стикер-паки</h3>
+    <!-- Панель управления (твоя новая фича) -->
+    <div class="card">
+        <h3>Инструменты Создателя</h3>
         <input type="file" id="sticker-input" accept="image/png">
         <button id="upload-btn" class="btn">Загрузить стикер</button>
-        <div id="sticker-list"></div>
+    </div>
+
+    <!-- Список сотрудников (твой стандартный интерфейс) -->
+    <div class="card">
+        <h3>Сотрудники на смене</h3>
+        <div class="staff-container">
+            <div class="staff-card">Георгий</div>
+            <div class="staff-card">Коллега 1</div>
+            <div class="staff-card">Коллега 2</div>
+            <div class="staff-card">Коллега 3</div>
+        </div>
+    </div>
+
+    <!-- Окно чата -->
+    <div class="card" id="chat-window">
+        <h3>Чат</h3>
+        <p>Рабочие сообщения...</p>
     </div>
 
     <script>
@@ -54,9 +68,8 @@
             localStorage.setItem('theme', newTheme);
         });
 
-        // Заглушка для логики загрузки стикеров
         document.getElementById('upload-btn').addEventListener('click', () => {
-            alert("Функция загрузки стикеров активна! (Скоро привяжем к БД)");
+            alert("Функция загрузки стикера готова!");
         });
     </script>
 </body>
