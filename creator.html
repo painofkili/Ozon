@@ -5,60 +5,52 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Ozon Создатель</title>
 <style>
+/* ====== CSS-ПЕРЕМЕННЫЕ ДЛЯ ЖИВОЙ ТЕМЫ ====== */
+:root {
+  --live-bg: #0a0a1a;
+  --live-btn: #8B00FF;
+  --live-radius: 12px;
+  --live-speed: 0.3s;
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ВОЗВРАЩЕН НАТИВНЫЙ СКРОЛЛ СТРАНИЦЫ (БЕЗ ОБРЕЗКИ И ПРЫЖКОВ) */
 html { overflow-y: auto; overflow-x: hidden; }
 body { 
   font-family: 'Trebuchet MS', Helvetica, sans-serif; 
   color: #eee; 
   margin: 0 auto; 
   font-size: 16px; 
-  background: #0a0a1a;
+  background: var(--live-bg);
   min-height: 100vh;
   overflow-x: hidden;
-  transition: background 0.3s ease, color 0.3s ease; /* Добавлено для плавности смены тем */
+  transition: background var(--live-speed) ease, color var(--live-speed) ease;
 }
 
-/* ФОН (БЕЗ МЕРЦАНИЯ) */
-.bg { width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; background: radial-gradient(circle at 50% 20%, #12092b 0%, #060612 70%, #020205 100%); z-index: -1000; pointer-events: none; transition: background 0.3s ease; }
-.stars-overlay { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-image: radial-gradient(white, rgba(255,255,255,.2) 1.5px, transparent 40px), radial-gradient(rgba(138,43,226,0.25), rgba(255,255,255,.1) 1px, transparent 30px); background-size: 450px 450px, 300px 350px; background-position: 0 0, 40px 60px; opacity: 0.3; animation: backgroundStarRotate 300s linear infinite; will-change: transform; transition: opacity 0.3s ease; }
+/* ФОН */
+.bg { width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; background: radial-gradient(circle at 50% 20%, #12092b 0%, #060612 70%, #020205 100%); z-index: -1000; pointer-events: none; transition: background var(--live-speed) ease; }
+.stars-overlay { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-image: radial-gradient(white, rgba(255,255,255,.2) 1.5px, transparent 40px), radial-gradient(rgba(138,43,226,0.25), rgba(255,255,255,.1) 1px, transparent 30px); background-size: 450px 450px, 300px 350px; background-position: 0 0, 40px 60px; opacity: 0.3; animation: backgroundStarRotate 300s linear infinite; will-change: transform; transition: opacity var(--live-speed) ease; }
 @keyframes backgroundStarRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-/* СТРУКТУРА СТРАНИЦЫ */
+/* СТРУКТУРА */
 .app-container { display: flex; width: 100%; min-height: 100vh; position: relative; z-index: 1; justify-content: center; }
 .main-content { width: 100%; max-width: 680px; padding: 12px 16px; display: block; }
 
-/* ВЫДВИЖНОЙ САЙДБАР С КОЛЛЕГАМИ (НАТИВНАЯ ПРОКРУТКА) */
+/* САЙДБАР */
 .avatar-carousel { 
-  width: 110px; 
-  background: rgba(10, 10, 25, 0.95); 
+  width: 110px; background: rgba(10, 10, 25, 0.95); 
   border-left: 1px solid rgba(138, 43, 226, 0.3); 
-  display: flex; 
-  flex-direction: column;
-  align-items: center; 
-  position: fixed; 
-  top: 0; 
-  right: -130px; 
-  height: 100vh; 
-  padding: 50px 0 20px 0; 
-  z-index: 1000; 
-  backdrop-filter: blur(15px); 
-  transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease, border 0.3s ease; 
+  display: flex; flex-direction: column; align-items: center; 
+  position: fixed; top: 0; right: -130px; height: 100vh; 
+  padding: 50px 0 20px 0; z-index: 1000; backdrop-filter: blur(15px); 
+  transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1), background var(--live-speed) ease, border var(--live-speed) ease; 
   box-shadow: -10px 0 30px rgba(0, 0, 0, 0.7);
 }
 .avatar-carousel.open { right: 0; }
 .avatar-carousel-inner { 
-  display: flex; 
-  flex-direction: column; 
-  align-items: center; 
-  width: 100%; 
-  gap: 12px; 
-  overflow-y: auto; /* НАТИВНАЯ ПРОКРУТКА */
-  height: 100%;
-  padding: 10px 0;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
+  display: flex; flex-direction: column; align-items: center; 
+  width: 100%; gap: 12px; overflow-y: auto; height: 100%; 
+  padding: 10px 0; scrollbar-width: none; -webkit-overflow-scrolling: touch;
 }
 .avatar-carousel-inner::-webkit-scrollbar { display: none; }
 
@@ -76,30 +68,30 @@ body {
 .avatar-item.active img, .avatar-item.active .av-placeholder { border-color: #f5c518; }
 .avatar-item .online-dot { position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; background: #4CAF50; border-radius: 50%; border: 2px solid #111; box-shadow: 0 0 8px rgba(76,175,80,0.8); z-index: 2; }
 
-/* МИНИ-ПРОФИЛЬ (ВЫЗЫВАЕТСЯ ТОЛЬКО ПО КЛИКУ) */
-.mini-profile { position: fixed; right: 120px; top: 50%; transform: translateY(-50%); background: rgba(15, 15, 30, 0.98); border: 1px solid rgba(138,43,226,0.5); border-radius: 16px; padding: 20px 16px 16px 16px; width: 250px; z-index: 1100; display: none; backdrop-filter: blur(20px); box-shadow: 0 10px 40px rgba(0,0,0,0.8); transition: background 0.3s ease, border 0.3s ease; }
+/* МИНИ-ПРОФИЛЬ */
+.mini-profile { position: fixed; right: 120px; top: 50%; transform: translateY(-50%); background: rgba(15, 15, 30, 0.98); border: 1px solid rgba(138,43,226,0.5); border-radius: 16px; padding: 20px 16px 16px 16px; width: 250px; z-index: 1100; display: none; backdrop-filter: blur(20px); box-shadow: 0 10px 40px rgba(0,0,0,0.8); transition: background var(--live-speed) ease, border var(--live-speed) ease; }
 .mini-profile.show { display: block; animation: slideIn 0.2s ease-out; }
 @keyframes slideIn { from { opacity: 0; transform: translateY(-50%) translateX(20px); } to { opacity: 1; transform: translateY(-50%) translateX(0); } }
 .mp-close-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.1); border: none; color: #ccc; width: 24px; height: 24px; border-radius: 50%; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10; }
 .mp-close-btn:hover { background: #e94560; color: white; }
 .mini-profile .mp-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; margin: 0 auto; display: block; border: 2px solid #8B00FF; }
 .mini-profile .mp-placeholder { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #444, #555); display: flex; align-items: center; justify-content: center; font-size: 24px; color: #ccc; margin: 0 auto; }
-.mini-profile .mp-name { text-align: center; font-weight: bold; font-size: 16px; margin-top: 8px; color: #fff; transition: color 0.3s ease;}
-.mini-profile .mp-status { text-align: center; font-size: 12px; padding: 4px 10px; border-radius: 10px; display: inline-block; margin: 4px auto; width: fit-content; background: rgba(138,43,226,0.2); border: 1px solid rgba(138,43,226,0.4); color: #fff; transition: color 0.3s ease, background 0.3s ease;}
+.mini-profile .mp-name { text-align: center; font-weight: bold; font-size: 16px; margin-top: 8px; color: #fff; transition: color var(--live-speed) ease;}
+.mini-profile .mp-status { text-align: center; font-size: 12px; padding: 4px 10px; border-radius: 10px; display: inline-block; margin: 4px auto; width: fit-content; background: rgba(138,43,226,0.2); border: 1px solid rgba(138,43,226,0.4); color: #fff; transition: color var(--live-speed) ease, background var(--live-speed) ease;}
 .mini-profile .mp-punkt { text-align: center; font-size: 12px; color: #aaa; }
 .mini-profile .mp-calendar { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; text-align: center; font-size: 10px; margin-top: 8px; }
 .mini-profile .mp-calendar div { padding: 4px; border-radius: 3px; background: rgba(255,255,255,0.05); }
 .mini-profile .mp-calendar .mp-shift { background: #4CAF50; color: #fff; font-weight: bold; }
-.mini-profile .mp-btn { width: 100%; padding: 10px; margin-top: 8px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; font-size: 13px; }
+.mini-profile .mp-btn { width: 100%; padding: 10px; margin-top: 8px; border-radius: var(--live-radius); border: none; cursor: pointer; font-weight: bold; font-size: 13px; }
 
-/* ЭЛЕМЕНТЫ ИНТЕРФЕЙСА */
+/* КАРТОЧКИ, ИНПУТЫ */
 .tab-content { display: none; width: 100%; }
 .tab-content.active-tab { display: block; }
 
-.card, .stat-card, .pinned, .announce-block, .thought-block { background: rgba(22,33,62,0.7); padding: 14px; border-radius: 14px; margin: 6px 0; backdrop-filter: blur(10px); border: 1px solid rgba(138,43,226,0.2); overflow: visible; transition: background 0.3s ease, border 0.3s ease, box-shadow 0.3s ease; }
-input, select, textarea { width: 100%; padding: 12px 14px; font-size: 15px; margin: 6px 0; border-radius: 12px; border: 1px solid #444; background: rgba(15,15,30,0.8); color: #fff; outline: none; transition: background 0.3s ease, color 0.3s ease, border 0.3s ease; }
+.card, .stat-card, .pinned, .announce-block, .thought-block { background: rgba(22,33,62,0.7); padding: 14px; border-radius: var(--live-radius); margin: 6px 0; backdrop-filter: blur(10px); border: 1px solid rgba(138,43,226,0.2); overflow: visible; transition: background var(--live-speed) ease, border var(--live-speed) ease, box-shadow var(--live-speed) ease; }
+input, select, textarea { width: 100%; padding: 12px 14px; font-size: 15px; margin: 6px 0; border-radius: var(--live-radius); border: 1px solid #444; background: rgba(15,15,30,0.8); color: #fff; outline: none; transition: background var(--live-speed) ease, color var(--live-speed) ease, border var(--live-speed) ease; }
 input:focus, select:focus, textarea:focus { border-color: #8B00FF; }
-button { border: none; font-weight: bold; cursor: pointer; border-radius: 12px; transition: filter 0.2s, background 0.3s ease, border 0.3s ease, box-shadow 0.3s ease, color 0.3s ease; }
+button { border: none; font-weight: bold; cursor: pointer; border-radius: var(--live-radius); transition: filter 0.2s, background var(--live-speed) ease, border var(--live-speed) ease, box-shadow var(--live-speed) ease, color var(--live-speed) ease; }
 button:hover { filter: brightness(1.1); }
 .btn-green { background: #4CAF50; color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
 .btn-blue { background: #2196F3; color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
@@ -108,95 +100,40 @@ button:hover { filter: brightness(1.1); }
 .btn-gold { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
 button:disabled { opacity: 0.5; cursor: default; }
 
-/* ИСПРАВЛЕННЫЙ CSS КАЛЕНДАРЯ */
-.calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 12px; background: rgba(22,33,62,0.5); border-radius: 10px; padding: 6px; border: 1px solid rgba(138,43,226,0.15); margin-bottom: 8px; transition: background 0.3s ease; }
+/* КАЛЕНДАРЬ */
+.calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 12px; background: rgba(22,33,62,0.5); border-radius: var(--live-radius); padding: 6px; border: 1px solid rgba(138,43,226,0.15); margin-bottom: 8px; transition: background var(--live-speed) ease; }
 .calendar div { padding: 6px; border-radius: 4px; }
 .calendar .shift-day { background: #4CAF50; color: #fff; font-weight: bold; }
 .calendar .today { border: 2px solid #2196F3; }
 .calendar .header { font-weight: bold; background: rgba(51,51,51,0.7); }
 
-/* АТОМНАЯ 3D-МОДЕЛЬ ВОКРУГ АВАТАРКИ */
-.avatar-wrapper {
-  position: relative;
-  display: inline-block;
-  width: 76px;
-  height: 76px;
-  flex-shrink: 0;
-  perspective: 1000px;
-  transform-style: preserve-3d;
-}
-.avatar {
-  width: 76px;
-  height: 76px;
-  border-radius: 50%;
-  object-fit: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 10;
-  border: 2px solid #111;
-  display: block;
-  transform: translateZ(0); /* Центр 3D сцены */
-}
+/* 3D АТОМ */
+.avatar-wrapper { position: relative; display: inline-block; width: 76px; height: 76px; flex-shrink: 0; perspective: 1000px; transform-style: preserve-3d; }
+.avatar { width: 76px; height: 76px; border-radius: 50%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 10; border: 2px solid #111; display: block; transform: translateZ(0); }
 .avatar-creator { box-shadow: 0 0 15px rgba(138,43,226,0.5); }
-
-/* 3D Пространство орбит */
-.proton-system {
-  position: absolute;
-  inset: -14px;
-  transform-style: preserve-3d;
-  pointer-events: none;
-  z-index: 15; /* Оболочка пересекает аватарку благодаря preserve-3d */
-}
-.orbit-ring {
-  position: absolute;
-  inset: 0;
-  border: 1px dashed rgba(255, 255, 255, 0.15);
-  border-radius: 50%;
-  transform-style: preserve-3d;
-}
+.proton-system { position: absolute; inset: -14px; transform-style: preserve-3d; pointer-events: none; z-index: 15; }
+.orbit-ring { position: absolute; inset: 0; border: 1px dashed rgba(255, 255, 255, 0.15); border-radius: 50%; transform-style: preserve-3d; }
 .ring-1 { transform: rotateX(70deg) rotateY(30deg); animation: rotateRing1 4s linear infinite; border-color: rgba(0, 191, 255, 0.3); }
 .ring-2 { transform: rotateX(70deg) rotateY(-30deg); animation: rotateRing2 5s linear infinite; border-color: rgba(245, 197, 24, 0.3); }
 .ring-3 { transform: rotateX(20deg) rotateY(80deg); animation: rotateRing3 4.5s linear infinite; border-color: rgba(138, 43, 226, 0.3); }
-
-/* Электроны (Протоны) */
-.electron {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  top: 0;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  backface-visibility: hidden;
-}
+.electron { position: absolute; width: 8px; height: 8px; border-radius: 50%; top: 0; left: 50%; transform: translate(-50%, -50%); backface-visibility: hidden; }
 .el-cyan { background: #00BFFF; box-shadow: 0 0 10px #00BFFF, 0 0 20px #00BFFF; }
 .el-gold { background: #f5c518; box-shadow: 0 0 10px #f5c518, 0 0 20px #f5c518; }
 .el-purple { background: #8B00FF; box-shadow: 0 0 10px #8B00FF, 0 0 20px #8B00FF; }
-
 @keyframes rotateRing1 { 0% { transform: rotateX(70deg) rotateY(30deg) rotateZ(0deg); } 100% { transform: rotateX(70deg) rotateY(30deg) rotateZ(360deg); } }
 @keyframes rotateRing2 { 0% { transform: rotateX(70deg) rotateY(-30deg) rotateZ(360deg); } 100% { transform: rotateX(70deg) rotateY(-30deg) rotateZ(0deg); } }
 @keyframes rotateRing3 { 0% { transform: rotateX(20deg) rotateY(80deg) rotateZ(0deg); } 100% { transform: rotateX(20deg) rotateY(80deg) rotateZ(360deg); } }
-
-.quantum-halo {
-  position: absolute;
-  inset: -6px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(138,43,226,0.2) 0%, transparent 70%);
-  z-index: 1;
-  pointer-events: none;
-  animation: corePulse 3s ease-in-out infinite;
-}
+.quantum-halo { position: absolute; inset: -6px; border-radius: 50%; background: radial-gradient(circle, rgba(138,43,226,0.2) 0%, transparent 70%); z-index: 1; pointer-events: none; animation: corePulse 3s ease-in-out infinite; }
 @keyframes corePulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } }
 
-/* ПРОФИЛЬ, ВКЛАДКИ, УВЕДОМЛЕНИЯ */
+/* ПРОФИЛЬ, ВКЛАДКИ */
 .profile-row { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; padding: 8px 0; }
 .creator-badge { font-size: 12px; font-weight: bold; padding: 4px 10px; border-radius: 12px; background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; display: inline-block; letter-spacing: 0.5px; }
 .creator-name { background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
 
 .tabs { display: flex; gap: 6px; margin: 10px 0; overflow-x: auto; scrollbar-width: none; }
 .tabs::-webkit-scrollbar { display: none; }
-.tabs button { width: 44px; height: 44px; display: flex; align-items: center; gap: 0.5rem; overflow: hidden; border-radius: 999px; transition: width .3s ease, background .3s ease, border-color .3s ease, color .3s ease; background: rgba(255, 255, 255, 0.08); color: #ccc; border: 1px solid transparent; cursor: pointer; padding: 0 12px; font-size: 13px; white-space: nowrap; flex-shrink: 0; }
+.tabs button { width: 44px; height: 44px; display: flex; align-items: center; gap: 0.5rem; overflow: hidden; border-radius: 999px; transition: width .3s ease, background var(--live-speed) ease, border-color var(--live-speed) ease, color var(--live-speed) ease; background: rgba(255, 255, 255, 0.08); color: #ccc; border: 1px solid transparent; cursor: pointer; padding: 0 12px; font-size: 13px; white-space: nowrap; flex-shrink: 0; }
 .tabs button:hover { width: 110px; background: rgba(255,255,255,0.15); color: #fff; }
 .tabs button.active { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; width: 110px; box-shadow: 0 4px 12px rgba(138,43,226,0.3); border-color: rgba(255,255,255,0.2); }
 .tabs button .menu-icon { font-size: 16px; flex-shrink: 0; }
@@ -205,7 +142,7 @@ button:disabled { opacity: 0.5; cursor: default; }
 
 /* ЧАТ */
 .chat-section { margin: 8px 0; display: flex; flex-direction: column; }
-.chat-header-bar { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px 14px; background: rgba(22,33,62,0.7); border-radius: 12px; border: 1px solid rgba(138, 43, 226, 0.2); margin-bottom: 6px; font-size: 14px; transition: background 0.2s, border 0.3s ease; }
+.chat-header-bar { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px 14px; background: rgba(22,33,62,0.7); border-radius: var(--live-radius); border: 1px solid rgba(138, 43, 226, 0.2); margin-bottom: 6px; font-size: 14px; transition: background 0.2s, border var(--live-speed) ease; }
 .chat-header-bar:hover { background: rgba(22,33,62,0.9); }
 .chat-icon { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #f5c518, #8B00FF); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; box-shadow: 0 0 10px rgba(138,43,226,0.4); }
 .chat-label { flex: 1; font-weight: bold; background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -215,41 +152,37 @@ button:disabled { opacity: 0.5; cursor: default; }
 .chat-back-btn { background: none; border: 1px solid rgba(138,43,226,0.4); color: #ccc; padding: 4px 10px; border-radius: 8px; font-size: 12px; cursor: pointer; display: none; }
 
 #chat { 
-  overflow-y: auto; 
-  padding: 10px; 
-  border-radius: 14px; 
-  background: rgba(15, 15, 30, 0.6); 
-  font-size: 13px; 
+  overflow-y: auto; padding: 10px; border-radius: var(--live-radius); 
+  background: rgba(15, 15, 30, 0.6); font-size: 13px; 
   border: 1px solid rgba(138, 43, 226, 0.15); 
-  transition: max-height 0.3s ease, padding 0.3s ease, background 0.3s ease, border 0.3s ease;
-  max-height: 300px; /* Регулируется из JS */
-  margin-bottom: 6px;
+  transition: max-height var(--live-speed) ease, padding var(--live-speed) ease, background var(--live-speed) ease, border var(--live-speed) ease;
+  max-height: 300px; margin-bottom: 6px;
 }
 #chat.hidden { max-height: 0 !important; padding-top: 0 !important; padding-bottom: 0 !important; overflow: hidden; opacity: 0; border: none; }
 
 .chat-bubble-group { margin: 6px 0; display: flex; flex-direction: column; position: relative; overflow: visible; }
 .chat-bubble-group.mine { align-items: flex-end; } .chat-bubble-group.other { align-items: flex-start; }
-.chat-bubble { background: rgba(30, 30, 50, 0.9); padding: 8px 12px; border-radius: 14px; margin: 2px 0; display: inline-block; max-width: 82%; word-break: break-word; border: 1px solid rgba(255,255,255,0.05); position: relative; transition: background 0.3s ease, border 0.3s ease, color 0.3s ease; }
+.chat-bubble { background: rgba(30, 30, 50, 0.9); padding: 8px 12px; border-radius: var(--live-radius); margin: 2px 0; display: inline-block; max-width: 82%; word-break: break-word; border: 1px solid rgba(255,255,255,0.05); position: relative; transition: background var(--live-speed) ease, border var(--live-speed) ease, color var(--live-speed) ease; }
 .chat-bubble.mine { background: rgba(76, 175, 80, 0.15); border: 1px solid rgba(76, 175, 80, 0.3); }
-.chat-msg-creator { background: linear-gradient(135deg, rgba(245, 197, 24, 0.15), rgba(138, 43, 226, 0.2)); border: 1px solid rgba(138, 43, 226, 0.4); padding: 8px 12px; border-radius: 14px; margin: 2px 0; display: inline-block; max-width: 82%; position: relative; transition: background 0.3s ease, border 0.3s ease; }
+.chat-msg-creator { background: linear-gradient(135deg, rgba(245, 197, 24, 0.15), rgba(138, 43, 226, 0.2)); border: 1px solid rgba(138, 43, 226, 0.4); padding: 8px 12px; border-radius: var(--live-radius); margin: 2px 0; display: inline-block; max-width: 82%; position: relative; transition: background var(--live-speed) ease, border var(--live-speed) ease; }
 .chat-msg-creator .author { background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
 .avatar-mini { width: 32px !important; height: 32px !important; border-radius: 50%; object-fit: cover; margin-right: 6px; vertical-align: middle; cursor: pointer; }
 .avatar-mini-creator { border: 2px solid #8B00FF; }
 
-/* Уведомления (Замена Alert) */
+/* УВЕДОМЛЕНИЯ */
 .toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10000; pointer-events: none; display: flex; flex-direction: column; gap: 8px; }
-.toast-msg { padding: 12px 20px; border-radius: 12px; background: rgba(20, 20, 35, 0.95); border: 1px solid #8B00FF; color: #fff; font-size: 14px; font-weight: bold; box-shadow: 0 5px 20px rgba(0,0,0,0.6); transform: translateY(-20px); opacity: 0; transition: all 0.3s; text-align: center; backdrop-filter: blur(5px); }
+.toast-msg { padding: 12px 20px; border-radius: var(--live-radius); background: rgba(20, 20, 35, 0.95); border: 1px solid #8B00FF; color: #fff; font-size: 14px; font-weight: bold; box-shadow: 0 5px 20px rgba(0,0,0,0.6); transform: translateY(-20px); opacity: 0; transition: all 0.3s; text-align: center; backdrop-filter: blur(5px); }
 .toast-msg.error { border-color: #ff1744; }
 .toast-msg.show { transform: translateY(0); opacity: 1; }
 
 .msg-menu-btn { position: absolute; top: 4px; right: 4px; width: 22px; height: 22px; border-radius: 50%; background: rgba(0,0,0,0.5); color: #ccc; border: none; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; z-index: 3; }
 .chat-bubble:hover .msg-menu-btn, .chat-msg-creator:hover .msg-menu-btn { opacity: 1; }
 .msg-menu-btn:hover { background: rgba(138,43,226,0.7); color: #fff; }
-.msg-dropdown { position: absolute; top: 28px; right: 0; background: rgba(15, 15, 30, 0.98); border-radius: 12px; padding: 4px 6px; display: none; gap: 4px; z-index: 10; border: 1px solid rgba(138,43,226,0.5); box-shadow: 0 6px 20px rgba(0,0,0,0.8); }
+.msg-dropdown { position: absolute; top: 28px; right: 0; background: rgba(15, 15, 30, 0.98); border-radius: var(--live-radius); padding: 4px 6px; display: none; gap: 4px; z-index: 10; border: 1px solid rgba(138,43,226,0.5); box-shadow: 0 6px 20px rgba(0,0,0,0.8); }
 .msg-dropdown.show { display: flex; }
 .msg-dropdown button { width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.06); color: #fff; }
 .msg-dropdown button:hover { transform: scale(1.1); background: rgba(255,255,255,0.1); }
-#chat .chat-img { max-width: 220px; max-height: 160px; border-radius: 10px; margin: 5px 0; cursor: pointer; object-fit: cover; }
+#chat .chat-img { max-width: 220px; max-height: 160px; border-radius: var(--live-radius); margin: 5px 0; cursor: pointer; object-fit: cover; }
 #chat .thumb { width: 75px; height: 75px; object-fit: cover; border-radius: 8px; cursor: pointer; margin: 3px; display: inline-block; }
 #chat .photo-pack { display: flex; gap: 4px; flex-wrap: wrap; margin: 5px 0; }
 .like-indicator { font-size: 11px; background: rgba(0,0,0,0.5); border-radius: 10px; padding: 2px 7px; display: none; margin-top: 3px; }
@@ -257,16 +190,16 @@ button:disabled { opacity: 0.5; cursor: default; }
 .photo-preview { display: flex; gap: 4px; flex-wrap: wrap; }
 .photo-preview img { width: 50px; height: 50px; object-fit: cover; border-radius: 8px; }
 #photoViewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 10000; }
-#photoViewer img { max-width: 95%; max-height: 90%; border-radius: 12px; }
+#photoViewer img { max-width: 95%; max-height: 90%; border-radius: var(--live-radius); }
 
 /* СТИКЕРЫ */
 .input-wrapper { position: relative; flex: 1; display: flex; }
 .sticker-toggle { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 20px; cursor: pointer; color: #aaa; transition: color 0.2s; padding: 5px; }
 .sticker-toggle:hover { filter: brightness(1.2); }
-.sticker-panel { position: absolute; bottom: 55px; right: 0; width: 300px; height: 350px; background: rgba(15, 15, 30, 0.98); border: 1px solid rgba(138,43,226,0.5); border-radius: 16px; display: none; flex-direction: column; z-index: 1000; box-shadow: 0 10px 40px rgba(0,0,0,0.8); backdrop-filter: blur(20px); overflow: hidden; transition: background 0.3s ease, border 0.3s ease; }
+.sticker-panel { position: absolute; bottom: 55px; right: 0; width: 300px; height: 350px; background: rgba(15, 15, 30, 0.98); border: 1px solid rgba(138,43,226,0.5); border-radius: var(--live-radius); display: none; flex-direction: column; z-index: 1000; box-shadow: 0 10px 40px rgba(0,0,0,0.8); backdrop-filter: blur(20px); overflow: hidden; transition: background var(--live-speed) ease, border var(--live-speed) ease; }
 .sticker-panel.show { display: flex; animation: fadeIn 0.2s; }
 .sticker-content { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; scrollbar-width: none; }
-.sticker-tabs { display: flex; background: rgba(22,33,62,0.9); padding: 5px; gap: 5px; overflow-x: auto; scrollbar-width: none; border-top: 1px solid rgba(138,43,226,0.2); transition: background 0.3s ease; }
+.sticker-tabs { display: flex; background: rgba(22,33,62,0.9); padding: 5px; gap: 5px; overflow-x: auto; scrollbar-width: none; border-top: 1px solid rgba(138,43,226,0.2); transition: background var(--live-speed) ease; }
 .st-tab { width: 36px; height: 36px; border-radius: 8px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; opacity: 0.6; transition: 0.2s; flex-shrink: 0; }
 .st-tab.active, .st-tab:hover { opacity: 1; background: rgba(138,43,226,0.3); }
 .st-tab img { width: 24px; height: 24px; object-fit: contain; }
@@ -276,9 +209,9 @@ button:disabled { opacity: 0.5; cursor: default; }
 .emoji-item { width: 42px; height: 42px; font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.1s; }
 .emoji-item:hover { transform: scale(1.2); }
 .chat-sticker { max-width: 140px; max-height: 140px; background: transparent; object-fit: contain; display: block; margin: 4px 0; border: none; }
-.pack-list-item { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid rgba(138,43,226,0.3); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.pack-list-item { background: rgba(0,0,0,0.3); padding: 10px; border-radius: var(--live-radius); margin-bottom: 8px; border: 1px solid rgba(138,43,226,0.3); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .pack-icon { width: 40px; height: 40px; object-fit: contain; border-radius: 6px; }
-.user-cb-list { max-height: 150px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 8px; margin: 5px 0; border: 1px solid #444; }
+.user-cb-list { max-height: 150px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 8px; border-radius: var(--live-radius); margin: 5px 0; border: 1px solid #444; }
 .user-cb-item { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 14px; }
 .user-cb-item input { width: auto; margin: 0; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -291,11 +224,7 @@ button:disabled { opacity: 0.5; cursor: default; }
   .sticker-panel { right: -40px; width: calc(100vw - 20px); max-width: 340px; }
 }
 
-/* ==========================================
-   НОВЫЙ БЛОК: ТЕМЫ ОФОРМЛЕНИЯ
-========================================== */
-
-/* ТЕМА 1: МИНИМАЛИЗМ (Светлая, без свечений) */
+/* ТЕМЫ ОФОРМЛЕНИЯ */
 body.theme-minimalism { background: #f4f4f9; color: #111; }
 body.theme-minimalism .bg { background: #eaeaea; }
 body.theme-minimalism .stars-overlay { display: none; }
@@ -320,9 +249,8 @@ body.theme-minimalism .mp-close-btn:hover, body.theme-minimalism .sidebar-close-
 body.theme-minimalism .toast-msg { background: #fff; color: #111; border: 1px solid #ccc; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 body.theme-minimalism .calendar { background: #fff; border: 1px solid #ddd; }
 body.theme-minimalism .calendar .header { background: #eee; color: #333; }
-body.theme-minimalism .quantum-halo, body.theme-minimalism .proton-system { display: none; /* Убираем 3D анимацию для чистоты */ }
+body.theme-minimalism .quantum-halo, body.theme-minimalism .proton-system { display: none; }
 
-/* ТЕМА 2: НЕОН (Киберпанк, яркие цвета) */
 body.theme-neon { background: #050014; color: #fff; }
 body.theme-neon .bg { background: #050014; }
 body.theme-neon .stars-overlay { opacity: 0.15; }
@@ -348,6 +276,49 @@ body.theme-neon .avatar-carousel { background: rgba(0,0,0,0.9); border-left: 1px
 body.theme-neon .toast-msg { border-color: #0ff; box-shadow: 0 0 15px #0ff; }
 body.theme-neon .mini-profile, body.theme-neon .sticker-panel { border: 1px solid #0ff; box-shadow: 0 0 20px rgba(0,255,255,0.2); background: rgba(5,0,15,0.95); }
 body.theme-neon .sticker-tabs { background: rgba(0,0,0,0.8); border-top-color: #0ff; }
+
+/* ====== ЖИВАЯ ТЕМА (ПОВЕРХ СТАНДАРТНЫХ) ====== */
+body.live-theme-active {
+  background: var(--live-bg) !important;
+}
+body.live-theme-active .bg {
+  background: var(--live-bg) !important;
+}
+body.live-theme-active button {
+  border-radius: var(--live-radius) !important;
+}
+body.live-theme-active .btn-gray,
+body.live-theme-active .btn-green,
+body.live-theme-active .btn-blue,
+body.live-theme-active .btn-red {
+  background: var(--live-btn) !important;
+}
+body.live-theme-active .card,
+body.live-theme-active .stat-card,
+body.live-theme-active .pinned,
+body.live-theme-active .announce-block,
+body.live-theme-active .thought-block,
+body.live-theme-active input,
+body.live-theme-active select,
+body.live-theme-active textarea,
+body.live-theme-active #chat,
+body.live-theme-active .chat-header-bar {
+  border-radius: var(--live-radius) !important;
+}
+body.live-theme-active input,
+body.live-theme-active select,
+body.live-theme-active textarea,
+body.live-theme-active .card,
+body.live-theme-active .stat-card,
+body.live-theme-active .pinned,
+body.live-theme-active .announce-block,
+body.live-theme-active .thought-block,
+body.live-theme-active #chat,
+body.live-theme-active .chat-header-bar,
+body.live-theme-active .mini-profile,
+body.live-theme-active .sticker-panel {
+  transition: all var(--live-speed) ease !important;
+}
 </style>
 </head>
 <body>
@@ -461,13 +432,11 @@ body.theme-neon .sticker-tabs { background: rgba(0,0,0,0.8); border-top-color: #
       <div class="input-wrapper">
         <input id="chatMsgInput" placeholder="Сообщение..." style="padding-right: 40px;">
         <button class="sticker-toggle" onclick="toggleStickerPanel(event)">😀</button>
-        
         <div id="stickerPanel" class="sticker-panel" onclick="event.stopPropagation()">
            <div class="sticker-content" id="stickerContent"></div>
            <div class="sticker-tabs" id="stickerTabs"></div>
         </div>
       </div>
-      
       <button class="btn-gray" onclick="document.getElementById('chatPhoto').click()" style="width:auto;padding:12px 14px">📎</button>
       <input id="chatPhoto" type="file" accept="image/*" multiple onchange="sendPhoto()" style="display:none">
       <button class="btn-gold" onclick="sendMsg()" style="width:auto;padding:12px 18px">➤</button>
@@ -490,6 +459,7 @@ body.theme-neon .sticker-tabs { background: rgba(0,0,0,0.8); border-top-color: #
   </div>
 </div>
 
+<!-- ====== КАРТОЧКА НАСТРОЕК (С ЖИВОЙ ТЕМОЙ) ====== -->
 <div id="settingsCard" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;overflow-y:auto;z-index:200;padding:10px; background: rgba(0,0,0,0.85);">
   <div class="card" style="max-width:450px;margin:20px auto">
     <h3 style="text-align:center;margin-bottom:8px">⚙️ Настройки</h3>
@@ -507,6 +477,16 @@ body.theme-neon .sticker-tabs { background: rgba(0,0,0,0.8); border-top-color: #
       <option value="minimalism">Минимализм (Светлая)</option>
       <option value="neon">Неон (Киберпанк)</option>
     </select>
+
+    <!-- ====== БЛОК ЖИВОЙ ТЕМЫ ====== -->
+    <div class="stat-card" style="margin-top:12px;">
+      <h4 style="margin-bottom:8px;">🎨 Живая тема (Live)</h4>
+      <label style="display:block; margin-bottom:6px;">Фон: <input type="color" id="liveBgColor" value="#0a0a1a"></label>
+      <label style="display:block; margin-bottom:6px;">Кнопки: <input type="color" id="liveBtnColor" value="#8B00FF"></label>
+      <label style="display:block; margin-bottom:6px;">Скругление (px): <input type="number" id="liveRadius" value="12" min="0" max="40" step="1"></label>
+      <label style="display:block; margin-bottom:6px;">Скорость (сек): <input type="number" id="liveSpeed" value="0.3" min="0" max="3" step="0.1"></label>
+      <button class="btn-gray" onclick="resetLiveTheme()" style="margin-top:6px;">🔄 Сбросить живую тему</button>
+    </div>
 
     <label style="font-size: 12px; color: #aaa; margin-top: 4px; display: block;">Размер чата</label>
     <select id="chatSize">
@@ -543,22 +523,18 @@ body.theme-neon .sticker-tabs { background: rgba(0,0,0,0.8); border-top-color: #
 <div id="packEditorCard" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;overflow-y:auto;z-index:300;padding:10px; background: rgba(0,0,0,0.95);">
   <div class="card" style="max-width:500px;margin:20px auto">
     <h3 id="peTitle" style="text-align:center;margin-bottom:12px">Редактирование</h3>
-    
     <div class="stat-card">
       <h4>👥 Доступ к паку</h4>
       <div id="peUserList" class="user-cb-list"></div>
     </div>
-    
     <div class="stat-card">
       <h4>➕ Добавить стикер (.png)</h4>
       <input id="peNewStickerImg" type="file" accept="image/png">
       <select id="peNewStickerEmoji" style="margin-top:4px;"></select>
       <button class="btn-blue" onclick="uploadStickerToPack()">Загрузить</button>
     </div>
-    
     <h4>Стикеры в паке</h4>
     <div id="peStickersList" style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;"></div>
-    
     <button class="btn-gray" onclick="closePackEditor()" style="margin-top:15px">↩ Назад к списку</button>
   </div>
 </div>
@@ -594,7 +570,7 @@ let globalStickerPacks = {};
 let currentStickerTab = 'emoji';
 let activePackIdForEdit = null;
 
-/* НОВАЯ ФУНКЦИЯ ДЛЯ ТЕМ */
+/* ========== ФУНКЦИИ ТЕМ ========== */
 function applyTheme(theme) {
   document.body.className = '';
   if (theme && theme !== 'creator') {
@@ -602,6 +578,75 @@ function applyTheme(theme) {
   }
   localStorage.setItem('appTheme', theme || 'creator');
 }
+
+// ========== ЖИВАЯ ТЕМА (CSS ПЕРЕМЕННЫЕ) ==========
+function applyLiveTheme() {
+  const bg = document.getElementById('liveBgColor')?.value || '#0a0a1a';
+  const btn = document.getElementById('liveBtnColor')?.value || '#8B00FF';
+  const radius = (document.getElementById('liveRadius')?.value || 12) + 'px';
+  const speed = (document.getElementById('liveSpeed')?.value || 0.3) + 's';
+
+  const root = document.documentElement;
+  root.style.setProperty('--live-bg', bg);
+  root.style.setProperty('--live-btn', btn);
+  root.style.setProperty('--live-radius', radius);
+  root.style.setProperty('--live-speed', speed);
+
+  document.body.classList.add('live-theme-active');
+
+  const settings = { liveBg: bg, liveBtn: btn, liveRadius: radius, liveSpeed: speed };
+  localStorage.setItem('liveThemeSettings', JSON.stringify(settings));
+}
+
+function resetLiveTheme() {
+  localStorage.removeItem('liveThemeSettings');
+  document.body.classList.remove('live-theme-active');
+  const root = document.documentElement;
+  root.style.setProperty('--live-bg', '#0a0a1a');
+  root.style.setProperty('--live-btn', '#8B00FF');
+  root.style.setProperty('--live-radius', '12px');
+  root.style.setProperty('--live-speed', '0.3s');
+  const bgInput = document.getElementById('liveBgColor');
+  const btnInput = document.getElementById('liveBtnColor');
+  const radiusInput = document.getElementById('liveRadius');
+  const speedInput = document.getElementById('liveSpeed');
+  if (bgInput) bgInput.value = '#0a0a1a';
+  if (btnInput) btnInput.value = '#8B00FF';
+  if (radiusInput) radiusInput.value = 12;
+  if (speedInput) speedInput.value = 0.3;
+  showToast('✅ Живая тема сброшена');
+}
+
+function loadLiveTheme() {
+  const saved = JSON.parse(localStorage.getItem('liveThemeSettings'));
+  if (saved) {
+    const root = document.documentElement;
+    root.style.setProperty('--live-bg', saved.liveBg);
+    root.style.setProperty('--live-btn', saved.liveBtn);
+    root.style.setProperty('--live-radius', saved.liveRadius);
+    root.style.setProperty('--live-speed', saved.liveSpeed);
+    document.body.classList.add('live-theme-active');
+    // Обновим инпуты в настройках
+    const bgInput = document.getElementById('liveBgColor');
+    const btnInput = document.getElementById('liveBtnColor');
+    const radiusInput = document.getElementById('liveRadius');
+    const speedInput = document.getElementById('liveSpeed');
+    if (bgInput) bgInput.value = saved.liveBg;
+    if (btnInput) btnInput.value = saved.liveBtn;
+    if (radiusInput) radiusInput.value = parseInt(saved.liveRadius);
+    if (speedInput) speedInput.value = parseFloat(saved.liveSpeed);
+  }
+}
+
+// Привязка событий живой темы (после загрузки DOM)
+function bindLiveThemeEvents() {
+  ['liveBgColor', 'liveBtnColor', 'liveRadius', 'liveSpeed'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', applyLiveTheme);
+  });
+}
+
+/* =================================== */
 
 if('Notification' in window && Notification.permission==='default'){Notification.requestPermission()}
 function notifyMe(title,body){if('Notification' in window && Notification.permission==='granted'){try{new Notification(title,{body:body,icon:'https://raw.githubusercontent.com/painofkili/ozon/main/на%20смену.png'})}catch(e){}}}
@@ -621,8 +666,9 @@ function showToast(text, isError = false) {
 }
 
 document.addEventListener('DOMContentLoaded',function(){
-  // ПРИМЕНЕНИЕ ТЕМЫ ПРИ ЗАГРУЗКЕ
   applyTheme(localStorage.getItem('appTheme') || 'creator');
+  loadLiveTheme();
+  bindLiveThemeEvents();
 
   var passInput=document.getElementById('creatorPass');
   if(passInput){var checkTimeout;passInput.addEventListener('input',function(){clearTimeout(checkTimeout);if(passInput.value.trim()===CREATOR_PASS)checkTimeout=setTimeout(function(){creatorLogin()},400)});setTimeout(function(){passInput.focus()},500)}
@@ -710,7 +756,6 @@ db.ref('users').on('value',function(s){allUsers={};allUserData={};s.forEach(func
 db.ref('activeShifts').on('value',function(s){activeShifts={};s.forEach(function(c){if(c.val()&&c.val().active)activeShifts[c.key]=true});if(_user)buildCarousel()});
 db.ref('shifts').on('value',function(s){allMyShifts=[];s.forEach(function(c){var x=c.val();x._id=c.key;allMyShifts.push(x)})});
 
-/* ПОДКЛЮЧЕНИЕ БАЗЫ СТИКЕРОВ */
 db.ref('sticker_packs').on('value', function(s){ 
   globalStickerPacks = s.val() || {}; 
   if(_user) renderStickerUI();
@@ -781,7 +826,7 @@ function openSettings(){
   document.getElementById('newVkId').value=_user.vkId||'';
   document.getElementById('chatSize').value=localStorage.getItem('chatSize')||'300';
   document.getElementById('chatFont').value=localStorage.getItem('chatFont')||'13';
-  document.getElementById('appTheme').value=localStorage.getItem('appTheme')||'creator'; /* ПОДГРУЗКА ТЕМЫ В СЕЛЕКТОР */
+  document.getElementById('appTheme').value=localStorage.getItem('appTheme')||'creator';
   
   loadPunkts(function(p){var s=document.getElementById('newPunkt');s.innerHTML='<option value="">Не менять</option>';for(var i=0;i<p.length;i++){s.innerHTML+='<option value="'+p[i]+'">'+p[i]+'</option>'}})
 }
@@ -791,9 +836,8 @@ function saveSettings(){
   var nn=document.getElementById('newName').value.trim(),np=document.getElementById('newPass').value.trim(),npu=document.getElementById('newPunkt').value,nvk=document.getElementById('newVkId').value.trim(),ok=_user.name,up={};
   var cs=document.getElementById('chatSize').value,cf=document.getElementById('chatFont').value, th=document.getElementById('appTheme').value;
   
-  /* СОХРАНЕНИЕ НАСТРОЕК ВНЕШНЕГО ВИДА */
   localStorage.setItem('chatSize',cs);localStorage.setItem('chatFont',cf);
-  applyTheme(th); /* ПРИМЕНЯЕМ ВЫБРАННУЮ ТЕМУ */
+  applyTheme(th);
   document.getElementById('chat').style.maxHeight=cs+'px';document.getElementById('chat').style.fontSize=cf+'px';
   
   if(nn&&nn!==_user.name){up['users/'+nn]={name:nn,punkt:npu||_user.punkt,password:_user.password,bonus:0,avatar:newAvatarData||_user.avatar||'',vkId:nvk||_user.vkId||''};if(np)up['users/'+nn+'/password']=np;up['users/'+ok]=null;_user.name=nn;if(npu)_user.punkt=npu;if(nvk)_user.vkId=nvk}
@@ -828,7 +872,7 @@ function loadChat(){
         var c='';
         if(m.text) c+=m.text;
         if(m.photo) c+='<br><img class="chat-img" src="'+(m.thumb||m.photo)+'" onclick="event.stopPropagation();viewPhoto(\''+m.photo+'\')">';
-        if(m.sticker) c+='<img class="chat-sticker" src="'+m.sticker+'">'; // ОТОБРАЖЕНИЕ СТИКЕРА
+        if(m.sticker) c+='<img class="chat-sticker" src="'+m.sticker+'">';
         if(m.photos&&m.photos.length){c+='<div class="photo-pack">';for(var pi=0;pi<m.photos.length;pi++){var p=m.photos[pi],pt=typeof p==='object'?p.thumb:p;c+='<img class="thumb" src="'+pt+'" onclick="event.stopPropagation();viewPack(\''+JSON.stringify(m.photos.map(function(x){return typeof x==='object'?x.full:x}).join('|||')).replace(/'/g,"&#39;").replace(/"/g,'&quot;')+'\')">'}c+='</div>'}
         return c;
       };
@@ -863,7 +907,6 @@ function delChatMsg(key,type){if(openDropdown){openDropdown.classList.remove('sh
 function pinMsg(key){if(openDropdown){openDropdown.classList.remove('show');openDropdown=null}db.ref('chat/'+key).once('value',function(s){if(s.exists()){db.ref('pinned').set(s.val());showToast('📌 Закреплено!');}})}
 function loadPinned(){db.ref('pinned').on('value',function(s){var b=document.getElementById('pinnedMessage');if(!s.exists()){b.style.display='none';return}var m=s.val();b.style.display='block';b.innerHTML='📌 <b>'+(m.user||'?').replace('🌌 ','')+':</b> '+m.text})}
 
-/* ЛОГИКА ОТПРАВКИ СООБЩЕНИЙ */
 function sendMsg(textOverride){
   var input=document.getElementById('chatMsgInput'), t = textOverride || input.value.trim();
   if(!t||!_user)return;
@@ -883,7 +926,7 @@ function sendMsg(textOverride){
 }
 document.getElementById('chatMsgInput').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();sendMsg()}});
 
-/* СИСТЕМА СТИКЕРОВ В ЧАТЕ */
+/* СТИКЕРЫ */
 function toggleStickerPanel(e){
   if(e) e.stopPropagation();
   var p = document.getElementById('stickerPanel');
@@ -910,14 +953,12 @@ function renderStickerUI() {
   
   var packs = getAccessiblePacks();
   
-  // Вкладки
   let tabsHtml = `<button class="st-tab ${currentStickerTab === 'emoji' ? 'active' : ''}" onclick="event.stopPropagation(); setStickerTab('emoji')">😀</button>`;
   packs.forEach(p => {
     tabsHtml += `<button class="st-tab ${currentStickerTab === p.id ? 'active' : ''}" onclick="event.stopPropagation(); setStickerTab('${p.id}')"><img src="${p.pack.icon || ''}"></button>`;
   });
   tabsContainer.innerHTML = tabsHtml;
   
-  // Контент
   let contentHtml = '';
   if(currentStickerTab === 'emoji') {
     BASE_EMOJIS.forEach(e => {
@@ -937,171 +978,59 @@ function renderStickerUI() {
   contentContainer.innerHTML = contentHtml;
 }
 
-function setStickerTab(tabId) {
-  currentStickerTab = tabId;
-  renderStickerUI();
-}
-
-function insertEmoji(em) {
-  var input = document.getElementById('chatMsgInput');
-  input.value += em;
-  input.focus();
-}
-
+function setStickerTab(tabId) { currentStickerTab = tabId; renderStickerUI(); }
+function insertEmoji(em) { var input = document.getElementById('chatMsgInput'); input.value += em; input.focus(); }
 function sendSticker(imgBase64) {
   if(!_user) return;
   var ref=privateChatWith?getPrivateChatRef():db.ref('chat');
-  ref.push({
-    user: '🌌 ' + _user.name, 
-    text: '', 
-    sticker: imgBase64, 
-    timestamp: Date.now(), 
-    creator: !0, 
-    likes: {}
-  });
+  ref.push({ user: '🌌 ' + _user.name, text: '', sticker: imgBase64, timestamp: Date.now(), creator: !0, likes: {} });
   document.getElementById('stickerPanel').classList.remove('show');
 }
 
-/* УПРАВЛЕНИЕ СТИКЕРПАКАМИ В НАСТРОЙКАХ */
-function openStickerManager() {
-  document.getElementById('settingsCard').style.display = 'none';
-  document.getElementById('stickerManagerCard').style.display = 'block';
-  renderStickerManagerList();
-}
-function closeStickerManager() {
-  document.getElementById('stickerManagerCard').style.display = 'none';
-  document.getElementById('settingsCard').style.display = 'block';
-}
-
+/* УПРАВЛЕНИЕ ПАКАМИ */
+function openStickerManager() { document.getElementById('settingsCard').style.display = 'none'; document.getElementById('stickerManagerCard').style.display = 'block'; renderStickerManagerList(); }
+function closeStickerManager() { document.getElementById('stickerManagerCard').style.display = 'none'; document.getElementById('settingsCard').style.display = 'block'; }
 function renderStickerManagerList() {
-  var container = document.getElementById('smPackList');
-  if(!container) return;
+  var container = document.getElementById('smPackList'); if(!container) return;
   var packs = getAccessiblePacks();
-  if(packs.length === 0) {
-    container.innerHTML = '<p style="color:#aaa; text-align:center;">У вас пока нет стикерпаков.</p>';
-    return;
-  }
+  if(packs.length === 0) { container.innerHTML = '<p style="color:#aaa; text-align:center;">У вас пока нет стикерпаков.</p>'; return; }
   let h = '';
-  packs.forEach(p => {
-    let stCount = p.pack.stickers ? Object.keys(p.pack.stickers).length : 0;
-    h += `<div class="pack-list-item">
-      <img class="pack-icon" src="${p.pack.icon}">
-      <div style="flex:1"><b>${p.pack.name}</b><br><small style="color:#aaa">${stCount} стикеров</small></div>
-      <button class="btn-blue" style="width:auto; padding:8px" onclick="openPackEditor('${p.id}')">✏️ Редакт.</button>
-    </div>`;
-  });
+  packs.forEach(p => { let stCount = p.pack.stickers ? Object.keys(p.pack.stickers).length : 0;
+    h += `<div class="pack-list-item"><img class="pack-icon" src="${p.pack.icon}"><div style="flex:1"><b>${p.pack.name}</b><br><small style="color:#aaa">${stCount} стикеров</small></div><button class="btn-blue" style="width:auto; padding:8px" onclick="openPackEditor('${p.id}')">✏️ Редакт.</button></div>`; });
   container.innerHTML = h;
 }
-
 function createNewPack() {
-  var name = document.getElementById('newPackName').value.trim();
-  var fileInput = document.getElementById('newPackIcon');
-  if(!name || !fileInput.files[0]) {
-    showToast('Введите название и выберите иконку (PNG)!', true);
-    return;
-  }
+  var name = document.getElementById('newPackName').value.trim(), fileInput = document.getElementById('newPackIcon');
+  if(!name || !fileInput.files[0]) { showToast('Введите название и выберите иконку (PNG)!', true); return; }
   var r = new FileReader();
-  r.onload = function(e) {
-    db.ref('sticker_packs').push({
-      name: name,
-      creator: _user.name,
-      icon: e.target.result,
-      allowed_users: {},
-      timestamp: Date.now()
-    }).then(() => {
-      document.getElementById('newPackName').value = '';
-      fileInput.value = '';
-      showToast('✅ Пак создан!');
-    });
-  };
+  r.onload = function(e) { db.ref('sticker_packs').push({ name: name, creator: _user.name, icon: e.target.result, allowed_users: {}, timestamp: Date.now() }).then(() => { document.getElementById('newPackName').value = ''; fileInput.value = ''; showToast('✅ Пак создан!'); }); };
   r.readAsDataURL(fileInput.files[0]);
 }
-
 function openPackEditor(packId) {
-  activePackIdForEdit = packId;
-  document.getElementById('stickerManagerCard').style.display = 'none';
-  document.getElementById('packEditorCard').style.display = 'block';
-  
-  // Заполняем выпадающий список эмодзи
-  var sel = document.getElementById('peNewStickerEmoji');
-  sel.innerHTML = '';
-  BASE_EMOJIS.forEach(e => { sel.innerHTML += `<option value="${e}">${e}</option>`; });
-  
+  activePackIdForEdit = packId; document.getElementById('stickerManagerCard').style.display = 'none'; document.getElementById('packEditorCard').style.display = 'block';
+  var sel = document.getElementById('peNewStickerEmoji'); sel.innerHTML = ''; BASE_EMOJIS.forEach(e => { sel.innerHTML += `<option value="${e}">${e}</option>`; });
   renderPackEditor();
 }
-
-function closePackEditor() {
-  activePackIdForEdit = null;
-  document.getElementById('packEditorCard').style.display = 'none';
-  document.getElementById('stickerManagerCard').style.display = 'block';
-}
-
+function closePackEditor() { activePackIdForEdit = null; document.getElementById('packEditorCard').style.display = 'none'; document.getElementById('stickerManagerCard').style.display = 'block'; }
 function renderPackEditor() {
-  if(!activePackIdForEdit) return;
-  var pack = globalStickerPacks[activePackIdForEdit];
-  if(!pack) return;
-  
+  if(!activePackIdForEdit) return; var pack = globalStickerPacks[activePackIdForEdit]; if(!pack) return;
   document.getElementById('peTitle').innerText = 'Редактируем: ' + pack.name;
-  
-  // Список пользователей для прав
-  var uList = document.getElementById('peUserList');
-  let hUsers = '';
-  for(let uname in allUserData) {
-    if(uname === _user.name) continue;
-    let isAllowed = pack.allowed_users && pack.allowed_users[uname];
-    hUsers += `<div class="user-cb-item">
-      <input type="checkbox" id="cb_${uname}" ${isAllowed ? 'checked' : ''} onchange="togglePackAccess('${uname}', this.checked)">
-      <label for="cb_${uname}">${uname}</label>
-    </div>`;
-  }
+  var uList = document.getElementById('peUserList'); let hUsers = '';
+  for(let uname in allUserData) { if(uname === _user.name) continue; let isAllowed = pack.allowed_users && pack.allowed_users[uname];
+    hUsers += `<div class="user-cb-item"><input type="checkbox" id="cb_${uname}" ${isAllowed ? 'checked' : ''} onchange="togglePackAccess('${uname}', this.checked)"><label for="cb_${uname}">${uname}</label></div>`; }
   uList.innerHTML = hUsers;
-  
-  // Список стикеров
-  var sList = document.getElementById('peStickersList');
-  let hStickers = '';
-  if(pack.stickers) {
-    for(let sId in pack.stickers) {
-      let st = pack.stickers[sId];
-      hStickers += `<div style="position:relative; width:60px; height:60px; background:rgba(255,255,255,0.05); border-radius:8px; display:flex; align-items:center; justify-content:center;">
-        <img src="${st.img}" style="max-width:100%; max-height:100%; object-fit:contain;">
-        <div style="position:absolute; bottom:-5px; right:-5px; background:#000; border-radius:50%; font-size:12px; border:1px solid #444; width:20px; height:20px; text-align:center;">${st.emoji}</div>
-      </div>`;
-    }
-  } else {
-    hStickers = '<small style="color:#aaa">Пока пусто.</small>';
-  }
+  var sList = document.getElementById('peStickersList'); let hStickers = '';
+  if(pack.stickers) { for(let sId in pack.stickers) { let st = pack.stickers[sId];
+    hStickers += `<div style="position:relative; width:60px; height:60px; background:rgba(255,255,255,0.05); border-radius:8px; display:flex; align-items:center; justify-content:center;"><img src="${st.img}" style="max-width:100%; max-height:100%; object-fit:contain;"><div style="position:absolute; bottom:-5px; right:-5px; background:#000; border-radius:50%; font-size:12px; border:1px solid #444; width:20px; height:20px; text-align:center;">${st.emoji}</div></div>`; } }
+  else { hStickers = '<small style="color:#aaa">Пока пусто.</small>'; }
   sList.innerHTML = hStickers;
 }
-
-function togglePackAccess(username, isAllowed) {
-  if(!activePackIdForEdit) return;
-  if(isAllowed) {
-    db.ref(`sticker_packs/${activePackIdForEdit}/allowed_users/${username}`).set(true);
-  } else {
-    db.ref(`sticker_packs/${activePackIdForEdit}/allowed_users/${username}`).remove();
-  }
-}
-
+function togglePackAccess(username, isAllowed) { if(!activePackIdForEdit) return; if(isAllowed) { db.ref(`sticker_packs/${activePackIdForEdit}/allowed_users/${username}`).set(true); } else { db.ref(`sticker_packs/${activePackIdForEdit}/allowed_users/${username}`).remove(); } }
 function uploadStickerToPack() {
-  if(!activePackIdForEdit) return;
-  var fileInput = document.getElementById('peNewStickerImg');
-  var emoji = document.getElementById('peNewStickerEmoji').value;
-  if(!fileInput.files[0]) {
-    showToast('Выберите PNG файл стикера!', true);
-    return;
-  }
+  if(!activePackIdForEdit) return; var fileInput = document.getElementById('peNewStickerImg'), emoji = document.getElementById('peNewStickerEmoji').value;
+  if(!fileInput.files[0]) { showToast('Выберите PNG файл стикера!', true); return; }
   var r = new FileReader();
-  r.onload = function(e) {
-    db.ref(`sticker_packs/${activePackIdForEdit}/stickers`).push({
-      img: e.target.result,
-      emoji: emoji,
-      timestamp: Date.now()
-    }).then(() => {
-      fileInput.value = '';
-      showToast('✅ Стикер добавлен!');
-      renderPackEditor(); // Обновляем UI после загрузки
-    });
-  };
+  r.onload = function(e) { db.ref(`sticker_packs/${activePackIdForEdit}/stickers`).push({ img: e.target.result, emoji: emoji, timestamp: Date.now() }).then(() => { fileInput.value = ''; showToast('✅ Стикер добавлен!'); renderPackEditor(); }); };
   r.readAsDataURL(fileInput.files[0]);
 }
 
