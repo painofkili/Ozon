@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -11,6 +11,7 @@
   --live-btn: #8B00FF;
   --live-radius: 12px;
   --live-speed: 0.3s;
+  --live-easing: ease;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -24,26 +25,112 @@ body {
   background: var(--live-bg);
   min-height: 100vh;
   overflow-x: hidden;
-  transition: background var(--live-speed) ease, color var(--live-speed) ease;
+  transition: background var(--live-speed) var(--live-easing), color var(--live-speed) var(--live-easing);
 }
 
-/* ФОН */
-.bg { width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; background: radial-gradient(circle at 50% 20%, #12092b 0%, #060612 70%, #020205 100%); z-index: -1000; pointer-events: none; transition: background var(--live-speed) ease; }
-.stars-overlay { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-image: radial-gradient(white, rgba(255,255,255,.2) 1.5px, transparent 40px), radial-gradient(rgba(138,43,226,0.25), rgba(255,255,255,.1) 1px, transparent 30px); background-size: 450px 450px, 300px 350px; background-position: 0 0, 40px 60px; opacity: 0.3; animation: backgroundStarRotate 300s linear infinite; will-change: transform; transition: opacity var(--live-speed) ease; }
+/* ====== ФОН (БАЗОВЫЙ + ПАРАЛЛАКС) ====== */
+.bg { 
+  width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; 
+  background: radial-gradient(circle at 50% 20%, #12092b 0%, #060612 70%, #020205 100%); 
+  z-index: -1000; pointer-events: none; 
+  transition: background var(--live-speed) var(--live-easing); 
+  overflow: hidden;
+}
+
+.stars-overlay { 
+  position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; 
+  background-image: radial-gradient(white, rgba(255,255,255,.2) 1.5px, transparent 40px), 
+                    radial-gradient(rgba(138,43,226,0.25), rgba(255,255,255,.1) 1px, transparent 30px); 
+  background-size: 450px 450px, 300px 350px; 
+  background-position: 0 0, 40px 60px; 
+  opacity: 0.3; 
+  animation: backgroundStarRotate 300s linear infinite; 
+  will-change: transform; 
+  transition: opacity var(--live-speed) var(--live-easing); 
+}
 @keyframes backgroundStarRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-/* СТРУКТУРА */
+/* ====== ПАРАЛЛАКС-ФОН С ТАЙЛАМИ ====== */
+.z-1, .z-2, .z-3 {
+  position: absolute;
+  width: 120%;
+  height: 120%;
+  top: -10%;
+  left: -10%;
+  transition: transform 0.1s ease-out;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.tile {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  border-radius: 24px;
+  opacity: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(1px);
+}
+
+.tile.top-left    { top: 5%; left: 5%; }
+.tile.top-right   { top: 5%; right: 5%; }
+.tile.bottom-left  { bottom: 5%; left: 5%; }
+.tile.bottom-right { bottom: 5%; right: 5%; }
+.tile.center       { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+
+.tile.topleft     { background-image: url('https://raw.githubusercontent.com/painofkili/ozon/main/topleft.png'); }
+.tile.topright    { background-image: url('https://raw.githubusercontent.com/painofkili/ozon/main/topright.png'); }
+.tile.bottomleft  { background-image: url('https://raw.githubusercontent.com/painofkili/ozon/main/bottomleft.png'); }
+.tile.bottomright { background-image: url('https://raw.githubusercontent.com/painofkili/ozon/main/bottomright.png'); }
+.tile.center      { background-image: url('https://raw.githubusercontent.com/painofkili/ozon/main/topleft.png'); }
+
+.animate-opacity {
+  animation: slide-transparency var(--duration, 6s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes slide-transparency {
+  0%   { opacity: 0; }
+  50%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.freq-4  { --duration: 4s; }
+.freq-5  { --duration: 5s; }
+.freq-6  { --duration: 6s; }
+.freq-7  { --duration: 7s; }
+.freq-8  { --duration: 8s; }
+.freq-9  { --duration: 9s; }
+.freq-10 { --duration: 10s; }
+.freq-11 { --duration: 11s; }
+
+.delay-0 { --delay: 0s; }
+.delay-1 { --delay: 1s; }
+.delay-2 { --delay: 2s; }
+.delay-3 { --delay: 3s; }
+.delay-4 { --delay: 4s; }
+.delay-5 { --delay: 5s; }
+
+body.parallax-active .bg {
+  background: transparent !important;
+}
+body.parallax-active .stars-overlay {
+  opacity: 0.1;
+}
+
+/* ====== СТРУКТУРА ====== */
 .app-container { display: flex; width: 100%; min-height: 100vh; position: relative; z-index: 1; justify-content: center; }
 .main-content { width: 100%; max-width: 680px; padding: 12px 16px; display: block; }
 
-/* САЙДБАР */
+/* ====== САЙДБАР ====== */
 .avatar-carousel { 
   width: 110px; background: rgba(10, 10, 25, 0.95); 
   border-left: 1px solid rgba(138, 43, 226, 0.3); 
   display: flex; flex-direction: column; align-items: center; 
   position: fixed; top: 0; right: -130px; height: 100vh; 
   padding: 50px 0 20px 0; z-index: 1000; backdrop-filter: blur(15px); 
-  transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1), background var(--live-speed) ease, border var(--live-speed) ease; 
+  transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1), background var(--live-speed) var(--live-easing), border var(--live-speed) var(--live-easing); 
   box-shadow: -10px 0 30px rgba(0, 0, 0, 0.7);
 }
 .avatar-carousel.open { right: 0; }
@@ -54,7 +141,6 @@ body {
 }
 .avatar-carousel-inner::-webkit-scrollbar { display: none; }
 
-/* ЭЛЕМЕНТЫ САЙДБАРА */
 .sidebar-close-btn { position: absolute; top: 12px; left: 12px; background: rgba(255,255,255,0.1); border: none; color: #fff; width: 28px; height: 28px; border-radius: 50%; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
 .sidebar-close-btn:hover { background: #e94560; }
 .btn-sidebar-toggle { position: fixed; right: 0; top: 50%; transform: translateY(-50%); width: 40px; height: 60px; background: rgba(138, 43, 226, 0.7); border: 1px solid rgba(255,255,255,0.2); border-right: none; border-radius: 12px 0 0 12px; color: white; font-size: 18px; cursor: pointer; z-index: 999; display: flex; align-items: center; justify-content: center; box-shadow: -4px 0 15px rgba(138,43,226,0.3); transition: all 0.2s; backdrop-filter: blur(5px); }
@@ -68,30 +154,30 @@ body {
 .avatar-item.active img, .avatar-item.active .av-placeholder { border-color: #f5c518; }
 .avatar-item .online-dot { position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; background: #4CAF50; border-radius: 50%; border: 2px solid #111; box-shadow: 0 0 8px rgba(76,175,80,0.8); z-index: 2; }
 
-/* МИНИ-ПРОФИЛЬ */
-.mini-profile { position: fixed; right: 120px; top: 50%; transform: translateY(-50%); background: rgba(15, 15, 30, 0.98); border: 1px solid rgba(138,43,226,0.5); border-radius: 16px; padding: 20px 16px 16px 16px; width: 250px; z-index: 1100; display: none; backdrop-filter: blur(20px); box-shadow: 0 10px 40px rgba(0,0,0,0.8); transition: background var(--live-speed) ease, border var(--live-speed) ease; }
+/* ====== МИНИ-ПРОФИЛЬ ====== */
+.mini-profile { position: fixed; right: 120px; top: 50%; transform: translateY(-50%); background: rgba(15, 15, 30, 0.98); border: 1px solid rgba(138,43,226,0.5); border-radius: 16px; padding: 20px 16px 16px 16px; width: 250px; z-index: 1100; display: none; backdrop-filter: blur(20px); box-shadow: 0 10px 40px rgba(0,0,0,0.8); transition: background var(--live-speed) var(--live-easing), border var(--live-speed) var(--live-easing); }
 .mini-profile.show { display: block; animation: slideIn 0.2s ease-out; }
 @keyframes slideIn { from { opacity: 0; transform: translateY(-50%) translateX(20px); } to { opacity: 1; transform: translateY(-50%) translateX(0); } }
 .mp-close-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.1); border: none; color: #ccc; width: 24px; height: 24px; border-radius: 50%; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10; }
 .mp-close-btn:hover { background: #e94560; color: white; }
 .mini-profile .mp-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; margin: 0 auto; display: block; border: 2px solid #8B00FF; }
 .mini-profile .mp-placeholder { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #444, #555); display: flex; align-items: center; justify-content: center; font-size: 24px; color: #ccc; margin: 0 auto; }
-.mini-profile .mp-name { text-align: center; font-weight: bold; font-size: 16px; margin-top: 8px; color: #fff; transition: color var(--live-speed) ease;}
-.mini-profile .mp-status { text-align: center; font-size: 12px; padding: 4px 10px; border-radius: 10px; display: inline-block; margin: 4px auto; width: fit-content; background: rgba(138,43,226,0.2); border: 1px solid rgba(138,43,226,0.4); color: #fff; transition: color var(--live-speed) ease, background var(--live-speed) ease;}
+.mini-profile .mp-name { text-align: center; font-weight: bold; font-size: 16px; margin-top: 8px; color: #fff; transition: color var(--live-speed) var(--live-easing);}
+.mini-profile .mp-status { text-align: center; font-size: 12px; padding: 4px 10px; border-radius: 10px; display: inline-block; margin: 4px auto; width: fit-content; background: rgba(138,43,226,0.2); border: 1px solid rgba(138,43,226,0.4); color: #fff; transition: color var(--live-speed) var(--live-easing), background var(--live-speed) var(--live-easing);}
 .mini-profile .mp-punkt { text-align: center; font-size: 12px; color: #aaa; }
 .mini-profile .mp-calendar { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; text-align: center; font-size: 10px; margin-top: 8px; }
 .mini-profile .mp-calendar div { padding: 4px; border-radius: 3px; background: rgba(255,255,255,0.05); }
 .mini-profile .mp-calendar .mp-shift { background: #4CAF50; color: #fff; font-weight: bold; }
 .mini-profile .mp-btn { width: 100%; padding: 10px; margin-top: 8px; border-radius: var(--live-radius); border: none; cursor: pointer; font-weight: bold; font-size: 13px; }
 
-/* КАРТОЧКИ, ИНПУТЫ */
+/* ====== КАРТОЧКИ, ИНПУТЫ ====== */
 .tab-content { display: none; width: 100%; }
 .tab-content.active-tab { display: block; }
 
-.card, .stat-card, .pinned, .announce-block, .thought-block { background: rgba(22,33,62,0.7); padding: 14px; border-radius: var(--live-radius); margin: 6px 0; backdrop-filter: blur(10px); border: 1px solid rgba(138,43,226,0.2); overflow: visible; transition: background var(--live-speed) ease, border var(--live-speed) ease, box-shadow var(--live-speed) ease; }
-input, select, textarea { width: 100%; padding: 12px 14px; font-size: 15px; margin: 6px 0; border-radius: var(--live-radius); border: 1px solid #444; background: rgba(15,15,30,0.8); color: #fff; outline: none; transition: background var(--live-speed) ease, color var(--live-speed) ease, border var(--live-speed) ease; }
+.card, .stat-card, .pinned, .announce-block, .thought-block { background: rgba(22,33,62,0.7); padding: 14px; border-radius: var(--live-radius); margin: 6px 0; backdrop-filter: blur(10px); border: 1px solid rgba(138,43,226,0.2); overflow: visible; transition: background var(--live-speed) var(--live-easing), border var(--live-speed) var(--live-easing), box-shadow var(--live-speed) var(--live-easing); }
+input, select, textarea { width: 100%; padding: 12px 14px; font-size: 15px; margin: 6px 0; border-radius: var(--live-radius); border: 1px solid #444; background: rgba(15,15,30,0.8); color: #fff; outline: none; transition: background var(--live-speed) var(--live-easing), color var(--live-speed) var(--live-easing), border var(--live-speed) var(--live-easing); }
 input:focus, select:focus, textarea:focus { border-color: #8B00FF; }
-button { border: none; font-weight: bold; cursor: pointer; border-radius: var(--live-radius); transition: filter 0.2s, background var(--live-speed) ease, border var(--live-speed) ease, box-shadow var(--live-speed) ease, color var(--live-speed) ease; }
+button { border: none; font-weight: bold; cursor: pointer; border-radius: var(--live-radius); transition: filter 0.2s, background var(--live-speed) var(--live-easing), border var(--live-speed) var(--live-easing), box-shadow var(--live-speed) var(--live-easing), color var(--live-speed) var(--live-easing); }
 button:hover { filter: brightness(1.1); }
 .btn-green { background: #4CAF50; color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
 .btn-blue { background: #2196F3; color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
@@ -100,14 +186,14 @@ button:hover { filter: brightness(1.1); }
 .btn-gold { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
 button:disabled { opacity: 0.5; cursor: default; }
 
-/* КАЛЕНДАРЬ */
-.calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 12px; background: rgba(22,33,62,0.5); border-radius: var(--live-radius); padding: 6px; border: 1px solid rgba(138,43,226,0.15); margin-bottom: 8px; transition: background var(--live-speed) ease; }
+/* ====== КАЛЕНДАРЬ ====== */
+.calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 12px; background: rgba(22,33,62,0.5); border-radius: var(--live-radius); padding: 6px; border: 1px solid rgba(138,43,226,0.15); margin-bottom: 8px; transition: background var(--live-speed) var(--live-easing); }
 .calendar div { padding: 6px; border-radius: 4px; }
 .calendar .shift-day { background: #4CAF50; color: #fff; font-weight: bold; }
 .calendar .today { border: 2px solid #2196F3; }
 .calendar .header { font-weight: bold; background: rgba(51,51,51,0.7); }
 
-/* 3D АТОМ */
+/* ====== 3D АТОМ ====== */
 .avatar-wrapper { position: relative; display: inline-block; width: 76px; height: 76px; flex-shrink: 0; perspective: 1000px; transform-style: preserve-3d; }
 .avatar { width: 76px; height: 76px; border-radius: 50%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 10; border: 2px solid #111; display: block; transform: translateZ(0); }
 .avatar-creator { box-shadow: 0 0 15px rgba(138,43,226,0.5); }
@@ -126,23 +212,23 @@ button:disabled { opacity: 0.5; cursor: default; }
 .quantum-halo { position: absolute; inset: -6px; border-radius: 50%; background: radial-gradient(circle, rgba(138,43,226,0.2) 0%, transparent 70%); z-index: 1; pointer-events: none; animation: corePulse 3s ease-in-out infinite; }
 @keyframes corePulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } }
 
-/* ПРОФИЛЬ, ВКЛАДКИ */
+/* ====== ПРОФИЛЬ, ВКЛАДКИ ====== */
 .profile-row { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; padding: 8px 0; }
 .creator-badge { font-size: 12px; font-weight: bold; padding: 4px 10px; border-radius: 12px; background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; display: inline-block; letter-spacing: 0.5px; }
 .creator-name { background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
 
 .tabs { display: flex; gap: 6px; margin: 10px 0; overflow-x: auto; scrollbar-width: none; }
 .tabs::-webkit-scrollbar { display: none; }
-.tabs button { width: 44px; height: 44px; display: flex; align-items: center; gap: 0.5rem; overflow: hidden; border-radius: 999px; transition: width .3s ease, background var(--live-speed) ease, border-color var(--live-speed) ease, color var(--live-speed) ease; background: rgba(255, 255, 255, 0.08); color: #ccc; border: 1px solid transparent; cursor: pointer; padding: 0 12px; font-size: 13px; white-space: nowrap; flex-shrink: 0; }
+.tabs button { width: 44px; height: 44px; display: flex; align-items: center; gap: 0.5rem; overflow: hidden; border-radius: 999px; transition: width .3s ease, background var(--live-speed) var(--live-easing), border-color var(--live-speed) var(--live-easing), color var(--live-speed) var(--live-easing); background: rgba(255, 255, 255, 0.08); color: #ccc; border: 1px solid transparent; cursor: pointer; padding: 0 12px; font-size: 13px; white-space: nowrap; flex-shrink: 0; }
 .tabs button:hover { width: 110px; background: rgba(255,255,255,0.15); color: #fff; }
 .tabs button.active { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; width: 110px; box-shadow: 0 4px 12px rgba(138,43,226,0.3); border-color: rgba(255,255,255,0.2); }
 .tabs button .menu-icon { font-size: 16px; flex-shrink: 0; }
 .tabs button .menu-label { opacity: 0; max-width: 0; transform: translateX(-6px); transition: all 0.2s ease; }
 .tabs button:hover .menu-label, .tabs button.active .menu-label { opacity: 1; max-width: 80px; transform: translateX(0); }
 
-/* ЧАТ */
+/* ====== ЧАТ ====== */
 .chat-section { margin: 8px 0; display: flex; flex-direction: column; }
-.chat-header-bar { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px 14px; background: rgba(22,33,62,0.7); border-radius: var(--live-radius); border: 1px solid rgba(138, 43, 226, 0.2); margin-bottom: 6px; font-size: 14px; transition: background 0.2s, border var(--live-speed) ease; }
+.chat-header-bar { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px 14px; background: rgba(22,33,62,0.7); border-radius: var(--live-radius); border: 1px solid rgba(138, 43, 226, 0.2); margin-bottom: 6px; font-size: 14px; transition: background 0.2s, border var(--live-speed) var(--live-easing); }
 .chat-header-bar:hover { background: rgba(22,33,62,0.9); }
 .chat-icon { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #f5c518, #8B00FF); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; box-shadow: 0 0 10px rgba(138,43,226,0.4); }
 .chat-label { flex: 1; font-weight: bold; background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -152,39 +238,24 @@ button:disabled { opacity: 0.5; cursor: default; }
 .chat-back-btn { background: none; border: 1px solid rgba(138,43,226,0.4); color: #ccc; padding: 4px 10px; border-radius: 8px; font-size: 12px; cursor: pointer; display: none; }
 
 #chat { 
-  overflow-y: auto; 
-  padding: 10px; 
-  border-radius: var(--live-radius); 
-  background: rgba(15, 15, 30, 0.6); 
-  font-size: 13px; 
+  overflow-y: auto; padding: 10px; border-radius: var(--live-radius); 
+  background: rgba(15, 15, 30, 0.6); font-size: 13px; 
   border: 1px solid rgba(138, 43, 226, 0.15); 
-  transition: max-height var(--live-speed) ease, padding var(--live-speed) ease, 
-              background var(--live-speed) ease, border var(--live-speed) ease, 
-              opacity var(--live-speed) ease, margin var(--live-speed) ease;
-  max-height: 300px; 
-  margin-bottom: 6px;
-  opacity: 1;
+  transition: max-height var(--live-speed) var(--live-easing), padding var(--live-speed) var(--live-easing), background var(--live-speed) var(--live-easing), border var(--live-speed) var(--live-easing);
+  max-height: 300px; margin-bottom: 6px;
 }
-#chat.hidden { 
-  max-height: 0 !important; 
-  padding-top: 0 !important; 
-  padding-bottom: 0 !important; 
-  margin-bottom: 0 !important;
-  opacity: 0;
-  overflow: hidden; 
-  border: none; 
-}
+#chat.hidden { max-height: 0 !important; padding-top: 0 !important; padding-bottom: 0 !important; overflow: hidden; opacity: 0; border: none; }
 
 .chat-bubble-group { margin: 6px 0; display: flex; flex-direction: column; position: relative; overflow: visible; }
 .chat-bubble-group.mine { align-items: flex-end; } .chat-bubble-group.other { align-items: flex-start; }
-.chat-bubble { background: rgba(30, 30, 50, 0.9); padding: 8px 12px; border-radius: var(--live-radius); margin: 2px 0; display: inline-block; max-width: 82%; word-break: break-word; border: 1px solid rgba(255,255,255,0.05); position: relative; transition: background var(--live-speed) ease, border var(--live-speed) ease, color var(--live-speed) ease; }
+.chat-bubble { background: rgba(30, 30, 50, 0.9); padding: 8px 12px; border-radius: var(--live-radius); margin: 2px 0; display: inline-block; max-width: 82%; word-break: break-word; border: 1px solid rgba(255,255,255,0.05); position: relative; transition: background var(--live-speed) var(--live-easing), border var(--live-speed) var(--live-easing), color var(--live-speed) var(--live-easing); }
 .chat-bubble.mine { background: rgba(76, 175, 80, 0.15); border: 1px solid rgba(76, 175, 80, 0.3); }
-.chat-msg-creator { background: linear-gradient(135deg, rgba(245, 197, 24, 0.15), rgba(138, 43, 226, 0.2)); border: 1px solid rgba(138, 43, 226, 0.4); padding: 8px 12px; border-radius: var(--live-radius); margin: 2px 0; display: inline-block; max-width: 82%; position: relative; transition: background var(--live-speed) ease, border var(--live-speed) ease; }
+.chat-msg-creator { background: linear-gradient(135deg, rgba(245, 197, 24, 0.15), rgba(138, 43, 226, 0.2)); border: 1px solid rgba(138, 43, 226, 0.4); padding: 8px 12px; border-radius: var(--live-radius); margin: 2px 0; display: inline-block; max-width: 82%; position: relative; transition: background var(--live-speed) var(--live-easing), border var(--live-speed) var(--live-easing); }
 .chat-msg-creator .author { background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
 .avatar-mini { width: 32px !important; height: 32px !important; border-radius: 50%; object-fit: cover; margin-right: 6px; vertical-align: middle; cursor: pointer; }
 .avatar-mini-creator { border: 2px solid #8B00FF; }
 
-/* УВЕДОМЛЕНИЯ */
+/* ====== УВЕДОМЛЕНИЯ ====== */
 .toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10000; pointer-events: none; display: flex; flex-direction: column; gap: 8px; }
 .toast-msg { padding: 12px 20px; border-radius: var(--live-radius); background: rgba(20, 20, 35, 0.95); border: 1px solid #8B00FF; color: #fff; font-size: 14px; font-weight: bold; box-shadow: 0 5px 20px rgba(0,0,0,0.6); transform: translateY(-20px); opacity: 0; transition: all 0.3s; text-align: center; backdrop-filter: blur(5px); }
 .toast-msg.error { border-color: #ff1744; }
@@ -207,14 +278,14 @@ button:disabled { opacity: 0.5; cursor: default; }
 #photoViewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 10000; }
 #photoViewer img { max-width: 95%; max-height: 90%; border-radius: var(--live-radius); }
 
-/* СТИКЕРЫ */
+/* ====== СТИКЕРЫ ====== */
 .input-wrapper { position: relative; flex: 1; display: flex; }
 .sticker-toggle { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 20px; cursor: pointer; color: #aaa; transition: color 0.2s; padding: 5px; }
 .sticker-toggle:hover { filter: brightness(1.2); }
-.sticker-panel { position: absolute; bottom: 55px; right: 0; width: 300px; height: 350px; background: rgba(15, 15, 30, 0.98); border: 1px solid rgba(138,43,226,0.5); border-radius: var(--live-radius); display: none; flex-direction: column; z-index: 1000; box-shadow: 0 10px 40px rgba(0,0,0,0.8); backdrop-filter: blur(20px); overflow: hidden; transition: background var(--live-speed) ease, border var(--live-speed) ease; }
+.sticker-panel { position: absolute; bottom: 55px; right: 0; width: 300px; height: 350px; background: rgba(15, 15, 30, 0.98); border: 1px solid rgba(138,43,226,0.5); border-radius: var(--live-radius); display: none; flex-direction: column; z-index: 1000; box-shadow: 0 10px 40px rgba(0,0,0,0.8); backdrop-filter: blur(20px); overflow: hidden; transition: background var(--live-speed) var(--live-easing), border var(--live-speed) var(--live-easing); }
 .sticker-panel.show { display: flex; animation: fadeIn 0.2s; }
 .sticker-content { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; scrollbar-width: none; }
-.sticker-tabs { display: flex; background: rgba(22,33,62,0.9); padding: 5px; gap: 5px; overflow-x: auto; scrollbar-width: none; border-top: 1px solid rgba(138,43,226,0.2); transition: background var(--live-speed) ease; }
+.sticker-tabs { display: flex; background: rgba(22,33,62,0.9); padding: 5px; gap: 5px; overflow-x: auto; scrollbar-width: none; border-top: 1px solid rgba(138,43,226,0.2); transition: background var(--live-speed) var(--live-easing); }
 .st-tab { width: 36px; height: 36px; border-radius: 8px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; opacity: 0.6; transition: 0.2s; flex-shrink: 0; }
 .st-tab.active, .st-tab:hover { opacity: 1; background: rgba(138,43,226,0.3); }
 .st-tab img { width: 24px; height: 24px; object-fit: contain; }
@@ -231,6 +302,7 @@ button:disabled { opacity: 0.5; cursor: default; }
 .user-cb-item input { width: auto; margin: 0; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+/* ====== АДАПТИВ ====== */
 @media (max-width: 600px) {
   .mini-profile { right: 10px; left: 10px; width: calc(100% - 20px); top: auto; bottom: 80px; transform: none; }
   .mini-profile.show { animation: slideUpMobile 0.2s ease-out; }
@@ -239,7 +311,7 @@ button:disabled { opacity: 0.5; cursor: default; }
   .sticker-panel { right: -40px; width: calc(100vw - 20px); max-width: 340px; }
 }
 
-/* ТЕМЫ ОФОРМЛЕНИЯ */
+/* ====== ТЕМЫ ОФОРМЛЕНИЯ ====== */
 body.theme-minimalism { background: #f4f4f9; color: #111; }
 body.theme-minimalism .bg { background: #eaeaea; }
 body.theme-minimalism .stars-overlay { display: none; }
@@ -332,13 +404,36 @@ body.live-theme-active #chat,
 body.live-theme-active .chat-header-bar,
 body.live-theme-active .mini-profile,
 body.live-theme-active .sticker-panel {
-  transition: all var(--live-speed) ease !important;
+  transition: all var(--live-speed) var(--live-easing) !important;
 }
 </style>
 </head>
 <body>
-<div class="bg">
+
+<!-- ====== ФОН С ПАРАЛЛАКСОМ ====== -->
+<div class="bg" id="bgParallax">
   <div class="stars-overlay"></div>
+  <div class="z-1">
+    <div class="tile top-left topleft animate-opacity freq-7 delay-2"></div>
+    <div class="tile top-right topright animate-opacity freq-5 delay-0"></div>
+    <div class="tile bottom-left bottomleft animate-opacity freq-9 delay-4"></div>
+    <div class="tile bottom-right bottomright animate-opacity freq-6 delay-1"></div>
+    <div class="tile center topleft animate-opacity freq-8 delay-3"></div>
+  </div>
+  <div class="z-2" style="transform: rotate(60deg)">
+    <div class="tile top-left topright animate-opacity freq-6 delay-4"></div>
+    <div class="tile top-right bottomleft animate-opacity freq-10 delay-2"></div>
+    <div class="tile bottom-left bottomright animate-opacity freq-5 delay-0"></div>
+    <div class="tile bottom-right topleft animate-opacity freq-7 delay-3"></div>
+    <div class="tile center topright animate-opacity freq-9 delay-1"></div>
+  </div>
+  <div class="z-3" style="transform: rotate(120deg)">
+    <div class="tile top-left bottomright animate-opacity freq-8"></div>
+    <div class="tile top-right topleft animate-opacity freq-4 delay-5"></div>
+    <div class="tile bottom-left topright animate-opacity freq-11 delay-2"></div>
+    <div class="tile bottom-right bottomleft animate-opacity freq-6 delay-0"></div>
+    <div class="tile center bottomright animate-opacity freq-7 delay-3"></div>
+  </div>
 </div>
 
 <div id="toastContainer" class="toast-container"></div>
@@ -474,7 +569,7 @@ body.live-theme-active .sticker-panel {
   </div>
 </div>
 
-<!-- ====== КАРТОЧКА НАСТРОЕК (С ЖИВОЙ ТЕМОЙ) ====== -->
+<!-- ====== НАСТРОЙКИ ====== -->
 <div id="settingsCard" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;overflow-y:auto;z-index:200;padding:10px; background: rgba(0,0,0,0.85);">
   <div class="card" style="max-width:450px;margin:20px auto">
     <h3 style="text-align:center;margin-bottom:8px">⚙️ Настройки</h3>
@@ -499,7 +594,22 @@ body.live-theme-active .sticker-panel {
       <label style="display:block; margin-bottom:6px;">Фон: <input type="color" id="liveBgColor" value="#0a0a1a"></label>
       <label style="display:block; margin-bottom:6px;">Кнопки: <input type="color" id="liveBtnColor" value="#8B00FF"></label>
       <label style="display:block; margin-bottom:6px;">Скругление (px): <input type="number" id="liveRadius" value="12" min="0" max="40" step="1"></label>
-      <label style="display:block; margin-bottom:6px;">Скорость (сек): <input type="number" id="liveSpeed" value="0.3" min="0" max="3" step="0.1"></label>
+      <label style="display:block; margin-bottom:6px;">Скорость (сек): <input type="number" id="liveSpeed" value="0.3" min="0.1" max="3" step="0.1"></label>
+      <label style="display:block; margin-bottom:6px;">Анимация:
+        <select id="liveEasing">
+          <option value="ease" selected>ease (плавно)</option>
+          <option value="linear">linear (ровно)</option>
+          <option value="ease-in">ease-in (разгон)</option>
+          <option value="ease-out">ease-out (замедл.)</option>
+          <option value="ease-in-out">ease-in-out (оба)</option>
+          <option value="cubic-bezier(0.68,-0.55,0.27,1.55)">spring (пружина)</option>
+          <option value="cubic-bezier(0.23,1,0.32,1)">smooth (мягко)</option>
+          <option value="steps(4,end)">steps (пошагово)</option>
+        </select>
+      </label>
+      <label style="display:block; margin-bottom:6px; margin-top:8px;">
+        <input type="checkbox" id="liveParallax" onchange="toggleParallax()"> Параллакс-фон (тайлы)
+      </label>
       <button class="btn-gray" onclick="resetLiveTheme()" style="margin-top:6px;">🔄 Сбросить живую тему</button>
     </div>
 
@@ -579,7 +689,6 @@ firebase.initializeApp({apiKey:"AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",authDom
 var db=firebase.database(),_user=null,onShift=!1,photoBase64=[],newAvatarData=null,allMyShifts=[],allUsers={},allUserData={},activeShifts={},godData=null,CREATOR_PASS='2706',unreadCount=0,chatOpened=!0,lastChatTimestamp=0,selectedProfile=null,privateChatWith=null,openDropdown=null;
 var VK_TOKEN="vk1.a.1ccqIy8pmM0W_RnIymI9XOMvA6ILX5yxNfZZAiF5HHBdjHK_vOAimgsyljky-TCiReMgJRAlaRvpYEypifmF-iUonUGvldlw5LvDWAOSUpN1WDcnS_7Uit-Yh3BuUF5Ic5NoZ48Qhlmu4ErB87fpTplEI7E3sarTm9LC-Vd8zTbeQp4xgyB1s5yg6oBxTBaNZAFp-ioqBWG25jR8GREmWw";
 
-/* ДАННЫЕ СТИКЕРОВ */
 const BASE_EMOJIS = ['😊','😉','😘','❤️','🤘','😓','💀','💪','🫠','😂','🤣','😆','😎','🗿','🤷','🤔','😏','🙏','😭','☕️','😴','🤬','👍','👎'];
 let globalStickerPacks = {};
 let currentStickerTab = 'emoji';
@@ -594,22 +703,24 @@ function applyTheme(theme) {
   localStorage.setItem('appTheme', theme || 'creator');
 }
 
-// ========== ЖИВАЯ ТЕМА (CSS ПЕРЕМЕННЫЕ) ==========
+/* ========== ЖИВАЯ ТЕМА (CSS ПЕРЕМЕННЫЕ) ========== */
 function applyLiveTheme() {
   const bg = document.getElementById('liveBgColor')?.value || '#0a0a1a';
   const btn = document.getElementById('liveBtnColor')?.value || '#8B00FF';
   const radius = (document.getElementById('liveRadius')?.value || 12) + 'px';
   const speed = (document.getElementById('liveSpeed')?.value || 0.3) + 's';
+  const easing = document.getElementById('liveEasing')?.value || 'ease';
 
   const root = document.documentElement;
   root.style.setProperty('--live-bg', bg);
   root.style.setProperty('--live-btn', btn);
   root.style.setProperty('--live-radius', radius);
   root.style.setProperty('--live-speed', speed);
+  root.style.setProperty('--live-easing', easing);
 
   document.body.classList.add('live-theme-active');
 
-  const settings = { liveBg: bg, liveBtn: btn, liveRadius: radius, liveSpeed: speed };
+  const settings = { liveBg: bg, liveBtn: btn, liveRadius: radius, liveSpeed: speed, liveEasing: easing };
   localStorage.setItem('liveThemeSettings', JSON.stringify(settings));
 }
 
@@ -621,14 +732,17 @@ function resetLiveTheme() {
   root.style.setProperty('--live-btn', '#8B00FF');
   root.style.setProperty('--live-radius', '12px');
   root.style.setProperty('--live-speed', '0.3s');
+  root.style.setProperty('--live-easing', 'ease');
   const bgInput = document.getElementById('liveBgColor');
   const btnInput = document.getElementById('liveBtnColor');
   const radiusInput = document.getElementById('liveRadius');
   const speedInput = document.getElementById('liveSpeed');
+  const easingInput = document.getElementById('liveEasing');
   if (bgInput) bgInput.value = '#0a0a1a';
   if (btnInput) btnInput.value = '#8B00FF';
   if (radiusInput) radiusInput.value = 12;
   if (speedInput) speedInput.value = 0.3;
+  if (easingInput) easingInput.value = 'ease';
   showToast('✅ Живая тема сброшена');
 }
 
@@ -640,23 +754,66 @@ function loadLiveTheme() {
     root.style.setProperty('--live-btn', saved.liveBtn);
     root.style.setProperty('--live-radius', saved.liveRadius);
     root.style.setProperty('--live-speed', saved.liveSpeed);
+    root.style.setProperty('--live-easing', saved.liveEasing || 'ease');
     document.body.classList.add('live-theme-active');
     const bgInput = document.getElementById('liveBgColor');
     const btnInput = document.getElementById('liveBtnColor');
     const radiusInput = document.getElementById('liveRadius');
     const speedInput = document.getElementById('liveSpeed');
+    const easingInput = document.getElementById('liveEasing');
     if (bgInput) bgInput.value = saved.liveBg;
     if (btnInput) btnInput.value = saved.liveBtn;
     if (radiusInput) radiusInput.value = parseInt(saved.liveRadius);
     if (speedInput) speedInput.value = parseFloat(saved.liveSpeed);
+    if (easingInput) easingInput.value = saved.liveEasing || 'ease';
   }
 }
 
 function bindLiveThemeEvents() {
-  ['liveBgColor', 'liveBtnColor', 'liveRadius', 'liveSpeed'].forEach(id => {
+  ['liveBgColor', 'liveBtnColor', 'liveRadius', 'liveSpeed', 'liveEasing'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('input', applyLiveTheme);
   });
+}
+
+/* ========== ПАРАЛЛАКС ФОНА ========== */
+function initParallax() {
+  const bg = document.getElementById('bgParallax');
+  if (!bg) return;
+
+  document.addEventListener('mousemove', function(e) {
+    if (!document.body.classList.contains('parallax-active')) return;
+    
+    var x = e.clientX / window.innerWidth - 0.5;
+    var y = e.clientY / window.innerHeight - 0.5;
+    
+    var z1 = bg.querySelector('.z-1');
+    var z2 = bg.querySelector('.z-2');
+    var z3 = bg.querySelector('.z-3');
+    
+    if (z1) z1.style.transform = 'translate(' + (x * 20) + 'px,' + (y * 20) + 'px)';
+    if (z2) z2.style.transform = 'rotate(60deg) translate(' + (x * 30) + 'px,' + (y * 30) + 'px)';
+    if (z3) z3.style.transform = 'rotate(120deg) translate(' + (x * 25) + 'px,' + (y * 25) + 'px)';
+  });
+}
+
+function toggleParallax() {
+  var enabled = document.getElementById('liveParallax')?.checked;
+  if (enabled) {
+    document.body.classList.add('parallax-active');
+  } else {
+    document.body.classList.remove('parallax-active');
+  }
+  localStorage.setItem('parallaxEnabled', enabled ? '1' : '0');
+}
+
+function loadParallaxState() {
+  var saved = localStorage.getItem('parallaxEnabled');
+  var checkbox = document.getElementById('liveParallax');
+  if (saved === '1') {
+    document.body.classList.add('parallax-active');
+    if (checkbox) checkbox.checked = true;
+  }
 }
 
 /* =================================== */
@@ -682,6 +839,8 @@ document.addEventListener('DOMContentLoaded',function(){
   applyTheme(localStorage.getItem('appTheme') || 'creator');
   loadLiveTheme();
   bindLiveThemeEvents();
+  initParallax();
+  loadParallaxState();
 
   var passInput=document.getElementById('creatorPass');
   if(passInput){var checkTimeout;passInput.addEventListener('input',function(){clearTimeout(checkTimeout);if(passInput.value.trim()===CREATOR_PASS)checkTimeout=setTimeout(function(){creatorLogin()},400)});setTimeout(function(){passInput.focus()},500)}
@@ -774,32 +933,17 @@ db.ref('sticker_packs').on('value', function(s){
   if(_user) renderStickerUI();
 });
 
-/* ====== ИСПРАВЛЕННАЯ ФУНКЦИЯ ЧАТА ====== */
 function toggleChat(){
   var chat=document.getElementById('chat'), arrow=document.getElementById('chatArrow');
   if(chat.classList.contains('hidden')){
-    // Открываем чат
-    chat.classList.remove('hidden'); 
-    chatOpened=!0; 
-    arrow.classList.add('open');
-    // Небольшая задержка, чтобы класс hidden точно снялся перед установкой высоты
-    setTimeout(function(){
-      chat.style.maxHeight = (localStorage.getItem('chatSize') || '300') + 'px';
-    }, 10);
-    lastChatTimestamp=Date.now(); 
-    unreadCount=0; 
-    updateChatBadge();
-  } else {
-    // Закрываем чат
-    chat.style.maxHeight = '0px';
-    setTimeout(function(){
-      chat.classList.add('hidden'); 
-    }, 10);
-    chatOpened=!1; 
-    arrow.classList.remove('open');
+    chat.classList.remove('hidden'); chatOpened=!0; arrow.classList.add('open');
+    chat.style.maxHeight = localStorage.getItem('chatSize') || '300px';
+    lastChatTimestamp=Date.now(); unreadCount=0; updateChatBadge();
+  }else{
+    chat.classList.add('hidden'); chatOpened=!1; arrow.classList.remove('open');
+    chat.style.maxHeight = '0';
   }
 }
-
 function updateChatBadge(){var b=document.getElementById('chatBadge');if(unreadCount>0){b.style.display='inline';b.textContent=unreadCount;}else{b.style.display='none';}}
 
 function creatorLogin(){
