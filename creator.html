@@ -152,13 +152,28 @@ button:disabled { opacity: 0.5; cursor: default; }
 .chat-back-btn { background: none; border: 1px solid rgba(138,43,226,0.4); color: #ccc; padding: 4px 10px; border-radius: 8px; font-size: 12px; cursor: pointer; display: none; }
 
 #chat { 
-  overflow-y: auto; padding: 10px; border-radius: var(--live-radius); 
-  background: rgba(15, 15, 30, 0.6); font-size: 13px; 
+  overflow-y: auto; 
+  padding: 10px; 
+  border-radius: var(--live-radius); 
+  background: rgba(15, 15, 30, 0.6); 
+  font-size: 13px; 
   border: 1px solid rgba(138, 43, 226, 0.15); 
-  transition: max-height var(--live-speed) ease, padding var(--live-speed) ease, background var(--live-speed) ease, border var(--live-speed) ease;
-  max-height: 300px; margin-bottom: 6px;
+  transition: max-height var(--live-speed) ease, padding var(--live-speed) ease, 
+              background var(--live-speed) ease, border var(--live-speed) ease, 
+              opacity var(--live-speed) ease, margin var(--live-speed) ease;
+  max-height: 300px; 
+  margin-bottom: 6px;
+  opacity: 1;
 }
-#chat.hidden { max-height: 0 !important; padding-top: 0 !important; padding-bottom: 0 !important; overflow: hidden; opacity: 0; border: none; }
+#chat.hidden { 
+  max-height: 0 !important; 
+  padding-top: 0 !important; 
+  padding-bottom: 0 !important; 
+  margin-bottom: 0 !important;
+  opacity: 0;
+  overflow: hidden; 
+  border: none; 
+}
 
 .chat-bubble-group { margin: 6px 0; display: flex; flex-direction: column; position: relative; overflow: visible; }
 .chat-bubble-group.mine { align-items: flex-end; } .chat-bubble-group.other { align-items: flex-start; }
@@ -626,7 +641,6 @@ function loadLiveTheme() {
     root.style.setProperty('--live-radius', saved.liveRadius);
     root.style.setProperty('--live-speed', saved.liveSpeed);
     document.body.classList.add('live-theme-active');
-    // Обновим инпуты в настройках
     const bgInput = document.getElementById('liveBgColor');
     const btnInput = document.getElementById('liveBtnColor');
     const radiusInput = document.getElementById('liveRadius');
@@ -638,7 +652,6 @@ function loadLiveTheme() {
   }
 }
 
-// Привязка событий живой темы (после загрузки DOM)
 function bindLiveThemeEvents() {
   ['liveBgColor', 'liveBtnColor', 'liveRadius', 'liveSpeed'].forEach(id => {
     const el = document.getElementById(id);
@@ -761,17 +774,32 @@ db.ref('sticker_packs').on('value', function(s){
   if(_user) renderStickerUI();
 });
 
+/* ====== ИСПРАВЛЕННАЯ ФУНКЦИЯ ЧАТА ====== */
 function toggleChat(){
   var chat=document.getElementById('chat'), arrow=document.getElementById('chatArrow');
   if(chat.classList.contains('hidden')){
-    chat.classList.remove('hidden'); chatOpened=!0; arrow.classList.add('open');
-    chat.style.maxHeight = localStorage.getItem('chatSize') || '300px';
-    lastChatTimestamp=Date.now(); unreadCount=0; updateChatBadge();
-  }else{
-    chat.classList.add('hidden'); chatOpened=!1; arrow.classList.remove('open');
-    chat.style.maxHeight = '0';
+    // Открываем чат
+    chat.classList.remove('hidden'); 
+    chatOpened=!0; 
+    arrow.classList.add('open');
+    // Небольшая задержка, чтобы класс hidden точно снялся перед установкой высоты
+    setTimeout(function(){
+      chat.style.maxHeight = (localStorage.getItem('chatSize') || '300') + 'px';
+    }, 10);
+    lastChatTimestamp=Date.now(); 
+    unreadCount=0; 
+    updateChatBadge();
+  } else {
+    // Закрываем чат
+    chat.style.maxHeight = '0px';
+    setTimeout(function(){
+      chat.classList.add('hidden'); 
+    }, 10);
+    chatOpened=!1; 
+    arrow.classList.remove('open');
   }
 }
+
 function updateChatBadge(){var b=document.getElementById('chatBadge');if(unreadCount>0){b.style.display='inline';b.textContent=unreadCount;}else{b.style.display='none';}}
 
 function creatorLogin(){
