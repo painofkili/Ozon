@@ -93,10 +93,8 @@
         .chat-sticker { max-width: 140px; max-height: 140px; display: block; margin: 4px 0; }
         .input-row { display: flex; gap: 6px; padding-bottom: 12px; flex-shrink: 0; align-items: center; }
         .input-wr { position: relative; flex: 1; display: flex; align-items: center; } 
-        .input-wr input { flex: 1; width: 100%; padding-right: 38px; margin: 0; }
-        .st-toggle { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #aaa; padding: 5px; z-index: 5; display: flex; align-items: center; justify-content: center; }
-        .st-toggle:hover { color: #fff; }
-        .btn-attach { width: auto; padding: 12px 10px; font-size: 18px; background: transparent; border: 1px solid rgba(255,255,255,0.15); color: #aaa; border-radius: 10px; cursor: pointer; transition: all .2s; line-height: 1; flex-shrink: 0; }
+        .input-wr input { flex: 1; width: 100%; margin: 0; padding-right: 14px; }
+        .btn-attach { width: auto; padding: 12px 10px; font-size: 18px; background: transparent; border: 1px solid rgba(255,255,255,0.15); color: #aaa; border-radius: 10px; cursor: pointer; transition: all .2s; line-height: 1; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
         .btn-attach:hover { background: rgba(255,255,255,0.1); color: #fff; }
         .btn-send { width: auto; padding: 12px 18px; font-size: var(--fs); flex-shrink: 0; border-radius: 10px; }
         .st-panel { position: fixed; bottom: 70px; right: 10px; width: 300px; height: 350px; background: rgba(15,15,30,0.98); border: 1px solid rgba(138,43,226,0.5); border-radius: 16px; display: none; flex-direction: column; z-index: 1000; box-shadow: 0 10px 40px rgba(0,0,0,0.8); backdrop-filter: blur(20px); overflow: hidden; }
@@ -111,11 +109,9 @@
         .side-wrap.open { right: 0; } .side-inner { display: flex; flex-direction: column; align-items: center; width: 100%; gap: 12px; overflow-y: auto; height: 100%; padding: 10px 0; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent; } .side-inner::-webkit-scrollbar { width: 3px; } .side-inner::-webkit-scrollbar-track { background: transparent; } .side-inner::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
         .side-close { position: absolute; top: 12px; left: 12px; background: rgba(255,255,255,0.1); border: none; color: #fff; width: 28px; height: 28px; border-radius: 50%; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; } .side-close:hover { background: #e94560; }
         .btn-side-toggle { position: fixed; right: 0; top: 50%; transform: translateY(-50%); width: 40px; height: 60px; background: rgba(138,43,226,0.7); border: 1px solid rgba(255,255,255,0.2); border-right: none; border-radius: 12px 0 0 12px; color: white; font-size: 18px; cursor: pointer; z-index: 999; display: flex; align-items: center; justify-content: center; box-shadow: -4px 0 15px rgba(138,43,226,0.3); backdrop-filter: blur(5px); } .btn-side-toggle:hover { background: rgba(138,43,226,1); }
-        .ava-it { width: 56px; height: 56px; border-radius: 50%; cursor: pointer; flex-shrink: 0; position: relative; transition: transform .2s; } .ava-it:hover { transform: scale(1.1); }
-        .ava-it img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid rgba(138,43,226,0.3); display: block; }
-        .ava-it .av-ph { width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(135deg, #222, #444); display: flex; align-items: center; justify-content: center; font-size: 18px; color: #ccc; font-weight: bold; border: 2px solid rgba(138,43,226,0.3); }
+        .ava-it { width: 56px; height: 56px; border-radius: 50%; cursor: pointer; flex-shrink: 0; position: relative; transition: transform .2s; overflow: visible !important; border: none !important; background: transparent !important; } .ava-it:hover { transform: scale(1.1); }
         .ava-it.active img, .ava-it.active .av-ph { border-color: #f5c518; } .ava-it.online img, .ava-it.online .av-ph { border-color: #4CAF50 !important; border-width: 3px; }
-        .ava-it .dot { position: absolute; bottom: 0; right: 0; width: 14px; height: 14px; background: #4CAF50; border-radius: 50%; border: 2px solid #111; box-shadow: 0 0 8px rgba(76,175,80,0.8); z-index: 2; }
+        .ava-it .dot { position: absolute; bottom: 0; right: 0; width: 14px; height: 14px; background: #4CAF50; border-radius: 50%; border: 2px solid #111; box-shadow: 0 0 8px rgba(76,175,80,0.8); z-index: 20; }
         .mini-prof { position: fixed; right: 120px; top: 50%; transform: translateY(-50%); background: rgba(15,15,30,0.98); border: 1px solid rgba(138,43,226,0.5); border-radius: 16px; padding: 20px 16px 16px; width: 250px; z-index: 1100; display: none; backdrop-filter: blur(20px); box-shadow: 0 10px 40px rgba(0,0,0,0.8); } .mini-prof.show { display: block; }
         .mp-close { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.1); border: none; color: #ccc; width: 24px; height: 24px; border-radius: 50%; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; } .mp-close:hover { background: #e94560; color: #fff; }
         .mini-prof .mp-name { text-align: center; font-weight: bold; font-size: 16px; margin-top: 8px; color: #fff; }
@@ -133,15 +129,19 @@
         @keyframes rr1 { 0% { transform: rotateX(70deg) rotateY(30deg) rotateZ(0deg); } 100% { transform: rotateX(70deg) rotateY(30deg) rotateZ(360deg); } }
         @keyframes rr2 { 0% { transform: rotateX(70deg) rotateY(-30deg) rotateZ(360deg); } 100% { transform: rotateX(70deg) rotateY(-30deg) rotateZ(0deg); } }
         @keyframes rr3 { 0% { transform: rotateX(20deg) rotateY(80deg) rotateZ(0deg); } 100% { transform: rotateX(20deg) rotateY(80deg) rotateZ(360deg); } }
+        
+        /* Исправленный дизайн Бога */
         .avatar-god-wrap { position: relative; display: inline-block; flex-shrink: 0; }
         .avatar-god-wrap .avatar { border: 3px solid #f5c518; box-shadow: 0 0 20px rgba(245,197,24,0.8), 0 0 40px rgba(245,197,24,0.4); animation: godGlow 1.5s infinite alternate; position: relative; z-index: 2; }
         @keyframes godGlow { 0% { box-shadow: 0 0 20px rgba(245,197,24,0.8), 0 0 40px rgba(245,197,24,0.4); } 100% { box-shadow: 0 0 35px rgba(245,197,24,1), 0 0 60px rgba(255,140,0,0.6); } }
-        .god-halo { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 60%; height: 6px; background: radial-gradient(ellipse, rgba(245,197,24,0.9) 0%, rgba(245,197,24,0.4) 50%, transparent 70%); border-radius: 50%; box-shadow: 0 -2px 15px rgba(245,197,24,0.7); animation: haloFloat 2s ease-in-out infinite; z-index: 3; }
-        @keyframes haloFloat { 0%, 100% { transform: translateX(-50%) translateY(0); opacity: .7; } 50% { transform: translateX(-50%) translateY(-3px); opacity: 1; } }
-        .god-wings-wrap { position: absolute; top: 0; left: 50%; width: 100px; height: 80px; transform: translate(-50%, -70%); z-index: 1; pointer-events: none; display: flex; justify-content: space-between; }
-        .god-wing { width: 18px; position: relative; } .god-wing .feather { width: 100%; position: absolute; border-bottom-right-radius: 100%; border-top-left-radius: 100%; transform-origin: top left; background: linear-gradient(to top, var(--wing-c1), var(--wing-c2)); animation: featherWave var(--wing-spd) ease-in-out infinite; }
+        .god-halo { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 110%; height: 25px; background: radial-gradient(ellipse, rgba(255,215,0,0.9) 0%, rgba(245,197,24,0.4) 50%, transparent 100%); z-index: 12; animation: haloFloat 2s ease-in-out infinite; pointer-events: none; border-radius: 50%; }
+        @keyframes haloFloat { 0%, 100% { transform: translateX(-50%) translateY(0); opacity: .7; } 50% { transform: translateX(-50%) translateY(-5px); opacity: 1; } }
+        .god-wings-wrap { position: absolute; top: 50%; left: 50%; width: 180px; height: 80px; transform: translate(-50%, -50%); z-index: 1; pointer-events: none; display: flex; justify-content: space-between; }
+        .god-wing { width: 40px; height: 100%; position: relative; } 
+        .god-wing .feather { width: 100%; position: absolute; border-bottom-right-radius: 100%; border-top-left-radius: 100%; transform-origin: top left; background: linear-gradient(to top, var(--wing-c1), var(--wing-c2)); animation: featherWave var(--wing-spd) ease-in-out infinite; }
         @keyframes featherWave { 0%, 100% { transform: rotate(0deg) translateY(0px); } 50% { transform: rotate(var(--fr)) translateY(var(--fy)); } }
         .god-wing.left .feather { left: 0; } .god-wing.right .feather { right: 0; left: auto; border-bottom-right-radius: 0; border-top-left-radius: 0; border-bottom-left-radius: 100%; border-top-right-radius: 100%; transform-origin: top right; }
+        
         .creator-name { background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
         .creator-badge { font-size: 12px; font-weight: bold; padding: 4px 10px; border-radius: 12px; background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; display: inline-block; letter-spacing: .5px; }
         .god-name { color: #f5c518; font-weight: bold; text-shadow: 0 0 10px rgba(245,197,24,0.5); }
@@ -183,16 +183,16 @@
         <div class="input-row">
             <div class="input-wr">
                 <input id="chatInput" placeholder="Сообщение...">
-                <button class="st-toggle" onclick="STICKER.toggle(event)" title="Стикеры и эмодзи">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;vertical-align:middle;">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
-                        <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                        <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                    </svg>
-                </button>
             </div>
-            <button class="btn-attach" onclick="document.getElementById('chatPhoto').click()" title="Прикрепить фото">📎</button>
+            <!-- Смайлик и скрепка вынесены вправо -->
+            <button class="btn-attach" onclick="STICKER.toggle(event)" title="Стикеры и эмодзи" style="padding: 12px 6px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;vertical-align:middle;">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                </svg>
+            </button>
+            <button class="btn-attach" onclick="document.getElementById('chatPhoto').click()" title="Прикрепить фото" style="padding: 12px 6px;">📎</button>
+            
             <input id="chatPhoto" type="file" accept="image/*" multiple onchange="CHAT.sendPhoto()" style="display:none">
             <button class="btn-send btn-gold" onclick="CHAT.send()">➤</button>
         </div>
@@ -229,30 +229,34 @@ function viewPack(str){const parts=str.split('|||');const v=document.getElementB
 function getStatus(n){const sts=[{name:'📦 Штрих',color:'#999',min:0},{name:'🚚 ПВЗюк',color:'#cd7f32',min:4},{name:'🏭 Пунктовой',color:'#2196F3',min:8},{name:'🚀 Озонавт',color:'#4CAF50',min:13},{name:'👑 Озоний',color:'#f5c518',min:21}];for(let i=sts.length-1;i>=0;i--){if(n>=sts[i].min)return sts[i]}return sts[0]}
 function getGodStatus(n){const sts=[{name:'🐣 Мини-босс',color:'#8B4513',min:0},{name:'💰 Эконом',color:'#4169E1',min:2},{name:'👔 Руководитель',color:'#808080',min:5},{name:'💼 Мистер Бизнес',color:'#000080',min:8},{name:'🗿 Сигма',color:'#2F4F4F',min:15},{name:'🌌 Господь',color:'#FFD700',min:21}];for(let i=sts.length-1;i>=0;i--){if(n>=sts[i].min)return sts[i]}return sts[0]}
 
-// Функция генерации анимаций аватарок для чата и мини-профилей
+// Добавлен type 'side' для корректной работы профилей начальника в боковом меню
 function getAvHTML(name, url, type = 'chat') {
     const isGod = S.godSettings && name === S.godSettings.name;
     const isCreator = name === 'Костя';
-    const imgCls = type === 'chat' ? 'avatar-mini' : type === 'mini' ? 'mp-av' : 'avatar';
-    const phCls = type === 'chat' ? 'avatar-mini' : type === 'mini' ? 'mp-ph' : 'av-ph';
-    const scale = type === 'chat' ? '0.35' : type === 'mini' ? '0.9' : '1';
-    const mrg = type === 'chat' ? '-24px' : type === 'mini' ? '-5px' : '0';
+    const imgCls = type === 'chat' ? 'avatar-mini' : type === 'mini' ? 'mp-av' : type === 'side' ? 'ava-it-img' : 'avatar';
+    const phCls = type === 'chat' ? 'avatar-mini' : type === 'mini' ? 'mp-ph' : type === 'side' ? 'av-ph' : 'av-ph';
+    const scale = type === 'chat' ? '0.35' : type === 'mini' ? '0.9' : type === 'side' ? '0.65' : '1';
+    const mrg = type === 'chat' ? '-24px' : type === 'mini' ? '-5px' : type === 'side' ? '-10px' : '0';
 
-    const rawImg = `<img class="${imgCls}" src="${url||''}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" onclick="event.stopPropagation();viewPhoto('${url||''}')" style="${!url?'display:none':''}; ${type==='chat'||type==='mini'?'width:76px;height:76px;border-radius:50%;object-fit:cover;position:relative;z-index:10;':''}">`;
-    const rawPh = `<div class="${phCls}" style="${url?'display:none':''}; ${type==='chat'||type==='mini'?'width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#444,#555);color:#fff;font-size:32px;font-weight:bold;position:relative;z-index:10;border:2px solid #8B00FF':''}">${name.charAt(0).toUpperCase()}</div>`;
+    // Блокируем клик по фото для бокового меню, чтобы плавно выезжал мини-профиль
+    const clickEv = (type === 'chat' || type === 'mini') ? `onclick="event.stopPropagation();viewPhoto('${url||''}')"` : '';
+    
+    // Исправлен баг с одновременным отображением картинки и буквы "И"
+    const rawImg = `<img class="${imgCls}" src="${url||''}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" ${clickEv} style="${!url?'display:none;':''} ${type==='chat'||type==='mini'||type==='side'?'width:76px;height:76px;border-radius:50%;object-fit:cover;position:relative;z-index:10;':''}">`;
+    const rawPh = `<div class="${phCls}" style="display:${url?'none':'flex'}; ${type==='chat'||type==='mini'||type==='side'?'width:76px;height:76px;border-radius:50%;align-items:center;justify-content:center;background:linear-gradient(135deg,#444,#555);color:#fff;font-size:32px;font-weight:bold;position:relative;z-index:10;border:2px solid #8B00FF':''}">${name.charAt(0).toUpperCase()}</div>`;
 
     let wings = '';
-    for(let i=0;i<10;i++) wings+=`<div class="feather" style="--fr:${i*4}deg; --fy:${i*3}px; height:${60+i*5}px; top:${i*3}px; animation-delay:${i*0.08}s"></div>`;
+    for(let i=0;i<8;i++) wings+=`<div class="feather" style="--fr:${i*10}deg; --fy:${i*4}px; height:${40+i*5}px; top:${i*4}px; animation-delay:${i*0.1}s"></div>`;
 
     if(isCreator) {
-        return `<div class="ava-wr" style="transform:scale(${scale}); margin:${mrg}; flex-shrink:0; cursor:pointer;"><div class="q-halo"></div><div class="proton-sys"><div class="oring r1"><div class="el el-c"></div></div><div class="oring r2"><div class="el el-g"></div></div><div class="oring r3"><div class="el el-p"></div></div></div>${rawImg}${rawPh}</div>`;
+        return `<div class="ava-wr" style="transform:scale(${scale}); margin:${mrg}; flex-shrink:0; cursor:pointer; pointer-events:none;"><div class="q-halo"></div><div class="proton-sys"><div class="oring r1"><div class="el el-c"></div></div><div class="oring r2"><div class="el el-g"></div></div><div class="oring r3"><div class="el el-p"></div></div></div><div style="pointer-events:auto">${rawImg}${rawPh}</div></div>`;
     } else if(isGod) {
-        return `<div class="avatar-god-wrap" style="transform:scale(${scale}); margin:${mrg}; flex-shrink:0; cursor:pointer;"><div class="god-halo"></div><div class="god-wings-wrap"><div class="god-wing left">${wings}</div><div class="god-wing right">${wings}</div></div>${rawImg}${rawPh}</div>`;
+        return `<div class="avatar-god-wrap" style="transform:scale(${scale}); margin:${mrg}; flex-shrink:0; cursor:pointer; pointer-events:none;"><div class="god-halo"></div><div class="god-wings-wrap"><div class="god-wing left">${wings}</div><div class="god-wing right">${wings}</div></div><div style="pointer-events:auto">${rawImg}${rawPh}</div></div>`;
     }
     
     return `<div style="position:relative; flex-shrink:0; cursor:pointer;">
-        <img class="${imgCls}" src="${url||''}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" onclick="event.stopPropagation();viewPhoto('${url||''}')" style="${!url?'display:none':''}">
-        <div class="${phCls}" style="${url?'display:none':''}; display:flex; align-items:center; justify-content:center; background:#444; color:#fff; border-radius:50%;">${name.charAt(0).toUpperCase()}</div>
+        ${rawImg}
+        ${rawPh}
     </div>`;
 }
 
@@ -277,7 +281,23 @@ const SIDEBAR={
     users:[],sel:null,
     toggle(){document.getElementById('sideWrap').classList.toggle('open')},
     build(){this.users=[];const shown={};for(const name in S.allUsers){if(shown[name])continue;if(name===S.user?.name)continue;shown[name]=true;this.users.push(name)}if(S.godSettings&&S.godSettings.name&&!shown[S.godSettings.name]){shown[S.godSettings.name]=true;this.users.push(S.godSettings.name)}if(S.user?.role==='creator'){const me=S.allUsers[S.user.name];if(me&&!shown[S.user.name]){shown[S.user.name]=true;this.users.push(S.user.name)}}this.users.sort();this.render()},
-    render(){const inner=document.getElementById('sideInner');let h='';for(const name of this.users){const d=S.allUsers[name]||(name === S.godSettings?.name ? S.godSettings : {});const av=d.avatar||'';const online=!!S.activeShifts[name];const active=this.sel===name;const isGod=name===S.godSettings?.name;const isCreator=name==='Костя';let avClass='';if(isGod)avClass='avatar-god';if(isCreator)avClass='avatar-creator';h+=`<div class="ava-it${active?' active':''}${online?' online':''}" data-user="${name.replace(/"/g,'&quot;')}" onclick="SIDEBAR.select('${name.replace(/'/g,"\\'")}')">`;if(av){h+=`<img src="${av}" class="${avClass}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`;h+=`<div class="av-ph" style="display:none">${name.charAt(0).toUpperCase()}</div>`}else{h+=`<div class="av-ph">${name.charAt(0).toUpperCase()}</div>`}if(online)h+='<div class="dot"></div>';h+='</div>'}inner.innerHTML=h},
+    render(){
+        const inner=document.getElementById('sideInner');
+        let h='';
+        for(const name of this.users){
+            const d=S.allUsers[name]||(name === S.godSettings?.name ? S.godSettings : {});
+            const av=d.avatar||'';
+            const online=!!S.activeShifts[name];
+            const active=this.sel===name;
+            
+            // Теперь используем getAvHTML с типом side для бокового меню, чтобы были все эффекты
+            h+=`<div class="ava-it${active?' active':''}${online?' online':''}" data-user="${name.replace(/"/g,'&quot;')}" onclick="SIDEBAR.select('${name.replace(/'/g,"\\'")}')" style="display:flex;align-items:center;justify-content:center; overflow:visible; border:none; background:transparent;">`;
+            h+= getAvHTML(name, av, 'side');
+            if(online)h+='<div class="dot" style="bottom:10px; right:10px;"></div>';
+            h+='</div>';
+        }
+        inner.innerHTML=h;
+    },
     select(name){if(!name)return;this.sel=name;this.render();this.showMini(name)},
     showMini(name){const d=S.allUsers[name]||(name === S.godSettings?.name ? S.godSettings : {avatar:''});const mp=document.getElementById('miniProf');const avc=document.getElementById('mpAv');avc.style.display='flex';avc.style.justifyContent='center';avc.innerHTML=getAvHTML(name, d.avatar, 'mini');document.getElementById('mpName').textContent=name;if(name===S.godSettings?.name){document.getElementById('mpSt').textContent='👑 Начальник';document.getElementById('mpPkt').textContent='🔴 Не на смене';document.getElementById('mpCal').innerHTML=''}else{let sc=0;S.allShifts.forEach(s=>{if(s.user===name)sc++});const st=getStatus(sc);document.getElementById('mpSt').textContent=st.name;const online=!!S.activeShifts[name];document.getElementById('mpPkt').textContent=online?'🟢 На смене (Пункт '+(d.punkt||'?')+')':'🔴 Выходной';const now=new Date();const startD=new Date(now.getTime()-13*86400000);let calH='';for(let i=0;i<14;i++){const dd=new Date(startD.getTime()+i*86400000);const ds=dd.toLocaleDateString('ru-RU');let isShift=false;S.allShifts.forEach(s=>{if(s.user===name&&s.date===ds)isShift=true});calH+=`<div class="${isShift?'ms':''}">${dd.getDate()}</div>`}document.getElementById('mpCal').innerHTML=calH}mp.classList.add('show')},
     closeMini(){document.getElementById('miniProf').classList.remove('show')},
@@ -366,21 +386,38 @@ function renderShiftTab(){
     const hasShiftToday = S.allShifts.some(s => s.user === S.user.name && s.date === today);
 
     let h = '';
+    // Кнопка становится неактивной, если уже на смене
     if(S.onShift) {
-        h+=`<button id="onShiftBtn" class="btn-blue" disabled>🟢 НА СМЕНЕ</button>`;
+        h+=`<button id="startBtn" class="btn-gray" disabled>🟢 НА СМЕНЕ</button>`;
         h+=`<div id="shiftDiv" style="display:block"><input id="timeFrom" value="9" placeholder="Начало"><input id="timeTo" value="21" placeholder="Конец"><input id="tov" placeholder="Товары"><label style="font-size:12px;color:#aaa">📸 Фотоотчёт (до 5)</label><input id="photos" type="file" accept="image/*" multiple onchange="prevPhotos()"><div id="photoPrev" class="photo-preview"></div><button class="btn-red" onclick="endShift()">🔴 СО СМЕНЫ</button></div>`;
     } else if(hasShiftToday) {
         h+=`<div class="card" style="text-align:center;color:#4CAF50;font-weight:bold;font-size:16px;">✅ Вы уже отработали смену сегодня</div>`;
     } else {
         h+=`<button id="startBtn" class="btn-green" onclick="startShift()">🔵 НА СМЕНУ</button>`;
-        h+=`<button id="onShiftBtn" class="btn-blue" style="display:none" disabled>🟢 НА СМЕНЕ</button>`;
         h+=`<div id="shiftDiv" style="display:none"><input id="timeFrom" value="9" placeholder="Начало"><input id="timeTo" value="21" placeholder="Конец"><input id="tov" placeholder="Товары"><label style="font-size:12px;color:#aaa">📸 Фотоотчёт (до 5)</label><input id="photos" type="file" accept="image/*" multiple onchange="prevPhotos()"><div id="photoPrev" class="photo-preview"></div><button class="btn-red" onclick="endShift()">🔴 СО СМЕНЫ</button></div>`;
     }
     h+=`<button class="btn-gray" onclick="A.logout()" style="margin-top:8px">↩ Выйти</button>`;
     document.getElementById('tabContent').innerHTML=h;
 }
 
-function startShift(){S.onShift=true;const t=new Date().toLocaleTimeString('ru-RU');db.ref('activeShifts/'+S.user.name).set({active:true,startTime:t,punct:S.user.punkt,startedAt:Date.now()});document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shiftDiv').style.display='block';const prefix=S.user.role==='creator'?'🌌 ':'';db.ref('chat').push({user:prefix+S.user.name,text:'🔵 Пункт '+S.user.punkt+' на смене! ('+t+')',timestamp:Date.now()})}
+function startShift(){
+    S.onShift=true;
+    const t=new Date().toLocaleTimeString('ru-RU');
+    db.ref('activeShifts/'+S.user.name).set({active:true,startTime:t,punct:S.user.punkt,startedAt:Date.now()});
+    
+    // Блокируем кнопку после нажатия
+    const btn = document.getElementById('startBtn');
+    btn.onclick = null;
+    btn.className = 'btn-gray';
+    btn.textContent = '🟢 НА СМЕНЕ';
+    btn.disabled = true;
+    
+    document.getElementById('shiftDiv').style.display='block';
+    
+    const prefix=S.user.role==='creator'?'🌌 ':'';
+    db.ref('chat').push({user:prefix+S.user.name,text:'🔵 Пункт '+S.user.punkt+' на смене! ('+t+')',timestamp:Date.now()});
+}
+
 function endShift(){const tf=document.getElementById('timeFrom').value||'9',tt=document.getElementById('timeTo').value||'21';const tv=parseInt(document.getElementById('tov').value)||0,hh=parseInt(tt)-parseInt(tf);const ph=S.photo64.slice(0,5);db.ref('shifts/'+S.user.name+'_'+Date.now()).set({user:S.user.name,punkt:S.user.punkt||'49',date:new Date().toLocaleDateString('ru-RU'),timeFrom:tf,timeTo:tt,hours:hh,tovar:tv,photos:ph,paid:false,timestamp:new Date().toISOString()});const prefix=S.user.role==='creator'?'🌌 ':'';db.ref('chat').push({user:prefix+S.user.name,text:'🔴 Пункт '+S.user.punkt+' с '+tf+' до '+tt+', товаров: '+tv,timestamp:Date.now(),photos:ph});db.ref('activeShifts/'+S.user.name).remove();S.onShift=false;S.photo64=[];renderShiftTab()}
 function prevPhotos(){S.photo64=[];document.getElementById('photoPrev').innerHTML='';const files=document.getElementById('photos').files;for(let i=0;i<Math.min(files.length,5);i++){const r=new FileReader();r.onload=e=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas'),mw=400,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);const thumb=c.toDataURL('image/jpeg',0.6);S.photo64.push({full:e.target.result,thumb});const pv=document.createElement('img');pv.src=thumb;document.getElementById('photoPrev').appendChild(pv)};img.src=e.target.result};r.readAsDataURL(files[i])}}
 
@@ -422,78 +459,7 @@ function saveGodShift(){const d=document.getElementById('shiftDate').value,tf=do
 function loadGodShifts(user){db.ref('shifts').orderByChild('user').equalTo(user).once('value',s=>{S.allShifts=[];s.forEach(c=>{const x=c.val();x._id=c.key;S.allShifts.push(x)});S.allShifts.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));renderGodCal()})}
 function renderGodCal(){const now=new Date(),y=now.getFullYear(),m=now.getMonth(),dim=new Date(y,m+1,0).getDate(),fd=new Date(y,m,0).getDay();document.getElementById('calHead').innerHTML='<b>'+now.toLocaleDateString('ru-RU',{month:'long',year:'numeric'})+'</b>';let h='';for(const d of['Пн','Вт','Ср','Чт','Пт','Сб','Вс'])h+='<div class="hd">'+d+'</div>';for(let i=0;i<fd;i++)h+='<div></div>';const sd={};S.allShifts.forEach(s=>{sd[s.date]=s});const ts=now.toLocaleDateString('ru-RU');for(let d=1;d<=dim;d++){const ds=new Date(y,m,d).toLocaleDateString('ru-RU');let cl=sd[ds]?'sd':'';if(ds===ts)cl+=' td';h+=`<div class="${cl}" onclick="showShiftDet('${ds}')">${d}</div>`}document.getElementById('godCal').innerHTML=h}
 function showShiftDet(ds){const shifts=S.allShifts.filter(s=>s.date===ds);let h='<b>'+ds+'</b><br>';shifts.forEach(s=>{h+=`<div style="display:flex;gap:4px;align-items:center;margin:4px 0"><input id="ed_${s._id}_tf" value="${s.timeFrom}" style="width:40px">–<input id="ed_${s._id}_tt" value="${s.timeTo}" style="width:40px">Тов: <input id="ed_${s._id}_tv" type="number" value="${s.tovar}" style="width:60px"><button class="btn-blue" onclick="editGodShift('${s._id}')" style="width:auto;padding:8px 12px;font-size:12px">💾</button><button class="btn-red" onclick="delGodShift('${s._id}')" style="width:auto;padding:8px 12px;font-size:12px">✕</button></div>`});document.getElementById('shiftDet').innerHTML=h}
-function editGodShift(id){const tf=document.getElementById('ed_'+id+'_tf').value,tt=document.getElementById('ed_'+id+'_tt').value,tv=parseInt(document.getElementById('ed_'+id+'_tv').value)||0;db.ref('shifts/'+id).update({timeFrom:tf,timeTo:tt,hours:parseInt(tt)-parseInt(tf),tovar:tv});toast('✅ Обновлено');loadGodShifts(document.getElementById('calcUser').value)}
-function delGodShift(id){if(confirm('Удалить смену?')){db.ref('shifts/'+id).remove();loadGodShifts(document.getElementById('calcUser').value)}}
-function calcZP(){const u=document.getElementById('calcUser').value,from=new Date(document.getElementById('calcFrom').value),to=new Date(document.getElementById('calcTo').value);to.setHours(23,59,59);if(!u||isNaN(from)||isNaN(to)){toast('Заполни период!',true);return}db.ref('punkts').once('value',pkSnap=>{const rates={};pkSnap.forEach(c=>{rates[c.key]=c.val().rate||0});db.ref('users/'+u).once('value',uSnap=>{const bonus=uSnap.exists()?uSnap.val().bonus||0:0;db.ref('punishes').orderByChild('user').equalTo(u).once('value',pnSnap=>{let totalPunish=0;pnSnap.forEach(c=>{const p=c.val();if(new Date(p.timestamp)>=from&&new Date(p.timestamp)<=to)totalPunish+=p.amount||0});db.ref('premiums').orderByChild('user').equalTo(u).once('value',prSnap=>{let totalPremium=0;prSnap.forEach(c=>{const p=c.val();if(new Date(p.timestamp)>=from&&new Date(p.timestamp)<=to)totalPremium+=p.amount||0});const shifts=S.allShifts.filter(s=>{const t=new Date(s.timestamp);return t>=from&&t<=to&&!s.paid});let th=0,tt2=0,tz=0;shifts.forEach(s=>{const hh=s.hours||0,tv=s.tovar||0;th+=hh;tt2+=tv;tz+=hh*(rates[s.punkt]||0)+tv+bonus});tz+=totalPremium;const el=document.getElementById('zpResult');el.style.display='block';el.innerHTML=`📊 <b>${u}</b><br>${from.toLocaleDateString('ru-RU')} – ${to.toLocaleDateString('ru-RU')}<br><br>Часов: ${th}<br>Товаров: ${tt2}<br>ЗП: ${tz-totalPremium} ₽<br>Премии: +${totalPremium} ₽<br>Штрафы: -${totalPunish} ₽<br><b>Итого: ${tz-totalPunish} ₽</b>`;S.lastCalc={user:u,from:from.toISOString(),to:to.toISOString(),shifts:shifts.map(s=>s._id),total:tz-totalPunish}})})})})}
-function markPaid(){if(!S.lastCalc?.shifts?.length){toast('Сначала нажми Посчитать!',true);return}if(!confirm('Оплачено?\n'+S.lastCalc.total+' ₽'))return;db.ref('payments').push({user:S.lastCalc.user,dateFrom:S.lastCalc.from,dateTo:S.lastCalc.to,total:S.lastCalc.total,timestamp:Date.now()});S.lastCalc.shifts.forEach(id=>db.ref('shifts/'+id+'/paid').set(true));toast('✅');document.getElementById('zpResult').style.display='none';S.lastCalc=null}
-
-function renderAnnounceTab(){document.getElementById('tabContent').innerHTML=`<h4 style="text-align:center;margin-bottom:8px">📢 Объявления</h4><textarea id="annText" placeholder="Объявление..." rows="3"></textarea><div style="display:flex;gap:8px;align-items:center"><select id="annExpType" onchange="this.value==='forever'?document.getElementById('annExpVal').style.display='none':document.getElementById('annExpVal').style.display='block'" style="flex:1"><option value="forever">Навсегда</option><option value="hours">Часы</option><option value="days">Дни</option></select><input id="annExpVal" type="number" placeholder="Кол-во" value="24" style="display:none;flex:1"></div><button class="btn-green" onclick="postAnn()">📢 Опубликовать</button><button class="btn-red" onclick="clearAnn()">🗑 Удалить все</button>`}
-function postAnn(){const t=document.getElementById('annText').value.trim();if(!t)return;const type=document.getElementById('annExpType').value,val=parseInt(document.getElementById('annExpVal').value)||24;let expiry=null;if(type==='hours')expiry=Date.now()+val*3600000;else if(type==='days')expiry=Date.now()+val*86400000;db.ref('announce').push({text:t,timestamp:Date.now(),expiry});document.getElementById('annText').value='';toast('✅ Опубликовано!')}
-function clearAnn(){if(confirm('Удалить все объявления?')){db.ref('announce').remove();toast('✅ Удалено')}}
-
-function closeModals(){document.querySelectorAll('.modal-bg').forEach(m=>m.style.display='none')}
-
-function openSettings(){
-    const card=document.getElementById('settingsCard');let h='<h3 style="text-align:center">⚙️ Настройки</h3>';
-    h+='<input id="setNewName" placeholder="Новое имя"><input id="setNewPass" type="password" placeholder="Новый пароль">';
-    if(S.user.role!=='god')h+='<select id="setNewPunkt"><option value="">Не менять</option></select>';
-    h+='<input id="setNewVk" placeholder="ВК ID (цифры)"><label style="font-size:12px;color:#aaa;display:block;margin-top:4px">Аватар</label><input id="setNewAv" type="file" accept="image/*" onchange="prevSetAv()"><div id="setAvPrev" style="text-align:center;margin:4px 0"></div>';
-    if(S.user.role==='creator'){h+='<label style="font-size:12px;color:#aaa;display:block;margin-top:4px">Форма кнопок</label><select id="setBtnShape"><option value="0px">Квадратные</option><option value="8px">Слегка круглые</option><option value="12px" selected>Круглые</option><option value="30px">Овальные</option></select>';h+='<label style="font-size:12px;color:#aaa;display:block;margin-top:4px">Размер кнопок</label><select id="setBtnSize"><option value="8px, 13px">Маленькие</option><option value="12px, 15px" selected>Средние</option><option value="16px, 18px">Большие</option></select>';h+='<label style="font-size:12px;color:#aaa;display:block;margin-top:4px">Размер чата</label><select id="setChatSize"><option value="200">Маленький</option><option value="300" selected>Средний</option><option value="400">Большой</option></select>';h+='<label style="font-size:12px;color:#aaa;display:block;margin-top:4px">Шрифт чата</label><select id="setChatFont"><option value="12">Мелкий</option><option value="13" selected>Средний</option><option value="15">Крупный</option></select>';h+='<button class="btn-gold" onclick="openStickerMan()" style="margin:10px 0">📦 Управление стикерами</button>'}
-    if(S.user.role==='god'){h+='<label style="font-size:12px;color:#aaa;display:block;margin-top:4px">Цвет крыльев 1</label><input id="setWingC1" type="color" value="'+getComputedStyle(document.documentElement).getPropertyValue('--wing-c1').trim()+'">';h+='<label style="font-size:12px;color:#aaa;display:block;margin-top:4px">Цвет крыльев 2</label><input id="setWingC2" type="color" value="'+getComputedStyle(document.documentElement).getPropertyValue('--wing-c2').trim()+'">';h+='<label style="font-size:12px;color:#aaa;display:block;margin-top:4px">Скорость крыльев</label><select id="setWingSpd"><option value="1s">Быстро</option><option value="2s" selected>Средне</option><option value="3s">Медленно</option></select>'}
-    h+='<button class="btn-green" onclick="saveSettings()">💾 Сохранить</button><button class="btn-gray" onclick="closeModals()">↩ Назад</button>';card.innerHTML=h;document.getElementById('settingsModal').style.display='flex';
-    document.getElementById('setNewVk').value=S.user.vkId||'';
-    if(S.user.role==='creator'){document.getElementById('setChatSize').value=localStorage.getItem('chatSize')||'300';document.getElementById('setChatFont').value=localStorage.getItem('chatFont')||'13';document.getElementById('setBtnShape').value=localStorage.getItem('btnShape')||'12px';document.getElementById('setBtnSize').value=localStorage.getItem('btnSize')||'12px, 15px'}
-    if(S.user.role==='god'){document.getElementById('setWingSpd').value=localStorage.getItem('wingSpd')||'2s'}
-    if(S.user.role!=='god'){db.ref('punkts').once('value',s=>{const sel=document.getElementById('setNewPunkt');if(!sel)return;s.forEach(c=>{sel.innerHTML+=`<option value="${c.key}">${c.key}</option>`})})}
-}
-function prevSetAv(){const f=document.getElementById('setNewAv').files[0];if(!f)return;const r=new FileReader();r.onload=e=>{S.newAvData=e.target.result;document.getElementById('setAvPrev').innerHTML=`<img class="avatar" src="${S.newAvData}">`};r.readAsDataURL(f)}
-function saveSettings(){
-    const nn=document.getElementById('setNewName').value.trim(),np=document.getElementById('setNewPass').value.trim(),nvk=document.getElementById('setNewVk').value.trim();const ok=S.user.name;const up={};let npu='';
-    if(S.user.role!=='god'){const sel=document.getElementById('setNewPunkt');if(sel)npu=sel.value}
-    if(nn&&nn!==S.user.name){up['users/'+nn]={name:nn,punkt:npu||S.user.punkt,password:S.user.password||'',bonus:S.user.bonus||0,avatar:S.newAvData||S.user.avatar||'',vkId:nvk||S.user.vkId||''};if(np)up['users/'+nn+'/password']=np;up['users/'+ok]=null;S.user.name=nn;if(npu)S.user.punkt=npu}else{const uu={name:S.user.name,punkt:S.user.punkt||'',avatar:S.user.avatar||'',vkId:S.user.vkId||''};if(np)uu.password=np;if(S.newAvData)uu.avatar=S.newAvData;if(nvk)uu.vkId=nvk;if(npu)uu.punkt=npu;up['users/'+ok]=uu;if(npu)S.user.punkt=npu}
-    if(S.user.role==='creator'){['chatSize','chatFont','btnShape','btnSize'].forEach(k=>localStorage.setItem(k,document.getElementById('set'+k.charAt(0).toUpperCase()+k.slice(1)).value));document.documentElement.style.setProperty('--chat-h',localStorage.getItem('chatSize')+'px');document.documentElement.style.setProperty('--chat-fs',localStorage.getItem('chatFont')+'px');document.documentElement.style.setProperty('--radius',localStorage.getItem('btnShape'));const parts=localStorage.getItem('btnSize').split(',');document.documentElement.style.setProperty('--pad',parts[0].trim());document.documentElement.style.setProperty('--fs',parts[1].trim())}
-    if(S.user.role==='god'){const wc1=document.getElementById('setWingC1').value,wc2=document.getElementById('setWingC2').value,wspd=document.getElementById('setWingSpd').value;localStorage.setItem('wingC1',wc1);localStorage.setItem('wingC2',wc2);localStorage.setItem('wingSpd',wspd);document.documentElement.style.setProperty('--wing-c1',wc1);document.documentElement.style.setProperty('--wing-c2',wc2);document.documentElement.style.setProperty('--wing-spd',wspd);const gup={};if(nn)gup.name=nn;if(S.newAvData)gup.avatar=S.newAvData;if(nvk)gup.vkId=nvk;if(np)db.ref('godPassword').set(np);if(Object.keys(gup).length>0)db.ref('godSettings').update(gup);if(S.newAvData)S.user.avatar=S.newAvData;if(nvk)S.user.vkId=nvk}
-    if(Object.keys(up).length===0&&S.user.role!=='creator'&&S.user.role!=='god'){closeModals();return}
-    db.ref().update(up,err=>{if(err){toast('Ошибка сохранения',true);return}if(np&&S.user.role!=='god')S.user.password=np;if(S.newAvData)S.user.avatar=S.newAvData;if(nvk)S.user.vkId=nvk;localStorage.setItem('ozon_user',JSON.stringify(S.user));closeModals();renderProfile();buildCarousel();toast('✅ Настройки сохранены')})
-}
-
-function openStickerMan(){document.getElementById('settingsModal').style.display='none';document.getElementById('stickerManCard').innerHTML=`<h3 style="text-align:center">📦 Мои стикерпаки</h3><div id="smPacks"></div><hr style="border-color:#444;margin:12px 0"><h4>Создать новый пак</h4><input id="newPackName" placeholder="Название пака"><label style="font-size:12px;color:#aaa;display:block">Иконка пака (PNG)</label><input id="newPackIcon" type="file" accept="image/png"><button class="btn-green" onclick="createPack()">➕ Создать пак</button><button class="btn-gray" onclick="closeStickerMan()">↩ Назад</button>`;document.getElementById('stickerManModal').style.display='flex';renderStickerMan()}
-function closeStickerMan(){document.getElementById('stickerManModal').style.display='none';document.getElementById('settingsModal').style.display='flex'}
-function renderStickerMan(){const packs=STICKER.getPacks();let h='';for(const p of packs){const cnt=p.pack.stickers?Object.keys(p.pack.stickers).length:0;h+=`<div class="pack-list-item"><img class="pack-icon" src="${p.pack.icon||''}"><div style="flex:1"><b>${p.pack.name}</b><br><small style="color:#aaa">${cnt} стикеров</small></div><button class="btn-blue" onclick="openPackEdit('${p.id}')" style="width:auto;padding:8px">✏️</button></div>`}document.getElementById('smPacks').innerHTML=h||'<p style="color:#aaa;text-align:center">Нет паков</p>'}
-function createPack(){const name=document.getElementById('newPackName').value.trim(),fi=document.getElementById('newPackIcon');if(!name||!fi.files[0]){toast('Введи название и выбери иконку!',true);return}const r=new FileReader();r.onload=e=>{db.ref('sticker_packs').push({name,creator:S.user.name,icon:e.target.result,allowed_users:{},timestamp:Date.now()}).then(()=>{document.getElementById('newPackName').value='';fi.value='';toast('✅ Пак создан!');renderStickerMan()})};r.readAsDataURL(fi.files[0])}
-function openPackEdit(id){S.editPackId=id;document.getElementById('stickerManModal').style.display='none';const pack=S.stickerPacks[id];if(!pack)return;let hUsers='';for(const uname in S.allUsers){if(uname===S.user.name)continue;hUsers+=`<div class="user-cb-item"><input type="checkbox" id="cb_${uname}" ${pack.allowed_users?.[uname]?'checked':''} onchange="tglPackAccess('${uname}',this.checked)"><label for="cb_${uname}">${uname}</label></div>`}let hSt='';if(pack.stickers){for(const sid in pack.stickers){const st=pack.stickers[sid];hSt+=`<div style="position:relative;width:60px;height:60px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center"><img src="${st.img}" style="max-width:100%;max-height:100%;object-fit:contain"><div style="position:absolute;bottom:-5px;right:-5px;background:#000;border-radius:50%;font-size:12px;border:1px solid #444;width:20px;height:20px;text-align:center">${st.emoji}</div></div>`}}document.getElementById('packEditCard').innerHTML=`<h3 style="text-align:center">${pack.name}</h3><div class="card"><h4>👥 Доступ</h4><div class="user-cb-list">${hUsers}</div></div><div class="card"><h4>➕ Добавить стикер</h4><input id="peStImg" type="file" accept="image/png"><select id="peStEmoji">${BASE_EMOJIS.map(e=>`<option value="${e}">${e}</option>`).join('')}</select><button class="btn-blue" onclick="upStToPack()">Загрузить</button></div><h4>Стикеры</h4><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">${hSt||'<small style="color:#aaa">Пусто</small>'}</div><button class="btn-gray" onclick="closePackEdit()" style="margin-top:15px">↩ Назад</button>`;document.getElementById('packEditModal').style.display='flex'}
-function closePackEdit(){S.editPackId=null;document.getElementById('packEditModal').style.display='none';document.getElementById('stickerManModal').style.display='flex';renderStickerMan()}
-function tglPackAccess(name,on){if(!S.editPackId)return;if(on)db.ref('sticker_packs/'+S.editPackId+'/allowed_users/'+name).set(true);else db.ref('sticker_packs/'+S.editPackId+'/allowed_users/'+name).remove()}
-function upStToPack(){if(!S.editPackId)return;const fi=document.getElementById('peStImg'),emoji=document.getElementById('peStEmoji').value;if(!fi.files[0]){toast('Выбери PNG!',true);return}const r=new FileReader();r.onload=e=>{db.ref('sticker_packs/'+S.editPackId+'/stickers').push({img:e.target.result,emoji,timestamp:Date.now()}).then(()=>{fi.value='';toast('✅ Стикер добавлен!');openPackEdit(S.editPackId)})};r.readAsDataURL(fi.files[0])}
-
-function openThought(){document.getElementById('thoughtCard').innerHTML=`<h4 style="text-align:center">💭 Мысль Создателя</h4><textarea id="thoughtText" placeholder="О чём думаешь?" rows="3" style="resize:vertical"></textarea><label style="font-size:12px;color:#aaa;display:block;margin-top:4px">Срок действия</label><div style="display:flex;gap:8px;align-items:center"><select id="thoughtExpType" onchange="document.getElementById('thoughtExpVal').style.display=this.value==='forever'?'none':'block'" style="flex:1"><option value="forever">Навсегда</option><option value="hours">Часы</option><option value="days">Дни</option></select><input id="thoughtExpVal" type="number" placeholder="Кол-во" value="24" style="display:none;flex:1"></div><button class="btn-gold" onclick="sendThought()">🚀 Отправить</button><button class="btn-gray" onclick="closeModals()">↩ Отмена</button>`;document.getElementById('thoughtModal').style.display='flex'}
-function sendThought(){const text=document.getElementById('thoughtText').value.trim();if(!text)return;const type=document.getElementById('thoughtExpType').value,val=parseInt(document.getElementById('thoughtExpVal').value)||24;let expiry=null;if(type==='hours')expiry=Date.now()+val*3600000;else if(type==='days')expiry=Date.now()+val*86400000;db.ref('creatorThought').set({text,expiry,timestamp:Date.now()});document.getElementById('thoughtText').value='';closeModals();toast('💭 Мысль отправлена!')}
-function loadThought(){db.ref('creatorThought').on('value',s=>{const b=document.getElementById('annBlock');if(!s.exists()){b.style.display='none';return}const t=s.val();if(t.expiry&&Date.now()>t.expiry){db.ref('creatorThought').remove();b.style.display='none';return}b.style.display='block';b.style.background='linear-gradient(135deg, rgba(138,43,226,0.3), rgba(0,191,255,0.2))';b.style.border='1px solid rgba(138,43,226,0.5)';b.style.color='#fff';b.innerHTML=`💭 <b>${t.text}</b><br><small>${t.expiry?'До: '+new Date(t.expiry).toLocaleString('ru-RU'):'Навсегда'}</small>`})}
-
-function loadPinned(){db.ref('pinned').on('value',s=>{const b=document.getElementById('pinnedMsg');if(!s.exists()){b.style.display='none';return}const m=s.val();b.style.display='block';document.getElementById('pinnedInner').innerHTML='📌 <b>'+(m.user||'?').replace('🌌 ','').replace('👑 ','')+':</b> '+(m.text||'[Вложение]')})}
-function unpinMsg(){if(S.user && (S.user.role==='creator'||S.user.role==='god')){db.ref('pinned').remove();document.getElementById('pinnedMsg').style.display='none';toast('📌 Откреплено!');}else{toast('🚫 Только Создатель или Начальник может откреплять!',true);}}
-
-function loadAnnounce(){db.ref('announce').limitToLast(1).on('value',s=>{const b=document.getElementById('annBlock');if(!s.exists()){b.style.display='none';return}let last=null;s.forEach(c=>{last=c.val();last._key=c.key});if(last.expiry&&Date.now()>last.expiry){db.ref('announce/'+last._key).remove();b.style.display='none';return}b.style.display='block';b.innerHTML=`<b>📢 ${last.text}</b><br><small>${last.expiry?'До: '+new Date(last.expiry).toLocaleString('ru-RU'):'Бессрочно'} • ${new Date(last.timestamp).toLocaleString('ru-RU')}</small>`})}
-
-function buildCarousel(){SIDEBAR.build()}
-
-function updateGodUI(){if(S.user.role!=='god')return;db.ref('premiums').once('value',s=>{S.godRating=s.numChildren()*2;db.ref('punishes').once('value',p=>{S.godRating-=p.numChildren();if(S.godRating<0)S.godRating=0;const st=getGodStatus(S.godRating);const el=document.getElementById('godProg'),txt=document.getElementById('godProgTxt');if(el){el.style.width='100%';el.style.background=st.color}if(txt)txt.textContent=st.name})})}
-
-document.addEventListener('DOMContentLoaded',()=>{
-    db.ref('users').on('value',s=>{S.allUsers={};s.forEach(c=>{S.allUsers[c.key]=c.val()});if(S.user)buildCarousel()});
-    db.ref('activeShifts').on('value',s=>{S.activeShifts={};s.forEach(c=>{if(c.val()?.active)S.activeShifts[c.key]=true});if(S.user)buildCarousel()});
-    db.ref('godSettings').on('value',s=>{S.godSettings=s.exists()?s.val():null;if(S.user)buildCarousel()});
-    db.ref('sticker_packs').on('value',s=>{S.stickerPacks=s.val()||{}});
-    db.ref('shifts').on('value',s=>{S.allShifts=[];s.forEach(c=>{const x=c.val();x._id=c.key;S.allShifts.push(x)})});
-    document.addEventListener('click',e=>{if(S.openDD&&!e.target.closest('.msg-dd')&&!e.target.closest('.msg-menu')){S.openDD.classList.remove('show');S.openDD=null}const mp=document.getElementById('miniProf');if(mp?.classList.contains('show')&&!e.target.closest('#miniProf')&&!e.target.closest('.ava-it')&&!e.target.closest('.avatar-mini')&&!e.target.closest('.ava-wr')&&!e.target.closest('.avatar-god-wrap'))SIDEBAR.closeMini();const sp=document.getElementById('stPanel');if(sp?.classList.contains('show')&&!e.target.closest('#stPanel')&&!e.target.closest('.st-toggle')&&!e.target.closest('.input-wr'))sp.classList.remove('show')});
-    document.querySelectorAll('.modal-bg').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.style.display='none'})});
-    if('Notification' in window&&Notification.permission==='default')Notification.requestPermission();
-    const saved=localStorage.getItem('ozon_user');
-    if(saved){const parsed=JSON.parse(saved);if(parsed.role&&parsed.name){S.user=parsed;A.enter()}else{localStorage.removeItem('ozon_user')}}
-    ['chatSize','chatFont','btnShape','btnSize'].forEach(k=>{const v=localStorage.getItem(k);if(v){if(k==='chatSize')document.documentElement.style.setProperty('--chat-h',v+'px');if(k==='chatFont')document.documentElement.style.setProperty('--chat-fs',v+'px');if(k==='btnShape')document.documentElement.style.setProperty('--radius',v);if(k==='btnSize'){const parts=v.split(',');document.documentElement.style.setProperty('--pad',parts[0].trim());document.documentElement.style.setProperty('--fs',parts[1].trim())}}});
-    const wc1=localStorage.getItem('wingC1')||'#F44336';const wc2=localStorage.getItem('wingC2')||'#FFC107';const wspd=localStorage.getItem('wingSpd')||'2s';document.documentElement.style.setProperty('--wing-c1',wc1);document.documentElement.style.setProperty('--wing-c2',wc2);document.documentElement.style.setProperty('--wing-spd',wspd);
-    document.getElementById('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();CHAT.send()}});
-});
+function editGodShift(id){const tf=document.getElementById('ed_'+id+'_tf').value,tt=document.getElementById('ed_'+id+'_tt').value,tv=parseInt(document.getElementById('ed_'+id+'_tv').value)||0;db.ref}
 </script>
 </body>
 </html>
