@@ -36,6 +36,7 @@ body {
   transition: background var(--live-speed) var(--live-easing); 
   overflow: hidden;
 }
+
 .stars-overlay { 
   position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; 
   background-image: radial-gradient(white, rgba(255,255,255,.2) 1.5px, transparent 40px), 
@@ -46,17 +47,6 @@ body {
   animation: backgroundStarRotate 300s linear infinite; 
   will-change: transform; 
   transition: opacity var(--live-speed) var(--live-easing); 
-}
-  /* Скрываем параллакс-слои по умолчанию */
-.z-1, .z-2, .z-3 {
-  display: none;
-}
-
-/* Показываем только при активном параллаксе */
-body.parallax-active .z-1,
-body.parallax-active .z-2,
-body.parallax-active .z-3 {
-  display: block;
 }
 @keyframes backgroundStarRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
@@ -70,6 +60,17 @@ body.parallax-active .z-3 {
   transition: transform 0.1s ease-out;
   will-change: transform;
   pointer-events: none;
+  display: none;
+}
+
+body.parallax-active .z-1,
+body.parallax-active .z-2,
+body.parallax-active .z-3 {
+  display: block;
+}
+
+body.parallax-active .stars-overlay {
+  opacity: 0.05;
 }
 
 .tile {
@@ -122,20 +123,6 @@ body.parallax-active .z-3 {
 .delay-4 { --delay: 4s; }
 .delay-5 { --delay: 5s; }
 
-body.parallax-active .stars-overlay {
-  opacity: 0.05;
-}
-  /* Скрываем параллакс-слои по умолчанию */
-.z-1, .z-2, .z-3 {
-  display: none;
-}
-
-/* Показываем только при активном параллаксе */
-body.parallax-active .z-1,
-body.parallax-active .z-2,
-body.parallax-active .z-3 {
-  display: block;
-}
 /* ====== СТРУКТУРА ====== */
 .app-container { display: flex; width: 100%; min-height: 100vh; position: relative; z-index: 1; justify-content: center; }
 .main-content { width: 100%; max-width: 680px; padding: 12px 16px; display: block; }
