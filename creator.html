@@ -80,10 +80,10 @@ body {
 .avatar-item .av-placeholder { width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(135deg, #222, #444); display: flex; align-items: center; justify-content: center; font-size: 18px; color: #ccc; font-weight: bold; border: 2px solid rgba(138, 43, 226, 0.3); transition: border-color 0.3s; }
 .avatar-item.active { box-shadow: 0 0 15px rgba(138,43,226,0.8); }
 .avatar-item.active img, .avatar-item.active .av-placeholder { border-color: #f5c518; }
-.avatar-item.online img, .avatar-item.online .av-placeholder { border-color: #4CAF50 !important; border-width: 3px; } /* ПОДСВЕТКА ОНЛАЙНА */
+.avatar-item.online img, .avatar-item.online .av-placeholder { border-color: #4CAF50 !important; border-width: 3px; }
 .avatar-item .online-dot { position: absolute; bottom: 0; right: 0; width: 14px; height: 14px; background: #4CAF50; border-radius: 50%; border: 2px solid #111; box-shadow: 0 0 8px rgba(76,175,80,0.8); z-index: 2; }
 
-/* МИНИ-ПРОФИЛЬ (ВЫЗЫВАЕТСЯ ТОЛЬКО ПО КЛИКУ) */
+/* МИНИ-ПРОФИЛЬ */
 .mini-profile { position: fixed; right: 120px; top: 50%; transform: translateY(-50%); background: rgba(15, 15, 30, 0.98); border: 1px solid rgba(138,43,226,0.5); border-radius: 16px; padding: 20px 16px 16px 16px; width: 250px; z-index: 1100; display: none; backdrop-filter: blur(20px); box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
 .mini-profile.show { display: block; animation: slideIn 0.2s ease-out; }
 @keyframes slideIn { from { opacity: 0; transform: translateY(-50%) translateX(20px); } to { opacity: 1; transform: translateY(-50%) translateX(0); } }
@@ -103,7 +103,7 @@ body {
 .tab-content { display: none; width: 100%; }
 .tab-content.active-tab { display: block; }
 
-.card, .stat-card, .pinned, .announce-block, .thought-block { background: rgba(22,33,62,0.7); padding: 14px; border-radius: 14px; margin: 6px 0; backdrop-filter: blur(10px); border: 1px solid rgba(138,43,226,0.2); overflow: visible; }
+.card, .stat-card, .pinned, .announce-block, .thought-block { position: relative; background: rgba(22,33,62,0.7); padding: 14px; border-radius: 14px; margin: 6px 0; backdrop-filter: blur(10px); border: 1px solid rgba(138,43,226,0.2); overflow: visible; }
 input, select, textarea { width: 100%; padding: 12px 14px; font-size: 15px; margin: 6px 0; border-radius: 12px; border: 1px solid #444; background: rgba(15,15,30,0.8); color: #fff; outline: none; }
 input:focus, select:focus, textarea:focus { border-color: #8B00FF; }
 
@@ -118,14 +118,14 @@ button:active { transform: scale(0.97); }
 .btn-gold { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; padding: var(--btn-pad); font-size: var(--btn-fs); margin: 4px 0; width: 100%; }
 button:disabled { opacity: 0.5; cursor: default; }
 
-/* ИСПРАВЛЕННЫЙ CSS КАЛЕНДАРЯ */
+/* КАЛЕНДАРЬ */
 .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 12px; background: rgba(22,33,62,0.5); border-radius: 10px; padding: 6px; border: 1px solid rgba(138,43,226,0.15); margin-bottom: 8px; }
 .calendar div { padding: 6px; border-radius: 4px; }
 .calendar .shift-day { background: #4CAF50; color: #fff; font-weight: bold; }
 .calendar .today { border: 2px solid #2196F3; }
 .calendar .header { font-weight: bold; background: rgba(51,51,51,0.7); }
 
-/* АТОМНАЯ 3D-МОДЕЛЬ ВОКРУГ АВАТАРКИ */
+/* АТОМНАЯ 3D-МОДЕЛЬ */
 .avatar-wrapper {
   position: relative;
   display: inline-block;
@@ -146,17 +146,15 @@ button:disabled { opacity: 0.5; cursor: default; }
   z-index: 10;
   border: 2px solid #111;
   display: block;
-  transform: translateZ(0); /* Центр 3D сцены */
+  transform: translateZ(0); 
 }
 .avatar-creator { box-shadow: 0 0 15px rgba(138,43,226,0.5); }
-
-/* 3D Пространство орбит */
 .proton-system {
   position: absolute;
   inset: -14px;
   transform-style: preserve-3d;
   pointer-events: none;
-  z-index: 15; /* Оболочка пересекает аватарку благодаря preserve-3d */
+  z-index: 15; 
 }
 .orbit-ring {
   position: absolute;
@@ -169,7 +167,6 @@ button:disabled { opacity: 0.5; cursor: default; }
 .ring-2 { transform: rotateX(70deg) rotateY(-30deg); animation: rotateRing2 5s linear infinite; border-color: rgba(245, 197, 24, 0.3); }
 .ring-3 { transform: rotateX(20deg) rotateY(80deg); animation: rotateRing3 4.5s linear infinite; border-color: rgba(138, 43, 226, 0.3); }
 
-/* Электроны (Протоны) */
 .electron {
   position: absolute;
   width: 8px;
@@ -232,7 +229,7 @@ button:disabled { opacity: 0.5; cursor: default; }
   font-size: 13px; 
   border: 1px solid rgba(138, 43, 226, 0.15); 
   transition: max-height 0.3s ease, padding 0.3s ease;
-  max-height: 300px; /* Регулируется из JS */
+  max-height: 300px; 
   margin-bottom: 6px;
 }
 #chat.hidden { max-height: 0 !important; padding-top: 0 !important; padding-bottom: 0 !important; overflow: hidden; opacity: 0; border: none; }
@@ -246,7 +243,7 @@ button:disabled { opacity: 0.5; cursor: default; }
 .avatar-mini { width: 32px !important; height: 32px !important; border-radius: 50%; object-fit: cover; margin-right: 6px; vertical-align: middle; cursor: pointer; }
 .avatar-mini-creator { border: 2px solid #8B00FF; }
 
-/* Уведомления (Замена Alert) */
+/* Уведомления */
 .toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10000; pointer-events: none; display: flex; flex-direction: column; gap: 8px; }
 .toast-msg { padding: 12px 20px; border-radius: 12px; background: rgba(20, 20, 35, 0.95); border: 1px solid #8B00FF; color: #fff; font-size: 14px; font-weight: bold; box-shadow: 0 5px 20px rgba(0,0,0,0.6); transform: translateY(-20px); opacity: 0; transition: all 0.3s; text-align: center; backdrop-filter: blur(5px); }
 .toast-msg.error { border-color: #ff1744; }
@@ -400,6 +397,7 @@ button:disabled { opacity: 0.5; cursor: default; }
       </div>
     </div>
     
+    <!-- ЗАКРЕПЛЕННОЕ СООБЩЕНИЕ (С КНОПКОЙ ОТКРЕПЛЕНИЯ) -->
     <div id="pinnedMessage" class="pinned" style="display:none"></div>
     
     <!-- ЧАТ -->
@@ -578,7 +576,7 @@ function applyButtonStyles() {
         document.documentElement.style.setProperty('--btn-fs', sizeParts[1].trim());
     }
 }
-applyButtonStyles(); // Применяем сразу при загрузке
+applyButtonStyles();
 
 if('Notification' in window && Notification.permission==='default'){Notification.requestPermission()}
 function notifyMe(title,body){if('Notification' in window && Notification.permission==='granted'){try{new Notification(title,{body:body,icon:'https://raw.githubusercontent.com/painofkili/ozon/main/на%20смену.png'})}catch(e){}}}
@@ -639,7 +637,6 @@ function renderCarousel(){
     var name=carouselUsers[i],d=allUserData[name]||{},av=d.avatar||'',isOnline=!!activeShifts[name];
     if(name===godData?.name)isOnline=false;
     var isActive = (selectedProfile === name);
-    // Добавлен класс 'online' для зеленой рамки вокруг аватарки
     h+='<div class="avatar-item'+(isActive?' active':'')+(isOnline?' online':'')+'" data-user="'+name.replace(/"/g,'&quot;')+'" onclick="selectProfile(\''+name.replace(/'/g,"\\'")+'\')">';
     if(av){h+='<img src="'+av+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">';h+='<div class="av-placeholder" style="display:none">'+name.charAt(0).toUpperCase()+'</div>'}
     else{h+='<div class="av-placeholder">'+name.charAt(0).toUpperCase()+'</div>'}
@@ -768,7 +765,6 @@ function saveSettings(){
   var cs=document.getElementById('chatSize').value,cf=document.getElementById('chatFont').value;localStorage.setItem('chatSize',cs);localStorage.setItem('chatFont',cf);
   document.getElementById('chat').style.maxHeight=cs+'px';document.getElementById('chat').style.fontSize=cf+'px';
   
-  // Сохраняем новые переменные кнопок
   localStorage.setItem('btnShape', document.getElementById('btnShape').value);
   localStorage.setItem('btnSize', document.getElementById('btnSize').value);
   applyButtonStyles();
@@ -837,7 +833,29 @@ function viewPhoto(url){document.getElementById('photoViewerImg').src=url;docume
 function viewPack(pd){var parts=pd.split('|||'),v=document.getElementById('photoViewer'),im=document.getElementById('photoViewerImg'),idx=0;im.src=parts[0];v.style.display='flex';v.onclick=function(e){if(e.target===v){v.style.display='none';v.onclick=null}};im.onclick=function(e){e.stopPropagation();idx++;if(idx<parts.length)im.src=parts[idx];else v.style.display='none'}}
 function delChatMsg(key,type){if(openDropdown){openDropdown.classList.remove('show');openDropdown=null}var ref=privateChatWith?getPrivateChatRef().child(key):db.ref('chat/'+key);if(_user&&_user.role==='creator'){ref.remove();return}if(type==='creator'){showToast('🚫 Это сообщение защищено!', true);return}ref.remove()}
 function pinMsg(key){if(openDropdown){openDropdown.classList.remove('show');openDropdown=null}db.ref('chat/'+key).once('value',function(s){if(s.exists()){db.ref('pinned').set(s.val());showToast('📌 Закреплено!');}})}
-function loadPinned(){db.ref('pinned').on('value',function(s){var b=document.getElementById('pinnedMessage');if(!s.exists()){b.style.display='none';return}var m=s.val();b.style.display='block';b.innerHTML='📌 <b>'+(m.user||'?').replace('🌌 ','')+':</b> '+m.text})}
+
+/* ИЗМЕНЕНИЕ: ЛОГИКА ЗАГРУЗКИ ЗАКРЕПА С КНОПКОЙ ОТКРЕПЛЕНИЯ */
+function loadPinned(){
+  db.ref('pinned').on('value',function(s){
+    var b=document.getElementById('pinnedMessage');
+    if(!s.exists()){b.style.display='none';return}
+    var m=s.val();
+    b.style.display='block';
+    b.style.position = 'relative'; /* Для позиционирования крестика */
+    b.innerHTML='📌 <b>'+(m.user||'?').replace('🌌 ','')+':</b> '+(m.text || '[Вложение]')+
+    '<button onclick="unpinMsg()" style="position:absolute; right:8px; top:8px; background:rgba(255,255,255,0.1); border:none; color:#fff; width:24px; height:24px; border-radius:50%; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition: background 0.2s;">✕</button>';
+  })
+}
+
+/* ИЗМЕНЕНИЕ: ФУНКЦИЯ ОТКРЕПЛЕНИЯ СООБЩЕНИЯ */
+function unpinMsg(){
+  if(_user && _user.role === 'creator') {
+    db.ref('pinned').remove();
+    showToast('📌 Сообщение откреплено!');
+  } else {
+    showToast('🚫 Только Создатель может откреплять!', true);
+  }
+}
 
 function sendMsg(textOverride){
   var input=document.getElementById('chatMsgInput'), t = textOverride || input.value.trim();
