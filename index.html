@@ -11,33 +11,50 @@ html, body { overflow: hidden; height: 100vh; width: 100vw; }
 body { font-family: 'Trebuchet MS', Helvetica, sans-serif; color: #eee; font-size: 16px; background: #0a0a1a; display: flex; flex-direction: column; }
 
 /* БОЖЕСТВЕННЫЙ ФОН */
-body.god-body { background: #1a1a0a; }
-.god-theme .bg { background: radial-gradient(ellipse at 50% 20%, #3a2a0a 0%, #2a1a05 50%, #1a0a00 100%) !important; }
-.god-theme .stars-overlay { opacity: 0.15 !important; background-image: radial-gradient(rgba(255,215,0,0.4), rgba(255,215,0,0.1) 1px, transparent 30px), radial-gradient(rgba(255,200,0,0.2), rgba(255,255,255,0.05) 1px, transparent 25px) !important; }
-.god-theme .main-content { background: radial-gradient(ellipse at 50% 0%, rgba(255,215,0,0.08) 0%, transparent 60%); }
-.god-theme .card, .god-theme .stat-card { background: rgba(50,35,15,0.8); border: 1px solid rgba(255,215,0,0.3); box-shadow: 0 0 20px rgba(255,215,0,0.1); }
-.god-theme .btn-green { background: linear-gradient(135deg, #FFD700, #FF8C00); box-shadow: 0 0 15px rgba(255,215,0,0.3); }
-.god-theme .btn-blue { background: linear-gradient(135deg, #4169E1, #6A5ACD); box-shadow: 0 0 15px rgba(65,105,225,0.3); }
+body.god-body { background: #1a1200; }
+.god-theme .bg { background: radial-gradient(ellipse at 50% 20%, #4a3000 0%, #2a1800 50%, #0a0500 100%) !important; }
+.god-theme .stars-overlay { opacity: 0.2 !important; background-image: radial-gradient(rgba(255,215,0,0.5), rgba(255,215,0,0.15) 1px, transparent 30px), radial-gradient(rgba(255,200,0,0.3), rgba(255,255,255,0.08) 1px, transparent 25px) !important; }
+.god-theme .main-content { background: radial-gradient(ellipse at 50% 0%, rgba(255,215,0,0.1) 0%, transparent 60%); }
+.god-theme .card, .god-theme .stat-card { background: rgba(50,35,15,0.85); border: 1px solid rgba(255,215,0,0.35); box-shadow: 0 0 25px rgba(255,215,0,0.12); }
+.god-theme .btn-green { background: linear-gradient(135deg, #FFD700, #FF8C00); box-shadow: 0 0 15px rgba(255,215,0,0.4); }
+.god-theme .btn-blue { background: linear-gradient(135deg, #4169E1, #6A5ACD); box-shadow: 0 0 15px rgba(65,105,225,0.4); }
 .god-theme .btn-red { background: linear-gradient(135deg, #DC143C, #8B0000); }
 .god-theme .btn-gray { background: linear-gradient(135deg, #666, #444); }
-.god-theme .btn-gold { background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; font-weight: bold; box-shadow: 0 0 20px rgba(255,215,0,0.5); }
+.god-theme .btn-gold { background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; font-weight: bold; box-shadow: 0 0 25px rgba(255,215,0,0.6); }
 .god-theme .btn-purple { background: linear-gradient(135deg, #8A2BE2, #4B0082); }
 .god-theme .btn-orange { background: linear-gradient(135deg, #FF8C00, #FF4500); }
 .god-theme .btn-cyan { background: linear-gradient(135deg, #00CED1, #008B8B); }
-.god-theme input, .god-theme select, .god-theme textarea { border-color: rgba(255,215,0,0.3); background: rgba(40,30,15,0.9); }
-.god-theme input:focus, .god-theme select:focus, .god-theme textarea:focus { border-color: #FFD700; box-shadow: 0 0 10px rgba(255,215,0,0.3); }
-.god-theme .chat-header-bar { background: rgba(50,35,15,0.8); border: 1px solid rgba(255,215,0,0.3); }
-.god-theme #chat { background: rgba(40,30,15,0.7); border: 1px solid rgba(255,215,0,0.2); }
-.god-theme .chat-input-bar { background: rgba(30,20,10,0.98); border-top: 1px solid rgba(255,215,0,0.3); }
-.god-theme .chat-icon { background: linear-gradient(135deg, #FFD700, #FF8C00); box-shadow: 0 0 15px rgba(255,215,0,0.5); }
+.god-theme input, .god-theme select, .god-theme textarea { border-color: rgba(255,215,0,0.4); background: rgba(40,30,15,0.9); }
+.god-theme input:focus, .god-theme select:focus, .god-theme textarea:focus { border-color: #FFD700; box-shadow: 0 0 15px rgba(255,215,0,0.4); }
+.god-theme .chat-header-bar { background: rgba(50,35,15,0.85); border: 1px solid rgba(255,215,0,0.35); }
+.god-theme #chat { background: rgba(40,30,15,0.75); border: 1px solid rgba(255,215,0,0.25); }
+.god-theme .chat-input-bar { background: rgba(30,20,10,0.98); border-top: 1px solid rgba(255,215,0,0.4); }
+.god-theme .chat-icon { background: linear-gradient(135deg, #FFD700, #FF8C00); box-shadow: 0 0 20px rgba(255,215,0,0.6); }
 .god-theme .chat-label { background: linear-gradient(135deg, #FFD700, #FFA500, #FFF8DC); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .god-theme .calendar .shift-day { background: linear-gradient(135deg, #FFD700, #FF8C00); }
 .god-theme .worker-row { border-bottom: 1px solid rgba(255,215,0,0.2); }
-.god-theme .zp-result { background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.3); }
-.god-theme .announce-block { background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,165,0,0.1)); border: 1px solid rgba(255,215,0,0.4); }
+.god-theme .zp-result { background: rgba(255,215,0,0.12); border: 1px solid rgba(255,215,0,0.4); }
 .god-theme .tabs button.active { background: linear-gradient(135deg, #FFD700, #FF8C00); color: #000; }
-.god-theme .tabs button:hover { background: rgba(255,215,0,0.2); }
-.god-theme .mini-profile { background: rgba(40,30,15,0.98); border: 1px solid rgba(255,215,0,0.5); }
+.god-theme .tabs button:hover { background: rgba(255,215,0,0.25); }
+.god-theme .mini-profile { background: rgba(50,35,15,0.98); border: 1px solid rgba(255,215,0,0.6); }
+
+/* Божественное облачко объявления */
+.god-announce-cloud {
+  background: linear-gradient(135deg, rgba(255,215,0,0.25) 0%, rgba(255,180,0,0.2) 30%, rgba(255,140,0,0.12) 70%, rgba(255,215,0,0.18) 100%) !important;
+  border: 2px solid rgba(255,215,0,0.6) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 0 30px rgba(255,215,0,0.25), inset 0 0 20px rgba(255,215,0,0.08) !important;
+  position: relative;
+  overflow: hidden;
+}
+.god-announce-cloud::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.15) 0%, transparent 60%);
+  pointer-events: none;
+}
 
 .bg { width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; background: radial-gradient(circle at 50% 20%, #12092b 0%, #060612 70%, #020205 100%); z-index: -1000; pointer-events: none; }
 .stars-overlay { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-image: radial-gradient(white, rgba(255,255,255,.2) 1.5px, transparent 40px), radial-gradient(rgba(138,43,226,0.25), rgba(255,255,255,.1) 1px, transparent 30px); background-size: 450px 450px, 300px 350px; background-position: 0 0, 40px 60px; opacity: 0.3; animation: backgroundStarRotate 300s linear infinite; will-change: transform; }
@@ -47,16 +64,21 @@ body.god-body { background: #1a1a0a; }
 .main-content { width: 100%; max-width: 680px; padding: 12px 16px; display: flex; flex-direction: column; padding-bottom: 70px; height: 100%; }
 .profile-row, .tabs, .tab-content, .announce-block, .thought-block, .chat-header-bar { flex-shrink: 0; }
 
-/* Кнопка выхода */
 .logout-btn { position: fixed; top: 12px; right: 50px; background: rgba(220,20,60,0.8); color: #fff; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 16px; cursor: pointer; z-index: 1001; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
 .logout-btn:hover { background: #DC143C; transform: scale(1.1); }
-.god-theme .logout-btn { background: rgba(255,215,0,0.6); color: #000; }
+.god-theme .logout-btn { background: rgba(255,215,0,0.7); color: #000; }
 .god-theme .logout-btn:hover { background: #FFD700; }
 
 .announce-block { position: relative; padding-right: 35px !important; }
 .announce-del { position: absolute; top: 8px; right: 8px; background: rgba(220,20,60,0.7); color: #fff; border: none; width: 22px; height: 22px; border-radius: 50%; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 2; }
 .announce-del:hover { background: #DC143C; transform: scale(1.1); }
 .announce-expiry { font-size: 10px; color: #aaa; margin-top: 2px; display: block; }
+
+/* Мысль создателя с крестиком справа */
+.thought-block { position: relative; padding-right: 35px !important; }
+.thought-del { position: absolute; top: 8px; right: 8px; background: rgba(138,43,226,0.6); color: #fff; border: none; width: 22px; height: 22px; border-radius: 50%; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 2; }
+.thought-del:hover { background: #8B00FF; transform: scale(1.1); }
+.thought-expiry { font-size: 10px; color: #aaa; margin-top: 2px; display: block; }
 
 .avatar-carousel { width: 110px; background: rgba(10,10,25,0.95); border-left: 1px solid rgba(138,43,226,0.3); display: flex; flex-direction: column; align-items: center; position: fixed; top: 0; right: -130px; height: 100vh; padding: 50px 0 20px 0; z-index: 1000; backdrop-filter: blur(15px); transition: right 0.3s; box-shadow: -10px 0 30px rgba(0,0,0,0.7); }
 .avatar-carousel.open { right: 0; }
@@ -80,7 +102,7 @@ body.god-body { background: #1a1a0a; }
 @keyframes slideIn { from { opacity:0; transform:translateY(-50%) translateX(20px); } to { opacity:1; transform:translateY(-50%) translateX(0); } }
 .mp-close-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.1); border: none; color: #ccc; width: 24px; height: 24px; border-radius: 50%; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .mp-close-btn:hover { background: #e94560; color: white; }
-.mp-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; margin: 0 auto; display: block; border: 2px solid #8B00FF; }
+.mp-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; margin: 0 auto; display: block; border: 2px solid #8B00FF; cursor: pointer; }
 .mp-placeholder { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg,#444,#555); display: flex; align-items: center; justify-content: center; font-size: 24px; color: #ccc; margin: 0 auto; }
 .mp-name { text-align: center; font-weight: bold; font-size: 16px; margin-top: 8px; color: #fff; }
 .mp-status { text-align: center; font-size: 12px; padding: 4px 10px; border-radius: 10px; display: inline-block; margin: 4px auto; background: rgba(138,43,226,0.2); border: 1px solid rgba(138,43,226,0.4); color: #fff; }
@@ -255,7 +277,7 @@ button:disabled { opacity: 0.5; }
     <div id="thoughtBlock" class="thought-block" style="display:none"></div>
     
     <div class="profile-row">
-      <div class="avatar-wrapper" id="avatarWrapper"><img id="profileAvatar" class="avatar" src="" style="display:none" crossorigin="anonymous"></div>
+      <div class="avatar-wrapper" id="avatarWrapper"><img id="profileAvatar" class="avatar" src="" style="display:none" crossorigin="anonymous" onclick="if(_user&&_user.avatar)viewPhoto(_user.avatar)"></div>
       <div style="flex:1">
         <b id="creatorNameWrapper" class="creator-name" style="font-size:18px"><span id="uname"></span></b>
         <span id="roleBadge" class="creator-badge">🌌 Создатель</span>
@@ -308,15 +330,9 @@ button:disabled { opacity: 0.5; }
       <textarea id="godAnnounceText" placeholder="Текст объявления..." rows="3"></textarea>
       <div style="display:flex;gap:8px;align-items:center;margin-top:8px;">
         <select id="godAnnounceExpiry" style="flex:1;">
-          <option value="0">Навсегда</option>
-          <option value="1">1 час</option>
-          <option value="3">3 часа</option>
-          <option value="6">6 часов</option>
-          <option value="12">12 часов</option>
-          <option value="24" selected>24 часа</option>
-          <option value="48">2 дня</option>
-          <option value="72">3 дня</option>
-          <option value="168">7 дней</option>
+          <option value="0">Навсегда</option><option value="1">1 час</option><option value="3">3 часа</option>
+          <option value="6">6 часов</option><option value="12">12 часов</option><option value="24" selected>24 часа</option>
+          <option value="48">2 дня</option><option value="72">3 дня</option><option value="168">7 дней</option>
         </select>
       </div>
       <button class="btn-gold" onclick="godPostAnnounce()" style="margin-top:8px;">📢 Опубликовать</button>
@@ -343,20 +359,7 @@ button:disabled { opacity: 0.5; }
 </div>
 
 <div id="godAddShiftCard" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:200;padding:10px;background:rgba(0,0,0,0.85);"><div class="card" style="max-width:400px;margin:20px auto"><h4>+ Смена: <span id="godAddShiftUser"></span></h4><input id="godShiftDate" type="date"><input id="godShiftFrom" value="9"><input id="godShiftTo" value="21"><input id="godShiftTovar" type="number" placeholder="Товаров"><button class="btn-green" onclick="godSaveShift()">💾 Сохранить</button><button class="btn-gray" onclick="godCloseAddShift()">↩ Назад</button></div></div>
-<div id="settingsCard" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;overflow-y:auto;z-index:200;padding:10px;background:rgba(0,0,0,0.85);">
-  <form onsubmit="return false;" class="card" style="max-width:450px;margin:20px auto">
-    <h3 style="text-align:center">⚙️ Настройки</h3>
-    <input id="newName" placeholder="Новое имя"><input id="newPass" type="password" placeholder="Новый пароль" autocomplete="new-password">
-    <select id="newPunkt"></select><input id="newVkId" placeholder="ВК ID (цифры)">
-    <label style="font-size:12px;color:#aaa;">Аватарка</label><input id="newAvatar" type="file" accept="image/*" onchange="previewNewAvatar()">
-    <div id="newAvatarPreview" style="text-align:center;margin:4px 0"></div>
-    <label style="font-size:12px;color:#aaa;">Шрифт чата</label>
-    <select id="chatFont"><option value="12">Мелкий</option><option value="13" selected>Средний</option><option value="15">Крупный</option></select>
-    <button class="btn-gold" id="stickerManagerBtn" onclick="openStickerManager()" style="margin:10px 0;" type="button">📦 Управление стикерами</button>
-    <button class="btn-green" onclick="saveSettings()" type="button">💾 Сохранить</button>
-    <button class="btn-gray" onclick="closeSettings()" type="button">↩ Назад</button>
-  </form>
-</div>
+<div id="settingsCard" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;overflow-y:auto;z-index:200;padding:10px;background:rgba(0,0,0,0.85);"><form onsubmit="return false;" class="card" style="max-width:450px;margin:20px auto"><h3 style="text-align:center">⚙️ Настройки</h3><input id="newName" placeholder="Новое имя"><input id="newPass" type="password" placeholder="Новый пароль" autocomplete="new-password"><select id="newPunkt"></select><input id="newVkId" placeholder="ВК ID (цифры)"><label style="font-size:12px;color:#aaa;">Аватарка</label><input id="newAvatar" type="file" accept="image/*" onchange="previewNewAvatar()"><div id="newAvatarPreview" style="text-align:center;margin:4px 0"></div><label style="font-size:12px;color:#aaa;">Шрифт чата</label><select id="chatFont"><option value="12">Мелкий</option><option value="13" selected>Средний</option><option value="15">Крупный</option></select><button class="btn-gold" id="stickerManagerBtn" onclick="openStickerManager()" style="margin:10px 0;" type="button">📦 Управление стикерами</button><button class="btn-green" onclick="saveSettings()" type="button">💾 Сохранить</button><button class="btn-gray" onclick="closeSettings()" type="button">↩ Назад</button></form></div>
 <div id="thoughtModal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:999;"><div class="card" style="width:90%;max-width:400px;"><h4 style="text-align:center">💭 Мысль Создателя</h4><textarea id="thoughtText" placeholder="О чём думаешь?" rows="3"></textarea><select id="thoughtExpiryType" onchange="toggleExpiryInput('thought')"><option value="forever">Навсегда</option><option value="hours">Часы</option><option value="days">Дни</option></select><input id="thoughtExpiryValue" type="number" value="24" style="display:none"><button class="btn-gold" onclick="sendThought()">🚀 Отправить</button><button class="btn-gray" onclick="closeThoughtModal()">↩ Отмена</button></div></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -454,7 +457,7 @@ function godPostAnnounce(){
   var expiryHours=parseInt(document.getElementById('godAnnounceExpiry').value)||0;
   var expiry=null;
   if(expiryHours>0)expiry=Date.now()+expiryHours*3600000;
-  db.ref('announce').push({text:t,expiry:expiry,timestamp:Date.now(),from:_user.name});
+  db.ref('announce').push({text:t,expiry:expiry,timestamp:Date.now(),from:_user.name,isGod:true});
   document.getElementById('godAnnounceText').value='';
   showToast('✅ Опубликовано!');
   db.ref('chat').push({user:'👑 '+_user.name,text:'📢 '+t+(expiry?' (на '+expiryHours+'ч)':''),timestamp:Date.now(),role:'god'});
@@ -472,16 +475,21 @@ function applyAvatarEffects(wrapperEl,role){
 var carouselUsers=[],carouselInner;
 function buildCarousel(){
   carouselUsers=[];var shown={};
-  for(var name in allUserData){
+  for(var key in allUserData){
+    var name=allUserData[key].name||key;
+    if(!name)continue;
     if(shown[name])continue;
-    if(name==='Костя'&&_user&&_user.name==='Костя')continue;
-    if(godData&&godData.name&&name===godData.name&&_user&&_user.name===godData.name)continue;
+    if(name===_user?.name)continue;
     shown[name]=true;carouselUsers.push(name);
+  }
+  if(godData&&godData.name&&!shown[godData.name]&&godData.name!==_user?.name){
+    shown[godData.name]=true;carouselUsers.push(godData.name);
   }
   carouselUsers.sort();carouselInner=document.getElementById('carouselInner');renderCarousel();
 }
 function renderCarousel(){
-  if(!carouselInner||carouselUsers.length===0)return;var h='';
+  if(!carouselInner||carouselUsers.length===0){carouselInner.innerHTML='';return;}
+  var h='';
   for(var i=0;i<carouselUsers.length;i++){
     var name=carouselUsers[i],d=allUserData[name]||{},av=d.avatar||'',isOnline=!!activeShifts[name];
     if(name===godData?.name)isOnline=false;
@@ -509,7 +517,7 @@ function showMiniProfile(name){
   var mp=document.getElementById('miniProfile'),avc=document.getElementById('mpAvatarContainer');
   var isGod=(name===godData?.name);
   if(d.avatar){
-    avc.innerHTML='<img class="mp-avatar '+(isGod?'avatar-god':'')+'" src="'+d.avatar+'" style="position:relative;z-index:10;" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="mp-placeholder" style="display:none">'+name.charAt(0).toUpperCase()+'</div>';
+    avc.innerHTML='<img class="mp-avatar '+(isGod?'avatar-god':'')+'" src="'+d.avatar+'" style="position:relative;z-index:10;" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'" onclick="viewPhoto(\''+d.avatar+'\')"><div class="mp-placeholder" style="display:none">'+name.charAt(0).toUpperCase()+'</div>';
   } else {
     avc.innerHTML='<div class="mp-placeholder">'+name.charAt(0).toUpperCase()+'</div>';
   }
@@ -533,7 +541,7 @@ function switchToGlobalChat(){privateChatWith=null;document.getElementById('chat
 function getPrivateChatRef(){if(!privateChatWith)return db.ref('chat');var users=[_user.name,privateChatWith].sort();return db.ref('privateChats/'+users[0]+'_'+users[1])}
 
 db.ref('godSettings').on('value',function(s){godData=s.exists()?s.val():null;if(_user)buildCarousel()});
-db.ref('users').on('value',function(s){allUsers={};allUserData={};s.forEach(function(c){allUsers[c.key]=c.val().avatar||'';allUserData[c.key]=c.val()});if(_user)buildCarousel()});
+db.ref('users').on('value',function(s){allUsers={};allUserData={};s.forEach(function(c){var d=c.val();allUsers[d.name]=d.avatar||'';allUserData[d.name]=d});if(_user)buildCarousel()});
 db.ref('activeShifts').on('value',function(s){activeShifts={};s.forEach(function(c){if(c.val()&&c.val().active)activeShifts[c.key]=true});if(_user)buildCarousel()});
 db.ref('shifts').on('value',function(s){allMyShifts=[];s.forEach(function(c){var x=c.val();x._id=c.key;allMyShifts.push(x)})});
 db.ref('sticker_packs').on('value',function(s){globalStickerPacks=s.val()||{};if(_user)renderStickerUI()});
@@ -573,7 +581,9 @@ function finishLogin(){
     document.getElementById('app').classList.add('god-theme');
     document.getElementById('bodyEl').classList.add('god-body');
     if(smBtn)smBtn.style.display='none';
-    godRecountRating();godLoadPunkts();godLoadCalcUsers();
+    godRecountRating();
+    godUpdateStatusUI();
+    godLoadPunkts();godLoadCalcUsers();
     showTab('godPunkts');
   } else {
     [tabShift,tabStats,tabHistory,tabNotify,tabHall].forEach(function(b){if(b)b.style.display='flex'});
@@ -591,7 +601,7 @@ function updateProfileUI(){
   document.getElementById('uname').textContent=_user.name;document.getElementById('upunkt').textContent=_user.punkt||'?';
   var pa=document.getElementById('profileAvatar');if(_user.avatar){pa.src=_user.avatar;pa.style.display='block'}else{pa.style.display='none'}
   var badge=document.getElementById('roleBadge'),nameWrap=document.getElementById('creatorNameWrapper');
-  if(_user.role==='god'){nameWrap.className='god-name';badge.className='creator-badge god-badge';badge.textContent='👑 Начальник';badge.style.background=''}
+  if(_user.role==='god'){nameWrap.className='god-name';badge.className='creator-badge god-badge';godUpdateStatusUI();}
   else if(_user.role==='creator'){nameWrap.className='creator-name';badge.className='creator-badge';badge.textContent='🌌 Создатель';badge.style.background=''}
   else{nameWrap.className='';badge.className='creator-badge';badge.style.background='linear-gradient(135deg,#4CAF50,#2E8B57)';badge.textContent='📦 Сотрудник'}
   applyAvatarEffects(document.getElementById('avatarWrapper'),_user.role);
@@ -664,15 +674,26 @@ function openThoughtModal(){document.getElementById('thoughtModal').style.displa
 function closeThoughtModal(){document.getElementById('thoughtModal').style.display='none'}
 function toggleExpiryInput(p){document.getElementById(p+'ExpiryValue').style.display=document.getElementById(p+'ExpiryType').value==='forever'?'none':'block'}
 function sendThought(){var t=document.getElementById('thoughtText').value.trim();if(!t)return;var ty=document.getElementById('thoughtExpiryType').value,v=parseInt(document.getElementById('thoughtExpiryValue').value)||24,ex=null;if(ty==='hours')ex=Date.now()+v*3600000;else if(ty==='days')ex=Date.now()+v*86400000;db.ref('creatorThought').set({text:t,expiry:ex,timestamp:Date.now()});closeThoughtModal();showToast('💭 Отправлено!')}
-function loadThought(){db.ref('creatorThought').on('value',function(s){var b=document.getElementById('thoughtBlock');if(!s.exists()){b.style.display='none';return}var t=s.val();if(t.expiry&&Date.now()>t.expiry){db.ref('creatorThought').remove();b.style.display='none';return}b.style.display='block';b.innerHTML='💭 '+t.text+' <button onclick="delThought()">✕</button>'})}
+function loadThought(){
+  db.ref('creatorThought').on('value',function(s){
+    var b=document.getElementById('thoughtBlock');
+    if(!s.exists()){b.style.display='none';return}
+    var t=s.val();
+    if(t.expiry&&Date.now()>t.expiry){db.ref('creatorThought').remove();b.style.display='none';return}
+    b.style.display='block';
+    var expText=t.expiry?'До: '+new Date(t.expiry).toLocaleString('ru-RU'):'Навсегда';
+    b.innerHTML='<button class="thought-del" onclick="delThought()">✕</button><span>💭</span> <span>'+t.text+'</span><div class="thought-expiry">'+expText+'</div>';
+  });
+}
 function delThought(){db.ref('creatorThought').remove()}
 function loadAnnounce(){
   db.ref('announce').limitToLast(1).on('value',function(s){
     var b=document.getElementById('announceBlock');
-    if(!s.exists()){b.style.display='none';return}
+    if(!s.exists()){b.style.display='none';b.classList.remove('god-announce-cloud');return}
     var last=null;s.forEach(function(c){last=c.val();last._key=c.key});
-    if(last.expiry&&Date.now()>last.expiry){db.ref('announce/'+last._key).remove();b.style.display='none';return}
+    if(last.expiry&&Date.now()>last.expiry){db.ref('announce/'+last._key).remove();b.style.display='none';b.classList.remove('god-announce-cloud');return}
     b.style.display='block';
+    if(last.isGod){b.classList.add('god-announce-cloud');}else{b.classList.remove('god-announce-cloud');}
     var expText=last.expiry?'Актуально до: '+new Date(last.expiry).toLocaleString('ru-RU'):'Бессрочно';
     b.innerHTML='<button class="announce-del" onclick="delAnnounce(\''+last._key+'\')">✕</button><b>📢 '+(last.text||'')+'</b><small class="announce-expiry">'+expText+' • '+new Date(last.timestamp).toLocaleString('ru-RU')+'</small>';
   });
