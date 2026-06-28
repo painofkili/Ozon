@@ -508,18 +508,43 @@ function updateProfileUI(){
 
 function showTab(tab){
   var allTabs={shift:'shiftTab',stats:'statsTab',history:'historyTab',notify:'notifyTab',hall:'hallTab',creator:'creatorTab',godPunkts:'godPunktsTab',godWorkers:'godWorkersTab',godCalc:'godCalcTab',godAnnounce:'godAnnounceTab'};
-  // Скрываем все вкладки
-  Object.keys(allTabs).forEach(function(t){var el=document.getElementById(allTabs[t]);if(el)el.classList.remove('active-tab')});
-  // Показываем нужную
-  var target=document.getElementById(allTabs[tab]);if(target)target.classList.add('active-tab');
-  // Снимаем active со всех кнопок
-  document.querySelectorAll('#mainTabs button').forEach(function(b){b.classList.remove('active')});
-  // Активируем нужную кнопку
   var btnMap={shift:'tabShift',stats:'tabStats',history:'tabHistory',notify:'tabNotify',hall:'tabHall',creator:'tabCreator',godPunkts:'tabGodPunkts',godWorkers:'tabGodWorkers',godCalc:'tabGodCalc',godAnnounce:'tabGodAnnounce'};
-  var btn=document.getElementById(btnMap[tab]);if(btn)btn.classList.add('active');
-  // Загружаем данные для вкладок
-  if(tab==='stats')renderMyCalendar();if(tab==='history')loadHistory();if(tab==='notify')loadNotifications();if(tab==='hall')loadHall();
-  if(tab==='godPunkts')godLoadPunkts();if(tab==='godWorkers')godLoadWorkers();if(tab==='godCalc')godLoadCalcUsers();
+  
+  var currentBtn = document.getElementById(btnMap[tab]);
+  var currentContent = document.getElementById(allTabs[tab]);
+  
+  // Если кликнули на уже активную вкладку — сворачиваем её
+  if (currentBtn && currentBtn.classList.contains('active')) {
+    currentBtn.classList.remove('active');
+    if (currentContent) currentContent.classList.remove('active-tab');
+    return;
+  }
+  
+  // Скрываем все вкладки
+  Object.keys(allTabs).forEach(function(t){
+    var el = document.getElementById(allTabs[t]);
+    if (el) el.classList.remove('active-tab');
+  });
+  
+  // Снимаем active со всех кнопок
+  document.querySelectorAll('#mainTabs button').forEach(function(b){
+    b.classList.remove('active');
+  });
+  
+  // Показываем нужную вкладку
+  if (currentContent) currentContent.classList.add('active-tab');
+  
+  // Активируем нужную кнопку
+  if (currentBtn) currentBtn.classList.add('active');
+  
+  // Загружаем данные
+  if (tab === 'stats') renderMyCalendar();
+  if (tab === 'history') loadHistory();
+  if (tab === 'notify') loadNotifications();
+  if (tab === 'hall') loadHall();
+  if (tab === 'godPunkts') godLoadPunkts();
+  if (tab === 'godWorkers') godLoadWorkers();
+  if (tab === 'godCalc') godLoadCalcUsers();
 }
 
 function loadNotifications(){if(!_user)return;db.ref('notifications').orderByChild('user').equalTo(_user.name).once('value',function(s){var a=[];s.forEach(function(c){a.push(c.val())});a.sort(function(a,b){return b.timestamp-a.timestamp});document.getElementById('notifyContent').innerHTML=a.length?a.map(function(x){return'<div>'+x.text+' <small style="color:#999">'+new Date(x.timestamp).toLocaleString('ru-RU')+'</small></div>'}).join(''):'<p>Нет уведомлений</p>'})}
