@@ -343,7 +343,7 @@ function godEditPunkt(id,cur){var r=parseInt(prompt('Ставка для '+id+':
 function godDeletePunkt(id){if(confirm('Удалить '+id+'?')){db.ref('punkts/'+id).remove();godLoadPunkts()}}
 function godLoadWorkers(){
   var fp=document.getElementById('godFilterPunkt').value;
-  db.ref('users').once('value',function(s){var h='',pk={};s.forEach(function(c){var w=c.val();if(w.punkt)pk[w.punkt]=!0;if(fp&&w.punkt!==fp)return;if(godData&&godData.name&&w.name===godData.name)return;var isCreator=w.name==='Костя',wav=w.avatar?'<img src="'+w.avatar+'" style="width:30px;height:30px;border-radius:50%;object-fit:cover;margin-right:6px;vertical-align:middle'+(isCreator?';box-shadow:0 0 10px rgba(245,197,24,0.6)':'')+'">':'';h+='<div class="worker-row'+(isCreator?' creator-row':'')+'"><span>'+wav+'<b>'+(isCreator?'<span style="color:#f5c518">🌌 '+w.name+'</span>':w.name)+'</b><br>Пункт '+(w.punkt||'?')+' | Надбавка: '+(w.bonus||0)+' ₽</span><span><button class="btn-orange" onclick="godSetBonus(\''+c.key+'\',\''+w.name+'\','+(w.bonus||0)+')">💰</button><button class="btn-gold" onclick="godQuickPremium(\''+w.name+'\')">🎁</button><button class="btn-purple" onclick="godQuickPunish(\''+w.name+'\')">⚠️</button>'+(w.name!=='Костя'?'<button class="btn-red" onclick="godDeleteWorker(\''+c.key+'\',\''+w.name+'\')">✕</button>':'')+'</span></div>'});document.getElementById('godWorkersList').innerHTML=h||'<p>Нет сотрудников</p>';var sel=document.getElementById('godFilterPunkt');sel.innerHTML='<option value="">Все пункты</option>';Object.keys(pk).forEach(function(p){if(p)sel.innerHTML+='<option value="'+p+'">'+p+'</option>'})})}
+  db.ref('users').once('value',function(s){var h='',pk={};s.forEach(function(c){var w=c.val();if(w.punkt)pk[w.punkt]=!0;if(fp&&w.punkt!==fp)return;if(godData&&godData.name&&w.name===godData.name)return;var isCreator=w.name==='Костя',wav=w.avatar?'<img src="'+w.avatar+'" style="width:30px;height:30px;border-radius:50%;object-fit:cover;margin-right:6px;vertical-align:middle'+(isCreator?';box-shadow:0 0 10px rgba(245,197,24,0.6)':'')+'">':'';h+='<div class="worker-row'+(isCreator?' creator-row':'')+'"><span>'+wav+'<b>'+(isCreator?'<span style="color:#f5c518">🌌 '+w.name+'</span>':w.name)+'</b><br>Пункт '+(w.punkt||'?')+' | Надбавка: '+(w.bonus||0)+' ₽</span><span><button class="btn-orange" onclick="godSetBonus(\''+c.key+'\',\''+w.name+'\','+(w.bonus||0)+')">💰</button><button class="btn-gold" onclick="godQuickPremium(\''+w.name+'\')">🎁</button><button class="btn-purple" onclick="godQuickPunish(\''+w.name+'\')">⚠️</button><button class="btn-red" onclick="godDeleteWorker(\''+c.key+'\',\''+w.name+'\')">✕</button></span></div>'});document.getElementById('godWorkersList').innerHTML=h||'<p>Нет сотрудников</p>';var sel=document.getElementById('godFilterPunkt');sel.innerHTML='<option value="">Все пункты</option>';Object.keys(pk).forEach(function(p){if(p)sel.innerHTML+='<option value="'+p+'">'+p+'</option>'})})}
 function godSetBonus(key,name,cur){var b=prompt('Надбавка для '+name+':',cur);if(b!==null&&!isNaN(parseInt(b))){db.ref('users/'+key+'/bonus').set(parseInt(b));godLoadWorkers()}}
 function godDeleteWorker(key,name){if(name==='Костя'){showToast('👑 Знай своё место!',true);return}if(!confirm('Удалить '+name+'?'))return;db.ref('shifts').orderByChild('user').equalTo(name).once('value',function(s){s.forEach(function(c){db.ref('shifts/'+c.key).remove()})});db.ref('users/'+key).remove();godLoadWorkers()}
 function godQuickPremium(user){var am=parseInt(prompt('Премия для '+user+' (₽):'));if(!am||am<=0)return;var st=getGodStatus(godRating),texts=PREMIUM_TEXTS[st.name]||['+{sum}₽'],msg=randomText(texts,am);db.ref('premiums').push({user:user,amount:am,timestamp:Date.now()});db.ref('notifications').push({user:user,text:msg,timestamp:Date.now()});godRating+=2;godUpdateStatusUI();db.ref('chat').push({user:'👑 '+_user.name,text:'🎁 '+msg,timestamp:Date.now(),role:'god'});showToast('✅ Премия!')}
@@ -398,11 +398,54 @@ function buildCarousel(){
   }
   carouselUsers.sort();carouselInner=document.getElementById('carouselInner');renderCarousel();
 }
-function renderCarousel(){if(!carouselInner||carouselUsers.length===0)return;var h='';for(var i=0;i<carouselUsers.length;i++){var name=carouselUsers[i],d=allUserData[name]||{},av=d.avatar||'',isOnline=!!activeShifts[name];if(name===godData?.name)isOnline=false;var isActive=(selectedProfile===name);h+='<div class="avatar-item'+(isActive?' active':'')+(isOnline?' online':'')+'" onclick="selectProfile(\''+name+'\')">';if(av){h+='<img src="'+av+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="av-placeholder" style="display:none">'+name.charAt(0).toUpperCase()+'</div>'}else{h+='<div class="av-placeholder">'+name.charAt(0).toUpperCase()+'</div>'}if(isOnline)h+='<div class="online-dot"></div>';h+='</div>'}carouselInner.innerHTML=h}
-function selectProfile(name,silent){if(!name||(name===_user?.name&&!silent))return;selectedProfile=name;var items=carouselInner.querySelectorAll('.avatar-item');items.forEach(function(item){if(item.textContent.trim().startsWith(name.charAt(0)))item.classList.add('active');else item.classList.remove('active')});if(name!==_user?.name)showMiniProfile(name);else closeMiniProfile()}
-function showMiniProfile(name){var d=allUserData[name];if(!d)return;var isGod=(name===godData?.name);document.getElementById('mpName').textContent=name;document.getElementById('mpStatus').textContent=isGod?'👑 Начальник':'📦 Сотрудник';document.getElementById('mpPunkt').textContent='📍 Пункт '+(d.punkt||'?');document.getElementById('miniProfile').classList.add('show')}
+function renderCarousel(){
+  if(!carouselInner||carouselUsers.length===0)return;var h='';
+  for(var i=0;i<carouselUsers.length;i++){
+    var name=carouselUsers[i],d=allUserData[name]||{},av=d.avatar||'',isOnline=!!activeShifts[name];
+    if(name===godData?.name)isOnline=false;
+    var isActive=(selectedProfile===name);
+    h+='<div class="avatar-item'+(isActive?' active':'')+(isOnline?' online':'')+'" onclick="selectProfile(\''+name.replace(/'/g,"\\'")+'\')">';
+    if(av){h+='<img src="'+av+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="av-placeholder" style="display:none">'+name.charAt(0).toUpperCase()+'</div>'}
+    else{h+='<div class="av-placeholder">'+name.charAt(0).toUpperCase()+'</div>'}
+    if(isOnline)h+='<div class="online-dot"></div>';h+='</div>'
+  }
+  carouselInner.innerHTML=h;
+}
+function selectProfile(name,silent){
+  if(!name)return;
+  if(name===_user?.name&&!silent)return;
+  selectedProfile=name;
+  var items=carouselInner.querySelectorAll('.avatar-item');
+  items.forEach(function(item){item.classList.remove('active')});
+  var targetItem=carouselInner.querySelector('[onclick*="'+name.replace(/'/g,"\\'")+'"]');
+  if(targetItem)targetItem.classList.add('active');
+  if(name!==_user?.name)showMiniProfile(name);else closeMiniProfile();
+}
+function showMiniProfile(name){
+  var d=allUserData[name];if(!d)return;
+  var mp=document.getElementById('miniProfile'),avc=document.getElementById('mpAvatarContainer');
+  var isGod=(name===godData?.name);
+  if(d.avatar){
+    avc.innerHTML='<img class="mp-avatar '+(isGod?'avatar-god':'')+'" src="'+d.avatar+'" style="position:relative;z-index:10;" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="mp-placeholder" style="display:none">'+name.charAt(0).toUpperCase()+'</div>';
+  } else {
+    avc.innerHTML='<div class="mp-placeholder">'+name.charAt(0).toUpperCase()+'</div>';
+  }
+  if(isGod)applyAvatarEffects(avc,'god');
+  document.getElementById('mpName').textContent=name;
+  if(isGod){document.getElementById('mpStatus').textContent='👑 Начальник';document.getElementById('mpPunkt').textContent='🔴 Не на смене';document.getElementById('mpCalendar').innerHTML=''}
+  else{
+    var sc=0;allMyShifts.forEach(function(s){if(s.user===name)sc++});
+    var st=['📦 Штрих','🚚 ПВЗюк','🏭 Пунктовой','🚀 Озонавт','👑 Озоний'][sc>=21?4:sc>=13?3:sc>=8?2:sc>=4?1:0];
+    document.getElementById('mpStatus').textContent=st;var isOnline=!!activeShifts[name];
+    document.getElementById('mpPunkt').textContent=isOnline?'🟢 На смене (Пункт '+(d.punkt||'?')+')':'🔴 Выходной';
+    var now=new Date(),calH='',startD=new Date(now.getTime()-13*86400000);
+    for(var i=0;i<14;i++){var dd=new Date(startD.getTime()+i*86400000),ds=dd.toLocaleDateString('ru-RU'),isShift=false;allMyShifts.forEach(function(s){if(s.user===name&&s.date===ds)isShift=true});calH+='<div class="'+(isShift?'mp-shift':'')+'">'+dd.getDate()+'</div>'}
+    document.getElementById('mpCalendar').innerHTML=calH;
+  }
+  document.getElementById('mpChatBtn').style.display='block';mp.classList.add('show');
+}
 function closeMiniProfile(){document.getElementById('miniProfile').classList.remove('show')}
-function openPrivateChat(){if(!selectedProfile||selectedProfile===_user?.name)return;privateChatWith=selectedProfile;document.getElementById('chatLabel').textContent='💬 '+selectedProfile;document.getElementById('chatBackBtn').style.display='inline-block';closeMiniProfile();loadChat()}
+function openPrivateChat(){if(!selectedProfile||selectedProfile===_user?.name)return;privateChatWith=selectedProfile;document.getElementById('chatLabel').textContent='💬 '+selectedProfile;document.getElementById('chatBackBtn').style.display='inline-block';closeMiniProfile();document.getElementById('avatarCarousel').classList.remove('open');loadChat()}
 function switchToGlobalChat(){privateChatWith=null;document.getElementById('chatLabel').textContent='Общий чат';document.getElementById('chatBackBtn').style.display='none';loadChat()}
 function getPrivateChatRef(){if(!privateChatWith)return db.ref('chat');var users=[_user.name,privateChatWith].sort();return db.ref('privateChats/'+users[0]+'_'+users[1])}
 
@@ -464,12 +507,17 @@ function updateProfileUI(){
 }
 
 function showTab(tab){
-  var tabs={shift:'shiftTab',stats:'statsTab',history:'historyTab',notify:'notifyTab',hall:'hallTab',creator:'creatorTab',godPunkts:'godPunktsTab',godWorkers:'godWorkersTab',godCalc:'godCalcTab',godAnnounce:'godAnnounceTab'};
-  Object.keys(tabs).forEach(function(t){var el=document.getElementById(tabs[t]);if(el)el.classList.remove('active-tab')});
-  var target=document.getElementById(tabs[tab]);if(target)target.classList.add('active-tab');
+  var allTabs={shift:'shiftTab',stats:'statsTab',history:'historyTab',notify:'notifyTab',hall:'hallTab',creator:'creatorTab',godPunkts:'godPunktsTab',godWorkers:'godWorkersTab',godCalc:'godCalcTab',godAnnounce:'godAnnounceTab'};
+  // Скрываем все вкладки
+  Object.keys(allTabs).forEach(function(t){var el=document.getElementById(allTabs[t]);if(el)el.classList.remove('active-tab')});
+  // Показываем нужную
+  var target=document.getElementById(allTabs[tab]);if(target)target.classList.add('active-tab');
+  // Снимаем active со всех кнопок
   document.querySelectorAll('#mainTabs button').forEach(function(b){b.classList.remove('active')});
+  // Активируем нужную кнопку
   var btnMap={shift:'tabShift',stats:'tabStats',history:'tabHistory',notify:'tabNotify',hall:'tabHall',creator:'tabCreator',godPunkts:'tabGodPunkts',godWorkers:'tabGodWorkers',godCalc:'tabGodCalc',godAnnounce:'tabGodAnnounce'};
   var btn=document.getElementById(btnMap[tab]);if(btn)btn.classList.add('active');
+  // Загружаем данные для вкладок
   if(tab==='stats')renderMyCalendar();if(tab==='history')loadHistory();if(tab==='notify')loadNotifications();if(tab==='hall')loadHall();
   if(tab==='godPunkts')godLoadPunkts();if(tab==='godWorkers')godLoadWorkers();if(tab==='godCalc')godLoadCalcUsers();
 }
