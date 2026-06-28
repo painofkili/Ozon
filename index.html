@@ -722,6 +722,149 @@ function finishLogin() {
   buildCarousel();
   renderStickerUI();
 }
+  // ========== ВСТАВЬ ЭТИ ФУНКЦИИ ==========
+
+function showTab(tab){
+  var allTabs={shift:'shiftTab',stats:'statsTab',history:'historyTab',notify:'notifyTab',hall:'hallTab',creator:'creatorTab',godPunkts:'godPunktsTab',godWorkers:'godWorkersTab',godCalc:'godCalcTab',godAnnounce:'godAnnounceTab'};
+  var btnMap={shift:'tabShift',stats:'tabStats',history:'tabHistory',notify:'tabNotify',hall:'tabHall',creator:'tabCreator',godPunkts:'tabGodPunkts',godWorkers:'tabGodWorkers',godCalc:'tabGodCalc',godAnnounce:'tabGodAnnounce'};
+  var currentBtn=document.getElementById(btnMap[tab]);
+  var currentContent=document.getElementById(allTabs[tab]);
+  if(currentBtn&&currentBtn.classList.contains('active')){currentBtn.classList.remove('active');if(currentContent)currentContent.classList.remove('active-tab');return}
+  Object.keys(allTabs).forEach(function(t){var el=document.getElementById(allTabs[t]);if(el)el.classList.remove('active-tab')});
+  document.querySelectorAll('#mainTabs button').forEach(function(b){b.classList.remove('active')});
+  if(currentContent)currentContent.classList.add('active-tab');
+  if(currentBtn)currentBtn.classList.add('active');
+  if(tab==='stats')renderMyCalendar();if(tab==='history')loadHistory();if(tab==='notify')loadNotifications();if(tab==='hall')loadHall();
+  if(tab==='godPunkts')godLoadPunkts();if(tab==='godWorkers')godLoadWorkers();if(tab==='godCalc')godLoadCalcUsers();
+}
+
+function updateProfileUI(){
+  document.getElementById('uname').textContent=_user.name;document.getElementById('upunkt').textContent=_user.punkt||'?';
+  var pa=document.getElementById('profileAvatar');if(_user.avatar){pa.src=_user.avatar;pa.style.display='block'}else{pa.style.display='none'}
+  var badge=document.getElementById('roleBadge'),nameWrap=document.getElementById('creatorNameWrapper');
+  if(_user.role==='god'){nameWrap.className='god-name';badge.className='creator-badge god-badge';godUpdateStatusUI();}
+  else if(_user.role==='creator'){nameWrap.className='creator-name';badge.className='creator-badge';badge.textContent='🌌 Создатель';badge.style.background=''}
+  else{nameWrap.className='';badge.className='creator-badge';badge.style.background='linear-gradient(135deg,#4CAF50,#2E8B57)';badge.textContent='📦 Сотрудник'}
+  applyAvatarEffects(document.getElementById('avatarWrapper'),_user.role);
+}
+
+function loadChat(){
+  var cf=localStorage.getItem('chatFont')||'13',chatEl=document.getElementById('chat'),wasAtBottom=chatEl.scrollHeight-chatEl.scrollTop-chatEl.clientHeight<60;chatEl.style.fontSize=cf+'px';
+  var ref=privateChatWith?getPrivateChatRef():db.ref('chat');ref.limitToLast(50).on('value',function(s){var groups={},order=[];s.forEach(function(c){var m=c.val(),cu=m.user||'';if(!groups[cu]){groups[cu]=[];order.push(cu)}groups[cu].push({key:c.key,msg:m,isC:m.role==='creator',isG:m.role==='god'})});var h='';
+    for(var u=0;u<order.length;u++){var cu=order[u],ms=groups[cu],fm=ms[0],isC=fm.isC,isG=fm.isG,isM=_user&&(cu===_user.name||cu==='🌌 '+_user.name||cu==='👑 '+_user.name),ac=isM?'mine':'other';h+='<div class="chat-bubble-group '+ac+'">';var sn=(fm.msg.user||'').replace('📢 ','').replace('🌌 ','').replace('👑 ',''),av=allUsers[sn]||'',msgClass=isG?'chat-msg-god':(isC?'chat-msg-creator':'chat-bubble'+(isM?' mine':'')),btnType=isG?'god':(isC?'creator':'normal');
+      h+='<div class="'+msgClass+'"><button class="msg-menu-btn" onclick="event.stopPropagation();toggleMsgDropdown(event,\''+fm.key+'\',\''+btnType+'\')">⋮</button><div class="msg-dropdown" data-dropdown="'+fm.key+'"><button onclick="event.stopPropagation();likeMsg(\''+fm.key+'\')">❤️</button><button onclick="event.stopPropagation();pinMsg(\''+fm.key+'\')">📌</button><button onclick="event.stopPropagation();delChatMsg(\''+fm.key+'\',\''+btnType+'\')">✕</button></div>';
+      if(av)h+='<img class="avatar-mini '+(isG?'avatar-mini-god':isC?'avatar-mini-creator':'')+'" src="'+av+'" onclick="event.stopPropagation();selectProfile(\''+sn+'\')">';
+      h+='<b class="'+(isG||isC?'author':'')+'" onclick="event.stopPropagation();selectProfile(\''+sn+'\')" style="cursor:pointer">'+sn+'</b> '+(fm.msg.text||'');
+      if(fm.msg.sticker)h+='<img class="chat-sticker" src="'+fm.msg.sticker+'">';
+      if(fm.msg.photos&&fm.msg.photos.length){h+='<div class="photo-pack">';for(var pi=0;pi<fm.msg.photos.length;pi++){var p=fm.msg.photos[pi],pt=typeof p==='object'?p.thumb:p;h+='<img class="thumb" src="'+pt+'" onclick="viewPhoto(\''+(typeof p==='object'?p.full:p)+'\')">'}h+='</div>'}h+='</div>';
+      for(var j=1;j<ms.length;j++){var m=ms[j].msg;h+='<div class="'+msgClass+'"><button class="msg-menu-btn" onclick="event.stopPropagation();toggleMsgDropdown(event,\''+ms[j].key+'\',\''+btnType+'\')">⋮</button><div class="msg-dropdown" data-dropdown="'+ms[j].key+'"><button onclick="likeMsg(\''+ms[j].key+'\')">❤️</button><button onclick="pinMsg(\''+ms[j].key+'\')">📌</button><button onclick="delChatMsg(\''+ms[j].key+'\',\''+btnType+'\')">✕</button></div>'+(m.text||'');if(m.sticker)h+='<img class="chat-sticker" src="'+m.sticker+'">';h+='</div>'}
+      var likes=fm.msg.likes||{},lc=Object.keys(likes).length;if(lc>0){var mk=_user?.name,il=!!likes[mk],icon=il?(likes[mk]==='god'?'👑':likes[mk]==='creator'?'🌌':'❤️'):'❤️';h+='<div class="like-indicator has-likes">'+icon+' '+lc+'</div>'}h+='</div>'}chatEl.innerHTML=h;if(wasAtBottom||document.activeElement===document.getElementById('chatMsgInput'))chatEl.scrollTop=chatEl.scrollHeight})}
+}
+
+function loadPinned(){db.ref('pinned').on('value',function(s){var b=document.getElementById('pinnedMessage');if(!s.exists()){b.style.display='none';return}var m=s.val();b.style.display='block';b.innerHTML='📌 <b>'+(m.user||'?')+':</b> '+m.text})}
+function loadAnnounce(){
+  db.ref('announce').limitToLast(1).on('value',function(s){
+    var b=document.getElementById('announceBlock');
+    if(!s.exists()){b.style.display='none';b.classList.remove('god-announce-cloud');return}
+    var last=null;s.forEach(function(c){last=c.val();last._key=c.key});
+    if(last.expiry&&Date.now()>last.expiry){db.ref('announce/'+last._key).remove();b.style.display='none';b.classList.remove('god-announce-cloud');return}
+    b.style.display='block';
+    if(last.isGod){b.classList.add('god-announce-cloud');}else{b.classList.remove('god-announce-cloud');}
+    var expText=last.expiry?'Актуально до: '+new Date(last.expiry).toLocaleString('ru-RU'):'Бессрочно';
+    b.innerHTML='<button class="announce-del" onclick="delAnnounce(\''+last._key+'\')">✕</button><b>📢 '+(last.text||'')+'</b><small class="announce-expiry">'+expText+' • '+new Date(last.timestamp).toLocaleString('ru-RU')+'</small>';
+  });
+}
+function loadThought(){
+  db.ref('creatorThought').on('value',function(s){
+    var b=document.getElementById('thoughtBlock');
+    if(!s.exists()){b.style.display='none';return}
+    var t=s.val();
+    if(t.expiry&&Date.now()>t.expiry){db.ref('creatorThought').remove();b.style.display='none';return}
+    b.style.display='block';
+    var expText=t.expiry?'До: '+new Date(t.expiry).toLocaleString('ru-RU'):'Навсегда';
+    b.innerHTML='<button class="thought-del" onclick="delThought()">✕</button><span>💭</span> <span>'+t.text+'</span><div class="thought-expiry">'+expText+'</div>';
+  });
+}
+function delThought(){db.ref('creatorThought').remove()}
+
+function buildCarousel(){
+  carouselUsers=[];var shown={};
+  for(var key in allUserData){
+    var name=allUserData[key].name||key;
+    if(!name)continue;
+    if(shown[name])continue;
+    if(name===_user?.name)continue;
+    shown[name]=true;carouselUsers.push(name);
+  }
+  if(godData&&godData.name&&!shown[godData.name]&&godData.name!==_user?.name){
+    shown[godData.name]=true;carouselUsers.push(godData.name);
+  }
+  carouselUsers.sort();carouselInner=document.getElementById('carouselInner');renderCarousel();
+}
+function renderCarousel(){
+  if(!carouselInner||carouselUsers.length===0){carouselInner.innerHTML='';return;}
+  var h='';
+  for(var i=0;i<carouselUsers.length;i++){
+    var name=carouselUsers[i],d=allUserData[name]||{},av=d.avatar||'',isOnline=!!activeShifts[name];
+    if(name===godData?.name)isOnline=false;
+    var isActive=(selectedProfile===name);
+    h+='<div class="avatar-item'+(isActive?' active':'')+(isOnline?' online':'')+'" onclick="selectProfile(\''+name.replace(/'/g,"\\'")+'\')">';
+    if(av){h+='<img src="'+av+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="av-placeholder" style="display:none">'+name.charAt(0).toUpperCase()+'</div>'}
+    else{h+='<div class="av-placeholder">'+name.charAt(0).toUpperCase()+'</div>'}
+    if(isOnline)h+='<div class="online-dot"></div>';h+='</div>'
+  }
+  carouselInner.innerHTML=h;
+}
+function selectProfile(name,silent){
+  if(!name)return;
+  if(name===_user?.name&&!silent)return;
+  selectedProfile=name;
+  var items=carouselInner.querySelectorAll('.avatar-item');
+  items.forEach(function(item){item.classList.remove('active')});
+  var escapedName=name.replace(/'/g,"\\'");
+  var targetItem=carouselInner.querySelector('[onclick*="'+escapedName+'"]');
+  if(targetItem)targetItem.classList.add('active');
+  if(name!==_user?.name)showMiniProfile(name);else closeMiniProfile();
+}
+function showMiniProfile(name){
+  var d=allUserData[name];if(!d)return;
+  var mp=document.getElementById('miniProfile'),avc=document.getElementById('mpAvatarContainer');
+  var isGod=(name===godData?.name);
+  if(d.avatar){
+    avc.innerHTML='<img class="mp-avatar '+(isGod?'avatar-god':'')+'" src="'+d.avatar+'" style="position:relative;z-index:10;" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'" onclick="viewPhoto(\''+d.avatar+'\')"><div class="mp-placeholder" style="display:none">'+name.charAt(0).toUpperCase()+'</div>';
+  } else {
+    avc.innerHTML='<div class="mp-placeholder">'+name.charAt(0).toUpperCase()+'</div>';
+  }
+  if(isGod)applyAvatarEffects(avc,'god');
+  document.getElementById('mpName').textContent=name;
+  if(isGod){document.getElementById('mpStatus').textContent='👑 Начальник';document.getElementById('mpPunkt').textContent='🔴 Не на смене';document.getElementById('mpCalendar').innerHTML=''}
+  else{
+    var sc=0;allMyShifts.forEach(function(s){if(s.user===name)sc++});
+    var st=['📦 Штрих','🚚 ПВЗюк','🏭 Пунктовой','🚀 Озонавт','👑 Озоний'][sc>=21?4:sc>=13?3:sc>=8?2:sc>=4?1:0];
+    document.getElementById('mpStatus').textContent=st;var isOnline=!!activeShifts[name];
+    document.getElementById('mpPunkt').textContent=isOnline?'🟢 На смене (Пункт '+(d.punkt||'?')+')':'🔴 Выходной';
+    var now=new Date(),calH='',startD=new Date(now.getTime()-13*86400000);
+    for(var i=0;i<14;i++){var dd=new Date(startD.getTime()+i*86400000),ds=dd.toLocaleDateString('ru-RU'),isShift=false;allMyShifts.forEach(function(s){if(s.user===name&&s.date===ds)isShift=true});calH+='<div class="'+(isShift?'mp-shift':'')+'">'+dd.getDate()+'</div>'}
+    document.getElementById('mpCalendar').innerHTML=calH;
+  }
+  document.getElementById('mpChatBtn').style.display='block';mp.classList.add('show');
+}
+function closeMiniProfile(){document.getElementById('miniProfile').classList.remove('show')}
+function openPrivateChat(){if(!selectedProfile||selectedProfile===_user?.name)return;privateChatWith=selectedProfile;document.getElementById('chatLabel').textContent='💬 '+selectedProfile;document.getElementById('chatBackBtn').style.display='inline-block';closeMiniProfile();document.getElementById('avatarCarousel').classList.remove('open');loadChat()}
+function switchToGlobalChat(){privateChatWith=null;document.getElementById('chatLabel').textContent='Общий чат';document.getElementById('chatBackBtn').style.display='none';loadChat()}
+function getPrivateChatRef(){if(!privateChatWith)return db.ref('chat');var users=[_user.name,privateChatWith].sort();return db.ref('privateChats/'+users[0]+'_'+users[1])}
+
+function renderStickerUI(){var tc=document.getElementById('stickerTabs'),cc=document.getElementById('stickerContent');if(!tc||!cc)return;var packs=getAccessiblePacks(),h='<button class="st-tab '+(currentStickerTab==='emoji'?'active':'')+'" onclick="event.stopPropagation();setStickerTab(\'emoji\')">😀</button>';packs.forEach(function(p){h+='<button class="st-tab '+(currentStickerTab===p.id?'active':'')+'" onclick="event.stopPropagation();setStickerTab(\''+p.id+'\')"><img src="'+(p.pack.icon||'')+'"></button>'});tc.innerHTML=h;var ch='';if(currentStickerTab==='emoji'){BASE_EMOJIS.forEach(function(e){ch+='<div class="emoji-item" onclick="insertEmoji(\''+e+'\')">'+e+'</div>'})}else{var sp=packs.find(function(p){return p.id===currentStickerTab});if(sp&&sp.pack.stickers){for(var sid in sp.pack.stickers){var st=sp.pack.stickers[sid];ch+='<div class="st-item" onclick="sendSticker(\''+st.img+'\')"><img src="'+st.img+'"></div>'}}else ch+='<div style="color:#aaa;text-align:center;margin-top:20px;">Нет стикеров</div>'}cc.innerHTML=ch}
+function setStickerTab(id){currentStickerTab=id;renderStickerUI()}
+function insertEmoji(em){var i=document.getElementById('chatMsgInput');i.value+=em;i.focus()}
+function sendSticker(b64){if(!_user)return;var ref=privateChatWith?getPrivateChatRef():db.ref('chat');ref.push({user:(_user.role==='god'?'👑 ':(_user.role==='creator'?'🌌 ':''))+_user.name,text:'',sticker:b64,timestamp:Date.now(),role:_user.role,likes:{}});document.getElementById('stickerPanel').classList.remove('show')}
+function getAccessiblePacks(){if(!_user)return[];var a=[];for(var id in globalStickerPacks){var p=globalStickerPacks[id];if(p.creator===_user.name||_user.role==='creator'||_user.role==='god'||(p.allowed_users&&p.allowed_users[_user.name]))a.push({id:id,pack:p})}return a}
+function loadHistory(){if(!_user)return;db.ref('payments').orderByChild('user').equalTo(_user.name).once('value',function(s){var a=[];s.forEach(function(c){a.push(c.val())});a.sort(function(x,y){return y.timestamp-x.timestamp});document.getElementById('historyContent').innerHTML=a.length?a.map(function(x){return'<div class="stat-card">📅 '+new Date(x.dateFrom).toLocaleDateString('ru-RU')+' – '+new Date(x.dateTo).toLocaleDateString('ru-RU')+'<br><b>'+x.total+' ₽</b></div>'}).join(''):'<p>Нет выплат</p>'})}
+function loadNotifications(){if(!_user)return;db.ref('notifications').orderByChild('user').equalTo(_user.name).once('value',function(s){var a=[];s.forEach(function(c){a.push(c.val())});a.sort(function(a,b){return b.timestamp-a.timestamp});document.getElementById('notifyContent').innerHTML=a.length?a.map(function(x){return'<div>'+x.text+' <small style="color:#999">'+new Date(x.timestamp).toLocaleString('ru-RU')+'</small></div>'}).join(''):'<p>Нет уведомлений</p>'})}
+function loadHall(){
+  db.ref('shifts').once('value',function(snap){var users={};snap.forEach(function(c){var s=c.val();if(!users[s.user])users[s.user]={hours:0,tovar:0};users[s.user].hours+=s.hours||0;users[s.user].tovar+=s.tovar||0});var arr=[];for(var n in users)arr.push({name:n,hours:users[n].hours,tovar:users[n].tovar});arr.sort(function(a,b){return b.hours-a.hours});var hh='';for(var i=0;i<Math.min(arr.length,5);i++){var m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'📌';hh+='<div>'+m+' '+arr[i].name+' — <b>'+arr[i].hours+'ч</b></div>'}document.getElementById('hallHours').innerHTML=hh||'Нет данных';arr.sort(function(a,b){return b.tovar-a.tovar});var ht='';for(var i=0;i<Math.min(arr.length,5);i++){var m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'📌';ht+='<div>'+m+' '+arr[i].name+' — <b>'+arr[i].tovar+' шт</b></div>'}document.getElementById('hallTovar').innerHTML=ht||'Нет данных';arr.sort(function(a,b){return(b.hours+b.tovar)-(a.hours+a.tovar)});document.getElementById('hallBest').innerHTML=arr.length?'<div>🌟 '+arr[0].name+' — '+arr[0].hours+'ч / '+arr[0].tovar+' шт</div>':'Нет данных';db.ref('punishes').once('value',function(ps){var pu={};ps.forEach(function(c){var p=c.val();if(!pu[p.user])pu[p.user]=0;pu[p.user]+=p.amount||0});var pa=[];for(var n in pu)pa.push({name:n,amount:pu[n]});pa.sort(function(a,b){return b.amount-a.amount});document.getElementById('hallWorst').innerHTML=pa.length?'<div>💀 '+pa[0].name+' — <b>'+pa[0].amount+' ₽</b></div>':'Нет данных'});db.ref('premiums').once('value',function(pr){var pu={};pr.forEach(function(c){var p=c.val();if(!pu[p.user])pu[p.user]=0;pu[p.user]+=p.amount||0});var pa=[];for(var n in pu)pa.push({name:n,amount:pu[n]});pa.sort(function(a,b){return b.amount-a.amount});document.getElementById('hallPremium').innerHTML=pa.length?'<div>🎁 '+pa[0].name+' — <b>'+pa[0].amount+' ₽</b></div>':'Нет данных'})})}
+function renderMyCalendar(){var ms=allMyShifts.filter(function(s){return s.user===_user?.name}),now=new Date(),y=now.getFullYear(),m=now.getMonth(),dim=new Date(y,m+1,0).getDate(),fd=new Date(y,m,0).getDay();document.getElementById('calHeader').innerHTML='<b>'+now.toLocaleDateString('ru-RU',{month:'long',year:'numeric'})+'</b>';var days=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],h='';for(var i=0;i<7;i++)h+='<div class="header">'+days[i]+'</div>';for(var i=0;i<fd;i++)h+='<div></div>';var sd={};ms.forEach(function(s){sd[s.date]=(sd[s.date]||0)+1});var ts=now.toLocaleDateString('ru-RU');for(var d=1;d<=dim;d++){var ds=new Date(y,m,d).toLocaleDateString('ru-RU'),cl='';if(sd[ds])cl='shift-day';if(ds===ts)cl+=' today';h+='<div class="'+cl+'">'+d+'</div>'}document.getElementById('calendar').innerHTML=h;var tot=ms.length,th=ms.reduce(function(s,x){return s+(x.hours||0)},0),tt=ms.reduce(function(s,x){return s+(x.tovar||0)},0);document.getElementById('statsSummary').innerHTML='📅 Смен: <b>'+tot+'</b><br>⏱ Часов: <b>'+th+'</b><br>📦 Товаров: <b>'+tt+'</b>'}
+// ========== КОНЕЦ ВСТАВКИ ==========
 </script>
 </body>
 </html>
