@@ -6,7 +6,20 @@
 <title>Ozon Создатель</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
+/* Фиксированная строка ввода */
+.chat-input-fixed {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(10, 10, 26, 0.95);
+  backdrop-filter: blur(15px);
+  padding: 8px 0 16px 0;
+  display: flex;
+  gap: 4px;
+  z-index: 50;
+  margin-top: auto;
+}
 /* ВОЗВРАЩЕН НАТИВНЫЙ СКРОЛЛ СТРАНИЦЫ (БЕЗ ОБРЕЗКИ И ПРЫЖКОВ) */
 html { overflow-y: auto; overflow-x: hidden; }
 body { 
