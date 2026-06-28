@@ -536,7 +536,7 @@ function showToast(text, isError = false) {
   setTimeout(function(){ toast.classList.remove('show'); setTimeout(function(){ toast.remove(); }, 300); }, 3000);
 }
 
-// ========== АВТОРИЗАЦИЯ (ИСПРАВЛЕНО) ==========
+// ========== АВТОРИЗАЦИЯ (ИСПРАВЛЕНО v2) ==========
 function appLogin() {
   var selectedName = document.getElementById('loginUser').value;
   var pass = document.getElementById('userPass').value;
@@ -544,7 +544,6 @@ function appLogin() {
   if (!selectedName) { showToast("Выберите пользователя из списка!", true); return; }
   if (!pass) { showToast("Введите пароль!", true); return; }
 
-  // Сначала получаем данные пользователя
   db.ref('users').orderByChild('name').equalTo(selectedName).once('value', function(snapshot) {
     if (!snapshot.exists()) {
       showToast("Пользователь не найден в базе данных!", true);
@@ -553,7 +552,6 @@ function appLogin() {
     let userKey = null, userData = null;
     snapshot.forEach(function(child) { userKey = child.key; userData = child.val(); });
 
-    // Функция успешного входа
     function loginSuccess() {
       currentUser = userData;
       currentUser.key = userKey;
@@ -562,59 +560,25 @@ function appLogin() {
       initUserInterface();
     }
 
-    // Проверяем пароль в зависимости от роли
     if (userData.role === 'creator') {
-      // Создатель — пароль из bossPassword на верхнем уровне
-      db.ref('bossPassword').once('value', function(ps) {
-        var bossPass = ps.val();
-        if (bossPass === pass) {
-          loginSuccess();
-        } else {
-          showToast("Неверный пароль!", true);
-        }
+      // Костя — проверяем godPassword (2706)
+      db.ref('godPassword').once('value', function(ps) {
+        if (ps.val() === pass) { loginSuccess(); }
+        else { showToast("Неверный пароль!", true); }
       });
     } else if (userData.role === 'god') {
-      // Бог/начальник — пароль из godPassword на верхнем уровне
-      db.ref('godPassword').once('value', function(ps) {
-        var godPass = ps.val();
-        if (godPass === pass) {
-          loginSuccess();
-        } else {
-          showToast("Неверный пароль!", true);
-        }
+      // Игорь (начальник) — проверяем bossPassword (789)
+      db.ref('bossPassword').once('value', function(ps) {
+        if (ps.val() === pass) { loginSuccess(); }
+        else { showToast("Неверный пароль!", true); }
       });
     } else {
-      // Обычный менеджер — пароль из его объекта в users
-      if (userData.password === pass) {
-        loginSuccess();
-      } else {
-        showToast("Неверный пароль!", true);
-      }
+      // Обычный менеджер — пароль из его объекта
+      if (userData.password === pass) { loginSuccess(); }
+      else { showToast("Неверный пароль!", true); }
     }
   });
 }
-
-// ========== АВТО-ВХОД (ИСПРАВЛЕНО) ==========
-window.addEventListener('DOMContentLoaded', function() {
-  var savedName = localStorage.getItem('ozon_user_name');
-  if (savedName) {
-    db.ref('users').orderByChild('name').equalTo(savedName).once('value', function(snapshot) {
-      if (snapshot.exists()) {
-        snapshot.forEach(function(child) { 
-          currentUser = child.val(); 
-          currentUser.key = child.key; 
-        });
-        initUserInterface();
-      } else { 
-        logout(); 
-      }
-    });
-  } else {
-    document.getElementById('login').style.display = 'flex';
-    document.getElementById('app').style.display = 'none';
-  }
-});
-
 // ========== ИНИЦИАЛИЗАЦИЯ ИНТЕРФЕЙСА ==========
 function initUserInterface() {
   if (!currentUser) return;
