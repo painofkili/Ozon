@@ -433,17 +433,19 @@ button:disabled { opacity: 0.5; cursor: default; }
       </div>
       <div id="chat"></div>
     </div>
-    <div class="chat-input-fixed">
-      <div class="chat-input-bar" id="chatInputRow">
-        <input id="chatMsgInput" placeholder="Сообщение..." style="padding-right: 40px;">
-        <button class="sticker-toggle" onclick="toggleStickerPanel(event)">😀</button>
-        
-        <div id="stickerPanel" class="sticker-panel" onclick="event.stopPropagation()">
-           <div class="sticker-content" id="stickerContent"></div>
-           <div class="sticker-tabs" id="stickerTabs"></div>
-        </div>
-      </div>
-      
+    <div class="chat-input-bar">
+  <div class="input-wrapper">
+    <input id="chatMsgInput" placeholder="Сообщение..." style="padding-right: 40px;">
+    <button class="sticker-toggle" onclick="toggleStickerPanel(event)">😀</button>
+    <div id="stickerPanel" class="sticker-panel" onclick="event.stopPropagation()">
+       <div class="sticker-content" id="stickerContent"></div>
+       <div class="sticker-tabs" id="stickerTabs"></div>
+    </div>
+  </div>
+  <button class="btn-gray" onclick="document.getElementById('chatPhoto').click()" style="width:auto;padding:12px 14px">📎</button>
+  <input id="chatPhoto" type="file" accept="image/*" multiple onchange="sendPhoto()" style="display:none">
+  <button class="btn-gold" onclick="sendMsg()" style="width:auto;padding:12px 18px">➤</button>
+</div>      
       <button class="btn-gray" onclick="document.getElementById('chatPhoto').click()" style="width:auto;padding:12px 14px">📎</button>
       <input id="chatPhoto" type="file" accept="image/*" multiple onchange="sendPhoto()" style="display:none">
       <button class="btn-gold" onclick="sendMsg()" style="width:auto;padding:12px 18px">➤</button>
@@ -536,7 +538,7 @@ button:disabled { opacity: 0.5; cursor: default; }
     <h4 style="text-align:center">💭 Мысль Создателя</h4>
     <textarea id="thoughtText" placeholder="О чём думаешь?" rows="3" style="resize:vertical"></textarea>
     <label style="font-size: 12px; color: #aaa; margin-top: 4px; display: block;">Срок действия</label>
-    <div id="chatInputRow" style="display:flex; gap: 8px; align-items:center;">
+    <div style="display:flex; gap: 8px; align-items:center;">
       <select id="thoughtExpiryType" onchange="toggleExpiryInput('thought')" style="flex:1;">
         <option value="forever">Навсегда</option>
         <option value="hours">Часы</option>
