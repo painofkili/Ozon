@@ -433,7 +433,7 @@ button:disabled { opacity: 0.5; cursor: default; }
       </div>
       <div id="chat"></div>
     </div>
-    <div class="chat-input-bar">
+        <div class="chat-input-bar">
   <div class="input-wrapper">
     <input id="chatMsgInput" placeholder="Сообщение..." style="padding-right: 40px;">
     <button class="sticker-toggle" onclick="toggleStickerPanel(event)">😀</button>
@@ -445,14 +445,8 @@ button:disabled { opacity: 0.5; cursor: default; }
   <button class="btn-gray" onclick="document.getElementById('chatPhoto').click()" style="width:auto;padding:12px 14px">📎</button>
   <input id="chatPhoto" type="file" accept="image/*" multiple onchange="sendPhoto()" style="display:none">
   <button class="btn-gold" onclick="sendMsg()" style="width:auto;padding:12px 18px">➤</button>
-</div>      
-      <button class="btn-gray" onclick="document.getElementById('chatPhoto').click()" style="width:auto;padding:12px 14px">📎</button>
-      <input id="chatPhoto" type="file" accept="image/*" multiple onchange="sendPhoto()" style="display:none">
-      <button class="btn-gold" onclick="sendMsg()" style="width:auto;padding:12px 18px">➤</button>
-    </div>
-  </div>
-  
-  <div class="avatar-carousel" id="avatarCarousel">
+</div>
+    <div class="avatar-carousel" id="avatarCarousel">
     <button class="sidebar-close-btn" onclick="toggleSidebar()">✕</button>
     <div class="avatar-carousel-inner" id="carouselInner"></div>
   </div>
