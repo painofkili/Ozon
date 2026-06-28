@@ -10,17 +10,12 @@
 html, body { overflow: hidden; height: 100vh; width: 100vw; }
 body { font-family: 'Trebuchet MS', Helvetica, sans-serif; color: #eee; font-size: 16px; background: #0a0a1a; display: flex; flex-direction: column; }
 
-.bg { width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; background: radial-gradient(circle at 50% 20%, #12092b 0%, #060612 70%, #020205 100%); z-index: -1000; pointer-events: none; }
-.stars-overlay { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-image: radial-gradient(white, rgba(255,255,255,.2) 1.5px, transparent 40px), radial-gradient(rgba(138,43,226,0.25), rgba(255,255,255,.1) 1px, transparent 30px); background-size: 450px 450px, 300px 350px; background-position: 0 0, 40px 60px; opacity: 0.3; animation: backgroundStarRotate 300s linear infinite; will-change: transform; }
-@keyframes backgroundStarRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-.app-container { display: flex; width: 100%; height: 100vh; position: relative; z-index: 1; justify-content: center; overflow: hidden; }
-.main-content { width: 100%; max-width: 680px; padding: 12px 16px; display: flex; flex-direction: column; padding-bottom: 70px; height: 100%; }
-.profile-row, .tabs, .tab-content, .announce-block, .thought-block, .chat-header-bar { flex-shrink: 0; }
-
-/* БОЖЕСТВЕННЫЙ ФОН ДЛЯ БОГА */
-.god-theme .main-content { background: radial-gradient(ellipse at 50% 0%, rgba(255,215,0,0.05) 0%, transparent 60%); }
-.god-theme .card, .god-theme .stat-card { background: rgba(40,30,15,0.8); border: 1px solid rgba(255,215,0,0.3); box-shadow: 0 0 20px rgba(255,215,0,0.1); }
+/* БОЖЕСТВЕННЫЙ ФОН */
+body.god-body { background: #1a1a0a; }
+.god-theme .bg { background: radial-gradient(ellipse at 50% 20%, #3a2a0a 0%, #2a1a05 50%, #1a0a00 100%) !important; }
+.god-theme .stars-overlay { opacity: 0.15 !important; background-image: radial-gradient(rgba(255,215,0,0.4), rgba(255,215,0,0.1) 1px, transparent 30px), radial-gradient(rgba(255,200,0,0.2), rgba(255,255,255,0.05) 1px, transparent 25px) !important; }
+.god-theme .main-content { background: radial-gradient(ellipse at 50% 0%, rgba(255,215,0,0.08) 0%, transparent 60%); }
+.god-theme .card, .god-theme .stat-card { background: rgba(50,35,15,0.8); border: 1px solid rgba(255,215,0,0.3); box-shadow: 0 0 20px rgba(255,215,0,0.1); }
 .god-theme .btn-green { background: linear-gradient(135deg, #FFD700, #FF8C00); box-shadow: 0 0 15px rgba(255,215,0,0.3); }
 .god-theme .btn-blue { background: linear-gradient(135deg, #4169E1, #6A5ACD); box-shadow: 0 0 15px rgba(65,105,225,0.3); }
 .god-theme .btn-red { background: linear-gradient(135deg, #DC143C, #8B0000); }
@@ -29,11 +24,11 @@ body { font-family: 'Trebuchet MS', Helvetica, sans-serif; color: #eee; font-siz
 .god-theme .btn-purple { background: linear-gradient(135deg, #8A2BE2, #4B0082); }
 .god-theme .btn-orange { background: linear-gradient(135deg, #FF8C00, #FF4500); }
 .god-theme .btn-cyan { background: linear-gradient(135deg, #00CED1, #008B8B); }
-.god-theme input, .god-theme select, .god-theme textarea { border-color: rgba(255,215,0,0.3); background: rgba(30,25,15,0.9); }
+.god-theme input, .god-theme select, .god-theme textarea { border-color: rgba(255,215,0,0.3); background: rgba(40,30,15,0.9); }
 .god-theme input:focus, .god-theme select:focus, .god-theme textarea:focus { border-color: #FFD700; box-shadow: 0 0 10px rgba(255,215,0,0.3); }
-.god-theme .chat-header-bar { background: rgba(40,30,15,0.8); border: 1px solid rgba(255,215,0,0.3); }
-.god-theme #chat { background: rgba(30,25,15,0.7); border: 1px solid rgba(255,215,0,0.2); }
-.god-theme .chat-input-bar { background: rgba(20,15,10,0.98); border-top: 1px solid rgba(255,215,0,0.3); }
+.god-theme .chat-header-bar { background: rgba(50,35,15,0.8); border: 1px solid rgba(255,215,0,0.3); }
+.god-theme #chat { background: rgba(40,30,15,0.7); border: 1px solid rgba(255,215,0,0.2); }
+.god-theme .chat-input-bar { background: rgba(30,20,10,0.98); border-top: 1px solid rgba(255,215,0,0.3); }
 .god-theme .chat-icon { background: linear-gradient(135deg, #FFD700, #FF8C00); box-shadow: 0 0 15px rgba(255,215,0,0.5); }
 .god-theme .chat-label { background: linear-gradient(135deg, #FFD700, #FFA500, #FFF8DC); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .god-theme .calendar .shift-day { background: linear-gradient(135deg, #FFD700, #FF8C00); }
@@ -42,8 +37,22 @@ body { font-family: 'Trebuchet MS', Helvetica, sans-serif; color: #eee; font-siz
 .god-theme .announce-block { background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,165,0,0.1)); border: 1px solid rgba(255,215,0,0.4); }
 .god-theme .tabs button.active { background: linear-gradient(135deg, #FFD700, #FF8C00); color: #000; }
 .god-theme .tabs button:hover { background: rgba(255,215,0,0.2); }
+.god-theme .mini-profile { background: rgba(40,30,15,0.98); border: 1px solid rgba(255,215,0,0.5); }
 
-/* Стиль объявления */
+.bg { width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; background: radial-gradient(circle at 50% 20%, #12092b 0%, #060612 70%, #020205 100%); z-index: -1000; pointer-events: none; }
+.stars-overlay { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-image: radial-gradient(white, rgba(255,255,255,.2) 1.5px, transparent 40px), radial-gradient(rgba(138,43,226,0.25), rgba(255,255,255,.1) 1px, transparent 30px); background-size: 450px 450px, 300px 350px; background-position: 0 0, 40px 60px; opacity: 0.3; animation: backgroundStarRotate 300s linear infinite; will-change: transform; }
+@keyframes backgroundStarRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.app-container { display: flex; width: 100%; height: 100vh; position: relative; z-index: 1; justify-content: center; overflow: hidden; }
+.main-content { width: 100%; max-width: 680px; padding: 12px 16px; display: flex; flex-direction: column; padding-bottom: 70px; height: 100%; }
+.profile-row, .tabs, .tab-content, .announce-block, .thought-block, .chat-header-bar { flex-shrink: 0; }
+
+/* Кнопка выхода */
+.logout-btn { position: fixed; top: 12px; right: 50px; background: rgba(220,20,60,0.8); color: #fff; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 16px; cursor: pointer; z-index: 1001; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.logout-btn:hover { background: #DC143C; transform: scale(1.1); }
+.god-theme .logout-btn { background: rgba(255,215,0,0.6); color: #000; }
+.god-theme .logout-btn:hover { background: #FFD700; }
+
 .announce-block { position: relative; padding-right: 35px !important; }
 .announce-del { position: absolute; top: 8px; right: 8px; background: rgba(220,20,60,0.7); color: #fff; border: none; width: 22px; height: 22px; border-radius: 50%; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 2; }
 .announce-del:hover { background: #DC143C; transform: scale(1.1); }
@@ -219,10 +228,11 @@ button:disabled { opacity: 0.5; }
   .mini-profile { right: 10px; left: 10px; width: calc(100% - 20px); top: auto; bottom: 80px; transform: none; }
   .sticker-panel { right: -40px; width: calc(100vw - 20px); max-width: 340px; }
   .chat-input-bar { max-width: 100%; }
+  .logout-btn { right: 10px; }
 }
 </style>
 </head>
-<body>
+<body class="" id="bodyEl">
 <div class="bg"><div class="stars-overlay"></div></div>
 
 <div id="toastContainer" class="toast-container"></div>
@@ -238,6 +248,7 @@ button:disabled { opacity: 0.5; }
 </div>
 
 <div id="app" class="app-container" style="display:none">
+  <button class="logout-btn" onclick="logout()" title="Выйти">↩</button>
   <button class="btn-sidebar-toggle" onclick="toggleSidebar()">👥</button>
   <div class="main-content" id="mainContent">
     <div id="announceBlock" class="announce-block" style="display:none"></div>
@@ -280,7 +291,6 @@ button:disabled { opacity: 0.5; }
         <div id="photoPreviews" class="photo-preview"></div>
         <button class="btn-red" onclick="endShift()">🔴 СО СМЕНЫ</button>
       </div>
-      <button class="btn-gray" onclick="logout()" style="margin-top:8px">↩ Выйти</button>
     </div>
     
     <div id="statsTab" class="tab-content"><h4 style="text-align:center">📅 Календарь</h4><div id="calHeader" style="text-align:center"></div><div class="calendar" id="calendar"></div><div class="stat-card" id="statsSummary"></div><button class="btn-red" onclick="clearMyShifts()">🗑 Очистить</button></div>
@@ -333,7 +343,20 @@ button:disabled { opacity: 0.5; }
 </div>
 
 <div id="godAddShiftCard" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:200;padding:10px;background:rgba(0,0,0,0.85);"><div class="card" style="max-width:400px;margin:20px auto"><h4>+ Смена: <span id="godAddShiftUser"></span></h4><input id="godShiftDate" type="date"><input id="godShiftFrom" value="9"><input id="godShiftTo" value="21"><input id="godShiftTovar" type="number" placeholder="Товаров"><button class="btn-green" onclick="godSaveShift()">💾 Сохранить</button><button class="btn-gray" onclick="godCloseAddShift()">↩ Назад</button></div></div>
-<div id="settingsCard" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;overflow-y:auto;z-index:200;padding:10px;background:rgba(0,0,0,0.85);"><form onsubmit="return false;" class="card" style="max-width:450px;margin:20px auto"><h3 style="text-align:center">⚙️ Настройки</h3><input id="newName" placeholder="Новое имя"><input id="newPass" type="password" placeholder="Новый пароль" autocomplete="new-password"><select id="newPunkt"></select><input id="newVkId" placeholder="ВК ID (цифры)"><label style="font-size:12px;color:#aaa;">Аватарка</label><input id="newAvatar" type="file" accept="image/*" onchange="previewNewAvatar()"><div id="newAvatarPreview" style="text-align:center;margin:4px 0"></div><label style="font-size:12px;color:#aaa;">Шрифт чата</label><select id="chatFont"><option value="12">Мелкий</option><option value="13" selected>Средний</option><option value="15">Крупный</option></select><button class="btn-gold" onclick="openStickerManager()" style="margin:10px 0;" type="button">📦 Управление стикерами</button><button class="btn-green" onclick="saveSettings()" type="button">💾 Сохранить</button><button class="btn-gray" onclick="closeSettings()" type="button">↩ Назад</button></form></div>
+<div id="settingsCard" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;overflow-y:auto;z-index:200;padding:10px;background:rgba(0,0,0,0.85);">
+  <form onsubmit="return false;" class="card" style="max-width:450px;margin:20px auto">
+    <h3 style="text-align:center">⚙️ Настройки</h3>
+    <input id="newName" placeholder="Новое имя"><input id="newPass" type="password" placeholder="Новый пароль" autocomplete="new-password">
+    <select id="newPunkt"></select><input id="newVkId" placeholder="ВК ID (цифры)">
+    <label style="font-size:12px;color:#aaa;">Аватарка</label><input id="newAvatar" type="file" accept="image/*" onchange="previewNewAvatar()">
+    <div id="newAvatarPreview" style="text-align:center;margin:4px 0"></div>
+    <label style="font-size:12px;color:#aaa;">Шрифт чата</label>
+    <select id="chatFont"><option value="12">Мелкий</option><option value="13" selected>Средний</option><option value="15">Крупный</option></select>
+    <button class="btn-gold" id="stickerManagerBtn" onclick="openStickerManager()" style="margin:10px 0;" type="button">📦 Управление стикерами</button>
+    <button class="btn-green" onclick="saveSettings()" type="button">💾 Сохранить</button>
+    <button class="btn-gray" onclick="closeSettings()" type="button">↩ Назад</button>
+  </form>
+</div>
 <div id="thoughtModal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:999;"><div class="card" style="width:90%;max-width:400px;"><h4 style="text-align:center">💭 Мысль Создателя</h4><textarea id="thoughtText" placeholder="О чём думаешь?" rows="3"></textarea><select id="thoughtExpiryType" onchange="toggleExpiryInput('thought')"><option value="forever">Навсегда</option><option value="hours">Часы</option><option value="days">Дни</option></select><input id="thoughtExpiryValue" type="number" value="24" style="display:none"><button class="btn-gold" onclick="sendThought()">🚀 Отправить</button><button class="btn-gray" onclick="closeThoughtModal()">↩ Отмена</button></div></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -536,6 +559,9 @@ function finishLogin(){
   [tabCreator,tabGP,tabGW,tabGC,tabGA].forEach(function(b){if(b)b.style.display='none'});
   if(godPC)godPC.style.display='none';
   document.getElementById('app').classList.remove('god-theme');
+  document.getElementById('bodyEl').classList.remove('god-body');
+  var smBtn=document.getElementById('stickerManagerBtn');
+  if(smBtn)smBtn.style.display='block';
   
   if(_user.role==='creator'){
     [tabShift,tabStats,tabHistory,tabNotify,tabHall].forEach(function(b){if(b)b.style.display='flex'});
@@ -545,10 +571,13 @@ function finishLogin(){
     [tabGP,tabGW,tabGC,tabGA].forEach(function(b){b.style.display='flex'});
     if(godPC)godPC.style.display='block';
     document.getElementById('app').classList.add('god-theme');
+    document.getElementById('bodyEl').classList.add('god-body');
+    if(smBtn)smBtn.style.display='none';
     godRecountRating();godLoadPunkts();godLoadCalcUsers();
     showTab('godPunkts');
   } else {
     [tabShift,tabStats,tabHistory,tabNotify,tabHall].forEach(function(b){if(b)b.style.display='flex'});
+    if(smBtn)smBtn.style.display='none';
   }
   
   chatOpened=!0;lastChatTimestamp=Date.now();updateProfileUI();loadChat();loadPinned();loadAnnounce();loadThought();
@@ -594,7 +623,7 @@ function previewPhotos(){photoBase64=[];document.getElementById('photoPreviews')
 function startShift(){onShift=!0;var t=new Date().toLocaleTimeString('ru-RU');db.ref('activeShifts/'+_user.name).set({active:!0,startTime:t,punct:_user.punkt});document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block';db.ref('chat').push({user:(_user.role==='god'?'👑 ':(_user.role==='creator'?'🌌 ':''))+_user.name,text:'🔵 Пункт '+_user.punkt+' на смене! ('+t+')',timestamp:Date.now(),role:_user.role})}
 function endShift(){var tf=document.getElementById('timeFrom').value||'9',tt=document.getElementById('timeTo').value||'21',tv=parseInt(document.getElementById('tov').value)||0,ph=photoBase64.slice(0,5);db.ref('shifts/'+_user.name+'_'+Date.now()).set({user:_user.name,punkt:_user.punkt||'49',date:new Date().toLocaleDateString('ru-RU'),timeFrom:tf,timeTo:tt,hours:parseInt(tt)-parseInt(tf),tovar:tv,photos:ph,paid:!1,timestamp:new Date().toISOString()});db.ref('chat').push({user:(_user.role==='god'?'👑 ':(_user.role==='creator'?'🌌 ':''))+_user.name,text:'🔴 Пункт '+_user.punkt+' с '+tf+' до '+tt+', товаров: '+tv,timestamp:Date.now(),photos:ph,role:_user.role});db.ref('activeShifts/'+_user.name).remove();onShift=!1;document.getElementById('shift').style.display='none';document.getElementById('onShiftBtn').style.display='none';document.getElementById('startBtn').style.display='block';document.getElementById('tov').value='';document.getElementById('photos').value='';document.getElementById('photoPreviews').innerHTML='';photoBase64=[]}
 function sendPhoto(){var files=document.getElementById('chatPhoto').files;if(!files.length||!_user)return;var photos=[],count=Math.min(files.length,5);for(var i=0;i<count;i++){(function(file){var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var c=document.createElement('canvas'),mw=300,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);photos.push({full:e.target.result,thumb:c.toDataURL('image/jpeg',0.6)});if(photos.length===count){var ref=privateChatWith?getPrivateChatRef():db.ref('chat');ref.push({user:(_user.role==='god'?'👑 ':(_user.role==='creator'?'🌌 ':''))+_user.name,text:'📷 '+count+' фото',photos:photos,timestamp:Date.now(),role:_user.role,likes:{}})}};img.src=e.target.result};r.readAsDataURL(file)})(files[i])}document.getElementById('chatPhoto').value=''}
-function logout(){_user=null;onShift=!1;chatOpened=!1;localStorage.removeItem('creator_user');document.getElementById('app').style.display='none';document.getElementById('login').style.display='flex';document.getElementById('loginName').value='';document.getElementById('loginPass').value=''}
+function logout(){_user=null;onShift=!1;chatOpened=!1;localStorage.removeItem('creator_user');document.getElementById('app').style.display='none';document.getElementById('app').classList.remove('god-theme');document.getElementById('bodyEl').classList.remove('god-body');document.getElementById('login').style.display='flex';document.getElementById('loginName').value='';document.getElementById('loginPass').value=''}
 function loadChat(){
   var cf=localStorage.getItem('chatFont')||'13',chatEl=document.getElementById('chat'),wasAtBottom=chatEl.scrollHeight-chatEl.scrollTop-chatEl.clientHeight<60;chatEl.style.fontSize=cf+'px';
   var ref=privateChatWith?getPrivateChatRef():db.ref('chat');ref.limitToLast(50).on('value',function(s){var groups={},order=[];s.forEach(function(c){var m=c.val(),cu=m.user||'';if(!groups[cu]){groups[cu]=[];order.push(cu)}groups[cu].push({key:c.key,msg:m,isC:m.role==='creator',isG:m.role==='god'})});var h='';
