@@ -549,158 +549,179 @@ db.ref('sticker_packs').on('value',function(s){globalStickerPacks=s.val()||{};if
 function toggleChat(){var chat=document.getElementById('chat'),arrow=document.getElementById('chatArrow'),inputBar=document.getElementById('chatInputBar');if(chat.classList.contains('hidden')){chat.classList.remove('hidden');chatOpened=true;arrow.classList.add('open');if(inputBar)inputBar.style.display='flex';lastChatTimestamp=Date.now();unreadCount=0;updateChatBadge();setTimeout(()=>{chat.scrollTop=chat.scrollHeight},100)}else{chat.classList.add('hidden');chatOpened=false;arrow.classList.remove('open');if(inputBar)inputBar.style.display='none'}}
 function updateChatBadge(){var b=document.getElementById('chatBadge');if(unreadCount>0){b.style.display='inline';b.textContent=unreadCount}else{b.style.display='none'}}
 
-function loginUser(){
-  var n=document.getElementById('loginName').value.trim(),p=document.getElementById('loginPass').value.trim();
-  if(!n||!p){showToast('Введите имя и пароль',true);return}
-  db.ref('godSettings').once('value',function(gs){var godName=gs.exists()?gs.val().name:null;
-    db.ref('godPassword').once('value',function(gpSnap){var creatorPass=gpSnap.val();
-      db.ref('bossPassword').once('value',function(bpSnap){var bossPass=bpSnap.val();
-        if(n==='Костя'&&p===creatorPass){db.ref('users').orderByChild('name').equalTo('Костя').once('value',function(s){var ud=null,uk=null;s.forEach(function(c){ud=c.val();uk=c.key});_user=ud||{name:'Костя',punkt:'49',avatar:'',vkId:''};_user.role='creator';_user.key=uk;localStorage.setItem('creator_user',JSON.stringify(_user));finishLogin()});return}
-        if(godName&&n===godName&&p===bossPass){db.ref('users').orderByChild('name').equalTo(godName).once('value',function(s){var ud=null,uk=null;s.forEach(function(c){ud=c.val();uk=c.key});_user=ud||{name:godName,punkt:'49',avatar:'',vkId:''};_user.role='god';_user.key=uk;localStorage.setItem('creator_user',JSON.stringify(_user));finishLogin()});return}
-        db.ref('users').orderByChild('name').equalTo(n).once('value',function(s){if(s.exists()){var ud=null,uk=null;s.forEach(function(c){ud=c.val();uk=c.key});if(ud.password===p){_user=ud;_user.key=uk;if(n==='Костя')_user.role='creator';else if(godName&&n===godName)_user.role='god';else _user.role=ud.role||'manager';localStorage.setItem('creator_user',JSON.stringify(_user));finishLogin()}else showToast('❌ Неверный пароль',true)}else{if(confirm('Сотрудник «'+n+'» не найден. Зарегистрировать?')){var nu={name:n,punkt:'49',password:p,avatar:'',vkId:'',role:'manager',bonus:0};db.ref('users').push(nu,function(err){if(err){showToast('Ошибка регистрации!',true);return}_user=nu;_user.role='manager';localStorage.setItem('creator_user',JSON.stringify(_user));finishLogin()})}}})})})})}
+async function loginUser() {
+  const n = document.getElementById('loginName').value.trim();
+  const p = document.getElementById('loginPass').value.trim();
+  if (!n || !p) { showToast('Введите имя и пароль', true); return; }
 
-function finishLogin(){
-  document.getElementById('login').style.display='none';document.getElementById('app').style.display='flex';
-  var tabCreator=document.getElementById('tabCreator'),tabGP=document.getElementById('tabGodPunkts'),tabGW=document.getElementById('tabGodWorkers'),tabGC=document.getElementById('tabGodCalc'),tabGA=document.getElementById('tabGodAnnounce'),godPC=document.getElementById('godProgressContainer');
-  var tabShift=document.getElementById('tabShift'),tabStats=document.getElementById('tabStats'),tabHistory=document.getElementById('tabHistory'),tabNotify=document.getElementById('tabNotify'),tabHall=document.getElementById('tabHall');
-  
-  [tabCreator,tabGP,tabGW,tabGC,tabGA].forEach(function(b){if(b)b.style.display='none'});
-  if(godPC)godPC.style.display='none';
-  document.getElementById('app').classList.remove('god-theme');
-  document.getElementById('bodyEl').classList.remove('god-body');
-  var smBtn=document.getElementById('stickerManagerBtn');
-  if(smBtn)smBtn.style.display='block';
-  
-  if(_user.role==='creator'){
-    [tabShift,tabStats,tabHistory,tabNotify,tabHall].forEach(function(b){if(b)b.style.display='flex'});
-    tabCreator.style.display='flex';
-  } else if(_user.role==='god'){
-    [tabShift,tabStats,tabHistory,tabNotify,tabHall,tabCreator].forEach(function(b){if(b)b.style.display='none'});
-    [tabGP,tabGW,tabGC,tabGA].forEach(function(b){b.style.display='flex'});
-    if(godPC)godPC.style.display='block';
+  // 1. Хешируем введённый пароль (SHA-256)
+  const encoder = new TextEncoder();
+  const data = encoder.encode(p);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const inputHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+  // 2. Сначала проверяем Костю (Создатель)
+  if (n === 'Костя') {
+    const userSnap = await db.ref('users').orderByChild('name').equalTo('Костя').once('value');
+    let userData = null, userKey = null;
+    userSnap.forEach(c => { userData = c.val(); userKey = c.key; });
+    if (userData && userData.password === inputHash) {
+      _user = userData;
+      _user.key = userKey;
+      _user.role = 'creator';
+      localStorage.setItem('creator_user', JSON.stringify(_user));
+      finishLogin();
+      return;
+    }
+  }
+
+  // 3. Проверяем Игоря (Бог)
+  const godSettingsSnap = await db.ref('godSettings').once('value');
+  const godName = godSettingsSnap.exists() ? godSettingsSnap.val().name : null;
+  if (godName && n === godName) {
+    const userSnap = await db.ref('users').orderByChild('name').equalTo(godName).once('value');
+    let userData = null, userKey = null;
+    userSnap.forEach(c => { userData = c.val(); userKey = c.key; });
+    if (userData && userData.password === inputHash) {
+      _user = userData;
+      _user.key = userKey;
+      _user.role = 'god';
+      localStorage.setItem('creator_user', JSON.stringify(_user));
+      finishLogin();
+      return;
+    }
+  }
+
+  // 4. Проверяем обычных сотрудников (пароль в открытом виде)
+  const userSnap = await db.ref('users').orderByChild('name').equalTo(n).once('value');
+  if (userSnap.exists()) {
+    let userData = null, userKey = null;
+    userSnap.forEach(c => { userData = c.val(); userKey = c.key; });
+    if (userData.password === p) {
+      _user = userData;
+      _user.key = userKey;
+      _user.role = userData.role || 'manager';
+      localStorage.setItem('creator_user', JSON.stringify(_user));
+      finishLogin();
+      return;
+    }
+  }
+
+  // 5. Если не нашлось — регистрируем нового сотрудника
+  if (confirm('Сотрудник «' + n + '» не найден. Зарегистрировать?')) {
+    const nu = { 
+      name: n, 
+      punkt: '49', 
+      password: p, 
+      avatar: '', 
+      vkId: '', 
+      role: 'manager', 
+      bonus: 0 
+    };
+    db.ref('users').push(nu, function(err) {
+      if (err) { showToast('Ошибка регистрации!', true); return; }
+      _user = nu;
+      _user.role = 'manager';
+      localStorage.setItem('creator_user', JSON.stringify(_user));
+      finishLogin();
+    });
+  } else {
+    showToast('❌ Неверный пароль', true);
+  }
+}
+
+function finishLogin() {
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+
+  // Скрываем все админские вкладки по умолчанию
+  const adminTabIds = ['tabCreator', 'tabGodPunkts', 'tabGodWorkers', 'tabGodCalc', 'tabGodAnnounce'];
+  adminTabIds.forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.style.display = 'none';
+  });
+
+  // Показываем обычные вкладки всем
+  ['tabShift', 'tabStats', 'tabHistory', 'tabNotify', 'tabHall'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.style.display = 'flex';
+  });
+
+  // По умолчанию показываем вкладку "Смена"
+  const defaultTab = document.getElementById('tabShift');
+  if (defaultTab) defaultTab.click();
+
+  // === Если Создатель (Костя) ===
+  if (_user.role === 'creator') {
+    const creatorBtn = document.getElementById('tabCreator');
+    if (creatorBtn) creatorBtn.style.display = 'flex';
+    // Божеские вкладки скрыты
+    document.getElementById('tabGodPunkts').style.display = 'none';
+    document.getElementById('tabGodWorkers').style.display = 'none';
+    document.getElementById('tabGodCalc').style.display = 'none';
+    document.getElementById('tabGodAnnounce').style.display = 'none';
+    document.getElementById('app').classList.remove('god-theme');
+    document.getElementById('bodyEl').classList.remove('god-body');
+    document.getElementById('godProgressContainer').style.display = 'none';
+  }
+
+  // === Если Бог (Игорь) ===
+  else if (_user.role === 'god') {
+    // Скрываем все обычные вкладки
+    ['tabShift', 'tabStats', 'tabHistory', 'tabNotify', 'tabHall', 'tabCreator'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) btn.style.display = 'none';
+    });
+    // Показываем божеские вкладки
+    ['tabGodPunkts', 'tabGodWorkers', 'tabGodCalc', 'tabGodAnnounce'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) btn.style.display = 'flex';
+    });
+    // Включаем божескую тему
     document.getElementById('app').classList.add('god-theme');
     document.getElementById('bodyEl').classList.add('god-body');
-    if(smBtn)smBtn.style.display='none';
+    document.getElementById('godProgressContainer').style.display = 'block';
     godRecountRating();
     godUpdateStatusUI();
-    godLoadPunkts();godLoadCalcUsers();
-    showTab('godPunkts');
-  } else {
-    [tabShift,tabStats,tabHistory,tabNotify,tabHall].forEach(function(b){if(b)b.style.display='flex'});
-    if(smBtn)smBtn.style.display='none';
+    godLoadPunkts();
+    godLoadCalcUsers();
+    document.getElementById('tabGodPunkts').click();
   }
-  
-  chatOpened=!0;lastChatTimestamp=Date.now();updateProfileUI();loadChat();loadPinned();loadAnnounce();loadThought();
-  db.ref('activeShifts/'+_user.name).once('value',function(s){if(s.exists()&&s.val().active){onShift=!0;document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block'}});
-  buildCarousel();renderStickerUI();
-}
 
-var saved=localStorage.getItem('creator_user');if(saved){_user=JSON.parse(saved);finishLogin()}
+  // === Обычный сотрудник ===
+  else {
+    // Скрываем всё админское
+    ['tabCreator', 'tabGodPunkts', 'tabGodWorkers', 'tabGodCalc', 'tabGodAnnounce'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) btn.style.display = 'none';
+    });
+    document.getElementById('app').classList.remove('god-theme');
+    document.getElementById('bodyEl').classList.remove('god-body');
+    document.getElementById('godProgressContainer').style.display = 'none';
+  }
 
-function updateProfileUI(){
-  document.getElementById('uname').textContent=_user.name;document.getElementById('upunkt').textContent=_user.punkt||'?';
-  var pa=document.getElementById('profileAvatar');if(_user.avatar){pa.src=_user.avatar;pa.style.display='block'}else{pa.style.display='none'}
-  var badge=document.getElementById('roleBadge'),nameWrap=document.getElementById('creatorNameWrapper');
-  if(_user.role==='god'){nameWrap.className='god-name';badge.className='creator-badge god-badge';godUpdateStatusUI();}
-  else if(_user.role==='creator'){nameWrap.className='creator-name';badge.className='creator-badge';badge.textContent='🌌 Создатель';badge.style.background=''}
-  else{nameWrap.className='';badge.className='creator-badge';badge.style.background='linear-gradient(135deg,#4CAF50,#2E8B57)';badge.textContent='📦 Сотрудник'}
-  applyAvatarEffects(document.getElementById('avatarWrapper'),_user.role);
-}
+  // Загружаем данные
+  chatOpened = true;
+  lastChatTimestamp = Date.now();
+  updateProfileUI();
+  loadChat();
+  loadPinned();
+  loadAnnounce();
+  loadThought();
 
-function showTab(tab){
-  var allTabs={shift:'shiftTab',stats:'statsTab',history:'historyTab',notify:'notifyTab',hall:'hallTab',creator:'creatorTab',godPunkts:'godPunktsTab',godWorkers:'godWorkersTab',godCalc:'godCalcTab',godAnnounce:'godAnnounceTab'};
-  var btnMap={shift:'tabShift',stats:'tabStats',history:'tabHistory',notify:'tabNotify',hall:'tabHall',creator:'tabCreator',godPunkts:'tabGodPunkts',godWorkers:'tabGodWorkers',godCalc:'tabGodCalc',godAnnounce:'tabGodAnnounce'};
-  var currentBtn=document.getElementById(btnMap[tab]);
-  var currentContent=document.getElementById(allTabs[tab]);
-  if(currentBtn&&currentBtn.classList.contains('active')){currentBtn.classList.remove('active');if(currentContent)currentContent.classList.remove('active-tab');return}
-  Object.keys(allTabs).forEach(function(t){var el=document.getElementById(allTabs[t]);if(el)el.classList.remove('active-tab')});
-  document.querySelectorAll('#mainTabs button').forEach(function(b){b.classList.remove('active')});
-  if(currentContent)currentContent.classList.add('active-tab');
-  if(currentBtn)currentBtn.classList.add('active');
-  if(tab==='stats')renderMyCalendar();if(tab==='history')loadHistory();if(tab==='notify')loadNotifications();if(tab==='hall')loadHall();
-  if(tab==='godPunkts')godLoadPunkts();if(tab==='godWorkers')godLoadWorkers();if(tab==='godCalc')godLoadCalcUsers();
-}
-
-function loadNotifications(){if(!_user)return;db.ref('notifications').orderByChild('user').equalTo(_user.name).once('value',function(s){var a=[];s.forEach(function(c){a.push(c.val())});a.sort(function(a,b){return b.timestamp-a.timestamp});document.getElementById('notifyContent').innerHTML=a.length?a.map(function(x){return'<div>'+x.text+' <small style="color:#999">'+new Date(x.timestamp).toLocaleString('ru-RU')+'</small></div>'}).join(''):'<p>Нет уведомлений</p>'})}
-function renderMyCalendar(){var ms=allMyShifts.filter(function(s){return s.user===_user?.name}),now=new Date(),y=now.getFullYear(),m=now.getMonth(),dim=new Date(y,m+1,0).getDate(),fd=new Date(y,m,0).getDay();document.getElementById('calHeader').innerHTML='<b>'+now.toLocaleDateString('ru-RU',{month:'long',year:'numeric'})+'</b>';var days=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],h='';for(var i=0;i<7;i++)h+='<div class="header">'+days[i]+'</div>';for(var i=0;i<fd;i++)h+='<div></div>';var sd={};ms.forEach(function(s){sd[s.date]=(sd[s.date]||0)+1});var ts=now.toLocaleDateString('ru-RU');for(var d=1;d<=dim;d++){var ds=new Date(y,m,d).toLocaleDateString('ru-RU'),cl='';if(sd[ds])cl='shift-day';if(ds===ts)cl+=' today';h+='<div class="'+cl+'">'+d+'</div>'}document.getElementById('calendar').innerHTML=h;var tot=ms.length,th=ms.reduce(function(s,x){return s+(x.hours||0)},0),tt=ms.reduce(function(s,x){return s+(x.tovar||0)},0);document.getElementById('statsSummary').innerHTML='📅 Смен: <b>'+tot+'</b><br>⏱ Часов: <b>'+th+'</b><br>📦 Товаров: <b>'+tt+'</b>'}
-function loadHistory(){if(!_user)return;db.ref('payments').orderByChild('user').equalTo(_user.name).once('value',function(s){var a=[];s.forEach(function(c){a.push(c.val())});a.sort(function(x,y){return y.timestamp-x.timestamp});document.getElementById('historyContent').innerHTML=a.length?a.map(function(x){return'<div class="stat-card">📅 '+new Date(x.dateFrom).toLocaleDateString('ru-RU')+' – '+new Date(x.dateTo).toLocaleDateString('ru-RU')+'<br><b>'+x.total+' ₽</b></div>'}).join(''):'<p>Нет выплат</p>'})}
-function clearMyShifts(){if(!_user)return;db.ref('shifts').orderByChild('user').equalTo(_user.name).once('value',function(s){s.forEach(function(c){db.ref('shifts/'+c.key).remove()})});showToast('✅ Очищено')}
-function openSettings(){document.getElementById('mainContent').style.display='none';document.getElementById('settingsCard').style.display='block';document.getElementById('newVkId').value=_user.vkId||'';document.getElementById('chatFont').value=localStorage.getItem('chatFont')||'13';loadPunkts(function(p){var s=document.getElementById('newPunkt');s.innerHTML='<option value="">Не менять</option>';for(var i=0;i<p.length;i++)s.innerHTML+='<option value="'+p[i]+'">'+p[i]+'</option>'})}
-function closeSettings(){document.getElementById('settingsCard').style.display='none';document.getElementById('mainContent').style.display='flex'}
-function saveSettings(){if(!_user)return;var nn=document.getElementById('newName').value.trim(),np=document.getElementById('newPass').value.trim(),npu=document.getElementById('newPunkt').value,nvk=document.getElementById('newVkId').value.trim(),ok=_user.name,up={},cf=document.getElementById('chatFont').value;localStorage.setItem('chatFont',cf);document.getElementById('chat').style.fontSize=cf+'px';if(nn&&nn!==_user.name){up['users/'+nn]={name:nn,punkt:npu||_user.punkt,password:_user.password,bonus:0,avatar:newAvatarData||_user.avatar||'',vkId:nvk||_user.vkId||'',role:_user.role};if(np)up['users/'+nn+'/password']=np;up['users/'+ok]=null;_user.name=nn;if(npu)_user.punkt=npu;if(nvk)_user.vkId=nvk}else{var uu={name:_user.name,punkt:_user.punkt,avatar:_user.avatar||'',vkId:_user.vkId||'',role:_user.role};if(np)uu.password=np;if(newAvatarData)uu.avatar=newAvatarData;if(nvk)uu.vkId=nvk;if(npu)uu.punkt=npu;up['users/'+ok]=uu;if(npu)_user.punkt=npu;if(nvk)_user.vkId=nvk}if(Object.keys(up).length===0){closeSettings();return}db.ref().update(up,function(err){if(err){showToast('❌ Ошибка',true);return}if(np)_user.password=np;if(newAvatarData)_user.avatar=newAvatarData;if(nvk)_user.vkId=nvk;localStorage.setItem('creator_user',JSON.stringify(_user));updateProfileUI();closeSettings();buildCarousel();showToast('✅ Сохранено')})}
-function previewNewAvatar(){var f=document.getElementById('newAvatar').files[0];if(!f)return;var r=new FileReader();r.onload=function(e){newAvatarData=e.target.result;document.getElementById('newAvatarPreview').innerHTML='<img class="avatar" style="position:relative;" src="'+newAvatarData+'">'};r.readAsDataURL(f)}
-function previewPhotos(){photoBase64=[];document.getElementById('photoPreviews').innerHTML='';var files=document.getElementById('photos').files;for(var i=0;i<Math.min(files.length,5);i++){(function(file){var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var c=document.createElement('canvas'),mw=400,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);photoBase64.push({full:e.target.result,thumb:c.toDataURL('image/jpeg',0.6)});var pv=document.createElement('img');pv.src=photoBase64[photoBase64.length-1].thumb;document.getElementById('photoPreviews').appendChild(pv)};img.src=e.target.result};r.readAsDataURL(file)})(files[i])}}
-function startShift(){onShift=!0;var t=new Date().toLocaleTimeString('ru-RU');db.ref('activeShifts/'+_user.name).set({active:!0,startTime:t,punct:_user.punkt});document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block';db.ref('chat').push({user:(_user.role==='god'?'👑 ':(_user.role==='creator'?'🌌 ':''))+_user.name,text:'🔵 Пункт '+_user.punkt+' на смене! ('+t+')',timestamp:Date.now(),role:_user.role})}
-function endShift(){var tf=document.getElementById('timeFrom').value||'9',tt=document.getElementById('timeTo').value||'21',tv=parseInt(document.getElementById('tov').value)||0,ph=photoBase64.slice(0,5);db.ref('shifts/'+_user.name+'_'+Date.now()).set({user:_user.name,punkt:_user.punkt||'49',date:new Date().toLocaleDateString('ru-RU'),timeFrom:tf,timeTo:tt,hours:parseInt(tt)-parseInt(tf),tovar:tv,photos:ph,paid:!1,timestamp:new Date().toISOString()});db.ref('chat').push({user:(_user.role==='god'?'👑 ':(_user.role==='creator'?'🌌 ':''))+_user.name,text:'🔴 Пункт '+_user.punkt+' с '+tf+' до '+tt+', товаров: '+tv,timestamp:Date.now(),photos:ph,role:_user.role});db.ref('activeShifts/'+_user.name).remove();onShift=!1;document.getElementById('shift').style.display='none';document.getElementById('onShiftBtn').style.display='none';document.getElementById('startBtn').style.display='block';document.getElementById('tov').value='';document.getElementById('photos').value='';document.getElementById('photoPreviews').innerHTML='';photoBase64=[]}
-function sendPhoto(){var files=document.getElementById('chatPhoto').files;if(!files.length||!_user)return;var photos=[],count=Math.min(files.length,5);for(var i=0;i<count;i++){(function(file){var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var c=document.createElement('canvas'),mw=300,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);photos.push({full:e.target.result,thumb:c.toDataURL('image/jpeg',0.6)});if(photos.length===count){var ref=privateChatWith?getPrivateChatRef():db.ref('chat');ref.push({user:(_user.role==='god'?'👑 ':(_user.role==='creator'?'🌌 ':''))+_user.name,text:'📷 '+count+' фото',photos:photos,timestamp:Date.now(),role:_user.role,likes:{}})}};img.src=e.target.result};r.readAsDataURL(file)})(files[i])}document.getElementById('chatPhoto').value=''}
-function logout(){_user=null;onShift=!1;chatOpened=!1;localStorage.removeItem('creator_user');document.getElementById('app').style.display='none';document.getElementById('app').classList.remove('god-theme');document.getElementById('bodyEl').classList.remove('god-body');document.getElementById('login').style.display='flex';document.getElementById('loginName').value='';document.getElementById('loginPass').value=''}
-function loadChat(){
-  var cf=localStorage.getItem('chatFont')||'13',chatEl=document.getElementById('chat'),wasAtBottom=chatEl.scrollHeight-chatEl.scrollTop-chatEl.clientHeight<60;chatEl.style.fontSize=cf+'px';
-  var ref=privateChatWith?getPrivateChatRef():db.ref('chat');ref.limitToLast(50).on('value',function(s){var groups={},order=[];s.forEach(function(c){var m=c.val(),cu=m.user||'';if(!groups[cu]){groups[cu]=[];order.push(cu)}groups[cu].push({key:c.key,msg:m,isC:m.role==='creator',isG:m.role==='god'})});var h='';
-    for(var u=0;u<order.length;u++){var cu=order[u],ms=groups[cu],fm=ms[0],isC=fm.isC,isG=fm.isG,isM=_user&&(cu===_user.name||cu==='🌌 '+_user.name||cu==='👑 '+_user.name),ac=isM?'mine':'other';h+='<div class="chat-bubble-group '+ac+'">';var sn=(fm.msg.user||'').replace('📢 ','').replace('🌌 ','').replace('👑 ',''),av=allUsers[sn]||'',msgClass=isG?'chat-msg-god':(isC?'chat-msg-creator':'chat-bubble'+(isM?' mine':'')),btnType=isG?'god':(isC?'creator':'normal');
-      h+='<div class="'+msgClass+'"><button class="msg-menu-btn" onclick="event.stopPropagation();toggleMsgDropdown(event,\''+fm.key+'\',\''+btnType+'\')">⋮</button><div class="msg-dropdown" data-dropdown="'+fm.key+'"><button onclick="event.stopPropagation();likeMsg(\''+fm.key+'\')">❤️</button><button onclick="event.stopPropagation();pinMsg(\''+fm.key+'\')">📌</button><button onclick="event.stopPropagation();delChatMsg(\''+fm.key+'\',\''+btnType+'\')">✕</button></div>';
-      if(av)h+='<img class="avatar-mini '+(isG?'avatar-mini-god':isC?'avatar-mini-creator':'')+'" src="'+av+'" onclick="event.stopPropagation();selectProfile(\''+sn+'\')">';
-      h+='<b class="'+(isG||isC?'author':'')+'" onclick="event.stopPropagation();selectProfile(\''+sn+'\')" style="cursor:pointer">'+sn+'</b> '+(fm.msg.text||'');
-      if(fm.msg.sticker)h+='<img class="chat-sticker" src="'+fm.msg.sticker+'">';
-      if(fm.msg.photos&&fm.msg.photos.length){h+='<div class="photo-pack">';for(var pi=0;pi<fm.msg.photos.length;pi++){var p=fm.msg.photos[pi],pt=typeof p==='object'?p.thumb:p;h+='<img class="thumb" src="'+pt+'" onclick="viewPhoto(\''+(typeof p==='object'?p.full:p)+'\')">'}h+='</div>'}h+='</div>';
-      for(var j=1;j<ms.length;j++){var m=ms[j].msg;h+='<div class="'+msgClass+'"><button class="msg-menu-btn" onclick="event.stopPropagation();toggleMsgDropdown(event,\''+ms[j].key+'\',\''+btnType+'\')">⋮</button><div class="msg-dropdown" data-dropdown="'+ms[j].key+'"><button onclick="likeMsg(\''+ms[j].key+'\')">❤️</button><button onclick="pinMsg(\''+ms[j].key+'\')">📌</button><button onclick="delChatMsg(\''+ms[j].key+'\',\''+btnType+'\')">✕</button></div>'+(m.text||'');if(m.sticker)h+='<img class="chat-sticker" src="'+m.sticker+'">';h+='</div>'}
-      var likes=fm.msg.likes||{},lc=Object.keys(likes).length;if(lc>0){var mk=_user?.name,il=!!likes[mk],icon=il?(likes[mk]==='god'?'👑':likes[mk]==='creator'?'🌌':'❤️'):'❤️';h+='<div class="like-indicator has-likes">'+icon+' '+lc+'</div>'}h+='</div>'}chatEl.innerHTML=h;if(wasAtBottom||document.activeElement===document.getElementById('chatMsgInput'))chatEl.scrollTop=chatEl.scrollHeight})}
-function toggleMsgDropdown(e,key){e.stopPropagation();if(openDropdown)openDropdown.classList.remove('show');var dd=document.querySelector('[data-dropdown="'+key+'"]');if(!dd)return;if(dd===openDropdown){dd.classList.remove('show');openDropdown=null;return}dd.classList.add('show');openDropdown=dd}
-function likeMsg(key){if(!_user)return;var ref=privateChatWith?getPrivateChatRef().child(key+'/likes'):db.ref('chat/'+key+'/likes');ref.once('value',function(s){var likes=s.val()||{},mk=_user.name,lt=_user.role==='god'?'god':(_user.role==='creator'?'creator':'user');if(likes[mk])delete likes[mk];else likes[mk]=lt;ref.set(likes)});if(openDropdown){openDropdown.classList.remove('show');openDropdown=null}}
-function viewPhoto(url){document.getElementById('photoViewerImg').src=url;document.getElementById('photoViewer').style.display='flex'}
-function delChatMsg(key,type){if(openDropdown){openDropdown.classList.remove('show');openDropdown=null}var ref=privateChatWith?getPrivateChatRef().child(key):db.ref('chat/'+key);if(_user&&(_user.role==='creator'||_user.role==='god')){ref.remove();return}if(type==='creator'||type==='god'){showToast('🚫 Защищено!',true);return}ref.remove()}
-function pinMsg(key){if(openDropdown){openDropdown.classList.remove('show');openDropdown=null}db.ref('chat/'+key).once('value',function(s){if(s.exists()){db.ref('pinned').set(s.val());showToast('📌 Закреплено!')}})}
-function loadPinned(){db.ref('pinned').on('value',function(s){var b=document.getElementById('pinnedMessage');if(!s.exists()){b.style.display='none';return}var m=s.val();b.style.display='block';b.innerHTML='📌 <b>'+(m.user||'?')+':</b> '+m.text})}
-function sendMsg(to){var input=document.getElementById('chatMsgInput'),t=to||input.value.trim();if(!t||!_user)return;var ref=privateChatWith?getPrivateChatRef():db.ref('chat');ref.push({user:(_user.role==='god'?'👑 ':(_user.role==='creator'?'🌌 ':''))+_user.name,text:t,timestamp:Date.now(),role:_user.role,likes:{}});input.value=''}
-document.getElementById('chatMsgInput').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();sendMsg()}});
-function toggleStickerPanel(e){if(e)e.stopPropagation();var p=document.getElementById('stickerPanel');if(p.classList.contains('show'))p.classList.remove('show');else{p.classList.add('show');renderStickerUI()}}
-function getAccessiblePacks(){if(!_user)return[];var a=[];for(var id in globalStickerPacks){var p=globalStickerPacks[id];if(p.creator===_user.name||_user.role==='creator'||_user.role==='god'||(p.allowed_users&&p.allowed_users[_user.name]))a.push({id:id,pack:p})}return a}
-function renderStickerUI(){var tc=document.getElementById('stickerTabs'),cc=document.getElementById('stickerContent');if(!tc||!cc)return;var packs=getAccessiblePacks(),h='<button class="st-tab '+(currentStickerTab==='emoji'?'active':'')+'" onclick="event.stopPropagation();setStickerTab(\'emoji\')">😀</button>';packs.forEach(function(p){h+='<button class="st-tab '+(currentStickerTab===p.id?'active':'')+'" onclick="event.stopPropagation();setStickerTab(\''+p.id+'\')"><img src="'+(p.pack.icon||'')+'"></button>'});tc.innerHTML=h;var ch='';if(currentStickerTab==='emoji'){BASE_EMOJIS.forEach(function(e){ch+='<div class="emoji-item" onclick="insertEmoji(\''+e+'\')">'+e+'</div>'})}else{var sp=packs.find(function(p){return p.id===currentStickerTab});if(sp&&sp.pack.stickers){for(var sid in sp.pack.stickers){var st=sp.pack.stickers[sid];ch+='<div class="st-item" onclick="sendSticker(\''+st.img+'\')"><img src="'+st.img+'"></div>'}}else ch='<div style="color:#aaa;text-align:center;margin-top:20px;">Нет стикеров</div>'}cc.innerHTML=ch}
-function setStickerTab(id){currentStickerTab=id;renderStickerUI()}
-function insertEmoji(em){var i=document.getElementById('chatMsgInput');i.value+=em;i.focus()}
-function sendSticker(b64){if(!_user)return;var ref=privateChatWith?getPrivateChatRef():db.ref('chat');ref.push({user:(_user.role==='god'?'👑 ':(_user.role==='creator'?'🌌 ':''))+_user.name,text:'',sticker:b64,timestamp:Date.now(),role:_user.role,likes:{}});document.getElementById('stickerPanel').classList.remove('show')}
-function openStickerManager(){document.getElementById('settingsCard').style.display='none';document.getElementById('stickerManagerCard').style.display='block'}
-function closeStickerManager(){document.getElementById('stickerManagerCard').style.display='none';document.getElementById('settingsCard').style.display='block'}
-
-var notifiedKeys={};
-db.ref('chat').limitToLast(1).on('child_added',function(s){if(chatOpened)return;var m=s.val();if(!m||!_user)return;if(m.timestamp<=lastChatTimestamp)return;var isM=m.user===_user.name||m.user==='🌌 '+_user.name||m.user==='👑 '+_user.name;if(isM)return;if(notifiedKeys[s.key])return;notifiedKeys[s.key]=!0;lastChatTimestamp=Math.max(lastChatTimestamp,m.timestamp||0);unreadCount++;updateChatBadge();notifyMe('💬 Чат',(m.user||'?')+': '+(m.text||(m.sticker?'📦 Стикер':'📷 Фото')))});
-
-function summonBoss(){var vk=prompt('ВК ID начальника:');if(vk){sendVkNotify(vk,'👔 Управление хочет тебя видеть.');showToast('✅ Вызов отправлен')}}
-function monkeySomeone(){var n=prompt('Кого в обезьяну?');if(n){db.ref('users').orderByChild('name').equalTo(n).once('value',function(s){if(s.exists()){var oa=null,uk=null;s.forEach(function(c){oa=c.val().avatar;uk=c.key});db.ref('users/'+uk+'/avatar').set('https://raw.githubusercontent.com/painofkili/ozon/main/monkey.png');db.ref('chat').push({user:'🌌 '+_user.name,text:'🐒 '+n+' теперь обезьяна!',timestamp:Date.now()});setTimeout(function(){db.ref('users/'+uk+'/avatar').set(oa)},86400000);showToast('✅ Готово')}else showToast('❌ Не найден',true)})}}
-function clownSomeone(){var n=prompt('Кого в клоуны?');if(n){db.ref('chat').push({user:'🌌 '+_user.name,text:'🤡 '+n+' — клоун дня!',timestamp:Date.now()});showToast('✅ Назначено')}}
-function clearNotifications(){if(!_user)return;db.ref('notifications').orderByChild('user').equalTo(_user.name).once('value',function(s){s.forEach(function(c){db.ref('notifications/'+c.key).remove()})});showToast('✅ Очищено')}
-function loadPunkts(cb){db.ref('punkts').once('value',function(s){var p=[];s.forEach(function(c){p.push(c.key)});if(cb)cb(p)})}
-function openThoughtModal(){document.getElementById('thoughtModal').style.display='flex'}
-function closeThoughtModal(){document.getElementById('thoughtModal').style.display='none'}
-function toggleExpiryInput(p){document.getElementById(p+'ExpiryValue').style.display=document.getElementById(p+'ExpiryType').value==='forever'?'none':'block'}
-function sendThought(){var t=document.getElementById('thoughtText').value.trim();if(!t)return;var ty=document.getElementById('thoughtExpiryType').value,v=parseInt(document.getElementById('thoughtExpiryValue').value)||24,ex=null;if(ty==='hours')ex=Date.now()+v*3600000;else if(ty==='days')ex=Date.now()+v*86400000;db.ref('creatorThought').set({text:t,expiry:ex,timestamp:Date.now()});closeThoughtModal();showToast('💭 Отправлено!')}
-function loadThought(){
-  db.ref('creatorThought').on('value',function(s){
-    var b=document.getElementById('thoughtBlock');
-    if(!s.exists()){b.style.display='none';return}
-    var t=s.val();
-    if(t.expiry&&Date.now()>t.expiry){db.ref('creatorThought').remove();b.style.display='none';return}
-    b.style.display='block';
-    var expText=t.expiry?'До: '+new Date(t.expiry).toLocaleString('ru-RU'):'Навсегда';
-    b.innerHTML='<button class="thought-del" onclick="delThought()">✕</button><span>💭</span> <span>'+t.text+'</span><div class="thought-expiry">'+expText+'</div>';
+  db.ref('activeShifts/' + _user.name).once('value', function(s) {
+    if (s.exists() && s.val().active) {
+      onShift = true;
+      document.getElementById('startBtn').style.display = 'none';
+      document.getElementById('onShiftBtn').style.display = 'block';
+      document.getElementById('shift').style.display = 'block';
+    }
   });
+
+  buildCarousel();
+  renderStickerUI();
 }
-function delThought(){db.ref('creatorThought').remove()}
-function loadAnnounce(){
-  db.ref('announce').limitToLast(1).on('value',function(s){
-    var b=document.getElementById('announceBlock');
-    if(!s.exists()){b.style.display='none';b.classList.remove('god-announce-cloud');return}
-    var last=null;s.forEach(function(c){last=c.val();last._key=c.key});
-    if(last.expiry&&Date.now()>last.expiry){db.ref('announce/'+last._key).remove();b.style.display='none';b.classList.remove('god-announce-cloud');return}
-    b.style.display='block';
-    if(last.isGod){b.classList.add('god-announce-cloud');}else{b.classList.remove('god-announce-cloud');}
-    var expText=last.expiry?'Актуально до: '+new Date(last.expiry).toLocaleString('ru-RU'):'Бессрочно';
-    b.innerHTML='<button class="announce-del" onclick="delAnnounce(\''+last._key+'\')">✕</button><b>📢 '+(last.text||'')+'</b><small class="announce-expiry">'+expText+' • '+new Date(last.timestamp).toLocaleString('ru-RU')+'</small>';
-  });
-}
-function delAnnounce(key){if(_user&&(_user.role==='creator'||_user.role==='god'))db.ref('announce/'+key).remove();else showToast('🚫 Нет прав!',true)}
-function loadHall(){
-  db.ref('shifts').once('value',function(snap){var users={};snap.forEach(function(c){var s=c.val();if(!users[s.user])users[s.user]={hours:0,tovar:0};users[s.user].hours+=s.hours||0;users[s.user].tovar+=s.tovar||0});var arr=[];for(var n in users)arr.push({name:n,hours:users[n].hours,tovar:users[n].tovar});arr.sort(function(a,b){return b.hours-a.hours});var hh='';for(var i=0;i<Math.min(arr.length,5);i++){var m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'📌';hh+='<div>'+m+' '+arr[i].name+' — <b>'+arr[i].hours+'ч</b></div>'}document.getElementById('hallHours').innerHTML=hh||'Нет данных';arr.sort(function(a,b){return b.tovar-a.tovar});var ht='';for(var i=0;i<Math.min(arr.length,5);i++){var m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'📌';ht+='<div>'+m+' '+arr[i].name+' — <b>'+arr[i].tovar+' шт</b></div>'}document.getElementById('hallTovar').innerHTML=ht||'Нет данных';arr.sort(function(a,b){return(b.hours+b.tovar)-(a.hours+a.tovar)});document.getElementById('hallBest').innerHTML=arr.length?'<div>🌟 '+arr[0].name+' — '+arr[0].hours+'ч / '+arr[0].tovar+' шт</div>':'Нет данных';db.ref('punishes').once('value',function(ps){var pu={};ps.forEach(function(c){var p=c.val();if(!pu[p.user])pu[p.user]=0;pu[p.user]+=p.amount||0});var pa=[];for(var n in pu)pa.push({name:n,amount:pu[n]});pa.sort(function(a,b){return b.amount-a.amount});document.getElementById('hallWorst').innerHTML=pa.length?'<div>💀 '+pa[0].name+' — <b>'+pa[0].amount+' ₽</b></div>':'Нет данных'});db.ref('premiums').once('value',function(pr){var pu={};pr.forEach(function(c){var p=c.val();if(!pu[p.user])pu[p.user]=0;pu[p.user]+=p.amount||0});var pa=[];for(var n in pu)pa.push({name:n,amount:pu[n]});pa.sort(function(a,b){return b.amount-a.amount});document.getElementById('hallPremium').innerHTML=pa.length?'<div>🎁 '+pa[0].name+' — <b>'+pa[0].amount+' ₽</b></div>':'Нет данных'})})}
 </script>
 </body>
 </html>
