@@ -760,7 +760,6 @@ function loadChat(){
       if(fm.msg.photos&&fm.msg.photos.length){h+='<div class="photo-pack">';for(var pi=0;pi<fm.msg.photos.length;pi++){var p=fm.msg.photos[pi],pt=typeof p==='object'?p.thumb:p;h+='<img class="thumb" src="'+pt+'" onclick="viewPhoto(\''+(typeof p==='object'?p.full:p)+'\')">'}h+='</div>'}h+='</div>';
       for(var j=1;j<ms.length;j++){var m=ms[j].msg;h+='<div class="'+msgClass+'"><button class="msg-menu-btn" onclick="event.stopPropagation();toggleMsgDropdown(event,\''+ms[j].key+'\',\''+btnType+'\')">⋮</button><div class="msg-dropdown" data-dropdown="'+ms[j].key+'"><button onclick="likeMsg(\''+ms[j].key+'\')">❤️</button><button onclick="pinMsg(\''+ms[j].key+'\')">📌</button><button onclick="delChatMsg(\''+ms[j].key+'\',\''+btnType+'\')">✕</button></div>'+(m.text||'');if(m.sticker)h+='<img class="chat-sticker" src="'+m.sticker+'">';h+='</div>'}
       var likes=fm.msg.likes||{},lc=Object.keys(likes).length;if(lc>0){var mk=_user?.name,il=!!likes[mk],icon=il?(likes[mk]==='god'?'👑':likes[mk]==='creator'?'🌌':'❤️'):'❤️';h+='<div class="like-indicator has-likes">'+icon+' '+lc+'</div>'}h+='</div>'}chatEl.innerHTML=h;if(wasAtBottom||document.activeElement===document.getElementById('chatMsgInput'))chatEl.scrollTop=chatEl.scrollHeight})}
-}
 
 function loadPinned(){db.ref('pinned').on('value',function(s){var b=document.getElementById('pinnedMessage');if(!s.exists()){b.style.display='none';return}var m=s.val();b.style.display='block';b.innerHTML='📌 <b>'+(m.user||'?')+':</b> '+m.text})}
 function loadAnnounce(){
