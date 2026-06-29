@@ -359,7 +359,7 @@ button:disabled { opacity: 0.5; }
 </div>
 
 <div id="godAddShiftCard" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:200;padding:10px;background:rgba(0,0,0,0.85);"><div class="card" style="max-width:400px;margin:20px auto"><h4>+ Смена: <span id="godAddShiftUser"></span></h4><input id="godShiftDate" type="date"><input id="godShiftFrom" value="9"><input id="godShiftTo" value="21"><input id="godShiftTovar" type="number" placeholder="Товаров"><button class="btn-green" onclick="godSaveShift()">💾 Сохранить</button><button class="btn-gray" onclick="godCloseAddShift()">↩ Назад</button></div></div>
-<div id="settingsCard" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;overflow-y:auto;z-index:200;padding:10px;background:rgba(0,0,0,0.85);"><form onsubmit="return false;" class="card" style="max-width:450px;margin:20px auto"><h3 style="text-align:center">⚙️ Настройки</h3><input id="newName" placeholder="Новое имя" autocomplette="username"><input id="newPass" type="password" placeholder="Новый пароль" autocomplete="new-password"><select id="newPunkt"></select><input id="newVkId" placeholder="ВК ID (цифры)"><label style="font-size:12px;color:#aaa;">Аватарка</label><input id="newAvatar" type="file" accept="image/*" onchange="previewNewAvatar()"><div id="newAvatarPreview" style="text-align:center;margin:4px 0"></div><label style="font-size:12px;color:#aaa;">Шрифт чата</label><select id="chatFont"><option value="12">Мелкий</option><option value="13" selected>Средний</option><option value="15">Крупный</option></select><button class="btn-gold" id="stickerManagerBtn" onclick="openStickerManager()" style="margin:10px 0;" type="button">📦 Управление стикерами</button><button class="btn-green" onclick="saveSettings()" type="button">💾 Сохранить</button><button class="btn-gray" onclick="closeSettings()" type="button">↩ Назад</button></form></div>
+<div id="settingsCard" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;overflow-y:auto;z-index:200;padding:10px;background:rgba(0,0,0,0.85);"><form onsubmit="return false;" class="card" style="max-width:450px;margin:20px auto"><h3 style="text-align:center">⚙️ Настройки</h3><input id="newName" placeholder="Новое имя"><input id="newPass" type="password" placeholder="Новый пароль" autocomplete="new-password"><select id="newPunkt"></select><input id="newVkId" placeholder="ВК ID (цифры)"><label style="font-size:12px;color:#aaa;">Аватарка</label><input id="newAvatar" type="file" accept="image/*" onchange="previewNewAvatar()"><div id="newAvatarPreview" style="text-align:center;margin:4px 0"></div><label style="font-size:12px;color:#aaa;">Шрифт чата</label><select id="chatFont"><option value="12">Мелкий</option><option value="13" selected>Средний</option><option value="15">Крупный</option></select><button class="btn-gold" id="stickerManagerBtn" onclick="openStickerManager()" style="margin:10px 0;" type="button">📦 Управление стикерами</button><button class="btn-green" onclick="saveSettings()" type="button">💾 Сохранить</button><button class="btn-gray" onclick="closeSettings()" type="button">↩ Назад</button></form></div>
 <div id="thoughtModal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:999;"><div class="card" style="width:90%;max-width:400px;"><h4 style="text-align:center">💭 Мысль Создателя</h4><textarea id="thoughtText" placeholder="О чём думаешь?" rows="3"></textarea><select id="thoughtExpiryType" onchange="toggleExpiryInput('thought')"><option value="forever">Навсегда</option><option value="hours">Часы</option><option value="days">Дни</option></select><input id="thoughtExpiryValue" type="number" value="24" style="display:none"><button class="btn-gold" onclick="sendThought()">🚀 Отправить</button><button class="btn-gray" onclick="closeThoughtModal()">↩ Отмена</button></div></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -629,131 +629,68 @@ async function loginUser() {
   } else {
     showToast('❌ Неверный пароль', true);
   }
+}
+
 function finishLogin() {
   document.getElementById('login').style.display = 'none';
   document.getElementById('app').style.display = 'flex';
 
-  // 1. Обычная логика инициализации (не удаляй то, что у тебя там было!)
+  // Инициализация интерфейса
   chatOpened = true;
   lastChatTimestamp = Date.now();
-  updateProfileUI(); // Это вернет аватарку
+  updateProfileUI(); 
   loadChat();
   loadPinned();
   loadAnnounce();
   loadThought();
 
-  // 2. Логика прав доступа
+  // Логика ролей
   const adminTabs = ['tabCreator', 'tabGodPunkts', 'tabGodWorkers', 'tabGodCalc', 'tabGodAnnounce'];
   
-  // Скрываем все админское по умолчанию
+  // 1. Скрываем всё админское по умолчанию
   adminTabs.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
 
-  // Показываем, только если есть роль
-  if (_user.role === 'creator') {
-    document.getElementById('tabCreator').style.display = 'flex';
-    document.getElementById('app').classList.remove('god-theme');
-    document.getElementById('bodyEl').classList.remove('god-body');
-  } else if (_user.role === 'god') {
-    adminTabs.slice(1).forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.style.display = 'flex';
-    });
-    document.getElementById('app').classList.add('god-theme');
-    document.getElementById('bodyEl').classList.add('god-body');
-  }
-
-  // 3. Остальной твой код (загрузка смен и т.д.)
-  db.ref('activeShifts/' + _user.name).once('value', function(s) {
-    if (s.exists() && s.val().active) {
-      onShift = true;
-      document.getElementById('startBtn').style.display = 'none';
-      document.getElementById('onShiftBtn').style.display = 'block';
-      document.getElementById('shift').style.display = 'block';
-    }
-  });
-
-  buildCarousel();
-  renderStickerUI();
-}
-
-  // Скрываем все админские вкладки по умолчанию
-  const adminTabIds = ['tabCreator', 'tabGodPunkts', 'tabGodWorkers', 'tabGodCalc', 'tabGodAnnounce'];
-  adminTabIds.forEach(id => {
-    const btn = document.getElementById(id);
-    if (btn) btn.style.display = 'none';
-  });
-
-  // Показываем обычные вкладки всем
-  ['tabShift', 'tabStats', 'tabHistory', 'tabNotify', 'tabHall'].forEach(id => {
-    const btn = document.getElementById(id);
-    if (btn) btn.style.display = 'flex';
-  });
-
-  // По умолчанию показываем вкладку "Смена"
-  const defaultTab = document.getElementById('tabShift');
-  if (defaultTab) defaultTab.click();
-
-  // === Если Создатель (Костя) ===
-  if (_user.role === 'creator') {
+  // 2. Включаем стили и вкладки по ролям
+  if (_user && _user.role === 'creator') {
     const creatorBtn = document.getElementById('tabCreator');
     if (creatorBtn) creatorBtn.style.display = 'flex';
-    // Божеские вкладки скрыты
-    document.getElementById('tabGodPunkts').style.display = 'none';
-    document.getElementById('tabGodWorkers').style.display = 'none';
-    document.getElementById('tabGodCalc').style.display = 'none';
-    document.getElementById('tabGodAnnounce').style.display = 'none';
     document.getElementById('app').classList.remove('god-theme');
     document.getElementById('bodyEl').classList.remove('god-body');
     document.getElementById('godProgressContainer').style.display = 'none';
-  }
-
-  // === Если Бог (Игорь) ===
-  else if (_user.role === 'god') {
-    // Скрываем все обычные вкладки
+  } 
+  else if (_user && _user.role === 'god') {
+    adminTabs.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'flex';
+    });
+    // Скрываем обычные вкладки для Бога
     ['tabShift', 'tabStats', 'tabHistory', 'tabNotify', 'tabHall', 'tabCreator'].forEach(id => {
       const btn = document.getElementById(id);
       if (btn) btn.style.display = 'none';
     });
-    // Показываем божеские вкладки
-    ['tabGodPunkts', 'tabGodWorkers', 'tabGodCalc', 'tabGodAnnounce'].forEach(id => {
-      const btn = document.getElementById(id);
-      if (btn) btn.style.display = 'flex';
-    });
-    // Включаем божескую тему
     document.getElementById('app').classList.add('god-theme');
     document.getElementById('bodyEl').classList.add('god-body');
     document.getElementById('godProgressContainer').style.display = 'block';
-    godRecountRating();
-    godUpdateStatusUI();
-    godLoadPunkts();
-    godLoadCalcUsers();
-    document.getElementById('tabGodPunkts').click();
-  }
-
-  // === Обычный сотрудник ===
+    
+    if (typeof godRecountRating === 'function') godRecountRating();
+    if (typeof godUpdateStatusUI === 'function') godUpdateStatusUI();
+    if (typeof godLoadPunkts === 'function') godLoadPunkts();
+    if (typeof godLoadCalcUsers === 'function') godLoadCalcUsers();
+    // Переключаем на первую божескую вкладку
+    const firstGodTab = document.getElementById('tabGodPunkts');
+    if (firstGodTab) firstGodTab.click();
+  } 
   else {
-    // Скрываем всё админское
-    ['tabCreator', 'tabGodPunkts', 'tabGodWorkers', 'tabGodCalc', 'tabGodAnnounce'].forEach(id => {
-      const btn = document.getElementById(id);
-      if (btn) btn.style.display = 'none';
-    });
+    // Обычный сотрудник
     document.getElementById('app').classList.remove('god-theme');
     document.getElementById('bodyEl').classList.remove('god-body');
     document.getElementById('godProgressContainer').style.display = 'none';
   }
 
-  // Загружаем данные
-  chatOpened = true;
-  lastChatTimestamp = Date.now();
-  updateProfileUI();
-  loadChat();
-  loadPinned();
-  loadAnnounce();
-  loadThought();
-
+  // 3. Остальной код
   db.ref('activeShifts/' + _user.name).once('value', function(s) {
     if (s.exists() && s.val().active) {
       onShift = true;
@@ -763,8 +700,8 @@ function finishLogin() {
     }
   });
 
-  buildCarousel();
-  renderStickerUI();
+  if (typeof buildCarousel === 'function') buildCarousel();
+  if (typeof renderStickerUI === 'function') renderStickerUI();
 }
 
 // ========== ВСТАВЛЕННЫЕ ФУНКЦИИ ==========
@@ -804,6 +741,7 @@ function loadChat(){
       if(fm.msg.photos&&fm.msg.photos.length){h+='<div class="photo-pack">';for(var pi=0;pi<fm.msg.photos.length;pi++){var p=fm.msg.photos[pi],pt=typeof p==='object'?p.thumb:p;h+='<img class="thumb" src="'+pt+'" onclick="viewPhoto(\''+(typeof p==='object'?p.full:p)+'\')">'}h+='</div>'}h+='</div>';
       for(var j=1;j<ms.length;j++){var m=ms[j].msg;h+='<div class="'+msgClass+'"><button class="msg-menu-btn" onclick="event.stopPropagation();toggleMsgDropdown(event,\''+ms[j].key+'\',\''+btnType+'\')">⋮</button><div class="msg-dropdown" data-dropdown="'+ms[j].key+'"><button onclick="likeMsg(\''+ms[j].key+'\')">❤️</button><button onclick="pinMsg(\''+ms[j].key+'\')">📌</button><button onclick="delChatMsg(\''+ms[j].key+'\',\''+btnType+'\')">✕</button></div>'+(m.text||'');if(m.sticker)h+='<img class="chat-sticker" src="'+m.sticker+'">';h+='</div>'}
       var likes=fm.msg.likes||{},lc=Object.keys(likes).length;if(lc>0){var mk=_user?.name,il=!!likes[mk],icon=il?(likes[mk]==='god'?'👑':likes[mk]==='creator'?'🌌':'❤️'):'❤️';h+='<div class="like-indicator has-likes">'+icon+' '+lc+'</div>'}h+='</div>'}chatEl.innerHTML=h;if(wasAtBottom||document.activeElement===document.getElementById('chatMsgInput'))chatEl.scrollTop=chatEl.scrollHeight})}
+}
 
 function loadPinned(){db.ref('pinned').on('value',function(s){var b=document.getElementById('pinnedMessage');if(!s.exists()){b.style.display='none';return}var m=s.val();b.style.display='block';b.innerHTML='📌 <b>'+(m.user||'?')+':</b> '+m.text})}
 function loadAnnounce(){
