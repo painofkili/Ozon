@@ -110,6 +110,8 @@ button:hover { filter: brightness(1.1); }
 .btn-red { background: #e94560; color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
 .btn-gray { background: #444; color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
 .btn-gold { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
+.btn-outline { background: transparent; border: 1px solid #8B00FF; color: #8B00FF; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
+.btn-outline:hover { background: rgba(138,43,226,0.2); }
 button:disabled { opacity: 0.5; cursor: default; }
 
 .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 12px; background: rgba(22,33,62,0.5); border-radius: 10px; padding: 6px; border: 1px solid rgba(138,43,226,0.15); margin-bottom: 8px; }
@@ -267,6 +269,80 @@ button:disabled { opacity: 0.5; cursor: default; }
   border-top: 1px solid rgba(138, 43, 226, 0.2);
 }
 
+/* Login screen specific styles */
+#login {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  height: 100vh;
+  max-width: 450px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+#login .login-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 22px;
+  background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+#login input {
+  max-width: 320px;
+  width: 100%;
+}
+
+#login .btn-gold, #login .btn-outline {
+  max-width: 320px;
+  width: 100%;
+}
+
+.user-list { 
+  width: 100%;
+  max-width: 320px;
+  margin: 8px 0 12px 0;
+  max-height: 200px;
+  overflow-y: auto;
+  background: rgba(22,33,62,0.5);
+  border-radius: 12px;
+  padding: 8px;
+  border: 1px solid rgba(138,43,226,0.2);
+  scrollbar-width: thin;
+}
+.user-list::-webkit-scrollbar { width: 4px; }
+.user-list::-webkit-scrollbar-thumb { background: rgba(138,43,226,0.5); border-radius: 4px; }
+.user-item {
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.user-item:hover { background: rgba(138,43,226,0.2); }
+.user-item .user-name { color: #eee; font-size: 14px; }
+.user-item .user-role { font-size: 11px; padding: 2px 8px; border-radius: 10px; background: rgba(138,43,226,0.3); color: #aaa; }
+.user-item .user-role.creator { background: rgba(245,197,24,0.3); color: #f5c518; }
+.user-item .user-role.god { background: rgba(255,215,0,0.3); color: #FFD700; }
+
+.saved-user-block {
+  width: 100%;
+  max-width: 320px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+.saved-user-block .saved-label { color: #aaa; font-size: 13px; margin-bottom: 6px; display: block; }
+.saved-user-block .saved-actions { display: flex; gap: 8px; }
+.saved-user-block .saved-actions button { flex: 1; padding: 10px; font-size: 13px; }
+
 @media (max-width: 600px) {
   .mini-profile { right: 10px; left: 10px; width: calc(100% - 20px); top: auto; bottom: 80px; transform: none; }
   .mini-profile.show { animation: slideUpMobile 0.2s ease-out; }
@@ -285,12 +361,58 @@ button:disabled { opacity: 0.5; cursor: default; }
 <div id="toastContainer" class="toast-container"></div>
 <div id="photoViewer" onclick="this.style.display='none'"><img id="photoViewerImg" src=""></div>
 
-<div id="login" style="display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;height:100vh;max-width:450px;margin:0 auto;position:relative;z-index:1">
-  <h3 style="text-align:center; margin-bottom: 12px;"><span style="font-size:20px">🌌 Вход</span></h3>
-  <input id="creatorPass" type="password" placeholder="Пароль" style="max-width:320px" autocomplete="off">
-  <button class="btn-gold" onclick="creatorLogin()" style="max-width:320px; margin-top: 10px;" type="button">Войти</button>
+<!-- ==================== ЛОГИН ==================== -->
+<div id="login">
+  <div class="login-title">🌌 Ozon Создатель</div>
+  
+  <!-- Сохранённый пользователь -->
+  <div class="saved-user-block" id="savedUserBlock" style="display:none;">
+    <span class="saved-label">👤 Сохранённый пользователь:</span>
+    <div class="saved-actions">
+      <button class="btn-gold" id="savedUserBtn" style="padding:10px; font-size:13px;" onclick="quickLogin()">
+        Войти как <span id="savedUserName"></span>
+      </button>
+      <button class="btn-gray" style="padding:10px; font-size:13px;" onclick="clearSavedUser()">✕</button>
+    </div>
+    <hr style="border-color:#444; margin:10px 0;">
+    <span style="color:#666; font-size:12px; display:block; text-align:center;">Или выберите другого пользователя:</span>
+  </div>
+  
+  <!-- Список пользователей -->
+  <div style="width:100%; max-width:320px; text-align:center; margin-bottom:4px;">
+    <span style="color:#888; font-size:12px;">👥 Выберите пользователя:</span>
+  </div>
+  <div class="user-list" id="userList"></div>
+  
+  <!-- Поле для пароля -->
+  <input id="creatorPass" type="password" placeholder="Введите пароль" max-width="320px" autocomplete="off">
+  <button class="btn-gold" onclick="creatorLogin()" type="button">🔑 Войти</button>
+  
+  <div style="width:100%; max-width:320px; margin-top:8px; text-align:center; border-top:1px solid rgba(255,255,255,0.05); padding-top:10px;">
+    <button class="btn-outline" onclick="openRegisterModal()" style="padding:10px; font-size:13px;">➕ Регистрация</button>
+  </div>
 </div>
 
+<!-- ==================== МОДАЛКА РЕГИСТРАЦИИ ==================== -->
+<div id="registerModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+  <div class="card" style="max-width:400px; width:100%;">
+    <h3 style="text-align:center; margin-bottom:12px;">➕ Регистрация</h3>
+    <input id="regName" placeholder="Имя пользователя" style="margin-bottom:4px;">
+    <input id="regPass" type="password" placeholder="Пароль" style="margin-bottom:4px;">
+    <input id="regPassConfirm" type="password" placeholder="Повторите пароль" style="margin-bottom:4px;">
+    <select id="regPunkt" style="margin-bottom:4px;">
+      <option value="49">Пункт 49</option>
+      <option value="48">Пункт 48</option>
+      <option value="47">Пункт 47</option>
+      <option value="46">Пункт 46</option>
+    </select>
+    <input id="regVkId" placeholder="VK ID (опционально)">
+    <button class="btn-green" onclick="registerUser()">📝 Зарегистрироваться</button>
+    <button class="btn-gray" onclick="closeRegisterModal()">↩ Отмена</button>
+  </div>
+</div>
+
+<!-- ==================== ОСНОВНОЕ ПРИЛОЖЕНИЕ ==================== -->
 <div id="app" class="app-container" style="display:none">
   <button class="btn-sidebar-toggle" onclick="toggleSidebar()">👥</button>
 
@@ -520,6 +642,7 @@ var VK_TOKEN = "vk1.a.1ccqIy8pmM0W_RnIymI9XOMvA6ILX5yxNfZZAiF5HHBdjHK_vOAimgsylj
 db.ref('godSettings').once('value', function(s) {
   godData = s.exists() ? s.val() : null;
 });
+
 /* ДАННЫЕ СТИКЕРОВ */
 const BASE_EMOJIS = ['😊','😉','😘','❤️','🤘','😓','💀','💪','🫠','😂','🤣','😆','😎','🗿','🤷','🤔','😏','🙏','😭','☕️','😴','🤬','👍','👎'];
 let globalStickerPacks = {};
@@ -540,11 +663,228 @@ function showToast(text, isError = false) {
   setTimeout(function(){ toast.classList.remove('show'); setTimeout(function(){ toast.remove(); }, 300); }, 3000);
 }
 
-document.addEventListener('DOMContentLoaded',function(){
-  var passInput=document.getElementById('creatorPass');
-  if(passInput){var checkTimeout;passInput.addEventListener('input',function(){clearTimeout(checkTimeout);if(passInput.value.trim()===CREATOR_PASS||passInput.value.trim()==='godpass')checkTimeout=setTimeout(function(){creatorLogin()},400)});setTimeout(function(){passInput.focus()},500)}
+// ==================== ЛОГИН ====================
+function loadUserList() {
+  db.ref('users').once('value', function(snap) {
+    var list = document.getElementById('userList');
+    list.innerHTML = '';
+    var users = [];
+    snap.forEach(function(child) {
+      var user = child.val();
+      user.name = child.key;
+      users.push(user);
+    });
+    
+    // Сортируем: сначала создатель, потом бог, потом остальные
+    users.sort(function(a, b) {
+      var roles = { 'creator': 0, 'god': 1, 'manager': 2 };
+      var ra = a.name === 'Костя' ? 0 : (a.name === (godData ? godData.name : '') ? 1 : 2);
+      var rb = b.name === 'Костя' ? 0 : (b.name === (godData ? godData.name : '') ? 1 : 2);
+      return ra - rb || a.name.localeCompare(b.name);
+    });
+    
+    users.forEach(function(user) {
+      var div = document.createElement('div');
+      div.className = 'user-item';
+      var roleLabel = '';
+      if (user.name === 'Костя') roleLabel = '<span class="user-role creator">Создатель</span>';
+      else if (user.name === (godData ? godData.name : '')) roleLabel = '<span class="user-role god">Бог</span>';
+      else roleLabel = '<span class="user-role">Сотрудник</span>';
+      
+      div.innerHTML = '<span class="user-name">' + user.name + '</span>' + roleLabel;
+      div.onclick = function() {
+        document.getElementById('creatorPass').value = '';
+        document.getElementById('creatorPass').focus();
+        document.getElementById('creatorPass').placeholder = 'Пароль для ' + user.name;
+        document.getElementById('creatorPass').dataset.selectedUser = user.name;
+        // Подсвечиваем выбранного
+        document.querySelectorAll('.user-item').forEach(function(el) { el.style.background = ''; });
+        div.style.background = 'rgba(138,43,226,0.3)';
+      };
+      list.appendChild(div);
+    });
+  });
+}
+
+// Проверяем сохранённого пользователя
+document.addEventListener('DOMContentLoaded', function() {
+  var saved = localStorage.getItem('creator_user');
+  if (saved) {
+    var user = JSON.parse(saved);
+    document.getElementById('savedUserName').textContent = user.name || 'Костя';
+    document.getElementById('savedUserBlock').style.display = 'block';
+  }
+  
+  loadUserList();
+  
+  var passInput = document.getElementById('creatorPass');
+  if (passInput) {
+    var checkTimeout;
+    passInput.addEventListener('input', function() {
+      clearTimeout(checkTimeout);
+      if (passInput.value.trim() === '2706' || passInput.value.trim() === 'godpass') {
+        checkTimeout = setTimeout(function() { creatorLogin(); }, 400);
+      }
+    });
+    setTimeout(function() { passInput.focus(); }, 500);
+  }
 });
 
+function quickLogin() {
+  var saved = localStorage.getItem('creator_user');
+  if (saved) {
+    _user = JSON.parse(saved);
+    finishLogin();
+  }
+}
+
+function clearSavedUser() {
+  localStorage.removeItem('creator_user');
+  document.getElementById('savedUserBlock').style.display = 'none';
+  showToast('✅ Сессия очищена');
+}
+
+// ==================== РЕГИСТРАЦИЯ ====================
+function openRegisterModal() {
+  document.getElementById('registerModal').style.display = 'flex';
+  document.getElementById('regName').value = '';
+  document.getElementById('regPass').value = '';
+  document.getElementById('regPassConfirm').value = '';
+  document.getElementById('regVkId').value = '';
+}
+
+function closeRegisterModal() {
+  document.getElementById('registerModal').style.display = 'none';
+}
+
+function registerUser() {
+  var name = document.getElementById('regName').value.trim();
+  var pass = document.getElementById('regPass').value.trim();
+  var passConfirm = document.getElementById('regPassConfirm').value.trim();
+  var punkt = document.getElementById('regPunkt').value;
+  var vkId = document.getElementById('regVkId').value.trim();
+  
+  if (!name) { showToast('❌ Введите имя', true); return; }
+  if (!pass) { showToast('❌ Введите пароль', true); return; }
+  if (pass !== passConfirm) { showToast('❌ Пароли не совпадают', true); return; }
+  if (pass.length < 4) { showToast('❌ Пароль минимум 4 символа', true); return; }
+  
+  // Проверяем, существует ли пользователь
+  db.ref('users/' + name).once('value', function(snap) {
+    if (snap.exists()) {
+      showToast('❌ Пользователь уже существует', true);
+      return;
+    }
+    
+    // Создаём пользователя
+    var newUser = {
+      name: name,
+      password: pass,
+      punkt: punkt,
+      avatar: '',
+      vkId: vkId || '',
+      bonus: 0,
+      role: 'manager'
+    };
+    
+    db.ref('users/' + name).set(newUser, function(err) {
+      if (err) {
+        showToast('❌ Ошибка регистрации: ' + err.message, true);
+        return;
+      }
+      showToast('✅ Пользователь ' + name + ' зарегистрирован!');
+      closeRegisterModal();
+      loadUserList();
+    });
+  });
+}
+
+// ==================== ВХОД ====================
+function creatorLogin() {
+  var p = document.getElementById('creatorPass').value.trim();
+  var selectedUser = document.getElementById('creatorPass').dataset.selectedUser || '';
+  
+  if (!p) { showToast('❌ Введите пароль', true); return; }
+
+  // 1. Хардкод для Кости (2706)
+  if (p === '2706') {
+    db.ref('users/Костя').once('value', function(s) {
+      if (s.exists()) {
+        _user = s.val();
+        _user.role = 'creator';
+        localStorage.setItem('creator_user', JSON.stringify(_user));
+        finishLogin();
+      } else {
+        showToast('❌ Пользователь не найден', true);
+      }
+    });
+    return;
+  }
+  
+  // 2. Хардкод для Игоря (godpass)
+  if (p === 'godpass') {
+    db.ref('godSettings').once('value', function(gs) {
+      var godName = gs.exists() ? gs.val().name : 'Игорь';
+      db.ref('users/' + godName).once('value', function(s) {
+        if (s.exists()) {
+          _user = s.val();
+          _user.role = 'god';
+          localStorage.setItem('creator_user', JSON.stringify(_user));
+          finishLogin();
+        } else {
+          showToast('❌ Бог не найден', true);
+        }
+      });
+    });
+    return;
+  }
+
+  // 3. Поиск по паролю в Firebase
+  // Если выбран пользователь - проверяем только его
+  var query = db.ref('users');
+  if (selectedUser) {
+    query = db.ref('users/' + selectedUser);
+  }
+  
+  query.once('value', function(snap) {
+    var found = false;
+    if (selectedUser) {
+      var user = snap.val();
+      if (user && user.password === p) {
+        found = true;
+        _user = user;
+        _user.name = selectedUser;
+        if (selectedUser === 'Костя') _user.role = 'creator';
+        else if (selectedUser === (godData ? godData.name : '')) _user.role = 'god';
+        else _user.role = 'manager';
+        localStorage.setItem('creator_user', JSON.stringify(_user));
+        finishLogin();
+      }
+    } else {
+      snap.forEach(function(child) {
+        var user = child.val();
+        var userName = child.key;
+        if (user.password && p === user.password) {
+          found = true;
+          _user = user;
+          _user.name = userName;
+          if (userName === 'Костя') _user.role = 'creator';
+          else if (userName === (godData ? godData.name : '')) _user.role = 'god';
+          else _user.role = 'manager';
+          localStorage.setItem('creator_user', JSON.stringify(_user));
+          finishLogin();
+          return true;
+        }
+      });
+    }
+    
+    if (!found) {
+      showToast('❌ Неверный пароль', true);
+    }
+  });
+}
+
+// ==================== ОСНОВНЫЕ ФУНКЦИИ ====================
 function toggleSidebar() { document.getElementById('avatarCarousel').classList.toggle('open'); }
 
 function applyAvatarEffects(wrapperEl, role) {
@@ -644,117 +984,21 @@ db.ref('activeShifts').on('value',function(s){activeShifts={};s.forEach(function
 db.ref('shifts').on('value',function(s){allMyShifts=[];s.forEach(function(c){var x=c.val();x._id=c.key;allMyShifts.push(x)})});
 db.ref('sticker_packs').on('value', function(s){ globalStickerPacks = s.val() || {}; if(_user) renderStickerUI(); });
 
-/* ОБНОВЛЕННЫЙ ПЕРЕКЛЮЧАТЕЛЬ ЧАТА (ИСПОЛЬЗУЕТ FLEXBOX) */
-function toggleChat(){
-  var chat = document.getElementById('chat');
-  var arrow = document.getElementById('chatArrow');
-  var inputBar = document.getElementById('chatInputBar');
-  
-  if (chat.classList.contains('hidden')) {
-    chat.classList.remove('hidden');
-    chatOpened = true;
-    arrow.classList.add('open');
-    if (inputBar) inputBar.style.display = 'flex';
-    lastChatTimestamp = Date.now();
-    unreadCount = 0;
-    updateChatBadge();
-    setTimeout(() => { chat.scrollTop = chat.scrollHeight; }, 100);
-  } else {
-    chat.classList.add('hidden');
-    chatOpened = false;
-    arrow.classList.remove('open');
-    if (inputBar) inputBar.style.display = 'none';
-  }
-}
-function updateChatBadge(){var b=document.getElementById('chatBadge');if(unreadCount>0){b.style.display='inline';b.textContent=unreadCount;}else{b.style.display='none';}}
-
-function creatorLogin() {
-  var p = document.getElementById('creatorPass').value.trim();
-  if (!p) { showToast('❌ Введите пароль', true); return; }
-
-  // 1. Хардкод для Кости и Игоря (бэкап)
-  if (p === '2706') {
-    db.ref('users/Костя').once('value', function(s) {
-      if (s.exists()) {
-        _user = s.val();
-        _user.role = 'creator';
-        localStorage.setItem('creator_user', JSON.stringify(_user));
-        finishLogin();
-      } else {
-        showToast('❌ Пользователь не найден', true);
-      }
-    });
-    return;
-  }
-  
-  if (p === 'godpass') {
-    db.ref('godSettings').once('value', function(gs) {
-      var godName = gs.exists() ? gs.val().name : 'Игорь';
-      db.ref('users/' + godName).once('value', function(s) {
-        if (s.exists()) {
-          _user = s.val();
-          _user.role = 'god';
-          localStorage.setItem('creator_user', JSON.stringify(_user));
-          finishLogin();
-        } else {
-          showToast('❌ Бог не найден', true);
-        }
-      });
-    });
-    return;
-  }
-
-  // 2. Поиск по хешированному паролю в Firebase
-  db.ref('users').once('value', function(snap) {
-    var found = false;
-    snap.forEach(function(child) {
-      var user = child.val();
-      var userName = child.key;
-      var storedPass = user.password || '';
-      
-      // Проверяем, совпадает ли введённый пароль с хешем
-      if (storedPass && p === storedPass) {
-        found = true;
-        _user = user;
-        _user.name = userName;
-        
-        // Определяем роль
-        if (userName === 'Костя') {
-          _user.role = 'creator';
-        } else if (userName === 'Игорь' || userName === (godData ? godData.name : '')) {
-          _user.role = 'god';
-        } else {
-          _user.role = 'manager';
-        }
-        
-        localStorage.setItem('creator_user', JSON.stringify(_user));
-        finishLogin();
-        return true; // break forEach
-      }
-    });
-    
-    if (!found) {
-      showToast('❌ Неверный пароль', true);
-    }
-  });
-}
-
 function finishLogin() {
   document.getElementById('login').style.display='none';
   document.getElementById('app').style.display='flex';
-  chatOpened=!0; lastChatTimestamp=Date.now(); 
+  chatOpened=true; lastChatTimestamp=Date.now(); 
   updateProfileUI(); loadChat(); loadPinned(); loadAnnounce(); loadThought();
-  db.ref('activeShifts/'+_user.name).once('value',function(s){if(s.exists()&&s.val().active){onShift=!0;document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block';}});
+  
+  // Скрываем вкладку "Сила" для менеджеров
+  if (_user.role === 'manager') {
+    document.getElementById('tabCreator').style.display = 'none';
+  } else {
+    document.getElementById('tabCreator').style.display = 'flex';
+  }
+  
+  db.ref('activeShifts/'+_user.name).once('value',function(s){if(s.exists()&&s.val().active){onShift=true;document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block';}});
   buildCarousel(); renderStickerUI();
-}
-
-// Авто-вход отключён — всегда показываем экран входа
-var saved = localStorage.getItem('creator_user');
-if (saved) {
-  // Просто заполняем поле пароля, но НЕ входим автоматически
-  // Пользователь сам нажмёт кнопку входа
-  // _user = JSON.parse(saved);
-  // finishLogin();
 }
 
 function updateProfileUI(){
@@ -770,10 +1014,14 @@ function updateProfileUI(){
       nameWrap.className = 'god-name';
       badge.className = 'creator-badge god-badge';
       badge.textContent = '👑 Начальник';
-  } else {
+  } else if (_user.role === 'creator') {
       nameWrap.className = 'creator-name';
       badge.className = 'creator-badge';
       badge.textContent = '🌌 Создатель';
+  } else {
+      nameWrap.className = 'creator-name';
+      badge.className = 'creator-badge';
+      badge.textContent = '👤 Сотрудник';
   }
   applyAvatarEffects(document.getElementById('avatarWrapper'), _user.role);
 }
@@ -789,6 +1037,7 @@ function showTab(tab){
   if(tab==='stats')renderMyCalendar(); if(tab==='history')loadHistory(); if(tab==='notify')loadNotifications(); if(tab==='hall')loadHall();
 }
 
+// ==================== ОСТАЛЬНЫЕ ФУНКЦИИ (без изменений) ====================
 function loadNotifications(){if(!_user)return;db.ref('notifications').orderByChild('user').equalTo(_user.name).once('value',function(s){var arr=[];s.forEach(function(c){arr.push(c.val())});arr.sort(function(a,b){return b.timestamp-a.timestamp});document.getElementById('notifyContent').innerHTML=arr.length?arr.map(function(x){return'<div class="notify-item">'+x.text+' <small style="color:#999">'+new Date(x.timestamp).toLocaleString('ru-RU')+'</small></div>'}).join(''):'<p>Нет уведомлений</p>'})}
 function renderMyCalendar(){
   var myShifts=allMyShifts.filter(function(s){return s.user===_user.name}),now=new Date(),y=now.getFullYear(),m=now.getMonth(),dim=new Date(y,m+1,0).getDate(),fd=new Date(y,m,0).getDay();
@@ -815,10 +1064,10 @@ function saveSettings(){
 }
 function previewNewAvatar(){var f=document.getElementById('newAvatar').files[0];if(!f)return;var r=new FileReader();r.onload=function(e){newAvatarData=e.target.result;document.getElementById('newAvatarPreview').innerHTML='<img class="avatar" style="position:relative;" src="'+newAvatarData+'">'};r.readAsDataURL(f)}
 function previewPhotos(){photoBase64=[];document.getElementById('photoPreviews').innerHTML='';var files=document.getElementById('photos').files;for(var i=0;i<Math.min(files.length,5);i++){(function(file){var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var c=document.createElement('canvas'),mw=400,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);var thumb=c.toDataURL('image/jpeg',0.6);photoBase64.push({full:e.target.result,thumb:thumb});var pv=document.createElement('img');pv.src=thumb;document.getElementById('photoPreviews').appendChild(pv)};img.src=e.target.result};r.readAsDataURL(file)})(files[i])}}
-function startShift(){onShift=!0;var t=new Date().toLocaleTimeString('ru-RU');db.ref('activeShifts/'+_user.name).set({active:!0,startTime:t,punct:_user.punkt});document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block';db.ref('chat').push({user:(_user.role==='god'?'👑 ':'🌌 ')+_user.name,text:'🔵 Пункт '+_user.punkt+' на смене! ('+t+')',timestamp:Date.now()});}
-function endShift(){var tf=document.getElementById('timeFrom').value||'9',tt=document.getElementById('timeTo').value||'21',tv=parseInt(document.getElementById('tov').value)||0,hh=parseInt(tt)-parseInt(tf),ph=photoBase64.slice(0,5);db.ref('shifts/'+_user.name+'_'+Date.now()).set({user:_user.name,punkt:_user.punkt||'49',date:new Date().toLocaleDateString('ru-RU'),timeFrom:tf,timeTo:tt,hours:hh,tovar:tv,photos:ph,paid:!1,timestamp:new Date().toISOString()});db.ref('chat').push({user:(_user.role==='god'?'👑 ':'🌌 ')+_user.name,text:'🔴 Пункт '+_user.punkt+' с '+tf+' до '+tt+', товаров: '+tv,timestamp:Date.now(),photos:ph});db.ref('activeShifts/'+_user.name).remove();onShift=!1;document.getElementById('shift').style.display='none';document.getElementById('onShiftBtn').style.display='none';document.getElementById('startBtn').style.display='block';document.getElementById('tov').value='';document.getElementById('photos').value='';document.getElementById('photoPreviews').innerHTML='';photoBase64=[];}
+function startShift(){onShift=true;var t=new Date().toLocaleTimeString('ru-RU');db.ref('activeShifts/'+_user.name).set({active:true,startTime:t,punct:_user.punkt});document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block';db.ref('chat').push({user:(_user.role==='god'?'👑 ':'🌌 ')+_user.name,text:'🔵 Пункт '+_user.punkt+' на смене! ('+t+')',timestamp:Date.now()});}
+function endShift(){var tf=document.getElementById('timeFrom').value||'9',tt=document.getElementById('timeTo').value||'21',tv=parseInt(document.getElementById('tov').value)||0,hh=parseInt(tt)-parseInt(tf),ph=photoBase64.slice(0,5);db.ref('shifts/'+_user.name+'_'+Date.now()).set({user:_user.name,punkt:_user.punkt||'49',date:new Date().toLocaleDateString('ru-RU'),timeFrom:tf,timeTo:tt,hours:hh,tovar:tv,photos:ph,paid:false,timestamp:new Date().toISOString()});db.ref('chat').push({user:(_user.role==='god'?'👑 ':'🌌 ')+_user.name,text:'🔴 Пункт '+_user.punkt+' с '+tf+' до '+tt+', товаров: '+tv,timestamp:Date.now(),photos:ph});db.ref('activeShifts/'+_user.name).remove();onShift=false;document.getElementById('shift').style.display='none';document.getElementById('onShiftBtn').style.display='none';document.getElementById('startBtn').style.display='block';document.getElementById('tov').value='';document.getElementById('photos').value='';document.getElementById('photoPreviews').innerHTML='';photoBase64=[];}
 function sendPhoto(){var files=document.getElementById('chatPhoto').files;if(!files.length||!_user)return;var photos=[],count=Math.min(files.length,5);for(var i=0;i<count;i++){(function(file){var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var c=document.createElement('canvas'),mw=300,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);var thumb=c.toDataURL('image/jpeg',0.6);photos.push({full:e.target.result,thumb:thumb});if(photos.length===count){var ref=privateChatWith?getPrivateChatRef():db.ref('chat');ref.push({user:(_user.role==='god'?'👑 ':'🌌 ')+_user.name,text:'📷 '+count+' фото',photos:photos,timestamp:Date.now(),role:_user.role,likes:{}})}};img.src=e.target.result};r.readAsDataURL(file)})(files[i])}document.getElementById('chatPhoto').value=''}
-function logout(){_user=null;onShift=!1;chatOpened=!1;localStorage.removeItem('creator_user');document.getElementById('app').style.display='none';document.getElementById('login').style.display='flex'}
+function logout(){_user=null;onShift=false;chatOpened=false;localStorage.removeItem('creator_user');document.getElementById('app').style.display='none';document.getElementById('login').style.display='flex';document.getElementById('savedUserBlock').style.display='none';}
 
 function loadChat(){
   var cf=localStorage.getItem('chatFont')||'13',chatEl=document.getElementById('chat');
@@ -895,6 +1144,29 @@ function sendMsg(textOverride){
   input.value='';
 }
 document.getElementById('chatMsgInput').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();sendMsg()}});
+
+function toggleChat(){
+  var chat = document.getElementById('chat');
+  var arrow = document.getElementById('chatArrow');
+  var inputBar = document.getElementById('chatInputBar');
+  
+  if (chat.classList.contains('hidden')) {
+    chat.classList.remove('hidden');
+    chatOpened = true;
+    arrow.classList.add('open');
+    if (inputBar) inputBar.style.display = 'flex';
+    lastChatTimestamp = Date.now();
+    unreadCount = 0;
+    updateChatBadge();
+    setTimeout(() => { chat.scrollTop = chat.scrollHeight; }, 100);
+  } else {
+    chat.classList.add('hidden');
+    chatOpened = false;
+    arrow.classList.remove('open');
+    if (inputBar) inputBar.style.display = 'none';
+  }
+}
+function updateChatBadge(){var b=document.getElementById('chatBadge');if(unreadCount>0){b.style.display='inline';b.textContent=unreadCount;}else{b.style.display='none';}}
 
 function toggleStickerPanel(e){
   if(e) e.stopPropagation();
@@ -997,7 +1269,7 @@ function uploadStickerToPack() {
 }
 
 var notifiedKeys={};
-db.ref('chat').limitToLast(1).on('child_added',function(s){if(chatOpened)return;var m=s.val();if(!m||!_user)return;if(m.timestamp<=lastChatTimestamp)return;var isMine=m.user==='🌌 '+_user.name||m.user==='👑 '+_user.name||m.user===_user.name||m.user==='📢 '+_user.name;if(isMine)return;if(notifiedKeys[s.key])return;notifiedKeys[s.key]=!0;lastChatTimestamp=Math.max(lastChatTimestamp,m.timestamp||0);unreadCount++;updateChatBadge();notifyMe('💬 Чат',(m.user||'?').replace('🌌 ','').replace('👑 ','').replace('📢 ','')+': '+(m.text||(m.sticker?'📦 Стикер':'📷 Фото')))});
+db.ref('chat').limitToLast(1).on('child_added',function(s){if(chatOpened)return;var m=s.val();if(!m||!_user)return;if(m.timestamp<=lastChatTimestamp)return;var isMine=m.user==='🌌 '+_user.name||m.user==='👑 '+_user.name||m.user===_user.name||m.user==='📢 '+_user.name;if(isMine)return;if(notifiedKeys[s.key])return;notifiedKeys[s.key]=true;lastChatTimestamp=Math.max(lastChatTimestamp,m.timestamp||0);unreadCount++;updateChatBadge();notifyMe('💬 Чат',(m.user||'?').replace('🌌 ','').replace('👑 ','').replace('📢 ','')+': '+(m.text||(m.sticker?'📦 Стикер':'📷 Фото')))});
 
 function summonBoss(){var bossVk=prompt('ВК ID начальника:');if(bossVk){sendVkNotify(bossVk,'👔 Управление хочет тебя видеть. Зайди в чат.');showToast('✅ Вызов отправлен');}}
 function monkeySomeone(){var name=prompt('Кого превратить в обезьяну на 24 часа?');if(name){db.ref('users/'+name).once('value',function(s){if(s.exists()){var origAv=s.val().avatar;db.ref('users/'+name+'/avatar').set('https://raw.githubusercontent.com/painofkili/ozon/main/monkey.png');db.ref('chat').push({user:(_user.role==='god'?'👑 ':'🌌 ')+_user.name,text:'🐒 '+name+' теперь обезьяна на 24 часа!',timestamp:Date.now()});setTimeout(function(){db.ref('users/'+name+'/avatar').set(origAv)},86400000);showToast('✅ Готово');}else showToast('❌ Пользователь не найден', true)})}}
