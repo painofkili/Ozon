@@ -9,7 +9,7 @@
 
 /* ФИКСИРОВАННЫЙ ЭКРАН (TELEGRAM-СТИЛЬ) */
 html, body { 
-  overflow: hidden; /* Отключаем глобальный скролл */
+  overflow: hidden; 
   height: 100vh; 
   width: 100vw;
 }
@@ -22,50 +22,35 @@ body {
   flex-direction: column;
 }
 
-/* ФОН */
+/* Базовый строгий стиль для простых смертных */
+body.role-manager { background: #121212; }
+body.role-manager .bg, 
+body.role-manager .stars-overlay { display: none; }
+
+/* Божественный дизайн (Золотой/Огненный градиент) */
+body.role-god .bg { background: radial-gradient(circle at 50% 20%, #3a2202 0%, #170d01 70%, #050200 100%); }
+body.role-god .stars-overlay { 
+  background-image: radial-gradient(white, rgba(255,215,0,.2) 1.5px, transparent 40px), 
+                    radial-gradient(rgba(255,69,0,0.25), rgba(255,255,255,.1) 1px, transparent 30px); 
+}
+
+/* Строгий стиль кнопок и бейджей для обычных ребят */
+.manager-badge { background: #444; color: #fff; font-size: 12px; font-weight: bold; padding: 4px 10px; border-radius: 12px; display: inline-block; }
+.manager-name { color: #eee; font-weight: bold; }
+
+/* ОСТАЛЬНОЙ CSS БЕЗ ИЗМЕНЕНИЙ */
 .bg { width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; background: radial-gradient(circle at 50% 20%, #12092b 0%, #060612 70%, #020205 100%); z-index: -1000; pointer-events: none; }
 .stars-overlay { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-image: radial-gradient(white, rgba(255,255,255,.2) 1.5px, transparent 40px), radial-gradient(rgba(138,43,226,0.25), rgba(255,255,255,.1) 1px, transparent 30px); background-size: 450px 450px, 300px 350px; background-position: 0 0, 40px 60px; opacity: 0.3; animation: backgroundStarRotate 300s linear infinite; will-change: transform; }
 @keyframes backgroundStarRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-/* СТРУКТУРА СТРАНИЦЫ (FLEX) */
 .app-container { display: flex; width: 100%; height: 100vh; position: relative; z-index: 1; justify-content: center; overflow: hidden; }
-.main-content { 
-  width: 100%; 
-  max-width: 680px; 
-  padding: 12px 16px; 
-  display: flex; 
-  flex-direction: column;
-  padding-bottom: 70px; /* Место под строку ввода */
-  height: 100%;
-}
-
-/* Элементы, которые не должны сжиматься */
-.profile-row, .tabs, .tab-content, .announce-block, .thought-block, .chat-header-bar {
-  flex-shrink: 0;
-}
+.main-content { width: 100%; max-width: 680px; padding: 12px 16px; display: flex; flex-direction: column; padding-bottom: 70px; height: 100%; }
+.profile-row, .tabs, .tab-content, .announce-block, .thought-block, .chat-header-bar { flex-shrink: 0; }
 
 /* ВЫДВИЖНОЙ САЙДБАР С КОЛЛЕГАМИ */
-.avatar-carousel { 
-  width: 110px; 
-  background: rgba(10, 10, 25, 0.95); 
-  border-left: 1px solid rgba(138, 43, 226, 0.3); 
-  display: flex; 
-  flex-direction: column;
-  align-items: center; 
-  position: fixed; 
-  top: 0; 
-  right: -130px; 
-  height: 100vh; 
-  padding: 50px 0 20px 0; 
-  z-index: 1000; 
-  backdrop-filter: blur(15px); 
-  transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
-  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.7);
-}
+.avatar-carousel { width: 110px; background: rgba(10, 10, 25, 0.95); border-left: 1px solid rgba(138, 43, 226, 0.3); display: flex; flex-direction: column; align-items: center; position: fixed; top: 0; right: -130px; height: 100vh; padding: 50px 0 20px 0; z-index: 1000; backdrop-filter: blur(15px); transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: -10px 0 30px rgba(0, 0, 0, 0.7); }
 .avatar-carousel.open { right: 0; }
-.avatar-carousel-inner { 
-  display: flex; flex-direction: column; align-items: center; width: 100%; gap: 12px; overflow-y: auto; height: 100%; padding: 10px 0; scrollbar-width: none; -webkit-overflow-scrolling: touch;
-}
+.avatar-carousel-inner { display: flex; flex-direction: column; align-items: center; width: 100%; gap: 12px; overflow-y: auto; height: 100%; padding: 10px 0; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
 .avatar-carousel-inner::-webkit-scrollbar { display: none; }
 
 .sidebar-close-btn { position: absolute; top: 12px; left: 12px; background: rgba(255,255,255,0.1); border: none; color: #fff; width: 28px; height: 28px; border-radius: 50%; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
@@ -174,19 +159,7 @@ button:disabled { opacity: 0.5; cursor: default; }
 .chat-badge { background: #e94560; color: #fff; border-radius: 10px; font-size: 11px; padding: 2px 6px; font-weight: bold; }
 .chat-back-btn { background: none; border: 1px solid rgba(138,43,226,0.4); color: #ccc; padding: 4px 10px; border-radius: 8px; font-size: 12px; cursor: pointer; display: none; }
 
-#chat { 
-  flex: 1; 
-  overflow-y: auto; 
-  padding: 10px; 
-  border-radius: 14px; 
-  background: rgba(15, 15, 30, 0.6); 
-  font-size: 13px; 
-  border: 1px solid rgba(138, 43, 226, 0.15); 
-  transition: padding 0.3s ease, flex 0.3s ease;
-  margin-bottom: 0;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(138, 43, 226, 0.5) transparent;
-}
+#chat { flex: 1; overflow-y: auto; padding: 10px; border-radius: 14px; background: rgba(15, 15, 30, 0.6); font-size: 13px; border: 1px solid rgba(138, 43, 226, 0.15); transition: padding 0.3s ease, flex 0.3s ease; margin-bottom: 0; scrollbar-width: thin; scrollbar-color: rgba(138, 43, 226, 0.5) transparent; }
 #chat.hidden { flex: 0; padding: 0 !important; margin-bottom: 0 !important; overflow: hidden; opacity: 0; border: none; min-height: 0; }
 #chat::-webkit-scrollbar { width: 6px; }
 #chat::-webkit-scrollbar-thumb { background: rgba(138, 43, 226, 0.5); border-radius: 4px; }
@@ -250,22 +223,7 @@ button:disabled { opacity: 0.5; cursor: default; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
 /* ФИКСИРОВАННАЯ СТРОКА ВВОДА */
-.chat-input-bar {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 680px;
-  background: rgba(10, 10, 26, 0.95);
-  backdrop-filter: blur(15px);
-  padding: 8px 16px 16px 16px;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  z-index: 100;
-  border-top: 1px solid rgba(138, 43, 226, 0.2);
-}
+.chat-input-bar { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 680px; background: rgba(10, 10, 26, 0.95); backdrop-filter: blur(15px); padding: 8px 16px 16px 16px; display: flex; gap: 8px; align-items: center; z-index: 100; border-top: 1px solid rgba(138, 43, 226, 0.2); }
 
 @media (max-width: 600px) {
   .mini-profile { right: 10px; left: 10px; width: calc(100% - 20px); top: auto; bottom: 80px; transform: none; }
@@ -510,7 +468,6 @@ var allUsers = {};
 var allUserData = {};
 var activeShifts = {};
 var godData = null;
-var CREATOR_PASS = '2706';
 var unreadCount = 0;
 var chatOpened = true;
 var lastChatTimestamp = 0;
@@ -542,11 +499,6 @@ function showToast(text, isError = false) {
   setTimeout(function(){ toast.classList.add('show'); }, 10);
   setTimeout(function(){ toast.classList.remove('show'); setTimeout(function(){ toast.remove(); }, 300); }, 3000);
 }
-
-document.addEventListener('DOMContentLoaded',function(){
-  var passInput=document.getElementById('creatorPass');
-  if(passInput){var checkTimeout;passInput.addEventListener('input',function(){clearTimeout(checkTimeout);if(passInput.value.trim()===CREATOR_PASS||passInput.value.trim()==='godpass')checkTimeout=setTimeout(function(){creatorLogin()},400)});setTimeout(function(){passInput.focus()},500)}
-});
 
 function toggleSidebar() { document.getElementById('avatarCarousel').classList.toggle('open'); }
 
@@ -670,6 +622,7 @@ function toggleChat(){
   }
 }
 function updateChatBadge(){var b=document.getElementById('chatBadge');if(unreadCount>0){b.style.display='inline';b.textContent=unreadCount;}else{b.style.display='none';}}
+
 function finishLogin() {
   document.getElementById('login').style.display = 'none';
   document.getElementById('app').style.display = 'flex';
@@ -691,114 +644,121 @@ function finishLogin() {
   buildCarousel();
   renderStickerUI();
 }
+
 async function loginUser() {
   const name = document.getElementById('loginName').value.trim();
   const password = document.getElementById('loginPass').value.trim();
   if (!name || !password) { showToast('❌ Введите имя и пароль', true); return; }
 
-  // 1. Хардкод для Кости (быстрый вход)
-  if (name === 'Костя' && password === '2706') {
-    db.ref('users/Костя').once('value', function(s) {
-      if (s.exists()) {
-        _user = s.val();
-        _user.role = 'creator';
-        localStorage.setItem('creator_user', JSON.stringify(_user));
-        finishLogin();
-      } else {
-        showToast('❌ Пользователь не найден', true);
-      }
-    });
-    return;
-  }
-  
-  // 2. Хардкод для Игоря (быстрый вход)
-  if (name === 'Игорь' && password === 'godpass') {
-    db.ref('users/Игорь').once('value', function(s) {
-      if (s.exists()) {
-        _user = s.val();
-        _user.role = 'god';
-        localStorage.setItem('creator_user', JSON.stringify(_user));
-        finishLogin();
-      } else {
-        showToast('❌ Пользователь не найден', true);
-      }
-    });
-    return;
-  }
-
-  // 3. Хешируем введённый пароль (для проверки хеша)
+  // 1. Хэшируем введённый пароль
   const encoder = new TextEncoder();
   const data = encoder.encode(password);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   const inputHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toLowerCase();
 
-  // 4. Ищем пользователя по хешу (Костя и Игорь уже отловлены, но это на всякий случай)
-  const snap = await db.ref('users').once('value');
-  let found = false;
-  snap.forEach(function(child) {
-    var user = child.val();
-    var userName = child.key;
-    var storedHash = (user.password || '').toLowerCase();
+  // 2. Хэши паролей (SHA-256)
+  // Хэш для '2706'
+  const CREATOR_HASH = 'b1828cb39d67e5eda9ebbb255a2a222ab5e1f9ba1c900e23da94a11be0744be6'; 
+  // Хэш для 'godpass' (Если у Игоря другой пароль, сгенерируй для него SHA-256)
+  const GOD_HASH = '1f654f5c90bba6233cfbdba09418e5e8e815e9cdba6f83be360b6af97b6adff8'; 
 
-    if (storedHash && storedHash === inputHash) {
-      found = true;
-      _user = user;
-      _user.name = userName;
-      
-      if (userName === 'Костя') {
-        _user.role = 'creator';
-      } else if (userName === 'Игорь' || userName === (godData ? godData.name : '')) {
-        _user.role = 'god';
-      } else {
-        _user.role = 'manager';
-      }
-      
+  // 3. Проверка высшего руководства
+  if (name === 'Костя' && inputHash === CREATOR_HASH) {
+    db.ref('users/Костя').once('value', function(s) {
+      _user = s.exists() ? s.val() : { name: 'Костя' };
+      _user.role = 'creator';
       localStorage.setItem('creator_user', JSON.stringify(_user));
       finishLogin();
-      return true;
-    }
-  });
+    });
+    return;
+  }
+  
+  if (name === 'Игорь' && inputHash === GOD_HASH) {
+    db.ref('users/Игорь').once('value', function(s) {
+      _user = s.exists() ? s.val() : { name: 'Игорь' };
+      _user.role = 'god';
+      localStorage.setItem('creator_user', JSON.stringify(_user));
+      finishLogin();
+    });
+    return;
+  }
 
-  // 5. Если не нашли по хешу — пробуем войти как обычный сотрудник (открытый пароль)
-  if (!found) {
-    const userSnap = await db.ref('users').orderByChild('name').equalTo(name).once('value');
-    if (userSnap.exists()) {
-      let userData = null, userKey = null;
-      userSnap.forEach(c => { userData = c.val(); userKey = c.key; });
-      if (userData.password && userData.password === password) {
-        _user = userData;
-        _user.key = userKey;
-        _user.role = userData.role || 'manager';
-        localStorage.setItem('creator_user', JSON.stringify(_user));
-        finishLogin();
-        return;
-      }
-    }
-
-    // 6. Если не нашлось — регистрируем нового сотрудника
-    if (confirm('Сотрудник «' + name + '» не найден. Зарегистрировать нового пользователя?')) {
-      const nu = { 
-        name: name, 
-        punkt: '49', 
-        password: password, 
-        avatar: '', 
-        vkId: '', 
-        role: 'manager', 
-        bonus: 0 
-      };
-      db.ref('users').push(nu, function(err) {
-        if (err) { showToast('Ошибка регистрации!', true); return; }
-        _user = nu;
-        _user.role = 'manager';
-        localStorage.setItem('creator_user', JSON.stringify(_user));
-        finishLogin();
-      });
-    } else {
-      showToast('❌ Неверный пароль', true);
+  // 4. Проверка простых сотрудников (пароль текстом)
+  const userSnap = await db.ref('users').orderByChild('name').equalTo(name).once('value');
+  if (userSnap.exists()) {
+    let userData = null, userKey = null;
+    userSnap.forEach(c => { userData = c.val(); userKey = c.key; });
+    
+    // Сверяем введенный пароль с тем, что в базе текстом
+    if (userData.password && userData.password === password) {
+      _user = userData;
+      _user.key = userKey;
+      _user.role = userData.role || 'manager';
+      localStorage.setItem('creator_user', JSON.stringify(_user));
+      finishLogin();
+      return;
     }
   }
+
+  // 5. Если сотрудник не найден - регаем нового (как у тебя и было)
+  if (confirm('Сотрудник «' + name + '» не найден. Зарегистрировать нового пользователя?')) {
+    const nu = { name: name, punkt: '49', password: password, avatar: '', vkId: '', role: 'manager', bonus: 0 };
+    db.ref('users').push(nu, function(err) {
+      if (err) { showToast('Ошибка регистрации!', true); return; }
+      _user = nu;
+      _user.role = 'manager';
+      localStorage.setItem('creator_user', JSON.stringify(_user));
+      finishLogin();
+    });
+  } else {
+    showToast('❌ Неверный пароль', true);
+  }
 }
+
+function updateProfileUI() {
+  document.getElementById('uname').textContent = _user.name;
+  document.getElementById('upunkt').textContent = _user.punkt || '?';
+  
+  var av = document.getElementById('profileAvatar');
+  if (_user.avatar) {
+    av.src = _user.avatar;
+    av.style.display = 'block';
+  } else {
+    av.style.display = 'none';
+  }
+
+  // Очищаем классы body и вешаем текущую роль
+  document.body.className = '';
+  document.body.classList.add('role-' + _user.role);
+
+  var badge = document.getElementById('roleBadge');
+  var nameWrapper = document.getElementById('creatorNameWrapper');
+  var creatorTab = document.getElementById('tabCreator');
+  var wrapperEl = document.getElementById('avatarWrapper');
+  
+  if (_user.role === 'god') {
+    badge.className = 'creator-badge god-badge';
+    badge.innerHTML = '👑 Начальник';
+    nameWrapper.className = 'god-name';
+    creatorTab.style.display = 'flex'; // Вкладка Силы доступна
+    applyAvatarEffects(wrapperEl, 'god');
+  } else if (_user.role === 'creator') {
+    badge.className = 'creator-badge';
+    badge.innerHTML = '🌌 Создатель';
+    nameWrapper.className = 'creator-name';
+    creatorTab.style.display = 'flex'; // Вкладка Силы доступна
+    applyAvatarEffects(wrapperEl, 'creator');
+  } else {
+    // Простой смертный
+    badge.className = 'manager-badge';
+    badge.innerHTML = '📦 Сотрудник';
+    nameWrapper.className = 'manager-name';
+    creatorTab.style.display = 'none'; // Скрываем вкладку Силы!
+    applyAvatarEffects(wrapperEl, 'manager'); // Убираем спецэффекты с аватарки
+  }
+}
+
 function showTab(tab){
   var tabs={shift:'shiftTab',stats:'statsTab',history:'historyTab',notify:'notifyTab',hall:'hallTab',creator:'creatorTab'};
   var active=document.querySelector('.tabs button.active');
