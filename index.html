@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-<title>Ozon Создатель</title>
+<title>Ozon Hub</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -277,7 +277,7 @@ button:disabled { opacity: 0.5; cursor: default; }
       <button id="tabHistory" onclick="showTab('history')"><span class="menu-icon">💳</span><span class="menu-label">Выплаты</span></button>
       <button id="tabNotify" onclick="showTab('notify')"><span class="menu-icon">🔔</span><span class="menu-label">Увед</span></button>
       <button id="tabHall" onclick="showTab('hall')"><span class="menu-icon">🏆</span><span class="menu-label">Доска</span></button>
-      <button id="tabCreator" onclick="showTab('creator')"><span class="menu-icon">🌌</span><span class="menu-label">Сила</span></button>
+      <button id="tabCreator" onclick="showTab('creator')" style="display:none;"><span class="menu-icon">🌌</span><span class="menu-label">Сила</span></button>
     </div>
     
     <div id="shiftTab" class="tab-content active-tab">
@@ -809,9 +809,13 @@ function loadChat(){
   ref.limitToLast(50).on('value',function(s){
     var groups={},order=[];s.forEach(function(c){var m=c.val(),curUser=m.user||'';if(!groups[curUser]){groups[curUser]=[];order.push(curUser)}groups[curUser].push({key:c.key,msg:m,isCreator:m.user&&m.user.indexOf('🌌')===0,isGod:m.user&&m.user.indexOf('👑')===0||m.role==='god'})});
     var h='';
+    
+    // ПРОВЕРКА РОЛЕЙ ДЛЯ ЧАТА
+    var isAdmin = _user && (_user.role === 'creator' || _user.role === 'god');
+
     for(var u=0;u<order.length;u++){
       var curUser=order[u],msgs=groups[curUser],firstMsg=msgs[0],isCreatorMsg=firstMsg.isCreator,isGodMsg=firstMsg.isGod;
-      var isMine=_user&&(curUser==='🌌 '+_user.name||curUser==='👑 '+_user.name||curUser===_user.name),alignClass=isMine?'mine':'other';
+      var isMine=_user&&(curUser==='🌌 '+_user.name||curUser==='👑 '+_user.name||curUser===_user.name||curUser==='📢 '+_user.name),alignClass=isMine?'mine':'other';
       h+='<div class="chat-bubble-group '+alignClass+'">';
       var m0=msgs[0].msg,sn=(m0.user||'').replace('📢 ','').replace('🌌 ','').replace('👑 ',''),av=allUsers[sn]||'';
       
@@ -828,18 +832,27 @@ function loadChat(){
       var avClass = isGodMsg ? 'avatar-mini avatar-mini-god' : (isCreatorMsg ? 'avatar-mini avatar-mini-creator' : 'avatar-mini');
       var btnType = isGodMsg ? 'god' : (isCreatorMsg ? 'creator' : 'normal');
 
+      // Кнопки контекстного меню
+      var canDelete = isAdmin || isMine;
+      var pinBtnHtml = isAdmin ? '<button class="btn-pin" onclick="event.stopPropagation();pinMsg(\''+firstMsg.key+'\')">📌</button>' : '';
+      var delBtnHtml = canDelete ? '<button class="btn-del" onclick="event.stopPropagation();delChatMsg(\''+firstMsg.key+'\',\''+btnType+'\')">✕</button>' : '';
+
       h+='<div class="'+msgClass+'">';
       h+='<button class="msg-menu-btn" onclick="event.stopPropagation();toggleMsgDropdown(event,\''+firstMsg.key+'\',\''+btnType+'\')">⋮</button>';
-      h+='<div class="msg-dropdown" data-dropdown="'+firstMsg.key+'"><button class="btn-like" onclick="event.stopPropagation();likeMsg(\''+firstMsg.key+'\')">❤️</button><button class="btn-pin" onclick="event.stopPropagation();pinMsg(\''+firstMsg.key+'\')">📌</button><button class="btn-del" onclick="event.stopPropagation();delChatMsg(\''+firstMsg.key+'\',\''+btnType+'\')">✕</button></div>';
+      h+='<div class="msg-dropdown" data-dropdown="'+firstMsg.key+'"><button class="btn-like" onclick="event.stopPropagation();likeMsg(\''+firstMsg.key+'\')">❤️</button>' + pinBtnHtml + delBtnHtml + '</div>';
+      
       if(av)h+='<img class="'+avClass+'" src="'+av+'" onclick="event.stopPropagation(); selectProfile(\''+sn+'\'); toggleSidebar();">';
       h+='<b class="'+(isGodMsg||isCreatorMsg?'author':'')+'" onclick="event.stopPropagation(); selectProfile(\''+sn+'\'); toggleSidebar();" style="cursor:pointer">'+sn+'</b> ';
       h+=renderMsgContent(m0);
       h+='</div>';
       
       for(var j=1;j<msgs.length;j++){var m=msgs[j].msg;
+        var subPinBtn = isAdmin ? '<button class="btn-pin" onclick="event.stopPropagation();pinMsg(\''+msgs[j].key+'\')">📌</button>' : '';
+        var subDelBtn = canDelete ? '<button class="btn-del" onclick="event.stopPropagation();delChatMsg(\''+msgs[j].key+'\',\''+btnType+'\')">✕</button>' : '';
+
         h+='<div class="'+msgClass+'">';
         h+='<button class="msg-menu-btn" onclick="event.stopPropagation();toggleMsgDropdown(event,\''+msgs[j].key+'\',\''+btnType+'\')">⋮</button>';
-        h+='<div class="msg-dropdown" data-dropdown="'+msgs[j].key+'"><button class="btn-like" onclick="event.stopPropagation();likeMsg(\''+msgs[j].key+'\')">❤️</button><button class="btn-pin" onclick="event.stopPropagation();pinMsg(\''+msgs[j].key+'\')">📌</button><button class="btn-del" onclick="event.stopPropagation();delChatMsg(\''+msgs[j].key+'\',\''+btnType+'\')">✕</button></div>';
+        h+='<div class="msg-dropdown" data-dropdown="'+msgs[j].key+'"><button class="btn-like" onclick="event.stopPropagation();likeMsg(\''+msgs[j].key+'\')">❤️</button>' + subPinBtn + subDelBtn + '</div>';
         h+=renderMsgContent(m);
         h+='</div>'
       }
@@ -989,9 +1002,33 @@ function openThoughtModal(){document.getElementById('thoughtModal').style.displa
 function closeThoughtModal(){document.getElementById('thoughtModal').style.display='none';document.getElementById('thoughtText').value=''}
 function toggleExpiryInput(p){document.getElementById(p+'ExpiryValue').style.display=document.getElementById(p+'ExpiryType').value==='forever'?'none':'block'}
 function sendThought(){var text=document.getElementById('thoughtText').value.trim();if(!text)return;var type=document.getElementById('thoughtExpiryType').value,val=parseInt(document.getElementById('thoughtExpiryValue').value)||24,expiry=null;if(type==='hours')expiry=Date.now()+val*3600000;else if(type==='days')expiry=Date.now()+val*86400000;db.ref('creatorThought').set({text:text,expiry:expiry,timestamp:Date.now()});document.getElementById('thoughtText').value='';closeThoughtModal();showToast('💭 Мысль отправлена!');}
-function loadThought(){db.ref('creatorThought').on('value',function(s){var b=document.getElementById('thoughtBlock');if(!s.exists()){b.style.display='none';return}var t=s.val();if(t.expiry&&Date.now()>t.expiry){db.ref('creatorThought').remove();b.style.display='none';return}b.style.display='block';var expText=t.expiry?'До: '+new Date(t.expiry).toLocaleString('ru-RU'):'Навсегда';b.innerHTML='<span class="thought-emoji">💭</span> <span class="thought-text">'+t.text+'</span><br><div class="thought-expiry">'+expText+'</div><button class="thought-del" onclick="delThought()">✕</button>'})}
+function loadThought(){
+  db.ref('creatorThought').on('value',function(s){
+    var b=document.getElementById('thoughtBlock');
+    if(!s.exists()){b.style.display='none';return}
+    var t=s.val();
+    if(t.expiry&&Date.now()>t.expiry){db.ref('creatorThought').remove();b.style.display='none';return}
+    b.style.display='block';
+    var expText=t.expiry?'До: '+new Date(t.expiry).toLocaleString('ru-RU'):'Навсегда';
+    var isAdmin = _user && (_user.role === 'creator' || _user.role === 'god');
+    var delBtn = isAdmin ? '<button class="thought-del" onclick="delThought()" style="position:absolute; right:10px; top:10px; background:none; border:none; color:#ccc; cursor:pointer;">✕</button>' : '';
+    b.innerHTML='<span class="thought-emoji">💭</span> <span class="thought-text">'+t.text+'</span><br><div class="thought-expiry" style="font-size:12px; color:#aaa;">'+expText+'</div>' + delBtn;
+  })
+}
 function delThought(){db.ref('creatorThought').remove()}
-function loadAnnounce(){db.ref('announce').limitToLast(1).on('value',function(s){var b=document.getElementById('announceBlock');if(!s.exists()){b.style.display='none';return}var last=null;s.forEach(function(c){last=c.val();last._key=c.key});if(last.expiry&&Date.now()>last.expiry){db.ref('announce/'+last._key).remove();b.style.display='none';return}b.style.display='block';var expText=last.expiry?'Актуально до: '+new Date(last.expiry).toLocaleString('ru-RU'):'Бессрочно';b.innerHTML='<b>📢 '+last.text+'</b><br><small class="announce-expiry">'+expText+' • '+new Date(last.timestamp).toLocaleString('ru-RU')+'</small><button class="announce-del" onclick="delAnnounce(\''+last._key+'\')">✕</button>'})}
+function loadAnnounce(){
+  db.ref('announce').limitToLast(1).on('value',function(s){
+    var b=document.getElementById('announceBlock');
+    if(!s.exists()){b.style.display='none';return}
+    var last=null;s.forEach(function(c){last=c.val();last._key=c.key});
+    if(last.expiry&&Date.now()>last.expiry){db.ref('announce/'+last._key).remove();b.style.display='none';return}
+    b.style.display='block';
+    var expText=last.expiry?'Актуально до: '+new Date(last.expiry).toLocaleString('ru-RU'):'Бессрочно';
+    var isAdmin = _user && (_user.role === 'creator' || _user.role === 'god');
+    var delBtn = isAdmin ? '<button class="announce-del" onclick="delAnnounce(\''+last._key+'\')" style="position:absolute; right:10px; top:10px; background:none; border:none; color:#ccc; cursor:pointer;">✕</button>' : '';
+    b.innerHTML='<b>📢 '+last.text+'</b><br><small class="announce-expiry" style="color:#aaa;">'+expText+' • '+new Date(last.timestamp).toLocaleString('ru-RU')+'</small>' + delBtn;
+  })
+}
 function delAnnounce(key){if(_user&&(_user.role==='creator'||_user.role==='god'))db.ref('announce/'+key).remove();else showToast('🚫 У вас нет прав на это!', true)}
 function loadHall(){
   db.ref('shifts').once('value',function(snap){
