@@ -10,7 +10,6 @@
 html, body { overflow: hidden; height: 100vh; width: 100vw; }
 body { font-family: 'Trebuchet MS', Helvetica, sans-serif; color: #eee; font-size: 16px; background: #0a0a1a; display: flex; flex-direction: column; }
 
-/* БОЖЕСТВЕННЫЙ ФОН */
 body.god-body { background: #1a1200; }
 .god-theme .bg { background: radial-gradient(ellipse at 50% 20%, #4a3000 0%, #2a1800 50%, #0a0500 100%) !important; }
 .god-theme .stars-overlay { opacity: 0.2 !important; background-image: radial-gradient(rgba(255,215,0,0.5), rgba(255,215,0,0.15) 1px, transparent 30px), radial-gradient(rgba(255,200,0,0.3), rgba(255,255,255,0.08) 1px, transparent 25px) !important; }
@@ -38,23 +37,14 @@ body.god-body { background: #1a1200; }
 .god-theme .tabs button:hover { background: rgba(255,215,0,0.25); }
 .god-theme .mini-profile { background: rgba(50,35,15,0.98); border: 1px solid rgba(255,215,0,0.6); }
 
-/* Божественное облачко объявления */
 .god-announce-cloud {
   background: linear-gradient(135deg, rgba(255,215,0,0.25) 0%, rgba(255,180,0,0.2) 30%, rgba(255,140,0,0.12) 70%, rgba(255,215,0,0.18) 100%) !important;
   border: 2px solid rgba(255,215,0,0.6) !important;
   border-radius: 20px !important;
   box-shadow: 0 0 30px rgba(255,215,0,0.25), inset 0 0 20px rgba(255,215,0,0.08) !important;
-  position: relative;
-  overflow: hidden;
+  position: relative; overflow: hidden;
 }
-.god-announce-cloud::before {
-  content: '';
-  position: absolute;
-  top: -50%; left: -50%;
-  width: 200%; height: 200%;
-  background: radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.15) 0%, transparent 60%);
-  pointer-events: none;
-}
+.god-announce-cloud::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.15) 0%, transparent 60%); pointer-events: none; }
 
 .bg { width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; background: radial-gradient(circle at 50% 20%, #12092b 0%, #060612 70%, #020205 100%); z-index: -1000; pointer-events: none; }
 .stars-overlay { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-image: radial-gradient(white, rgba(255,255,255,.2) 1.5px, transparent 40px), radial-gradient(rgba(138,43,226,0.25), rgba(255,255,255,.1) 1px, transparent 30px); background-size: 450px 450px, 300px 350px; background-position: 0 0, 40px 60px; opacity: 0.3; animation: backgroundStarRotate 300s linear infinite; will-change: transform; }
@@ -74,7 +64,6 @@ body.god-body { background: #1a1200; }
 .announce-del:hover { background: #DC143C; transform: scale(1.1); }
 .announce-expiry { font-size: 10px; color: #aaa; margin-top: 2px; display: block; }
 
-/* Мысль создателя с крестиком справа */
 .thought-block { position: relative; padding-right: 35px !important; }
 .thought-del { position: absolute; top: 8px; right: 8px; background: rgba(138,43,226,0.6); color: #fff; border: none; width: 22px; height: 22px; border-radius: 50%; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 2; }
 .thought-del:hover { background: #8B00FF; transform: scale(1.1); }
@@ -246,6 +235,12 @@ button:disabled { opacity: 0.5; }
 .emoji-item:hover { transform: scale(1.2); }
 .chat-input-bar { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 680px; background: rgba(10,10,26,0.95); backdrop-filter: blur(15px); padding: 8px 16px 16px; display: flex; gap: 8px; align-items: center; z-index: 100; border-top: 1px solid rgba(138,43,226,0.2); }
 
+.pack-list-item { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid rgba(138,43,226,0.3); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.pack-icon { width: 40px; height: 40px; object-fit: contain; border-radius: 6px; }
+.user-cb-list { max-height: 150px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 8px; margin: 5px 0; border: 1px solid #444; }
+.user-cb-item { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 14px; }
+.user-cb-item input { width: auto; margin: 0; }
+
 @media (max-width: 600px) {
   .mini-profile { right: 10px; left: 10px; width: calc(100% - 20px); top: auto; bottom: 80px; transform: none; }
   .sticker-panel { right: -40px; width: calc(100vw - 20px); max-width: 340px; }
@@ -325,19 +320,7 @@ button:disabled { opacity: 0.5; }
     <div id="godPunktsTab" class="tab-content"><h4 style="text-align:center">📍 Управление пунктами</h4><button class="btn-green" onclick="godAddPunkt()">+ Пункт</button><div id="godPunktsList"></div></div>
     <div id="godWorkersTab" class="tab-content"><h4 style="text-align:center">👥 Сотрудники</h4><select id="godFilterPunkt" onchange="godLoadWorkers()"><option value="">Все пункты</option></select><div id="godWorkersList"></div></div>
     <div id="godCalcTab" class="tab-content"><h4 style="text-align:center">💰 Расчёт зарплаты</h4><select id="godCalcUser" onchange="godOnCalcSelect()"><option value="">-- Выбери --</option></select><div id="godCalcBlock" style="display:none"><div style="display:flex;gap:4px"><input id="godCalcFrom" type="date" style="flex:1"><span>–</span><input id="godCalcTo" type="date" style="flex:1"></div><button class="btn-cyan" onclick="godAddShift()">+ Смена</button><button class="btn-green" onclick="godCalcZP()">🧮 Посчитать</button><button class="btn-blue" onclick="godMarkPaid()">✅ Оплачено</button><div id="godZpResult" class="zp-result" style="display:none"></div><h4 style="margin-top:10px">📅 Календарь смен</h4><div id="godCalHeader" style="text-align:center"></div><div class="calendar" id="godCalendar"></div><div id="godShiftDetail" style="margin-top:8px"></div></div></div>
-    <div id="godAnnounceTab" class="tab-content">
-      <h4 style="text-align:center">📢 Объявления</h4>
-      <textarea id="godAnnounceText" placeholder="Текст объявления..." rows="3"></textarea>
-      <div style="display:flex;gap:8px;align-items:center;margin-top:8px;">
-        <select id="godAnnounceExpiry" style="flex:1;">
-          <option value="0">Навсегда</option><option value="1">1 час</option><option value="3">3 часа</option>
-          <option value="6">6 часов</option><option value="12">12 часов</option><option value="24" selected>24 часа</option>
-          <option value="48">2 дня</option><option value="72">3 дня</option><option value="168">7 дней</option>
-        </select>
-      </div>
-      <button class="btn-gold" onclick="godPostAnnounce()" style="margin-top:8px;">📢 Опубликовать</button>
-      <button class="btn-red" onclick="godClearAnnounce()">🗑 Удалить все</button>
-    </div>
+    <div id="godAnnounceTab" class="tab-content"><h4 style="text-align:center">📢 Объявления</h4><textarea id="godAnnounceText" placeholder="Текст объявления..." rows="3"></textarea><div style="display:flex;gap:8px;align-items:center;margin-top:8px;"><select id="godAnnounceExpiry" style="flex:1;"><option value="0">Навсегда</option><option value="1">1 час</option><option value="3">3 часа</option><option value="6">6 часов</option><option value="12">12 часов</option><option value="24" selected>24 часа</option><option value="48">2 дня</option><option value="72">3 дня</option><option value="168">7 дней</option></select></div><button class="btn-gold" onclick="godPostAnnounce()" style="margin-top:8px;">📢 Опубликовать</button><button class="btn-red" onclick="godClearAnnounce()">🗑 Удалить все</button></div>
     
     <div id="pinnedMessage" class="pinned" style="display:none"></div>
     
@@ -359,7 +342,46 @@ button:disabled { opacity: 0.5; }
 </div>
 
 <div id="godAddShiftCard" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:200;padding:10px;background:rgba(0,0,0,0.85);"><div class="card" style="max-width:400px;margin:20px auto"><h4>+ Смена: <span id="godAddShiftUser"></span></h4><input id="godShiftDate" type="date"><input id="godShiftFrom" value="9"><input id="godShiftTo" value="21"><input id="godShiftTovar" type="number" placeholder="Товаров"><button class="btn-green" onclick="godSaveShift()">💾 Сохранить</button><button class="btn-gray" onclick="godCloseAddShift()">↩ Назад</button></div></div>
-<div id="settingsCard" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;overflow-y:auto;z-index:200;padding:10px;background:rgba(0,0,0,0.85);"><form onsubmit="return false;" class="card" style="max-width:450px;margin:20px auto"><h3 style="text-align:center">⚙️ Настройки</h3><input id="newName" placeholder="Новое имя"><input id="newPass" type="password" placeholder="Новый пароль" autocomplete="new-password"><select id="newPunkt"></select><input id="newVkId" placeholder="ВК ID (цифры)"><label style="font-size:12px;color:#aaa;">Аватарка</label><input id="newAvatar" type="file" accept="image/*" onchange="previewNewAvatar()"><div id="newAvatarPreview" style="text-align:center;margin:4px 0"></div><label style="font-size:12px;color:#aaa;">Шрифт чата</label><select id="chatFont"><option value="12">Мелкий</option><option value="13" selected>Средний</option><option value="15">Крупный</option></select><button class="btn-gold" id="stickerManagerBtn" onclick="openStickerManager()" style="margin:10px 0;" type="button">📦 Управление стикерами</button><button class="btn-green" onclick="saveSettings()" type="button">💾 Сохранить</button><button class="btn-gray" onclick="closeSettings()" type="button">↩ Назад</button></form></div>
+
+<div id="settingsCard" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;overflow-y:auto;z-index:200;padding:10px;background:rgba(0,0,0,0.85);">
+  <form onsubmit="return false;" class="card" style="max-width:450px;margin:20px auto">
+    <h3 style="text-align:center">⚙️ Настройки</h3>
+    <input id="newName" placeholder="Новое имя"><input id="newPass" type="password" placeholder="Новый пароль" autocomplete="new-password">
+    <select id="newPunkt"></select><input id="newVkId" placeholder="ВК ID (цифры)">
+    <label style="font-size:12px;color:#aaa;">Аватарка</label><input id="newAvatar" type="file" accept="image/*" onchange="previewNewAvatar()">
+    <div id="newAvatarPreview" style="text-align:center;margin:4px 0"></div>
+    <label style="font-size:12px;color:#aaa;">Шрифт чата</label>
+    <select id="chatFont"><option value="12">Мелкий</option><option value="13" selected>Средний</option><option value="15">Крупный</option></select>
+    <button class="btn-gold" id="stickerManagerBtn" onclick="openStickerManager()" style="margin:10px 0;" type="button">📦 Управление стикерами</button>
+    <button class="btn-green" onclick="saveSettings()" type="button">💾 Сохранить</button>
+    <button class="btn-gray" onclick="closeSettings()" type="button">↩ Назад</button>
+  </form>
+</div>
+
+<div id="stickerManagerCard" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;overflow-y:auto;z-index:250;padding:10px;background:rgba(0,0,0,0.9);">
+  <div class="card" style="max-width:500px;margin:20px auto">
+    <h3 style="text-align:center;margin-bottom:12px">📦 Мои стикерпаки</h3>
+    <div id="smPackList"><p style="color:#aaa;text-align:center;">Загрузка...</p></div>
+    <hr style="border-color:#444;margin:12px 0;">
+    <h4>Создать новый пак</h4>
+    <input id="newPackName" placeholder="Название пака">
+    <label style="font-size:12px;color:#aaa;display:block;">Иконка пака (PNG)</label>
+    <input id="newPackIcon" type="file" accept="image/png">
+    <button class="btn-green" onclick="createNewPack()">➕ Создать пак</button>
+    <button class="btn-gray" onclick="closeStickerManager()">↩ Назад</button>
+  </div>
+</div>
+
+<div id="packEditorCard" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;overflow-y:auto;z-index:300;padding:10px;background:rgba(0,0,0,0.95);">
+  <div class="card" style="max-width:500px;margin:20px auto">
+    <h3 id="peTitle" style="text-align:center;margin-bottom:12px">Редактирование</h3>
+    <div class="stat-card"><h4>👥 Доступ к паку</h4><div id="peUserList" class="user-cb-list"></div></div>
+    <div class="stat-card"><h4>➕ Добавить стикер (.png)</h4><input id="peNewStickerImg" type="file" accept="image/png"><select id="peNewStickerEmoji" style="margin-top:4px;"></select><button class="btn-blue" onclick="uploadStickerToPack()">Загрузить</button></div>
+    <h4>Стикеры в паке</h4><div id="peStickersList" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"></div>
+    <button class="btn-gray" onclick="closePackEditor()" style="margin-top:15px">↩ Назад к списку</button>
+  </div>
+</div>
+
 <div id="thoughtModal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:999;"><div class="card" style="width:90%;max-width:400px;"><h4 style="text-align:center">💭 Мысль Создателя</h4><textarea id="thoughtText" placeholder="О чём думаешь?" rows="3"></textarea><select id="thoughtExpiryType" onchange="toggleExpiryInput('thought')"><option value="forever">Навсегда</option><option value="hours">Часы</option><option value="days">Дни</option></select><input id="thoughtExpiryValue" type="number" value="24" style="display:none"><button class="btn-gold" onclick="sendThought()">🚀 Отправить</button><button class="btn-gray" onclick="closeThoughtModal()">↩ Отмена</button></div></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -404,7 +426,7 @@ function getGodStatus(n){for(var i=GOD_STATUSES.length-1;i>=0;i--){if(n>=GOD_STA
 function randomText(arr,sum){return arr[Math.floor(Math.random()*arr.length)].replace('{sum}',sum)}
 function godUpdateStatusUI(){
   var st=getGodStatus(godRating),ns=null;
-  for(var i=0;i<GOD_STATUSES.length;i++){if(GOD_STATUSES[i].min>godRating){ns=GOD_STATUSES[i];break}}
+  for(var i=0;i<GOD_STATUSES.length;i++){if(GOD_STATUSES[i].min>godRating){ns=GOD_STATUSES[i];break}
   var b=document.getElementById('roleBadge');if(!b)return;
   b.innerText=st.name;b.style.background=st.color;b.style.color='#fff';
   var p=ns?((godRating-st.min)/(ns.min-st.min)*100):100;
@@ -451,17 +473,7 @@ function godCalcZP(){
   });
 }
 function godMarkPaid(){if(!godLastCalc||!godLastCalc.shifts.length){showToast('Сначала нажми Посчитать!',true);return}if(!confirm('Оплачено?\n'+godLastCalc.total+' ₽'))return;db.ref('payments').push({user:godLastCalc.user,dateFrom:godLastCalc.from,dateTo:godLastCalc.to,total:godLastCalc.total,timestamp:Date.now()});godLastCalc.shifts.forEach(function(id){db.ref('shifts/'+id+'/paid').set(true)});showToast('✅ Оплачено');document.getElementById('godZpResult').style.display='none';godLastCalc=null}
-function godPostAnnounce(){
-  var t=document.getElementById('godAnnounceText').value.trim();
-  if(!t)return;
-  var expiryHours=parseInt(document.getElementById('godAnnounceExpiry').value)||0;
-  var expiry=null;
-  if(expiryHours>0)expiry=Date.now()+expiryHours*3600000;
-  db.ref('announce').push({text:t,expiry:expiry,timestamp:Date.now(),from:_user.name,isGod:true});
-  document.getElementById('godAnnounceText').value='';
-  showToast('✅ Опубликовано!');
-  db.ref('chat').push({user:'👑 '+_user.name,text:'📢 '+t+(expiry?' (на '+expiryHours+'ч)':''),timestamp:Date.now(),role:'god'});
-}
+function godPostAnnounce(){var t=document.getElementById('godAnnounceText').value.trim();if(!t)return;var expiryHours=parseInt(document.getElementById('godAnnounceExpiry').value)||0;var expiry=null;if(expiryHours>0)expiry=Date.now()+expiryHours*3600000;db.ref('announce').push({text:t,expiry:expiry,timestamp:Date.now(),from:_user.name,isGod:true});document.getElementById('godAnnounceText').value='';showToast('✅ Опубликовано!');db.ref('chat').push({user:'👑 '+_user.name,text:'📢 '+t+(expiry?' (на '+expiryHours+'ч)':''),timestamp:Date.now(),role:'god'});}
 function godClearAnnounce(){if(!confirm('Удалить все объявления?'))return;db.ref('announce').remove();showToast('✅ Удалено')}
 
 document.addEventListener('DOMContentLoaded',function(){var el=document.getElementById('loginName');if(el)setTimeout(function(){el.focus()},500)});
@@ -475,15 +487,23 @@ function applyAvatarEffects(wrapperEl,role){
 var carouselUsers=[],carouselInner;
 function buildCarousel(){
   carouselUsers=[];var shown={};
+  // Сначала обычные пользователи
   for(var key in allUserData){
-    var name=allUserData[key].name||key;
-    if(!name)continue;
+    var d=allUserData[key];
+    if(!d||!d.name)continue;
+    var name=d.name;
     if(shown[name])continue;
     if(name===_user?.name)continue;
     shown[name]=true;carouselUsers.push(name);
   }
+  // Добавляем бога если он не текущий пользователь
   if(godData&&godData.name&&!shown[godData.name]&&godData.name!==_user?.name){
     shown[godData.name]=true;carouselUsers.push(godData.name);
+    // Если у бога нет данных в allUserData — добавляем
+    if(!allUserData[godData.name]){
+      allUserData[godData.name]={name:godData.name,avatar:godData.avatar||'',punkt:'',vkId:godData.vkId||''};
+      allUsers[godData.name]=godData.avatar||'';
+    }
   }
   carouselUsers.sort();carouselInner=document.getElementById('carouselInner');renderCarousel();
 }
@@ -513,7 +533,12 @@ function selectProfile(name,silent){
   if(name!==_user?.name)showMiniProfile(name);else closeMiniProfile();
 }
 function showMiniProfile(name){
-  var d=allUserData[name];if(!d)return;
+  // Ищем данные: сначала в allUserData, потом в godData
+  var d=allUserData[name];
+  if(!d&&godData&&godData.name===name){
+    d={name:godData.name,avatar:godData.avatar||'',punkt:'',vkId:godData.vkId||''};
+  }
+  if(!d)return;
   var mp=document.getElementById('miniProfile'),avc=document.getElementById('mpAvatarContainer');
   var isGod=(name===godData?.name);
   if(d.avatar){
@@ -541,7 +566,7 @@ function switchToGlobalChat(){privateChatWith=null;document.getElementById('chat
 function getPrivateChatRef(){if(!privateChatWith)return db.ref('chat');var users=[_user.name,privateChatWith].sort();return db.ref('privateChats/'+users[0]+'_'+users[1])}
 
 db.ref('godSettings').on('value',function(s){godData=s.exists()?s.val():null;if(_user)buildCarousel()});
-db.ref('users').on('value',function(s){allUsers={};allUserData={};s.forEach(function(c){var d=c.val();allUsers[d.name]=d.avatar||'';allUserData[d.name]=d});if(_user)buildCarousel()});
+db.ref('users').on('value',function(s){allUsers={};allUserData={};s.forEach(function(c){var d=c.val();if(d&&d.name){allUsers[d.name]=d.avatar||'';allUserData[d.name]=d}});if(_user)buildCarousel()});
 db.ref('activeShifts').on('value',function(s){activeShifts={};s.forEach(function(c){if(c.val()&&c.val().active)activeShifts[c.key]=true});if(_user)buildCarousel()});
 db.ref('shifts').on('value',function(s){allMyShifts=[];s.forEach(function(c){var x=c.val();x._id=c.key;allMyShifts.push(x)})});
 db.ref('sticker_packs').on('value',function(s){globalStickerPacks=s.val()||{};if(_user)renderStickerUI()});
@@ -549,161 +574,65 @@ db.ref('sticker_packs').on('value',function(s){globalStickerPacks=s.val()||{};if
 function toggleChat(){var chat=document.getElementById('chat'),arrow=document.getElementById('chatArrow'),inputBar=document.getElementById('chatInputBar');if(chat.classList.contains('hidden')){chat.classList.remove('hidden');chatOpened=true;arrow.classList.add('open');if(inputBar)inputBar.style.display='flex';lastChatTimestamp=Date.now();unreadCount=0;updateChatBadge();setTimeout(()=>{chat.scrollTop=chat.scrollHeight},100)}else{chat.classList.add('hidden');chatOpened=false;arrow.classList.remove('open');if(inputBar)inputBar.style.display='none'}}
 function updateChatBadge(){var b=document.getElementById('chatBadge');if(unreadCount>0){b.style.display='inline';b.textContent=unreadCount}else{b.style.display='none'}}
 
-async function loginUser() {
-  const n = document.getElementById('loginName').value.trim();
-  const p = document.getElementById('loginPass').value.trim();
-  if (!n || !p) { showToast('Введите имя и пароль', true); return; }
+function loginUser(){
+  var n=document.getElementById('loginName').value.trim(),p=document.getElementById('loginPass').value.trim();
+  if(!n||!p){showToast('Введите имя и пароль',true);return}
+  db.ref('godSettings').once('value',function(gs){var godName=gs.exists()?gs.val().name:null;
+    db.ref('godPassword').once('value',function(gpSnap){var creatorPass=gpSnap.val();
+      db.ref('bossPassword').once('value',function(bpSnap){var bossPass=bpSnap.val();
+        if(n==='Костя'&&p===creatorPass){db.ref('users').orderByChild('name').equalTo('Костя').once('value',function(s){var ud=null,uk=null;s.forEach(function(c){ud=c.val();uk=c.key});_user=ud||{name:'Костя',punkt:'49',avatar:'',vkId:''};_user.role='creator';_user.key=uk;localStorage.setItem('creator_user',JSON.stringify(_user));finishLogin()});return}
+        if(godName&&n===godName&&p===bossPass){db.ref('users').orderByChild('name').equalTo(godName).once('value',function(s){var ud=null,uk=null;s.forEach(function(c){ud=c.val();uk=c.key});_user=ud||{name:godName,punkt:'49',avatar:'',vkId:''};_user.role='god';_user.key=uk;localStorage.setItem('creator_user',JSON.stringify(_user));finishLogin()});return}
+        db.ref('users').orderByChild('name').equalTo(n).once('value',function(s){if(s.exists()){var ud=null,uk=null;s.forEach(function(c){ud=c.val();uk=c.key});if(ud.password===p){_user=ud;_user.key=uk;if(n==='Костя')_user.role='creator';else if(godName&&n===godName)_user.role='god';else _user.role=ud.role||'manager';localStorage.setItem('creator_user',JSON.stringify(_user));finishLogin()}else showToast('❌ Неверный пароль',true)}else{if(confirm('Сотрудник «'+n+'» не найден. Зарегистрировать?')){var nu={name:n,punkt:'49',password:p,avatar:'',vkId:'',role:'manager',bonus:0};db.ref('users').push(nu,function(err){if(err){showToast('Ошибка регистрации!',true);return}_user=nu;_user.role='manager';localStorage.setItem('creator_user',JSON.stringify(_user));finishLogin()})}}})})})})}
 
-  const encoder = new TextEncoder();
-  const data = encoder.encode(p);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const inputHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-  if (n === 'Костя') {
-    const userSnap = await db.ref('users').orderByChild('name').equalTo('Костя').once('value');
-    let userData = null, userKey = null;
-    userSnap.forEach(c => { userData = c.val(); userKey = c.key; });
-    if (userData && userData.password === inputHash) {
-      _user = userData;
-      _user.key = userKey;
-      _user.role = 'creator';
-      localStorage.setItem('creator_user', JSON.stringify(_user));
-      finishLogin();
-      return;
-    }
-  }
-
-  const godSettingsSnap = await db.ref('godSettings').once('value');
-  const godName = godSettingsSnap.exists() ? godSettingsSnap.val().name : null;
-  if (godName && n === godName) {
-    const userSnap = await db.ref('users').orderByChild('name').equalTo(godName).once('value');
-    let userData = null, userKey = null;
-    userSnap.forEach(c => { userData = c.val(); userKey = c.key; });
-    if (userData && userData.password === inputHash) {
-      _user = userData;
-      _user.key = userKey;
-      _user.role = 'god';
-      localStorage.setItem('creator_user', JSON.stringify(_user));
-      finishLogin();
-      return;
-    }
-  }
-
-  const userSnap = await db.ref('users').orderByChild('name').equalTo(n).once('value');
-  if (userSnap.exists()) {
-    let userData = null, userKey = null;
-    userSnap.forEach(c => { userData = c.val(); userKey = c.key; });
-    if (userData.password === p) {
-      _user = userData;
-      _user.key = userKey;
-      _user.role = userData.role || 'manager';
-      localStorage.setItem('creator_user', JSON.stringify(_user));
-      finishLogin();
-      return;
-    }
-  }
-
-  if (confirm('Сотрудник «' + n + '» не найден. Зарегистрировать?')) {
-    const nu = { 
-      name: n, 
-      punkt: '49', 
-      password: p, 
-      avatar: '', 
-      vkId: '', 
-      role: 'manager', 
-      bonus: 0 
-    };
-    db.ref('users').push(nu, function(err) {
-      if (err) { showToast('Ошибка регистрации!', true); return; }
-      _user = nu;
-      _user.role = 'manager';
-      localStorage.setItem('creator_user', JSON.stringify(_user));
-      finishLogin();
-    });
-  } else {
-    showToast('❌ Неверный пароль', true);
-  }
-}
-
-function finishLogin() {
-  document.getElementById('login').style.display = 'none';
-  document.getElementById('app').style.display = 'flex';
-
-  const adminTabIds = ['tabCreator', 'tabGodPunkts', 'tabGodWorkers', 'tabGodCalc', 'tabGodAnnounce'];
-  adminTabIds.forEach(id => {
-    const btn = document.getElementById(id);
-    if (btn) btn.style.display = 'none';
-  });
-
-  ['tabShift', 'tabStats', 'tabHistory', 'tabNotify', 'tabHall'].forEach(id => {
-    const btn = document.getElementById(id);
-    if (btn) btn.style.display = 'flex';
-  });
-
-  const defaultTab = document.getElementById('tabShift');
-  if (defaultTab) defaultTab.click();
-
-  if (_user.role === 'creator') {
-    const creatorBtn = document.getElementById('tabCreator');
-    if (creatorBtn) creatorBtn.style.display = 'flex';
-    document.getElementById('tabGodPunkts').style.display = 'none';
-    document.getElementById('tabGodWorkers').style.display = 'none';
-    document.getElementById('tabGodCalc').style.display = 'none';
-    document.getElementById('tabGodAnnounce').style.display = 'none';
-    document.getElementById('app').classList.remove('god-theme');
-    document.getElementById('bodyEl').classList.remove('god-body');
-    document.getElementById('godProgressContainer').style.display = 'none';
-  }
-
-  else if (_user.role === 'god') {
-    ['tabShift', 'tabStats', 'tabHistory', 'tabNotify', 'tabHall', 'tabCreator'].forEach(id => {
-      const btn = document.getElementById(id);
-      if (btn) btn.style.display = 'none';
-    });
-    ['tabGodPunkts', 'tabGodWorkers', 'tabGodCalc', 'tabGodAnnounce'].forEach(id => {
-      const btn = document.getElementById(id);
-      if (btn) btn.style.display = 'flex';
-    });
+function finishLogin(){
+  document.getElementById('login').style.display='none';document.getElementById('app').style.display='flex';
+  var tabCreator=document.getElementById('tabCreator'),tabGP=document.getElementById('tabGodPunkts'),tabGW=document.getElementById('tabGodWorkers'),tabGC=document.getElementById('tabGodCalc'),tabGA=document.getElementById('tabGodAnnounce'),godPC=document.getElementById('godProgressContainer');
+  var tabShift=document.getElementById('tabShift'),tabStats=document.getElementById('tabStats'),tabHistory=document.getElementById('tabHistory'),tabNotify=document.getElementById('tabNotify'),tabHall=document.getElementById('tabHall');
+  
+  [tabCreator,tabGP,tabGW,tabGC,tabGA].forEach(function(b){if(b)b.style.display='none'});
+  if(godPC)godPC.style.display='none';
+  document.getElementById('app').classList.remove('god-theme');
+  document.getElementById('bodyEl').classList.remove('god-body');
+  var smBtn=document.getElementById('stickerManagerBtn');
+  if(smBtn)smBtn.style.display='block';
+  
+  if(_user.role==='creator'){
+    [tabShift,tabStats,tabHistory,tabNotify,tabHall].forEach(function(b){if(b)b.style.display='flex'});
+    tabCreator.style.display='flex';
+  } else if(_user.role==='god'){
+    [tabShift,tabStats,tabHistory,tabNotify,tabHall,tabCreator].forEach(function(b){if(b)b.style.display='none'});
+    [tabGP,tabGW,tabGC,tabGA].forEach(function(b){b.style.display='flex'});
+    if(godPC)godPC.style.display='block';
     document.getElementById('app').classList.add('god-theme');
     document.getElementById('bodyEl').classList.add('god-body');
-    document.getElementById('godProgressContainer').style.display = 'block';
-    godRecountRating();
-    godUpdateStatusUI();
-    godLoadPunkts();
-    godLoadCalcUsers();
-    document.getElementById('tabGodPunkts').click();
+    if(smBtn)smBtn.style.display='none';
+    godRecountRating();godUpdateStatusUI();
+    godLoadPunkts();godLoadCalcUsers();
+    showTab('godPunkts');
+  } else {
+    [tabShift,tabStats,tabHistory,tabNotify,tabHall].forEach(function(b){if(b)b.style.display='flex'});
+    if(smBtn)smBtn.style.display='none';
   }
+  
+  chatOpened=!0;lastChatTimestamp=Date.now();updateProfileUI();loadChat();loadPinned();loadAnnounce();loadThought();
+  db.ref('activeShifts/'+_user.name).once('value',function(s){if(s.exists()&&s.val().active){onShift=!0;document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block'}});
+  buildCarousel();renderStickerUI();
+}
 
-  else {
-    ['tabCreator', 'tabGodPunkts', 'tabGodWorkers', 'tabGodCalc', 'tabGodAnnounce'].forEach(id => {
-      const btn = document.getElementById(id);
-      if (btn) btn.style.display = 'none';
-    });
-    document.getElementById('app').classList.remove('god-theme');
-    document.getElementById('bodyEl').classList.remove('god-body');
-    document.getElementById('godProgressContainer').style.display = 'none';
-  }
+var saved=localStorage.getItem('creator_user');if(saved){_user=JSON.parse(saved);finishLogin()}
 
-  chatOpened = true;
-  lastChatTimestamp = Date.now();
-  updateProfileUI();
-  loadChat();
-  loadPinned();
-  loadAnnounce();
-  loadThought();
-
-  db.ref('activeShifts/' + _user.name).once('value', function(s) {
-    if (s.exists() && s.val().active) {
-      onShift = true;
-      document.getElementById('startBtn').style.display = 'none';
-      document.getElementById('onShiftBtn').style.display = 'block';
-      document.getElementById('shift').style.display = 'block';
-    }
-  });
-
-  buildCarousel();
-  renderStickerUI();
+function updateProfileUI(){
+  document.getElementById('uname').textContent=_user.name;document.getElementById('upunkt').textContent=_user.punkt||'?';
+  var pa=document.getElementById('profileAvatar');
+  // Аватарка: своя или из godSettings для бога
+  var av=_user.avatar;
+  if(!av&&_user.role==='god'&&godData&&godData.avatar)av=godData.avatar;
+  if(av){pa.src=av;pa.style.display='block'}else{pa.style.display='none'}
+  var badge=document.getElementById('roleBadge'),nameWrap=document.getElementById('creatorNameWrapper');
+  if(_user.role==='god'){nameWrap.className='god-name';badge.className='creator-badge god-badge';godUpdateStatusUI();}
+  else if(_user.role==='creator'){nameWrap.className='creator-name';badge.className='creator-badge';badge.textContent='🌌 Создатель';badge.style.background=''}
+  else{nameWrap.className='';badge.className='creator-badge';badge.style.background='linear-gradient(135deg,#4CAF50,#2E8B57)';badge.textContent='📦 Сотрудник'}
+  applyAvatarEffects(document.getElementById('avatarWrapper'),_user.role);
 }
 
 function showTab(tab){
@@ -720,16 +649,19 @@ function showTab(tab){
   if(tab==='godPunkts')godLoadPunkts();if(tab==='godWorkers')godLoadWorkers();if(tab==='godCalc')godLoadCalcUsers();
 }
 
-function updateProfileUI(){
-  document.getElementById('uname').textContent=_user.name;document.getElementById('upunkt').textContent=_user.punkt||'?';
-  var pa=document.getElementById('profileAvatar');if(_user.avatar){pa.src=_user.avatar;pa.style.display='block'}else{pa.style.display='none'}
-  var badge=document.getElementById('roleBadge'),nameWrap=document.getElementById('creatorNameWrapper');
-  if(_user.role==='god'){nameWrap.className='god-name';badge.className='creator-badge god-badge';godUpdateStatusUI();}
-  else if(_user.role==='creator'){nameWrap.className='creator-name';badge.className='creator-badge';badge.textContent='🌌 Создатель';badge.style.background=''}
-  else{nameWrap.className='';badge.className='creator-badge';badge.style.background='linear-gradient(135deg,#4CAF50,#2E8B57)';badge.textContent='📦 Сотрудник'}
-  applyAvatarEffects(document.getElementById('avatarWrapper'),_user.role);
-}
-
+function loadNotifications(){if(!_user)return;db.ref('notifications').orderByChild('user').equalTo(_user.name).once('value',function(s){var a=[];s.forEach(function(c){a.push(c.val())});a.sort(function(a,b){return b.timestamp-a.timestamp});document.getElementById('notifyContent').innerHTML=a.length?a.map(function(x){return'<div>'+x.text+' <small style="color:#999">'+new Date(x.timestamp).toLocaleString('ru-RU')+'</small></div>'}).join(''):'<p>Нет уведомлений</p>'})}
+function renderMyCalendar(){var ms=allMyShifts.filter(function(s){return s.user===_user?.name}),now=new Date(),y=now.getFullYear(),m=now.getMonth(),dim=new Date(y,m+1,0).getDate(),fd=new Date(y,m,0).getDay();document.getElementById('calHeader').innerHTML='<b>'+now.toLocaleDateString('ru-RU',{month:'long',year:'numeric'})+'</b>';var days=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],h='';for(var i=0;i<7;i++)h+='<div class="header">'+days[i]+'</div>';for(var i=0;i<fd;i++)h+='<div></div>';var sd={};ms.forEach(function(s){sd[s.date]=(sd[s.date]||0)+1});var ts=now.toLocaleDateString('ru-RU');for(var d=1;d<=dim;d++){var ds=new Date(y,m,d).toLocaleDateString('ru-RU'),cl='';if(sd[ds])cl='shift-day';if(ds===ts)cl+=' today';h+='<div class="'+cl+'">'+d+'</div>'}document.getElementById('calendar').innerHTML=h;var tot=ms.length,th=ms.reduce(function(s,x){return s+(x.hours||0)},0),tt=ms.reduce(function(s,x){return s+(x.tovar||0)},0);document.getElementById('statsSummary').innerHTML='📅 Смен: <b>'+tot+'</b><br>⏱ Часов: <b>'+th+'</b><br>📦 Товаров: <b>'+tt+'</b>'}
+function loadHistory(){if(!_user)return;db.ref('payments').orderByChild('user').equalTo(_user.name).once('value',function(s){var a=[];s.forEach(function(c){a.push(c.val())});a.sort(function(x,y){return y.timestamp-x.timestamp});document.getElementById('historyContent').innerHTML=a.length?a.map(function(x){return'<div class="stat-card">📅 '+new Date(x.dateFrom).toLocaleDateString('ru-RU')+' – '+new Date(x.dateTo).toLocaleDateString('ru-RU')+'<br><b>'+x.total+' ₽</b></div>'}).join(''):'<p>Нет выплат</p>'})}
+function clearMyShifts(){if(!_user)return;db.ref('shifts').orderByChild('user').equalTo(_user.name).once('value',function(s){s.forEach(function(c){db.ref('shifts/'+c.key).remove()})});showToast('✅ Очищено')}
+function openSettings(){document.getElementById('mainContent').style.display='none';document.getElementById('settingsCard').style.display='block';document.getElementById('newVkId').value=_user.vkId||'';document.getElementById('chatFont').value=localStorage.getItem('chatFont')||'13';loadPunkts(function(p){var s=document.getElementById('newPunkt');s.innerHTML='<option value="">Не менять</option>';for(var i=0;i<p.length;i++)s.innerHTML+='<option value="'+p[i]+'">'+p[i]+'</option>'})}
+function closeSettings(){document.getElementById('settingsCard').style.display='none';document.getElementById('mainContent').style.display='flex'}
+function saveSettings(){if(!_user)return;var nn=document.getElementById('newName').value.trim(),np=document.getElementById('newPass').value.trim(),npu=document.getElementById('newPunkt').value,nvk=document.getElementById('newVkId').value.trim(),ok=_user.name,up={},cf=document.getElementById('chatFont').value;localStorage.setItem('chatFont',cf);document.getElementById('chat').style.fontSize=cf+'px';if(nn&&nn!==_user.name){up['users/'+nn]={name:nn,punkt:npu||_user.punkt,password:_user.password,bonus:0,avatar:newAvatarData||_user.avatar||'',vkId:nvk||_user.vkId||'',role:_user.role};if(np)up['users/'+nn+'/password']=np;up['users/'+ok]=null;_user.name=nn;if(npu)_user.punkt=npu;if(nvk)_user.vkId=nvk}else{var uu={name:_user.name,punkt:_user.punkt,avatar:_user.avatar||'',vkId:_user.vkId||'',role:_user.role};if(np)uu.password=np;if(newAvatarData)uu.avatar=newAvatarData;if(nvk)uu.vkId=nvk;if(npu)uu.punkt=npu;up['users/'+ok]=uu;if(npu)_user.punkt=npu;if(nvk)_user.vkId=nvk}if(Object.keys(up).length===0){closeSettings();return}db.ref().update(up,function(err){if(err){showToast('❌ Ошибка',true);return}if(np)_user.password=np;if(newAvatarData)_user.avatar=newAvatarData;if(nvk)_user.vkId=nvk;localStorage.setItem('creator_user',JSON.stringify(_user));updateProfileUI();closeSettings();buildCarousel();showToast('✅ Сохранено')})}
+function previewNewAvatar(){var f=document.getElementById('newAvatar').files[0];if(!f)return;var r=new FileReader();r.onload=function(e){newAvatarData=e.target.result;document.getElementById('newAvatarPreview').innerHTML='<img class="avatar" style="position:relative;" src="'+newAvatarData+'">'};r.readAsDataURL(f)}
+function previewPhotos(){photoBase64=[];document.getElementById('photoPreviews').innerHTML='';var files=document.getElementById('photos').files;for(var i=0;i<Math.min(files.length,5);i++){(function(file){var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var c=document.createElement('canvas'),mw=400,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);photoBase64.push({full:e.target.result,thumb:c.toDataURL('image/jpeg',0.6)});var pv=document.createElement('img');pv.src=photoBase64[photoBase64.length-1].thumb;document.getElementById('photoPreviews').appendChild(pv)};img.src=e.target.result};r.readAsDataURL(file)})(files[i])}}
+function startShift(){onShift=!0;var t=new Date().toLocaleTimeString('ru-RU');db.ref('activeShifts/'+_user.name).set({active:!0,startTime:t,punct:_user.punkt});document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block';db.ref('chat').push({user:(_user.role==='god'?'👑 ':(_user.role==='creator'?'🌌 ':''))+_user.name,text:'🔵 Пункт '+_user.punkt+' на смене! ('+t+')',timestamp:Date.now(),role:_user.role})}
+function endShift(){var tf=document.getElementById('timeFrom').value||'9',tt=document.getElementById('timeTo').value||'21',tv=parseInt(document.getElementById('tov').value)||0,ph=photoBase64.slice(0,5);db.ref('shifts/'+_user.name+'_'+Date.now()).set({user:_user.name,punkt:_user.punkt||'49',date:new Date().toLocaleDateString('ru-RU'),timeFrom:tf,timeTo:tt,hours:parseInt(tt)-parseInt(tf),tovar:tv,photos:ph,paid:!1,timestamp:new Date().toISOString()});db.ref('chat').push({user:(_user.role==='god'?'👑 ':(_user.role==='creator'?'🌌 ':''))+_user.name,text:'🔴 Пункт '+_user.punkt+' с '+tf+' до '+tt+', товаров: '+tv,timestamp:Date.now(),photos:ph,role:_user.role});db.ref('activeShifts/'+_user.name).remove();onShift=!1;document.getElementById('shift').style.display='none';document.getElementById('onShiftBtn').style.display='none';document.getElementById('startBtn').style.display='block';document.getElementById('tov').value='';document.getElementById('photos').value='';document.getElementById('photoPreviews').innerHTML='';photoBase64=[]}
+function sendPhoto(){var files=document.getElementById('chatPhoto').files;if(!files.length||!_user)return;var photos=[],count=Math.min(files.length,5);for(var i=0;i<count;i++){(function(file){var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var c=document.createElement('canvas'),mw=300,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);photos.push({full:e.target.result,thumb:c.toDataURL('image/jpeg',0.6)});if(photos.length===count){var ref=privateChatWith?getPrivateChatRef():db.ref('chat');ref.push({user:(_user.role==='god'?'👑 ':(_user.role==='creator'?'🌌 ':''))+_user.name,text:'📷 '+count+' фото',photos:photos,timestamp:Date.now(),role:_user.role,likes:{}})}};img.src=e.target.result};r.readAsDataURL(file)})(files[i])}document.getElementById('chatPhoto').value=''}
+function logout(){_user=null;onShift=!1;chatOpened=!1;localStorage.removeItem('creator_user');document.getElementById('app').style.display='none';document.getElementById('app').classList.remove('god-theme');document.getElementById('bodyEl').classList.remove('god-body');document.getElementById('login').style.display='flex';document.getElementById('loginName').value='';document.getElementById('loginPass').value=''}
 function loadChat(){
   var cf=localStorage.getItem('chatFont')||'13',chatEl=document.getElementById('chat'),wasAtBottom=chatEl.scrollHeight-chatEl.scrollTop-chatEl.clientHeight<60;chatEl.style.fontSize=cf+'px';
   var ref=privateChatWith?getPrivateChatRef():db.ref('chat');ref.limitToLast(50).on('value',function(s){var groups={},order=[];s.forEach(function(c){var m=c.val(),cu=m.user||'';if(!groups[cu]){groups[cu]=[];order.push(cu)}groups[cu].push({key:c.key,msg:m,isC:m.role==='creator',isG:m.role==='god'})});var h='';
@@ -741,9 +673,81 @@ function loadChat(){
       if(fm.msg.photos&&fm.msg.photos.length){h+='<div class="photo-pack">';for(var pi=0;pi<fm.msg.photos.length;pi++){var p=fm.msg.photos[pi],pt=typeof p==='object'?p.thumb:p;h+='<img class="thumb" src="'+pt+'" onclick="viewPhoto(\''+(typeof p==='object'?p.full:p)+'\')">'}h+='</div>'}h+='</div>';
       for(var j=1;j<ms.length;j++){var m=ms[j].msg;h+='<div class="'+msgClass+'"><button class="msg-menu-btn" onclick="event.stopPropagation();toggleMsgDropdown(event,\''+ms[j].key+'\',\''+btnType+'\')">⋮</button><div class="msg-dropdown" data-dropdown="'+ms[j].key+'"><button onclick="likeMsg(\''+ms[j].key+'\')">❤️</button><button onclick="pinMsg(\''+ms[j].key+'\')">📌</button><button onclick="delChatMsg(\''+ms[j].key+'\',\''+btnType+'\')">✕</button></div>'+(m.text||'');if(m.sticker)h+='<img class="chat-sticker" src="'+m.sticker+'">';h+='</div>'}
       var likes=fm.msg.likes||{},lc=Object.keys(likes).length;if(lc>0){var mk=_user?.name,il=!!likes[mk],icon=il?(likes[mk]==='god'?'👑':likes[mk]==='creator'?'🌌':'❤️'):'❤️';h+='<div class="like-indicator has-likes">'+icon+' '+lc+'</div>'}h+='</div>'}chatEl.innerHTML=h;if(wasAtBottom||document.activeElement===document.getElementById('chatMsgInput'))chatEl.scrollTop=chatEl.scrollHeight})}
-}
-
+function toggleMsgDropdown(e,key){e.stopPropagation();if(openDropdown)openDropdown.classList.remove('show');var dd=document.querySelector('[data-dropdown="'+key+'"]');if(!dd)return;if(dd===openDropdown){dd.classList.remove('show');openDropdown=null;return}dd.classList.add('show');openDropdown=dd}
+function likeMsg(key){if(!_user)return;var ref=privateChatWith?getPrivateChatRef().child(key+'/likes'):db.ref('chat/'+key+'/likes');ref.once('value',function(s){var likes=s.val()||{},mk=_user.name,lt=_user.role==='god'?'god':(_user.role==='creator'?'creator':'user');if(likes[mk])delete likes[mk];else likes[mk]=lt;ref.set(likes)});if(openDropdown){openDropdown.classList.remove('show');openDropdown=null}}
+function viewPhoto(url){document.getElementById('photoViewerImg').src=url;document.getElementById('photoViewer').style.display='flex'}
+function delChatMsg(key,type){if(openDropdown){openDropdown.classList.remove('show');openDropdown=null}var ref=privateChatWith?getPrivateChatRef().child(key):db.ref('chat/'+key);if(_user&&(_user.role==='creator'||_user.role==='god')){ref.remove();return}if(type==='creator'||type==='god'){showToast('🚫 Защищено!',true);return}ref.remove()}
+function pinMsg(key){if(openDropdown){openDropdown.classList.remove('show');openDropdown=null}db.ref('chat/'+key).once('value',function(s){if(s.exists()){db.ref('pinned').set(s.val());showToast('📌 Закреплено!')}})}
 function loadPinned(){db.ref('pinned').on('value',function(s){var b=document.getElementById('pinnedMessage');if(!s.exists()){b.style.display='none';return}var m=s.val();b.style.display='block';b.innerHTML='📌 <b>'+(m.user||'?')+':</b> '+m.text})}
+function sendMsg(to){var input=document.getElementById('chatMsgInput'),t=to||input.value.trim();if(!t||!_user)return;var ref=privateChatWith?getPrivateChatRef():db.ref('chat');ref.push({user:(_user.role==='god'?'👑 ':(_user.role==='creator'?'🌌 ':''))+_user.name,text:t,timestamp:Date.now(),role:_user.role,likes:{}});input.value=''}
+document.getElementById('chatMsgInput').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();sendMsg()}});
+function toggleStickerPanel(e){if(e)e.stopPropagation();var p=document.getElementById('stickerPanel');if(p.classList.contains('show'))p.classList.remove('show');else{p.classList.add('show');renderStickerUI()}}
+function getAccessiblePacks(){if(!_user)return[];var a=[];for(var id in globalStickerPacks){var p=globalStickerPacks[id];if(p.creator===_user.name||_user.role==='creator'||(p.allowed_users&&p.allowed_users[_user.name]))a.push({id:id,pack:p})}return a}
+function renderStickerUI(){var tc=document.getElementById('stickerTabs'),cc=document.getElementById('stickerContent');if(!tc||!cc)return;var packs=getAccessiblePacks(),h='<button class="st-tab '+(currentStickerTab==='emoji'?'active':'')+'" onclick="event.stopPropagation();setStickerTab(\'emoji\')">😀</button>';packs.forEach(function(p){h+='<button class="st-tab '+(currentStickerTab===p.id?'active':'')+'" onclick="event.stopPropagation();setStickerTab(\''+p.id+'\')"><img src="'+(p.pack.icon||'')+'"></button>'});tc.innerHTML=h;var ch='';if(currentStickerTab==='emoji'){BASE_EMOJIS.forEach(function(e){ch+='<div class="emoji-item" onclick="insertEmoji(\''+e+'\')">'+e+'</div>'})}else{var sp=packs.find(function(p){return p.id===currentStickerTab});if(sp&&sp.pack.stickers){for(var sid in sp.pack.stickers){var st=sp.pack.stickers[sid];ch+='<div class="st-item" onclick="sendSticker(\''+st.img+'\')"><img src="'+st.img+'"></div>'}}else ch='<div style="color:#aaa;text-align:center;margin-top:20px;">Нет стикеров</div>'}cc.innerHTML=ch}
+function setStickerTab(id){currentStickerTab=id;renderStickerUI()}
+function insertEmoji(em){var i=document.getElementById('chatMsgInput');i.value+=em;i.focus()}
+function sendSticker(b64){if(!_user)return;var ref=privateChatWith?getPrivateChatRef():db.ref('chat');ref.push({user:(_user.role==='god'?'👑 ':(_user.role==='creator'?'🌌 ':''))+_user.name,text:'',sticker:b64,timestamp:Date.now(),role:_user.role,likes:{}});document.getElementById('stickerPanel').classList.remove('show')}
+function openStickerManager(){document.getElementById('settingsCard').style.display='none';document.getElementById('stickerManagerCard').style.display='block';renderStickerManagerList();}
+function closeStickerManager(){document.getElementById('stickerManagerCard').style.display='none';document.getElementById('settingsCard').style.display='block'}
+function renderStickerManagerList(){
+  var container=document.getElementById('smPackList');if(!container)return;
+  var packs=getAccessiblePacks();
+  if(packs.length===0){container.innerHTML='<p style="color:#aaa;text-align:center;">У вас пока нет стикерпаков.</p>';return;}
+  var h='';
+  packs.forEach(function(p){
+    var stCount=p.pack.stickers?Object.keys(p.pack.stickers).length:0;
+    h+='<div class="pack-list-item"><img class="pack-icon" src="'+(p.pack.icon||'')+'"><div style="flex:1"><b>'+p.pack.name+'</b><br><small style="color:#aaa">'+stCount+' стикеров</small></div><button class="btn-blue" style="width:auto;padding:8px" onclick="openPackEditor(\''+p.id+'\')">✏️</button></div>';
+  });
+  container.innerHTML=h;
+}
+function createNewPack(){
+  var name=document.getElementById('newPackName').value.trim();var fileInput=document.getElementById('newPackIcon');
+  if(!name||!fileInput.files[0]){showToast('Введите название и выберите иконку (PNG)!',true);return}
+  var r=new FileReader();
+  r.onload=function(e){db.ref('sticker_packs').push({name:name,creator:_user.name,icon:e.target.result,allowed_users:{},timestamp:Date.now()}).then(function(){document.getElementById('newPackName').value='';fileInput.value='';showToast('✅ Пак создан!');});};
+  r.readAsDataURL(fileInput.files[0]);
+}
+function openPackEditor(packId){activePackIdForEdit=packId;document.getElementById('stickerManagerCard').style.display='none';document.getElementById('packEditorCard').style.display='block';var sel=document.getElementById('peNewStickerEmoji');sel.innerHTML='';BASE_EMOJIS.forEach(function(e){sel.innerHTML+='<option value="'+e+'">'+e+'</option>';});renderPackEditor();}
+function closePackEditor(){activePackIdForEdit=null;document.getElementById('packEditorCard').style.display='none';document.getElementById('stickerManagerCard').style.display='block';renderStickerManagerList();}
+function renderPackEditor(){
+  if(!activePackIdForEdit)return;var pack=globalStickerPacks[activePackIdForEdit];if(!pack)return;
+  document.getElementById('peTitle').innerText='Редактируем: '+pack.name;
+  var uList=document.getElementById('peUserList');var hUsers='';
+  for(var uname in allUserData){
+    if(uname===_user?.name)continue;
+    var isAllowed=pack.allowed_users&&pack.allowed_users[uname];
+    hUsers+='<div class="user-cb-item"><input type="checkbox" id="cb_'+uname+'" '+(isAllowed?'checked':'')+' onchange="togglePackAccess(\''+uname+'\',this.checked)"><label for="cb_'+uname+'">'+uname+'</label></div>';
+  }
+  uList.innerHTML=hUsers;
+  var sList=document.getElementById('peStickersList');var hStickers='';
+  if(pack.stickers){for(var sId in pack.stickers){var st=pack.stickers[sId];hStickers+='<div style="position:relative;width:60px;height:60px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center;"><img src="'+st.img+'" style="max-width:100%;max-height:100%;object-fit:contain;"><div style="position:absolute;bottom:-5px;right:-5px;background:#000;border-radius:50%;font-size:12px;border:1px solid #444;width:20px;height:20px;text-align:center;">'+st.emoji+'</div></div>';}}else{hStickers='<small style="color:#aaa">Пока пусто.</small>';}
+  sList.innerHTML=hStickers;
+}
+function togglePackAccess(username,isAllowed){if(!activePackIdForEdit)return;if(isAllowed){db.ref('sticker_packs/'+activePackIdForEdit+'/allowed_users/'+username).set(true)}else{db.ref('sticker_packs/'+activePackIdForEdit+'/allowed_users/'+username).remove()}}
+function uploadStickerToPack(){if(!activePackIdForEdit)return;var fileInput=document.getElementById('peNewStickerImg');var emoji=document.getElementById('peNewStickerEmoji').value;if(!fileInput.files[0]){showToast('Выберите PNG файл стикера!',true);return}var r=new FileReader();r.onload=function(e){db.ref('sticker_packs/'+activePackIdForEdit+'/stickers').push({img:e.target.result,emoji:emoji,timestamp:Date.now()}).then(function(){fileInput.value='';showToast('✅ Стикер добавлен!');renderPackEditor();});};r.readAsDataURL(fileInput.files[0])}
+
+var notifiedKeys={};
+db.ref('chat').limitToLast(1).on('child_added',function(s){if(chatOpened)return;var m=s.val();if(!m||!_user)return;if(m.timestamp<=lastChatTimestamp)return;var isM=m.user===_user.name||m.user==='🌌 '+_user.name||m.user==='👑 '+_user.name;if(isM)return;if(notifiedKeys[s.key])return;notifiedKeys[s.key]=!0;lastChatTimestamp=Math.max(lastChatTimestamp,m.timestamp||0);unreadCount++;updateChatBadge();notifyMe('💬 Чат',(m.user||'?')+': '+(m.text||(m.sticker?'📦 Стикер':'📷 Фото')))});
+
+function summonBoss(){var vk=prompt('ВК ID начальника:');if(vk){sendVkNotify(vk,'👔 Управление хочет тебя видеть.');showToast('✅ Вызов отправлен')}}
+function monkeySomeone(){var n=prompt('Кого в обезьяну?');if(n){db.ref('users').orderByChild('name').equalTo(n).once('value',function(s){if(s.exists()){var oa=null,uk=null;s.forEach(function(c){oa=c.val().avatar;uk=c.key});db.ref('users/'+uk+'/avatar').set('https://raw.githubusercontent.com/painofkili/ozon/main/monkey.png');db.ref('chat').push({user:'🌌 '+_user.name,text:'🐒 '+n+' теперь обезьяна!',timestamp:Date.now()});setTimeout(function(){db.ref('users/'+uk+'/avatar').set(oa)},86400000);showToast('✅ Готово')}else showToast('❌ Не найден',true)})}}
+function clownSomeone(){var n=prompt('Кого в клоуны?');if(n){db.ref('chat').push({user:'🌌 '+_user.name,text:'🤡 '+n+' — клоун дня!',timestamp:Date.now()});showToast('✅ Назначено')}}
+function clearNotifications(){if(!_user)return;db.ref('notifications').orderByChild('user').equalTo(_user.name).once('value',function(s){s.forEach(function(c){db.ref('notifications/'+c.key).remove()})});showToast('✅ Очищено')}
+function loadPunkts(cb){db.ref('punkts').once('value',function(s){var p=[];s.forEach(function(c){p.push(c.key)});if(cb)cb(p)})}
+function openThoughtModal(){document.getElementById('thoughtModal').style.display='flex'}
+function closeThoughtModal(){document.getElementById('thoughtModal').style.display='none'}
+function toggleExpiryInput(p){document.getElementById(p+'ExpiryValue').style.display=document.getElementById(p+'ExpiryType').value==='forever'?'none':'block'}
+function sendThought(){var t=document.getElementById('thoughtText').value.trim();if(!t)return;var ty=document.getElementById('thoughtExpiryType').value,v=parseInt(document.getElementById('thoughtExpiryValue').value)||24,ex=null;if(ty==='hours')ex=Date.now()+v*3600000;else if(ty==='days')ex=Date.now()+v*86400000;db.ref('creatorThought').set({text:t,expiry:ex,timestamp:Date.now()});closeThoughtModal();showToast('💭 Отправлено!')}
+function loadThought(){
+  db.ref('creatorThought').on('value',function(s){
+    var b=document.getElementById('thoughtBlock');
+    if(!s.exists()){b.style.display='none';return}
+    var t=s.val();if(t.expiry&&Date.now()>t.expiry){db.ref('creatorThought').remove();b.style.display='none';return}
+    b.style.display='block';var expText=t.expiry?'До: '+new Date(t.expiry).toLocaleString('ru-RU'):'Навсегда';
+    b.innerHTML='<button class="thought-del" onclick="delThought()">✕</button><span>💭</span> <span>'+t.text+'</span><div class="thought-expiry">'+expText+'</div>';
+  });
+}
+function delThought(){db.ref('creatorThought').remove()}
 function loadAnnounce(){
   db.ref('announce').limitToLast(1).on('value',function(s){
     var b=document.getElementById('announceBlock');
@@ -751,102 +755,14 @@ function loadAnnounce(){
     var last=null;s.forEach(function(c){last=c.val();last._key=c.key});
     if(last.expiry&&Date.now()>last.expiry){db.ref('announce/'+last._key).remove();b.style.display='none';b.classList.remove('god-announce-cloud');return}
     b.style.display='block';
-    if(last.isGod){b.classList.add('god-announce-cloud');}else{b.classList.remove('god-announce-cloud');}
+    if(last.isGod){b.classList.add('god-announce-cloud')}else{b.classList.remove('god-announce-cloud')}
     var expText=last.expiry?'Актуально до: '+new Date(last.expiry).toLocaleString('ru-RU'):'Бессрочно';
     b.innerHTML='<button class="announce-del" onclick="delAnnounce(\''+last._key+'\')">✕</button><b>📢 '+(last.text||'')+'</b><small class="announce-expiry">'+expText+' • '+new Date(last.timestamp).toLocaleString('ru-RU')+'</small>';
   });
 }
-function loadThought(){
-  db.ref('creatorThought').on('value',function(s){
-    var b=document.getElementById('thoughtBlock');
-    if(!s.exists()){b.style.display='none';return}
-    var t=s.val();
-    if(t.expiry&&Date.now()>t.expiry){db.ref('creatorThought').remove();b.style.display='none';return}
-    b.style.display='block';
-    var expText=t.expiry?'До: '+new Date(t.expiry).toLocaleString('ru-RU'):'Навсегда';
-    b.innerHTML='<button class="thought-del" onclick="delThought()">✕</button><span>💭</span> <span>'+t.text+'</span><div class="thought-expiry">'+expText+'</div>';
-  });
-}
-function delThought(){db.ref('creatorThought').remove()}
-
-function buildCarousel(){
-  carouselUsers=[];var shown={};
-  for(var key in allUserData){
-    var name=allUserData[key].name||key;
-    if(!name)continue;
-    if(shown[name])continue;
-    if(name===_user?.name)continue;
-    shown[name]=true;carouselUsers.push(name);
-  }
-  if(godData&&godData.name&&!shown[godData.name]&&godData.name!==_user?.name){
-    shown[godData.name]=true;carouselUsers.push(godData.name);
-  }
-  carouselUsers.sort();carouselInner=document.getElementById('carouselInner');renderCarousel();
-}
-function renderCarousel(){
-  if(!carouselInner||carouselUsers.length===0){carouselInner.innerHTML='';return;}
-  var h='';
-  for(var i=0;i<carouselUsers.length;i++){
-    var name=carouselUsers[i],d=allUserData[name]||{},av=d.avatar||'',isOnline=!!activeShifts[name];
-    if(name===godData?.name)isOnline=false;
-    var isActive=(selectedProfile===name);
-    h+='<div class="avatar-item'+(isActive?' active':'')+(isOnline?' online':'')+'" onclick="selectProfile(\''+name.replace(/'/g,"\\'")+'\')">';
-    if(av){h+='<img src="'+av+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="av-placeholder" style="display:none">'+name.charAt(0).toUpperCase()+'</div>'}
-    else{h+='<div class="av-placeholder">'+name.charAt(0).toUpperCase()+'</div>'}
-    if(isOnline)h+='<div class="online-dot"></div>';h+='</div>'
-  }
-  carouselInner.innerHTML=h;
-}
-function selectProfile(name,silent){
-  if(!name)return;
-  if(name===_user?.name&&!silent)return;
-  selectedProfile=name;
-  var items=carouselInner.querySelectorAll('.avatar-item');
-  items.forEach(function(item){item.classList.remove('active')});
-  var escapedName=name.replace(/'/g,"\\'");
-  var targetItem=carouselInner.querySelector('[onclick*="'+escapedName+'"]');
-  if(targetItem)targetItem.classList.add('active');
-  if(name!==_user?.name)showMiniProfile(name);else closeMiniProfile();
-}
-function showMiniProfile(name){
-  var d=allUserData[name];if(!d)return;
-  var mp=document.getElementById('miniProfile'),avc=document.getElementById('mpAvatarContainer');
-  var isGod=(name===godData?.name);
-  if(d.avatar){
-    avc.innerHTML='<img class="mp-avatar '+(isGod?'avatar-god':'')+'" src="'+d.avatar+'" style="position:relative;z-index:10;" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'" onclick="viewPhoto(\''+d.avatar+'\')"><div class="mp-placeholder" style="display:none">'+name.charAt(0).toUpperCase()+'</div>';
-  } else {
-    avc.innerHTML='<div class="mp-placeholder">'+name.charAt(0).toUpperCase()+'</div>';
-  }
-  if(isGod)applyAvatarEffects(avc,'god');
-  document.getElementById('mpName').textContent=name;
-  if(isGod){document.getElementById('mpStatus').textContent='👑 Начальник';document.getElementById('mpPunkt').textContent='🔴 Не на смене';document.getElementById('mpCalendar').innerHTML=''}
-  else{
-    var sc=0;allMyShifts.forEach(function(s){if(s.user===name)sc++});
-    var st=['📦 Штрих','🚚 ПВЗюк','🏭 Пунктовой','🚀 Озонавт','👑 Озоний'][sc>=21?4:sc>=13?3:sc>=8?2:sc>=4?1:0];
-    document.getElementById('mpStatus').textContent=st;var isOnline=!!activeShifts[name];
-    document.getElementById('mpPunkt').textContent=isOnline?'🟢 На смене (Пункт '+(d.punkt||'?')+')':'🔴 Выходной';
-    var now=new Date(),calH='',startD=new Date(now.getTime()-13*86400000);
-    for(var i=0;i<14;i++){var dd=new Date(startD.getTime()+i*86400000),ds=dd.toLocaleDateString('ru-RU'),isShift=false;allMyShifts.forEach(function(s){if(s.user===name&&s.date===ds)isShift=true});calH+='<div class="'+(isShift?'mp-shift':'')+'">'+dd.getDate()+'</div>'}
-    document.getElementById('mpCalendar').innerHTML=calH;
-  }
-  document.getElementById('mpChatBtn').style.display='block';mp.classList.add('show');
-}
-function closeMiniProfile(){document.getElementById('miniProfile').classList.remove('show')}
-function openPrivateChat(){if(!selectedProfile||selectedProfile===_user?.name)return;privateChatWith=selectedProfile;document.getElementById('chatLabel').textContent='💬 '+selectedProfile;document.getElementById('chatBackBtn').style.display='inline-block';closeMiniProfile();document.getElementById('avatarCarousel').classList.remove('open');loadChat()}
-function switchToGlobalChat(){privateChatWith=null;document.getElementById('chatLabel').textContent='Общий чат';document.getElementById('chatBackBtn').style.display='none';loadChat()}
-function getPrivateChatRef(){if(!privateChatWith)return db.ref('chat');var users=[_user.name,privateChatWith].sort();return db.ref('privateChats/'+users[0]+'_'+users[1])}
-
-function renderStickerUI(){var tc=document.getElementById('stickerTabs'),cc=document.getElementById('stickerContent');if(!tc||!cc)return;var packs=getAccessiblePacks(),h='<button class="st-tab '+(currentStickerTab==='emoji'?'active':'')+'" onclick="event.stopPropagation();setStickerTab(\'emoji\')">😀</button>';packs.forEach(function(p){h+='<button class="st-tab '+(currentStickerTab===p.id?'active':'')+'" onclick="event.stopPropagation();setStickerTab(\''+p.id+'\')"><img src="'+(p.pack.icon||'')+'"></button>'});tc.innerHTML=h;var ch='';if(currentStickerTab==='emoji'){BASE_EMOJIS.forEach(function(e){ch+='<div class="emoji-item" onclick="insertEmoji(\''+e+'\')">'+e+'</div>'})}else{var sp=packs.find(function(p){return p.id===currentStickerTab});if(sp&&sp.pack.stickers){for(var sid in sp.pack.stickers){var st=sp.pack.stickers[sid];ch+='<div class="st-item" onclick="sendSticker(\''+st.img+'\')"><img src="'+st.img+'"></div>'}}else ch+='<div style="color:#aaa;text-align:center;margin-top:20px;">Нет стикеров</div>'}cc.innerHTML=ch}
-function setStickerTab(id){currentStickerTab=id;renderStickerUI()}
-function insertEmoji(em){var i=document.getElementById('chatMsgInput');i.value+=em;i.focus()}
-function sendSticker(b64){if(!_user)return;var ref=privateChatWith?getPrivateChatRef():db.ref('chat');ref.push({user:(_user.role==='god'?'👑 ':(_user.role==='creator'?'🌌 ':''))+_user.name,text:'',sticker:b64,timestamp:Date.now(),role:_user.role,likes:{}});document.getElementById('stickerPanel').classList.remove('show')}
-function getAccessiblePacks(){if(!_user)return[];var a=[];for(var id in globalStickerPacks){var p=globalStickerPacks[id];if(p.creator===_user.name||_user.role==='creator'||_user.role==='god'||(p.allowed_users&&p.allowed_users[_user.name]))a.push({id:id,pack:p})}return a}
-function loadHistory(){if(!_user)return;db.ref('payments').orderByChild('user').equalTo(_user.name).once('value',function(s){var a=[];s.forEach(function(c){a.push(c.val())});a.sort(function(x,y){return y.timestamp-x.timestamp});document.getElementById('historyContent').innerHTML=a.length?a.map(function(x){return'<div class="stat-card">📅 '+new Date(x.dateFrom).toLocaleDateString('ru-RU')+' – '+new Date(x.dateTo).toLocaleDateString('ru-RU')+'<br><b>'+x.total+' ₽</b></div>'}).join(''):'<p>Нет выплат</p>'})}
-function loadNotifications(){if(!_user)return;db.ref('notifications').orderByChild('user').equalTo(_user.name).once('value',function(s){var a=[];s.forEach(function(c){a.push(c.val())});a.sort(function(a,b){return b.timestamp-a.timestamp});document.getElementById('notifyContent').innerHTML=a.length?a.map(function(x){return'<div>'+x.text+' <small style="color:#999">'+new Date(x.timestamp).toLocaleString('ru-RU')+'</small></div>'}).join(''):'<p>Нет уведомлений</p>'})}
+function delAnnounce(key){if(_user&&(_user.role==='creator'||_user.role==='god'))db.ref('announce/'+key).remove();else showToast('🚫 Нет прав!',true)}
 function loadHall(){
   db.ref('shifts').once('value',function(snap){var users={};snap.forEach(function(c){var s=c.val();if(!users[s.user])users[s.user]={hours:0,tovar:0};users[s.user].hours+=s.hours||0;users[s.user].tovar+=s.tovar||0});var arr=[];for(var n in users)arr.push({name:n,hours:users[n].hours,tovar:users[n].tovar});arr.sort(function(a,b){return b.hours-a.hours});var hh='';for(var i=0;i<Math.min(arr.length,5);i++){var m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'📌';hh+='<div>'+m+' '+arr[i].name+' — <b>'+arr[i].hours+'ч</b></div>'}document.getElementById('hallHours').innerHTML=hh||'Нет данных';arr.sort(function(a,b){return b.tovar-a.tovar});var ht='';for(var i=0;i<Math.min(arr.length,5);i++){var m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'📌';ht+='<div>'+m+' '+arr[i].name+' — <b>'+arr[i].tovar+' шт</b></div>'}document.getElementById('hallTovar').innerHTML=ht||'Нет данных';arr.sort(function(a,b){return(b.hours+b.tovar)-(a.hours+a.tovar)});document.getElementById('hallBest').innerHTML=arr.length?'<div>🌟 '+arr[0].name+' — '+arr[0].hours+'ч / '+arr[0].tovar+' шт</div>':'Нет данных';db.ref('punishes').once('value',function(ps){var pu={};ps.forEach(function(c){var p=c.val();if(!pu[p.user])pu[p.user]=0;pu[p.user]+=p.amount||0});var pa=[];for(var n in pu)pa.push({name:n,amount:pu[n]});pa.sort(function(a,b){return b.amount-a.amount});document.getElementById('hallWorst').innerHTML=pa.length?'<div>💀 '+pa[0].name+' — <b>'+pa[0].amount+' ₽</b></div>':'Нет данных'});db.ref('premiums').once('value',function(pr){var pu={};pr.forEach(function(c){var p=c.val();if(!pu[p.user])pu[p.user]=0;pu[p.user]+=p.amount||0});var pa=[];for(var n in pu)pa.push({name:n,amount:pu[n]});pa.sort(function(a,b){return b.amount-a.amount});document.getElementById('hallPremium').innerHTML=pa.length?'<div>🎁 '+pa[0].name+' — <b>'+pa[0].amount+' ₽</b></div>':'Нет данных'})})}
-function renderMyCalendar(){var ms=allMyShifts.filter(function(s){return s.user===_user?.name}),now=new Date(),y=now.getFullYear(),m=now.getMonth(),dim=new Date(y,m+1,0).getDate(),fd=new Date(y,m,0).getDay();document.getElementById('calHeader').innerHTML='<b>'+now.toLocaleDateString('ru-RU',{month:'long',year:'numeric'})+'</b>';var days=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],h='';for(var i=0;i<7;i++)h+='<div class="header">'+days[i]+'</div>';for(var i=0;i<fd;i++)h+='<div></div>';var sd={};ms.forEach(function(s){sd[s.date]=(sd[s.date]||0)+1});var ts=now.toLocaleDateString('ru-RU');for(var d=1;d<=dim;d++){var ds=new Date(y,m,d).toLocaleDateString('ru-RU'),cl='';if(sd[ds])cl='shift-day';if(ds===ts)cl+=' today';h+='<div class="'+cl+'">'+d+'</div>'}document.getElementById('calendar').innerHTML=h;var tot=ms.length,th=ms.reduce(function(s,x){return s+(x.hours||0)},0),tt=ms.reduce(function(s,x){return s+(x.tovar||0)},0);document.getElementById('statsSummary').innerHTML='📅 Смен: <b>'+tot+'</b><br>⏱ Часов: <b>'+th+'</b><br>📦 Товаров: <b>'+tt+'</b>'}
-
 </script>
 </body>
 </html>
