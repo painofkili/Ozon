@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -645,75 +646,60 @@ function finishLogin() {
   renderStickerUI();
 }
 
-async function loginUser() {
+function loginUser() {
   const name = document.getElementById('loginName').value.trim();
   const password = document.getElementById('loginPass').value.trim();
   if (!name || !password) { showToast('❌ Введите имя и пароль', true); return; }
 
-  // 1. Хэшируем введённый пароль
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const inputHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toLowerCase();
+  // Проверяем пользователя в Firebase по его имени
+  db.ref('users/' + name).once('value', function(snap) {
+    if (snap.exists()) {
+      // Пользователь есть в базе
+      let userData = snap.val();
+      
+      if (userData.password === password) {
+        _user = userData;
+        _user.key = snap.key;
+        
+        // Назначаем роли (жестко для руководства)
+        if (name === 'Костя') _user.role = 'creator';
+        else if (name === 'Игорь') _user.role = 'god';
+        else _user.role = userData.role || 'manager';
+        
+        localStorage.setItem('creator_user', JSON.stringify(_user));
+        finishLogin();
+      } else {
+        showToast('❌ Неверный пароль', true);
+      }
+    } else {
+      // Если пользователя нет в базе (вдруг БД очистили)
+      // Автоматически создаем профиль для руководства без вопросов
+      if (name === 'Костя' || name === 'Игорь') {
+         const role = name === 'Костя' ? 'creator' : 'god';
+         const nu = { name: name, punkt: '49', password: password, avatar: '', vkId: '', role: role, bonus: 0 };
+         db.ref('users/' + name).set(nu, function(err) {
+           if (err) { showToast('Ошибка создания профиля!', true); return; }
+           _user = nu;
+           _user.role = role;
+           localStorage.setItem('creator_user', JSON.stringify(_user));
+           finishLogin();
+         });
+         return;
+      }
 
-  // 2. Хэши паролей (SHA-256)
-  // Хэш для '2706'
-  const CREATOR_HASH = 'b1828cb39d67e5eda9ebbb255a2a222ab5e1f9ba1c900e23da94a11be0744be6'; 
-  // Хэш для 'godpass' (Если у Игоря другой пароль, сгенерируй для него SHA-256)
-  const GOD_HASH = '1f654f5c90bba6233cfbdba09418e5e8e815e9cdba6f83be360b6af97b6adff8'; 
-
-  // 3. Проверка высшего руководства
-  if (name === 'Костя' && inputHash === CREATOR_HASH) {
-    db.ref('users/Костя').once('value', function(s) {
-      _user = s.exists() ? s.val() : { name: 'Костя' };
-      _user.role = 'creator';
-      localStorage.setItem('creator_user', JSON.stringify(_user));
-      finishLogin();
-    });
-    return;
-  }
-  
-  if (name === 'Игорь' && inputHash === GOD_HASH) {
-    db.ref('users/Игорь').once('value', function(s) {
-      _user = s.exists() ? s.val() : { name: 'Игорь' };
-      _user.role = 'god';
-      localStorage.setItem('creator_user', JSON.stringify(_user));
-      finishLogin();
-    });
-    return;
-  }
-
-  // 4. Проверка простых сотрудников (пароль текстом)
-  const userSnap = await db.ref('users').orderByChild('name').equalTo(name).once('value');
-  if (userSnap.exists()) {
-    let userData = null, userKey = null;
-    userSnap.forEach(c => { userData = c.val(); userKey = c.key; });
-    
-    // Сверяем введенный пароль с тем, что в базе текстом
-    if (userData.password && userData.password === password) {
-      _user = userData;
-      _user.key = userKey;
-      _user.role = userData.role || 'manager';
-      localStorage.setItem('creator_user', JSON.stringify(_user));
-      finishLogin();
-      return;
+      // Для остальных сотрудников выводим подтверждение
+      if (confirm('Сотрудник «' + name + '» не найден. Зарегистрировать нового пользователя?')) {
+        const nu = { name: name, punkt: '49', password: password, avatar: '', vkId: '', role: 'manager', bonus: 0 };
+        db.ref('users/' + name).set(nu, function(err) {
+          if (err) { showToast('Ошибка регистрации!', true); return; }
+          _user = nu;
+          _user.role = 'manager';
+          localStorage.setItem('creator_user', JSON.stringify(_user));
+          finishLogin();
+        });
+      }
     }
-  }
-
-  // 5. Если сотрудник не найден - регаем нового (как у тебя и было)
-  if (confirm('Сотрудник «' + name + '» не найден. Зарегистрировать нового пользователя?')) {
-    const nu = { name: name, punkt: '49', password: password, avatar: '', vkId: '', role: 'manager', bonus: 0 };
-    db.ref('users').push(nu, function(err) {
-      if (err) { showToast('Ошибка регистрации!', true); return; }
-      _user = nu;
-      _user.role = 'manager';
-      localStorage.setItem('creator_user', JSON.stringify(_user));
-      finishLogin();
-    });
-  } else {
-    showToast('❌ Неверный пароль', true);
-  }
+  });
 }
 
 function updateProfileUI() {
@@ -1057,3 +1043,6 @@ function loadHall(){
 </script>
 </body>
 </html>
+
+
+```
