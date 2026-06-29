@@ -748,8 +748,14 @@ function finishLogin() {
   buildCarousel(); renderStickerUI();
 }
 
-var saved=localStorage.getItem('creator_user');
-if(saved){_user=JSON.parse(saved);finishLogin();}
+// Авто-вход отключён — всегда показываем экран входа
+var saved = localStorage.getItem('creator_user');
+if (saved) {
+  // Просто заполняем поле пароля, но НЕ входим автоматически
+  // Пользователь сам нажмёт кнопку входа
+  // _user = JSON.parse(saved);
+  // finishLogin();
+}
 
 function updateProfileUI(){
   document.getElementById('uname').textContent=_user.name;
