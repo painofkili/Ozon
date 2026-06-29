@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,7 +7,6 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ФИКСИРОВАННЫЙ ЭКРАН (TELEGRAM-СТИЛЬ) */
 html, body { 
   overflow: hidden; 
   height: 100vh; 
@@ -35,11 +33,9 @@ body.role-god .stars-overlay {
                     radial-gradient(rgba(255,69,0,0.25), rgba(255,255,255,.1) 1px, transparent 30px); 
 }
 
-/* Строгий стиль кнопок и бейджей для обычных ребят */
 .manager-badge { background: #444; color: #fff; font-size: 12px; font-weight: bold; padding: 4px 10px; border-radius: 12px; display: inline-block; }
 .manager-name { color: #eee; font-weight: bold; }
 
-/* ОСТАЛЬНОЙ CSS БЕЗ ИЗМЕНЕНИЙ */
 .bg { width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; background: radial-gradient(circle at 50% 20%, #12092b 0%, #060612 70%, #020205 100%); z-index: -1000; pointer-events: none; }
 .stars-overlay { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-image: radial-gradient(white, rgba(255,255,255,.2) 1.5px, transparent 40px), radial-gradient(rgba(138,43,226,0.25), rgba(255,255,255,.1) 1px, transparent 30px); background-size: 450px 450px, 300px 350px; background-position: 0 0, 40px 60px; opacity: 0.3; animation: backgroundStarRotate 300s linear infinite; will-change: transform; }
 @keyframes backgroundStarRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -83,7 +79,6 @@ body.role-god .stars-overlay {
 .mini-profile .mp-calendar .mp-shift { background: #4CAF50; color: #fff; font-weight: bold; }
 .mini-profile .mp-btn { width: 100%; padding: 10px; margin-top: 8px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; font-size: 13px; }
 
-/* ЭЛЕМЕНТЫ ИНТЕРФЕЙСА */
 .tab-content { display: none; width: 100%; flex-shrink: 0; }
 .tab-content.active-tab { display: block; }
 .card, .stat-card, .pinned, .announce-block, .thought-block { background: rgba(22,33,62,0.7); padding: 14px; border-radius: 14px; margin: 6px 0; backdrop-filter: blur(10px); border: 1px solid rgba(138,43,226,0.2); overflow: visible; }
@@ -104,7 +99,6 @@ button:disabled { opacity: 0.5; cursor: default; }
 .calendar .today { border: 2px solid #2196F3; }
 .calendar .header { font-weight: bold; background: rgba(51,51,51,0.7); }
 
-/* АВАТАР И 3D-ЭФФЕКТЫ (СОЗДАТЕЛЬ) */
 .avatar-wrapper { position: relative; display: inline-block; width: 76px; height: 76px; flex-shrink: 0; perspective: 1000px; transform-style: preserve-3d; }
 .avatar { width: 76px; height: 76px; border-radius: 50%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 10; border: 2px solid #111; display: block; transform: translateZ(0); background: #222; }
 .avatar-creator { box-shadow: 0 0 15px rgba(138,43,226,0.5); }
@@ -123,7 +117,6 @@ button:disabled { opacity: 0.5; cursor: default; }
 .quantum-halo { position: absolute; inset: -6px; border-radius: 50%; background: radial-gradient(circle, rgba(138,43,226,0.2) 0%, transparent 70%); z-index: 1; pointer-events: none; animation: corePulse 3s ease-in-out infinite; }
 @keyframes corePulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } }
 
-/* РЕЖИМ БОГА (НАЧАЛЬНИК) - НОВЫЕ АНИМАЦИИ */
 .avatar-god { border: 2px solid #FFD700; box-shadow: 0 0 20px rgba(255,215,0,0.7); }
 .god-system { position: absolute; inset: -15px; pointer-events: none; z-index: 1; }
 .god-halo-ring { position: absolute; inset: 0; border-radius: 50%; border: 3px solid transparent; border-top-color: #FFD700; border-bottom-color: #FF8C00; animation: godSpin 3s linear infinite; box-shadow: 0 0 15px rgba(255,215,0,0.5); }
@@ -133,7 +126,6 @@ button:disabled { opacity: 0.5; cursor: default; }
 @keyframes godSpinReverse { 0% { transform: rotate(360deg) scale(1.05); } 50% { transform: rotate(180deg) scale(1); } 100% { transform: rotate(0deg) scale(1.05); } }
 @keyframes godPulse { 0%, 100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.15); } }
 
-/* ПРОФИЛЬ, ВКЛАДКИ */
 .profile-row { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; padding: 8px 0; }
 .creator-badge { font-size: 12px; font-weight: bold; padding: 4px 10px; border-radius: 12px; background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; display: inline-block; letter-spacing: 0.5px; }
 .god-badge { background: linear-gradient(135deg, #FFD700, #FF4500); }
@@ -149,7 +141,6 @@ button:disabled { opacity: 0.5; cursor: default; }
 .tabs button .menu-label { opacity: 0; max-width: 0; transform: translateX(-6px); transition: all 0.2s ease; }
 .tabs button:hover .menu-label, .tabs button.active .menu-label { opacity: 1; max-width: 80px; transform: translateX(0); }
 
-/* ЧАТ - FLEX ВМЕСТО ФИКСИРОВАННОЙ ВЫСОТЫ */
 .chat-section { margin: 8px 0 0 0; display: flex; flex-direction: column; flex: 1; min-height: 0; }
 .chat-header-bar { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px 14px; background: rgba(22,33,62,0.7); border-radius: 12px; border: 1px solid rgba(138, 43, 226, 0.2); margin-bottom: 6px; font-size: 14px; transition: background 0.2s; }
 .chat-header-bar:hover { background: rgba(22,33,62,0.9); }
@@ -177,7 +168,6 @@ button:disabled { opacity: 0.5; cursor: default; }
 .avatar-mini-creator { border: 2px solid #8B00FF; }
 .avatar-mini-god { border: 2px solid #FFD700; }
 
-/* УВЕДОМЛЕНИЯ И ФОТО */
 .toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10000; pointer-events: none; display: flex; flex-direction: column; gap: 8px; }
 .toast-msg { padding: 12px 20px; border-radius: 12px; background: rgba(20, 20, 35, 0.95); border: 1px solid #8B00FF; color: #fff; font-size: 14px; font-weight: bold; box-shadow: 0 5px 20px rgba(0,0,0,0.6); transform: translateY(-20px); opacity: 0; transition: all 0.3s; text-align: center; backdrop-filter: blur(5px); }
 .toast-msg.error { border-color: #ff1744; }
@@ -199,7 +189,6 @@ button:disabled { opacity: 0.5; cursor: default; }
 #photoViewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 10000; }
 #photoViewer img { max-width: 95%; max-height: 90%; border-radius: 12px; }
 
-/* СТИКЕРЫ */
 .input-wrapper { position: relative; flex: 1; display: flex; }
 .sticker-toggle { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 20px; cursor: pointer; color: #aaa; transition: color 0.2s; padding: 5px; }
 .sticker-toggle:hover { filter: brightness(1.2); }
@@ -223,7 +212,6 @@ button:disabled { opacity: 0.5; cursor: default; }
 .user-cb-item input { width: auto; margin: 0; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ФИКСИРОВАННАЯ СТРОКА ВВОДА */
 .chat-input-bar { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 680px; background: rgba(10, 10, 26, 0.95); backdrop-filter: blur(15px); padding: 8px 16px 16px 16px; display: flex; gap: 8px; align-items: center; z-index: 100; border-top: 1px solid rgba(138, 43, 226, 0.2); }
 
 @media (max-width: 600px) {
@@ -646,60 +634,73 @@ function finishLogin() {
   renderStickerUI();
 }
 
-function loginUser() {
+async function loginUser() {
   const name = document.getElementById('loginName').value.trim();
   const password = document.getElementById('loginPass').value.trim();
   if (!name || !password) { showToast('❌ Введите имя и пароль', true); return; }
 
-  // Проверяем пользователя в Firebase по его имени
-  db.ref('users/' + name).once('value', function(snap) {
-    if (snap.exists()) {
-      // Пользователь есть в базе
-      let userData = snap.val();
-      
-      if (userData.password === password) {
-        _user = userData;
-        _user.key = snap.key;
-        
-        // Назначаем роли (жестко для руководства)
-        if (name === 'Костя') _user.role = 'creator';
-        else if (name === 'Игорь') _user.role = 'god';
-        else _user.role = userData.role || 'manager';
-        
-        localStorage.setItem('creator_user', JSON.stringify(_user));
-        finishLogin();
-      } else {
-        showToast('❌ Неверный пароль', true);
-      }
-    } else {
-      // Если пользователя нет в базе (вдруг БД очистили)
-      // Автоматически создаем профиль для руководства без вопросов
-      if (name === 'Костя' || name === 'Игорь') {
-         const role = name === 'Костя' ? 'creator' : 'god';
-         const nu = { name: name, punkt: '49', password: password, avatar: '', vkId: '', role: role, bonus: 0 };
-         db.ref('users/' + name).set(nu, function(err) {
-           if (err) { showToast('Ошибка создания профиля!', true); return; }
-           _user = nu;
-           _user.role = role;
-           localStorage.setItem('creator_user', JSON.stringify(_user));
-           finishLogin();
-         });
-         return;
-      }
+  // 1. Хэшируем введённый пароль
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const inputHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toLowerCase();
 
-      // Для остальных сотрудников выводим подтверждение
-      if (confirm('Сотрудник «' + name + '» не найден. Зарегистрировать нового пользователя?')) {
-        const nu = { name: name, punkt: '49', password: password, avatar: '', vkId: '', role: 'manager', bonus: 0 };
-        db.ref('users/' + name).set(nu, function(err) {
-          if (err) { showToast('Ошибка регистрации!', true); return; }
-          _user = nu;
-          _user.role = 'manager';
-          localStorage.setItem('creator_user', JSON.stringify(_user));
-          finishLogin();
-        });
-      }
+  // 2. Хэши паролей (SHA-256) - ВЕРНЫЕ ХЕШИ ИЗ БАЗЫ
+  const CREATOR_HASH = 'f5e9b69ce10f94f87e393a6a8d557762e8b0a6b7a97bd26f1ba4576f0b59ed06'; 
+  const GOD_HASH = '1020a49b41b8d5180b49f12abfb8932fe1ef56ca254755a34a0f96fec1d6b6d0'; 
+
+  // 3. Проверка высшего руководства
+  if (name === 'Костя' && inputHash === CREATOR_HASH) {
+    db.ref('users/Костя').once('value', function(s) {
+      _user = s.exists() ? s.val() : { name: 'Костя' };
+      _user.role = 'creator';
+      localStorage.setItem('creator_user', JSON.stringify(_user));
+      finishLogin();
+    });
+    return;
+  }
+  
+  if (name === 'Игорь' && inputHash === GOD_HASH) {
+    db.ref('users/Игорь').once('value', function(s) {
+      _user = s.exists() ? s.val() : { name: 'Игорь' };
+      _user.role = 'god';
+      localStorage.setItem('creator_user', JSON.stringify(_user));
+      finishLogin();
+    });
+    return;
+  }
+
+  // 4. Проверка простых сотрудников (пароль текстом)
+  const userSnap = await db.ref('users').orderByChild('name').equalTo(name).once('value');
+  if (userSnap.exists()) {
+    let userData = null, userKey = null;
+    userSnap.forEach(c => { userData = c.val(); userKey = c.key; });
+    
+    // Сверяем введенный пароль с тем, что в базе текстом
+    if (userData.password && userData.password === password) {
+      _user = userData;
+      _user.key = userKey;
+      _user.role = userData.role || 'manager';
+      localStorage.setItem('creator_user', JSON.stringify(_user));
+      finishLogin();
+      return;
     }
-  });
+  }
+
+  // 5. Если сотрудник не найден - регаем нового (как у тебя и было)
+  if (confirm('Сотрудник «' + name + '» не найден. Зарегистрировать нового пользователя?')) {
+    const nu = { name: name, punkt: '49', password: password, avatar: '', vkId: '', role: 'manager', bonus: 0 };
+    db.ref('users').push(nu, function(err) {
+      if (err) { showToast('Ошибка регистрации!', true); return; }
+      _user = nu;
+      _user.role = 'manager';
+      localStorage.setItem('creator_user', JSON.stringify(_user));
+      finishLogin();
+    });
+  } else {
+    showToast('❌ Неверный пароль', true);
+  }
 }
 
 function updateProfileUI() {
@@ -1043,6 +1044,3 @@ function loadHall(){
 </script>
 </body>
 </html>
-
-
-```
