@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
 <title>Ozon Hub</title>
 <style>
-/* ====== ОСНОВНЫЕ СТИЛИ ====== */
+/* ====== ВСЕ СТИЛИ (как в предыдущей версии) ====== */
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{overflow:hidden;height:100vh;width:100vw}
 body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;color:#eee;font-size:16px;background:#0a0a1a;display:flex;flex-direction:column}
@@ -491,12 +491,6 @@ button:disabled{opacity:.5;cursor:default}
         <input type="password" id="regPassword" placeholder="••••••••">
       </div>
       <div class="auth-field">
-        <label>Пункт</label>
-        <select id="regPunkt">
-          <option value="">— Выберите пункт —</option>
-        </select>
-      </div>
-      <div class="auth-field">
         <label>ВК ID (опционально)</label>
         <input type="text" id="regVkId" placeholder="265035511">
       </div>
@@ -767,23 +761,44 @@ async function handleRegister() {
   const name = document.getElementById('regName').value.trim();
   const email = document.getElementById('regEmail').value.trim();
   const password = document.getElementById('regPassword').value.trim();
-  const punkt = document.getElementById('regPunkt').value;
   const vkId = document.getElementById('regVkId').value.trim();
   const error = document.getElementById('authError');
   const loading = document.getElementById('authLoading2');
   
   error.style.display = 'none';
-  if (!name || !email || !password || !punkt) { error.textContent = '❌ Заполните все поля'; error.style.display = 'block'; return; }
-  if (password.length < 4) { error.textContent = '❌ Пароль минимум 4 символа'; error.style.display = 'block'; return; }
+  if (!name || !email || !password) { 
+    error.textContent = '❌ Заполните все поля (Имя, Email, Пароль)'; 
+    error.style.display = 'block'; 
+    return; 
+  }
+  if (password.length < 4) { 
+    error.textContent = '❌ Пароль минимум 4 символа'; 
+    error.style.display = 'block'; 
+    return; 
+  }
   
   loading.style.display = 'block';
   try {
     const cred = await AUTH.createUserWithEmailAndPassword(email, password);
     const uid = cred.user.uid;
+    
+    // Определяем роль (только для Кости и Игоря)
     let role = 'manager';
-    if (name === 'Костя') role = 'creator';
-    else if (name === 'Игорь') role = 'god';
-    const userData = { name, role, punkt, vkId, avatar: '', bonus: 0, email };
+    if (name === 'Костя') {
+      role = 'creator';
+    } else if (name === 'Игорь') {
+      role = 'god';
+    }
+    
+    const userData = { 
+      name, 
+      role, 
+      punkt: '',  // ← пусто, Игорь потом создаст пункты
+      vkId: vkId || '', 
+      avatar: '', 
+      bonus: 0, 
+      email 
+    };
     await DB.ref('users/' + uid).set(userData);
     App.user = userData;
     App.user.uid = uid;
@@ -804,7 +819,7 @@ function finishLogin() {
   
   // Обновляем профиль
   document.getElementById('uname').textContent = App.user.name;
-  document.getElementById('upunkt').textContent = App.user.punkt || '?';
+  document.getElementById('upunkt').textContent = App.user.punkt || '—';
   const badge = document.getElementById('roleBadge');
   const nameWrap = document.getElementById('creatorNameWrapper');
   if (App.user.role === 'god') {
@@ -821,18 +836,28 @@ function finishLogin() {
     nameWrap.className = 'name-manager';
   }
   
-  // Загружаем пункты
-  DB.ref('punkts').once('value').then(function(s) {
-    const sel = document.getElementById('regPunkt');
-    sel.innerHTML = '<option value="">— Выберите пункт —</option>';
-    s.forEach(function(c) { sel.innerHTML += '<option value="'+c.key+'">'+c.key+'</option>'; });
-  });
-  
   // Загружаем чат
   loadChat();
+  
+  // Загружаем пункты для настроек
+  loadPunktsForSettings();
 }
 
-// ====== ЧАТ (упрощённый) ======
+// ====== ЗАГРУЗКА ПУНКТОВ ДЛЯ НАСТРОЕК ======
+function loadPunktsForSettings() {
+  DB.ref('punkts').once('value').then(function(s) {
+    const sel = document.getElementById('setPunkt');
+    if (!sel) return;
+    sel.innerHTML = '<option value="">Не менять</option>';
+    if (s.exists()) {
+      s.forEach(function(c) {
+        sel.innerHTML += '<option value="'+c.key+'">'+c.key+'</option>';
+      });
+    }
+  }).catch(function(){});
+}
+
+// ====== ЧАТ ======
 function loadChat() {
   const el = document.getElementById('chat');
   if (App.chatListener) { App.chatListener.off(); App.chatListener = null; }
@@ -941,6 +966,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Настройки
   document.getElementById('settingsBtn').addEventListener('click', function() {
     document.getElementById('settingsPanel').style.display = 'flex';
+    loadPunktsForSettings();
   });
   document.getElementById('settingsCloseBtn').addEventListener('click', function() {
     document.getElementById('settingsPanel').style.display = 'none';
