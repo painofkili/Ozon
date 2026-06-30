@@ -396,6 +396,232 @@ button:disabled{opacity:.5;cursor:default}
     font-size: 15px;
   }
 }
+/* ====== ПРИНУДИТЕЛЬНЫЕ СТИЛИ ДЛЯ АВТОРИЗАЦИИ (перекрывают всё) ====== */
+#loginScreen .auth-form {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+  max-width: 380px !important;
+  width: 100% !important;
+  padding: 32px 28px 28px !important;
+  background: rgba(20, 20, 50, 0.85) !important;
+  border: 1px solid rgba(100, 80, 220, 0.25) !important;
+  border-radius: 20px !important;
+  backdrop-filter: blur(20px) !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7) !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
+}
+
+#loginScreen .auth-header {
+  text-align: center !important;
+  font-size: 24px !important;
+  font-weight: 800 !important;
+  background: linear-gradient(135deg, #f5c518, #7c3aed, #a855f7) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  padding-bottom: 4px !important;
+  display: block !important;
+}
+
+#loginScreen .auth-tabs {
+  display: flex !important;
+  background: rgba(15, 15, 30, 0.6) !important;
+  border-radius: 14px !important;
+  padding: 4px !important;
+  border: 1px solid rgba(100, 80, 220, 0.2) !important;
+  flex-direction: row !important;
+  gap: 0 !important;
+}
+
+#loginScreen .auth-tab {
+  flex: 1 !important;
+  padding: 10px 0 !important;
+  border: none !important;
+  border-radius: 11px !important;
+  background: transparent !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  color: #6a7a94 !important;
+  cursor: pointer !important;
+  transition: 0.3s !important;
+  width: auto !important;
+  display: block !important;
+  text-align: center !important;
+}
+
+#loginScreen .auth-tab.active {
+  background: rgba(124, 58, 237, 0.25) !important;
+  color: #d6e2ff !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+}
+
+#loginScreen #loginFields,
+#loginScreen #registerFields {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#loginScreen #registerFields {
+  display: none !important;
+}
+
+#loginScreen .field {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+#loginScreen .field label {
+  display: block !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #7e8ea8 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#loginScreen .field input,
+#loginScreen .field select {
+  display: block !important;
+  width: 100% !important;
+  padding: 13px 15px !important;
+  background: rgba(15, 15, 30, 0.8) !important;
+  border: 1px solid rgba(100, 80, 220, 0.25) !important;
+  border-radius: 12px !important;
+  font-size: 15px !important;
+  color: #eef4fc !important;
+  outline: none !important;
+  transition: 0.25s !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  height: auto !important;
+  min-height: 48px !important;
+}
+
+#loginScreen .field input:focus,
+#loginScreen .field select:focus {
+  border-color: #7c3aed !important;
+  background: rgba(20, 20, 50, 0.9) !important;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12) !important;
+}
+
+#loginScreen .field input::placeholder {
+  color: #3e4d63 !important;
+}
+
+#loginScreen .field select {
+  appearance: auto !important;
+  cursor: pointer !important;
+}
+
+#loginScreen .field select option {
+  background: #171e2a !important;
+  color: #eef4fc !important;
+}
+
+#loginScreen .btn-gold {
+  width: 100% !important;
+  padding: 15px !important;
+  background: linear-gradient(135deg, #f5c518, #7c3aed) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  cursor: pointer !important;
+  transition: 0.2s !important;
+  margin: 0 !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  min-height: 52px !important;
+}
+
+#loginScreen .btn-gold:hover {
+  filter: brightness(1.1) !important;
+  box-shadow: 0 8px 28px rgba(124, 58, 237, 0.25) !important;
+  transform: translateY(-1px) !important;
+}
+
+#loginScreen .btn-gold:active {
+  transform: scale(0.97) !important;
+}
+
+#loginScreen .auth-switch {
+  text-align: center !important;
+  font-size: 14px !important;
+  color: #6b7b96 !important;
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#loginScreen .auth-switch span span {
+  color: #7c3aed !important;
+  cursor: pointer !important;
+  font-weight: 600 !important;
+}
+
+#loginScreen .auth-switch span span:hover {
+  text-decoration: underline !important;
+  color: #a855f7 !important;
+}
+
+#loginScreen .error {
+  color: #ef4444 !important;
+  font-size: 13px !important;
+  text-align: center !important;
+  display: none !important;
+}
+
+#loginScreen .spinner {
+  display: inline-block !important;
+  width: 20px !important;
+  height: 20px !important;
+  border: 3px solid rgba(255,255,255,0.1) !important;
+  border-radius: 50% !important;
+  border-top-color: #7c3aed !important;
+  animation: spin 0.6s linear infinite !important;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ====== АДАПТИВ ====== */
+@media (max-width: 480px) {
+  #loginScreen .auth-form {
+    padding: 24px 18px 20px !important;
+    max-width: 94% !important;
+  }
+  #loginScreen .auth-header {
+    font-size: 20px !important;
+  }
+  #loginScreen .auth-tab {
+    font-size: 13px !important;
+    padding: 8px 0 !important;
+  }
+  #loginScreen .field input,
+  #loginScreen .field select {
+    padding: 11px 13px !important;
+    font-size: 14px !important;
+    min-height: 44px !important;
+  }
+  #loginScreen .btn-gold {
+    padding: 13px !important;
+    font-size: 15px !important;
+    min-height: 46px !important;
+  }
+}  
 </style>
 </head>
 <body>
