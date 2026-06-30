@@ -716,18 +716,38 @@ async function loginUser() {
   const password = document.getElementById('loginPass').value.trim();
   if (!name || !password) { showToast('❌ Введите имя и пароль', true); return; }
 
-  // 1. Хэшируем введённый пароль
+  // ===== ХАРДКОД ДЛЯ КОСТИ И ИГОРЯ =====
+  if (name === 'Костя' && password === '2706') {
+    db.ref('users/Костя').once('value', function(s) {
+      _user = s.exists() ? s.val() : { name: 'Костя' };
+      _user.role = 'creator';
+      localStorage.setItem('creator_user', JSON.stringify(_user));
+      finishLogin();
+    });
+    return;
+  }
+
+  if (name === 'Игорь' && password === '789987') {
+    db.ref('users/Игорь').once('value', function(s) {
+      _user = s.exists() ? s.val() : { name: 'Игорь' };
+      _user.role = 'god';
+      localStorage.setItem('creator_user', JSON.stringify(_user));
+      finishLogin();
+    });
+    return;
+  }
+
+  // ===== ХЕШИ ДЛЯ ПРОВЕРКИ (бэкап) =====
   const encoder = new TextEncoder();
   const data = encoder.encode(password);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   const inputHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toLowerCase();
 
-  // 2. Хэши паролей (SHA-256)
-  const CREATOR_HASH = 'f5e9b69ce10f94f87e393a6a8d557762e8b0a6b7a97bd26f1ba4576f0b59ed06'; 
-  const GOD_HASH = '1020a49b41b8d5180b49f12abfb8932fe1ef56ca254755a34a0f96fec1d6b6d0'; 
+  const CREATOR_HASH = 'f5e9b69ce10f94f87e393a6a8d557762e8b0a6b7a97bd26f1ba4576f0b59ed06';
+  const GOD_HASH = 'f8fc0b22985fd85d725e36258c96fdd02c080c35b97877c4752e46d6b2613a2e';
 
-  // 3. Проверка высшего руководства
+  // Проверка по хешу (если вдруг)
   if (name === 'Костя' && inputHash === CREATOR_HASH) {
     db.ref('users/Костя').once('value', function(s) {
       _user = s.exists() ? s.val() : { name: 'Костя' };
@@ -737,7 +757,7 @@ async function loginUser() {
     });
     return;
   }
-  
+
   if (name === 'Игорь' && inputHash === GOD_HASH) {
     db.ref('users/Игорь').once('value', function(s) {
       _user = s.exists() ? s.val() : { name: 'Игорь' };
@@ -748,12 +768,12 @@ async function loginUser() {
     return;
   }
 
-  // 4. Проверка простых сотрудников (пароль текстом)
+  // ===== ПРОВЕРКА СОТРУДНИКОВ =====
   const userSnap = await db.ref('users').orderByChild('name').equalTo(name).once('value');
   if (userSnap.exists()) {
     let userData = null, userKey = null;
     userSnap.forEach(c => { userData = c.val(); userKey = c.key; });
-    
+
     if (userData.password && userData.password === password) {
       _user = userData;
       _user.key = userKey;
@@ -766,7 +786,6 @@ async function loginUser() {
 
   showToast('❌ Неверный пароль', true);
 }
-
 function updateProfileUI() {
   document.getElementById('uname').textContent = _user.name;
   document.getElementById('upunkt').textContent = _user.punkt || '?';
