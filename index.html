@@ -13,7 +13,7 @@ html, body {
   width: 100vw;
 }
 body { 
-  font-family: 'Trebuchet MS', Helvetica, sans-serif; 
+  font-family: -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
   color: #eee; 
   font-size: 16px; 
   background: #0a0a1a;
@@ -71,7 +71,7 @@ body.theme-creator .stars-overlay {
   display: block;
 }
 
-/* --- БОГ (Игорь) --- */
+/* --- БОГ (Игорь) — золотая тема, без звёзд --- */
 body.theme-god {
   --bg: #0f0a00;
   --bg2: rgba(30,20,0,0.85);
@@ -93,11 +93,8 @@ body.theme-god .bg {
   background: radial-gradient(circle at 50% 20%, #3a2202 0%, #170d01 70%, #050200 100%);
   display: block;
 }
-body.theme-god .stars-overlay { 
-  background-image: radial-gradient(white, rgba(255,215,0,.2) 1.5px, transparent 40px), 
-                    radial-gradient(rgba(255,69,0,0.25), rgba(255,255,255,.1) 1px, transparent 30px);
-  display: block;
-}
+/* У БОГА НЕТ ЗВЁЗД */
+body.theme-god .stars-overlay { display: none; }
 
 .bg { width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; z-index: -1000; pointer-events: none; }
 .stars-overlay { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-size: 450px 450px, 300px 350px; background-position: 0 0, 40px 60px; opacity: 0.3; animation: backgroundStarRotate 300s linear infinite; will-change: transform; }
@@ -173,6 +170,17 @@ input, select, textarea {
 }
 input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 
+/* Стили для селектов в тёмной теме (чтобы не было белого фона) */
+select {
+  background: rgba(15,15,30,0.9);
+  color: #fff;
+  border: 1px solid var(--border);
+}
+select option {
+  background: #1a1a2e;
+  color: #fff;
+}
+
 button { border: none; font-weight: bold; cursor: pointer; border-radius: 12px; transition: filter 0.2s; }
 button:hover { filter: brightness(1.1); }
 
@@ -184,6 +192,7 @@ button:hover { filter: brightness(1.1); }
 .btn-purple { background: #9C27B0; color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
 .btn-orange { background: #FF9800; color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
 .btn-cyan { background: #00BCD4; color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
+.btn-sm { padding: 8px 14px; font-size: 13px; border-radius: 10px; width: auto; }
 button:disabled { opacity: 0.5; cursor: default; }
 
 .calendar { 
@@ -298,14 +307,22 @@ button:disabled { opacity: 0.5; cursor: default; }
 #chat::-webkit-scrollbar { width: 6px; }
 #chat::-webkit-scrollbar-thumb { background: rgba(138, 43, 226, 0.5); border-radius: 4px; }
 
-.chat-bubble-group { margin: 6px 0; display: flex; flex-direction: column; position: relative; overflow: visible; }
+.chat-bubble-group { 
+  margin: 4px 0; 
+  display: flex; 
+  flex-direction: column; 
+  position: relative; 
+  overflow: visible; 
+  max-width: 100%;
+}
 .chat-bubble-group.mine { align-items: flex-end; } 
 .chat-bubble-group.other { align-items: flex-start; }
+
 .chat-bubble { 
   background: rgba(30, 30, 50, 0.9); 
   padding: 8px 12px; 
   border-radius: 14px; 
-  margin: 2px 0; 
+  margin: 1px 0; 
   display: inline-block; 
   max-width: 82%; 
   word-break: break-word; 
@@ -318,7 +335,7 @@ button:disabled { opacity: 0.5; cursor: default; }
   border: 1px solid rgba(138, 43, 226, 0.4); 
   padding: 8px 12px; 
   border-radius: 14px; 
-  margin: 2px 0; 
+  margin: 1px 0; 
   display: inline-block; 
   max-width: 82%; 
   position: relative; 
@@ -328,7 +345,7 @@ button:disabled { opacity: 0.5; cursor: default; }
   border: 1px solid rgba(255, 215, 0, 0.4); 
   padding: 8px 12px; 
   border-radius: 14px; 
-  margin: 2px 0; 
+  margin: 1px 0; 
   display: inline-block; 
   max-width: 82%; 
   position: relative; 
@@ -346,16 +363,83 @@ button:disabled { opacity: 0.5; cursor: default; }
   font-weight: bold; 
 }
 .avatar-mini { 
-  width: 32px !important; 
-  height: 32px !important; 
+  width: 28px !important; 
+  height: 28px !important; 
   border-radius: 50%; 
   object-fit: cover; 
   margin-right: 6px; 
   vertical-align: middle; 
   cursor: pointer; 
+  flex-shrink: 0;
 }
 .avatar-mini-creator { border: 2px solid var(--accent); }
 .avatar-mini-god { border: 2px solid #FFD700; }
+
+/* Строка ввода — Telegram-стиль */
+.chat-input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 6px 10px 8px 10px;
+  border-top: 1px solid var(--border);
+  background: var(--bg2);
+  border-radius: 0 0 14px 14px;
+}
+.chat-input {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 14px;
+  resize: none;
+  min-height: 36px;
+  max-height: 80px;
+  line-height: 1.4;
+  transition: border 0.2s;
+}
+.chat-input:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+.chat-emoji-btn,
+.chat-sticker-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.chat-emoji-btn:hover,
+.chat-sticker-btn:hover {
+  background: rgba(255,255,255,0.12);
+}
+.chat-send {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: none;
+  cursor: pointer;
+  transition: filter 0.2s;
+}
+.chat-send:hover { filter: brightness(1.1); }
+body.theme-god .chat-send { background: linear-gradient(135deg, #b8860b, #ffd700); }
 
 .toast-container { 
   position: fixed; 
@@ -627,6 +711,7 @@ button:disabled { opacity: 0.5; cursor: default; }
   border-top: 1px solid var(--border); 
 }
 
+/* ====== САЙДБАР ====== */
 .avatar-carousel { 
   width: 110px; 
   background: var(--bg2); 
@@ -748,6 +833,7 @@ button:disabled { opacity: 0.5; cursor: default; }
   z-index: 2; 
 }
 
+/* ====== МИНИ-ПРОФИЛЬ ====== */
 .mini-profile { 
   position: fixed; 
   right: 120px; 
@@ -840,6 +926,7 @@ button:disabled { opacity: 0.5; cursor: default; }
   font-size: 13px; 
 }
 
+/* ====== ДЛЯ БОГА ====== */
 .worker-row { 
   display: flex; 
   justify-content: space-between; 
@@ -852,6 +939,33 @@ button:disabled { opacity: 0.5; cursor: default; }
 .worker-row button { width: auto; padding: 6px 10px; font-size: 11px; }
 .worker-row .creator-row { background: rgba(245,197,24,0.15); border-left: 3px solid var(--gold); }
 .creator-badge { font-size: 10px; background: var(--gold); color: #000; padding: 2px 6px; border-radius: 8px; margin-left: 4px; }
+
+/* ====== ПУНКТЫ — СВОРАЧИВАЕМАЯ ФОРМА ====== */
+.punkt-form-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 12px 14px;
+  background: var(--bg3);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  transition: background 0.2s;
+}
+.punkt-form-toggle:hover { background: var(--bg2); }
+.punkt-form-toggle .arrow { transition: transform 0.3s; }
+.punkt-form-toggle .arrow.open { transform: rotate(180deg); }
+.punkt-form-body { display: none; margin-top: 12px; }
+.punkt-form-body.open { display: block; }
+
+.punkt-list-wrap {
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.punkt-list-wrap::-webkit-scrollbar { width: 4px; }
+.punkt-list-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
 .shift-edit-row { display: flex; gap: 4px; align-items: center; margin: 4px 0; flex-wrap: wrap; }
 .shift-edit-row input { flex: 1; padding: 8px; font-size: 13px; min-width: 40px; }
@@ -918,6 +1032,7 @@ button:disabled { opacity: 0.5; cursor: default; }
   <div class="stars-overlay"></div>
 </div>
 
+<!-- ====== ТОСТЫ ====== -->
 <div id="toastContainer" class="toast-container"></div>
 <div id="photoViewer" onclick="this.style.display='none'"><img id="photoViewerImg" src=""></div>
 
@@ -1110,15 +1225,12 @@ var lastChatTimestamp = 0;
 var selectedProfile = null;
 var privateChatWith = null;
 var openDropdown = null;
-var currentTab = null;
 var calYear, calMonth;
 var allShifts = [];
 var lastCalc = null;
 var currentPunish = null;
 var currentPremiumUser = null;
 var godRating = 0;
-var currentAddUser = null;
-var allPunkts = {};
 
 var VK_TOKEN = "vk1.a.1ccqIy8pmM0W_RnIymI9XOMvA6ILX5yxNfZZAiF5HHBdjHK_vOAimgsyljky-TCiReMgJRAlaRvpYEypifmF-iUonUGvldlw5LvDWAOSUpN1WDcnS_7Uit-Yh3BuUF5Ic5NoZ48Qhlmu4ErB87fpTplEI7E3sarTm9LC-Vd8zTbeQp4xgyB1s5yg6oBxTBaNZAFp-ioqBWG25jR8GREmWw";
 
@@ -1206,7 +1318,7 @@ function secToHMS(sec) {
 function avaHtml(user, size) {
   size = size || 54;
   if (user && user.avatar) {
-    return '<img src="'+user.avatar+'" style="width:'+size+'px;height:'+size+'px;object-fit:cover;border-radius:50%">';
+    return '<img src="'+user.avatar+'" style="width:'+size+'px;height:'+size+'px;object-fit:cover;border-radius:50%;flex-shrink:0">';
   }
   var initial = (user && user.name) ? user.name[0].toUpperCase() : '?';
   return '<div style="width:'+size+'px;height:'+size+'px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:'+Math.floor(size*0.4)+'px;font-weight:700;color:#fff;flex-shrink:0">'+initial+'</div>';
@@ -1312,7 +1424,6 @@ function finishLogin() {
   chatOpened = true;
   lastChatTimestamp = Date.now();
   
-  // Применяем тему
   document.body.className = '';
   document.body.classList.add('theme-' + _user.role);
   
@@ -1333,7 +1444,6 @@ function finishLogin() {
   buildCarousel();
   renderStickerUI();
   
-  // Если бог — загружаем его рейтинг
   if (_user.role === 'god') {
     recountRating();
   }
@@ -1356,7 +1466,6 @@ function updateProfileUI() {
   var av = document.getElementById('profileAvatar');
   if (_user.avatar && _user.avatar !== '') {
     av.src = _user.avatar;
-    av.style.display = 'block';
     av.style.display = 'block';
   } else {
     av.style.display = 'none';
@@ -1421,13 +1530,11 @@ function renderTabs() {
     return '<button id="tab_' + t.id + '" class="' + (i === 0 ? 'active' : '') + '" onclick="switchTab(\'' + t.id + '\')"><span class="menu-icon">' + t.icon + '</span><span class="menu-label">' + t.label + '</span></button>';
   }).join('');
 
-  // Контент
   var contentContainer = document.getElementById('tabContentContainer');
   contentContainer.innerHTML = tabsConfig.map(function(t, i) {
     return '<div id="panel_' + t.id + '" class="tab-content' + (i === 0 ? ' active-tab' : '') + '"></div>';
   }).join('');
 
-  // Загружаем первую вкладку
   if (tabsConfig.length > 0) {
     renderTabContent(tabsConfig[0].id);
   }
@@ -1437,26 +1544,22 @@ function switchTab(id) {
   var activeBtn = document.getElementById('tab_' + id);
   var panel = document.getElementById('panel_' + id);
   
-  // Если вкладка уже активна — сворачиваем её
   if (activeBtn && activeBtn.classList.contains('active')) {
     activeBtn.classList.remove('active');
     if (panel) panel.classList.remove('active-tab');
     return;
   }
   
-  // Обновляем активную кнопку
   document.querySelectorAll('#tabsContainer button').forEach(function(btn) {
     btn.classList.remove('active');
   });
   if (activeBtn) activeBtn.classList.add('active');
   
-  // Обновляем панели
   document.querySelectorAll('#tabContentContainer .tab-content').forEach(function(p) {
     p.classList.remove('active-tab');
   });
   if (panel) {
     panel.classList.add('active-tab');
-    // Всегда перерисовываем контент при переключении
     renderTabContent(id);
   }
 }
@@ -1465,7 +1568,6 @@ function renderTabContent(id) {
   var panel = document.getElementById('panel_' + id);
   if (!panel) return;
   
-  // Очищаем и перерисовываем
   panel.innerHTML = '';
   
   switch(id) {
@@ -1763,7 +1865,7 @@ function loadBoard() {
   });
 }
 
-// ====== ВКЛАДКА СИЛА (только для Кости) ======
+// ====== ВКЛАДКА СИЛА ======
 function renderPowerTab(panel) {
   panel.innerHTML = 
     '<div class="section-title" style="font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;">⚡ Сила создателя</div>' +
@@ -1816,7 +1918,7 @@ function powerAnnounce() {
   showToast('📣 Объявление отправлено!');
 }
 
-// ====== ВКЛАДКА ОБЪЯВЛЕНИЯ (для Кости и Игоря) ======
+// ====== ВКЛАДКА ОБЪЯВЛЕНИЯ ======
 function renderAnnounceTab(panel) {
   var canAdd = _user.role === 'creator' || _user.role === 'god';
   panel.innerHTML = 
@@ -1879,19 +1981,33 @@ function delAnnounce(id) {
   showToast('🗑 Удалено');
 }
 
-// ====== ВКЛАДКА ПУНКТЫ (только для Игоря) ======
+// ====== ВКЛАДКА ПУНКТЫ ======
 function renderPunktsTab(panel) {
   panel.innerHTML = 
     '<div class="section-title" style="font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;">📍 Пункты выдачи</div>' +
     '<div class="card" style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;backdrop-filter:blur(8px);">' +
-    '  <div class="card-title" style="font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px;">➕ Добавить пункт</div>' +
-    '  <div class="field" style="margin-bottom:12px;"><label style="display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;">ID пункта (например 49)</label><input type="text" id="pAddId" placeholder="49" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;"></div>' +
-    '  <div class="field" style="margin-bottom:12px;"><label style="display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;">Название</label><input type="text" id="pAddName" placeholder="ПВЗ Центр" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;"></div>' +
-    '  <div class="field" style="margin-bottom:12px;"><label style="display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;">Ставка ₽/ч</label><input type="number" id="pAddRate" placeholder="150" min="0" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;"></div>' +
-    '  <button class="btn-primary" onclick="addPunkt()" style="padding:12px;border-radius:14px;font-size:15px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;width:100%;">➕ Добавить</button>' +
+    '  <div class="punkt-form-toggle" onclick="togglePunktForm()">' +
+    '    <span style="font-weight:600;">➕ Добавить пункт</span>' +
+    '    <span class="arrow" id="punktFormArrow">▼</span>' +
+    '  </div>' +
+    '  <div class="punkt-form-body" id="punktFormBody">' +
+    '    <div class="field" style="margin-bottom:12px;"><label style="display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;">ID пункта (например 49)</label><input type="text" id="pAddId" placeholder="49" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;"></div>' +
+    '    <div class="field" style="margin-bottom:12px;"><label style="display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;">Название</label><input type="text" id="pAddName" placeholder="ПВЗ Центр" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;"></div>' +
+    '    <div class="field" style="margin-bottom:12px;"><label style="display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;">Ставка ₽/ч</label><input type="number" id="pAddRate" placeholder="150" min="0" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;"></div>' +
+    '    <button class="btn-primary" onclick="addPunkt()" style="padding:12px;border-radius:14px;font-size:15px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;width:100%;">➕ Добавить</button>' +
+    '  </div>' +
     '</div>' +
-    '<div id="punktsList">Загрузка...</div>';
+    '<div class="punkt-list-wrap" id="punktsListWrap">' +
+    '  <div id="punktsList">Загрузка...</div>' +
+    '</div>';
   loadPunktsList();
+}
+
+function togglePunktForm() {
+  var body = document.getElementById('punktFormBody');
+  var arrow = document.getElementById('punktFormArrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
 }
 
 function loadPunktsList() {
@@ -1948,7 +2064,7 @@ function editPunkt(id, currentRate) {
   showToast('✅ Ставка обновлена');
 }
 
-// ====== ВКЛАДКА СОТРУДНИКИ (только для Игоря) ======
+// ====== ВКЛАДКА СОТРУДНИКИ ======
 function renderWorkersTab(panel) {
   panel.innerHTML = 
     '<div class="section-title" style="font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;">👥 Сотрудники</div>' +
@@ -2011,7 +2127,7 @@ function deleteWorker(key, name) {
   showToast('🗑 Удалён');
 }
 
-// ====== ПРЕМИИ (для Игоря) ======
+// ====== ПРЕМИИ ======
 function openPremium(user) {
   currentPremiumUser = user;
   var html = 
@@ -2066,7 +2182,7 @@ function delPremium(id) {
   recountRating();
 }
 
-// ====== ШТРАФЫ (для Игоря) ======
+// ====== ШТРАФЫ ======
 function openPunish(user) {
   if (user === 'Костя') { showToast('🚫 Создателя нельзя штрафовать!', true); return; }
   currentPunish = user;
@@ -2126,12 +2242,12 @@ function delPunish(id) {
   recountRating();
 }
 
-// ====== ВКЛАДКА РАСЧЁТ ЗП (только для Игоря) ======
+// ====== ВКЛАДКА РАСЧЁТ ЗП ======
 function renderSalaryTab(panel) {
   panel.innerHTML = 
     '<div class="section-title" style="font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;">💰 Расчёт зарплаты</div>' +
     '<div class="card" style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;backdrop-filter:blur(8px);">' +
-    '  <div class="field" style="margin-bottom:12px;"><label style="display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;">Сотрудник</label><select id="calcUser" onchange="onCalcSelect()" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;"><option value="">— Выбери —</option></select></div>' +
+    '  <div class="field" style="margin-bottom:12px;"><label style="display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;">Сотрудник</label><select id="calcUser" onchange="onCalcSelect()" style="width:100%;padding:12px 14px;background:rgba(15,15,30,0.9);border:1px solid var(--border);border-radius:12px;color:#fff;font-size:15px;"><option value="">— Выбери —</option></select></div>' +
     '  <div id="calcBlock" style="display:none;">' +
     '    <div style="display:flex;gap:4px;">' +
     '      <input id="calcFrom" type="date" style="flex:1;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;">' +
@@ -2159,7 +2275,8 @@ function loadCalcUsers() {
     sel.innerHTML = '<option value="">— Выбери —</option>';
     snap.forEach(function(c) {
       var u = c.val();
-      if (u.name && u.name !== 'Костя') {
+      // Убираем Костю и Игоря из списка для расчёта ЗП
+      if (u.name && u.name !== 'Костя' && u.name !== 'Игорь' && u.name !== _user.name) {
         sel.innerHTML += '<option value="' + u.name + '">' + u.name + '</option>';
       }
     });
@@ -2250,7 +2367,6 @@ function delShiftForCalc(id) {
 function addShiftForSalary() {
   var u = document.getElementById('calcUser').value;
   if (!u) { showToast('❌ Выбери сотрудника!', true); return; }
-  currentAddUser = u;
   var d = prompt('Дата (ДД.ММ.ГГГГ):', new Date().toLocaleDateString('ru-RU'));
   if (!d) return;
   var tf = prompt('Время начала (ч):', '9');
@@ -3143,7 +3259,6 @@ db.ref('sticker_packs').on('value', function(s) {
   if (_user) renderStickerUI();
 });
 
-// Уведомления о новых сообщениях
 var notifiedKeys = {};
 db.ref('chat').limitToLast(1).on('child_added', function(s) {
   if (chatOpened) return;
@@ -3207,7 +3322,6 @@ function loadGodData() {
   }
 }
 
-// ====== ВЫХОД ======
 function logout() {
   _user = null;
   onShift = false;
@@ -3218,7 +3332,6 @@ function logout() {
   document.body.className = '';
 }
 
-// ====== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ======
 function backFromCards() {
   renderTabs();
   var activeBtn = document.querySelector('#tabsContainer .active');
@@ -3228,7 +3341,6 @@ function backFromCards() {
   }
 }
 
-// ====== ЗАПУСК ======
 console.log('🚀 Ozon Hub запущен!');
 console.log('👤 Роль:', _user ? _user.role : 'не авторизован');
 </script>
