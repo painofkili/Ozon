@@ -1336,7 +1336,6 @@ function finishLogin() {
   // Если бог — загружаем его рейтинг
   if (_user.role === 'god') {
     recountRating();
-    loadPunktsForGod();
   }
 }
 
@@ -1355,8 +1354,9 @@ function updateProfileUI() {
   document.getElementById('upunkt').textContent = _user.punkt || '?';
   
   var av = document.getElementById('profileAvatar');
-  if (_user.avatar) {
+  if (_user.avatar && _user.avatar !== '') {
     av.src = _user.avatar;
+    av.style.display = 'block';
     av.style.display = 'block';
   } else {
     av.style.display = 'none';
@@ -1384,7 +1384,7 @@ function updateProfileUI() {
   }
 }
 
-// ====== ВКЛАДКИ (С ВОЗМОЖНОСТЬЮ СВОРАЧИВАТЬ) ======
+// ====== ВКЛАДКИ ======
 function renderTabs() {
   var container = document.getElementById('tabsContainer');
   var tabsConfig = [];
@@ -1456,18 +1456,17 @@ function switchTab(id) {
   });
   if (panel) {
     panel.classList.add('active-tab');
-    if (!panel.dataset.loaded) {
-      panel.dataset.loaded = '1';
-      renderTabContent(id);
-    }
+    // Всегда перерисовываем контент при переключении
+    renderTabContent(id);
   }
 }
 
 function renderTabContent(id) {
   var panel = document.getElementById('panel_' + id);
   if (!panel) return;
-  if (panel.dataset.loaded) return;
-  panel.dataset.loaded = '1';
+  
+  // Очищаем и перерисовываем
+  panel.innerHTML = '';
   
   switch(id) {
     case 'shift': renderShiftTab(panel); break;
@@ -1481,9 +1480,11 @@ function renderTabContent(id) {
     case 'workers': renderWorkersTab(panel); break;
     case 'salary': renderSalaryTab(panel); break;
   }
+  
+  panel.dataset.loaded = '1';
 }
 
-// ====== ВКЛАДКА СМЕНА (С КНОПКОЙ ВЫХОДА) ======
+// ====== ВКЛАДКА СМЕНА ======
 function renderShiftTab(panel) {
   panel.innerHTML = 
     '<div class="card" id="shiftCard">' +
@@ -1815,7 +1816,7 @@ function powerAnnounce() {
   showToast('📣 Объявление отправлено!');
 }
 
-// ====== ВКЛАДКА ОБЪЯВЛЕНИЯ ======
+// ====== ВКЛАДКА ОБЪЯВЛЕНИЯ (для Кости и Игоря) ======
 function renderAnnounceTab(panel) {
   var canAdd = _user.role === 'creator' || _user.role === 'god';
   panel.innerHTML = 
@@ -1945,10 +1946,6 @@ function editPunkt(id, currentRate) {
   db.ref('punkts/' + id + '/rate').set(parseFloat(r) || 0);
   loadPunktsList();
   showToast('✅ Ставка обновлена');
-}
-
-function loadPunktsForGod() {
-  // Загружаем пункты для фильтра в сотрудниках
 }
 
 // ====== ВКЛАДКА СОТРУДНИКИ (только для Игоря) ======
