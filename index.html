@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
 <title>Ozon Hub</title>
 <style>
-/* ====== ВСЕ СТИЛИ (как в предыдущей версии) ====== */
+/* ====== ВСЕ СТИЛИ ====== */
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{overflow:hidden;height:100vh;width:100vw}
 body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;color:#eee;font-size:16px;background:#0a0a1a;display:flex;flex-direction:column}
@@ -215,153 +215,182 @@ button:disabled{opacity:.5;cursor:default}
 .setting-color .hex{font-size:12px;color:var(--muted);font-family:monospace}
 .spinner{display:inline-block;width:20px;height:20px;border:3px solid rgba(255,255,255,.1);border-radius:50%;border-top-color:var(--accent);animation:spin .6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.auth-form{max-width:360px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px;padding:24px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;backdrop-filter:blur(20px)}
-.auth-form h2{text-align:center;font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--gold),var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.auth-form .field{display:flex;flex-direction:column;gap:4px}
-.auth-form .field label{font-size:12px;color:var(--muted);font-weight:600}
-.auth-form .field input,.auth-form .field select{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:rgba(15,15,30,0.8);color:#fff;font-size:15px}
-.auth-form .field input:focus{border-color:var(--accent);outline:none}
-.auth-form .auth-switch{text-align:center;font-size:13px;color:var(--muted)}
-.auth-form .auth-switch span{color:var(--accent);cursor:pointer;font-weight:600}
-.auth-form .auth-switch span:hover{text-decoration:underline}
-.auth-form .error{color:var(--red);font-size:13px;text-align:center;display:none}
-#loginScreen{display:flex;align-items:center;justify-content:center;height:100vh;background:var(--bg);padding:20px}
-@media(max-width:600px){
-.mini-profile{right:10px;left:10px;width:calc(100% - 20px);top:auto;bottom:80px;transform:none}
-.mini-profile.show{animation:slideUpMobile .2s ease-out}
-@keyframes slideUpMobile{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-.btn-sidebar-toggle{width:36px;height:50px;font-size:15px}
-.sticker-panel{right:-40px;width:calc(100vw - 20px);max-width:340px}
-.chat-input-bar{max-width:100%}
-.calendar div{font-size:10px;padding:4px}
-.calendar{gap:1px;padding:4px}
-.style-grid{grid-template-columns:1fr 1fr}
-.settings-card{padding:16px;margin:10px}
-#toastDivine{width:90%}
-#toastCosmic{right:10px;left:10px;max-width:none}
-.auth-form{padding:16px;margin:10px}
-}
-/* ===== ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ АВТОРИЗАЦИИ ===== */
 
-/* ЗАГОЛОВОК С ЭМОДЗИ */
-.auth-header {
+/* ====== АВТОРИЗАЦИЯ (ПОЛНОСТЬЮ ПЕРЕПИСАНА) ====== */
+#loginScreen {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  font-size: 22px;
+  height: 100vh;
+  padding: 20px;
+  background: #0a0a1a;
+}
+
+.auth-form {
+  max-width: 380px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 32px 28px 28px;
+  background: rgba(20, 20, 50, 0.85);
+  border: 1px solid rgba(100, 80, 220, 0.25);
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+}
+
+.auth-header {
+  text-align: center;
+  font-size: 24px;
   font-weight: 800;
-  background: linear-gradient(135deg, var(--gold), var(--accent), var(--accent2));
+  background: linear-gradient(135deg, #f5c518, #7c3aed, #a855f7);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: 4px;
+  padding-bottom: 4px;
 }
 
-.auth-emoji {
-  font-size: 26px;
-  filter: grayscale(1) brightness(0.5);
-  transition: 0.3s;
-  -webkit-text-fill-color: initial;
-}
-
-.auth-emoji.active {
-  filter: grayscale(0) brightness(1);
-}
-
-/* ===== ВКЛАДКИ ===== */
 .auth-tabs {
   display: flex;
   background: rgba(15, 15, 30, 0.6);
   border-radius: 14px;
   padding: 4px;
-  margin-bottom: 8px;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(100, 80, 220, 0.2);
 }
 
 .auth-tab {
   flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
   padding: 10px 0;
   border: none;
   border-radius: 11px;
   background: transparent;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--muted);
+  font-size: 15px;
+  font-weight: 600;
+  color: #6a7a94;
   cursor: pointer;
   transition: 0.3s;
 }
 
-.auth-tab .tab-emoji {
-  font-size: 18px;
-  filter: grayscale(1) brightness(0.5);
-  transition: 0.3s;
-}
-
-.auth-tab:hover .tab-emoji {
-  filter: grayscale(0) brightness(1);
-}
-
 .auth-tab.active {
-  background: rgba(95, 126, 255, 0.15);
+  background: rgba(124, 58, 237, 0.25);
   color: #d6e2ff;
   box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
-.auth-tab.active .tab-emoji {
-  filter: grayscale(0) brightness(1);
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-/* ===== ПЕРЕКЛЮЧЕНИЕ ВНИЗУ ===== */
+.field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #7e8ea8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  padding: 13px 15px;
+  background: rgba(15, 15, 30, 0.8);
+  border: 1px solid rgba(100, 80, 220, 0.25);
+  border-radius: 12px;
+  font-size: 15px;
+  color: #eef4fc;
+  outline: none;
+  transition: 0.25s;
+  box-sizing: border-box;
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: #7c3aed;
+  background: rgba(20, 20, 50, 0.9);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+}
+
+.field input::placeholder {
+  color: #3e4d63;
+}
+
+.field select {
+  appearance: none;
+  cursor: pointer;
+}
+
+.field select option {
+  background: #171e2a;
+}
+
+.btn-gold {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #f5c518, #7c3aed);
+  border: none;
+  border-radius: 12px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.2s;
+  margin-top: 2px;
+}
+
+.btn-gold:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 8px 28px rgba(124, 58, 237, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-gold:active {
+  transform: scale(0.97);
+}
+
 .auth-switch {
   text-align: center;
-  font-size: 13px;
-  color: var(--muted);
+  font-size: 14px;
+  color: #6b7b96;
 }
 
 .auth-switch span span {
-  color: var(--accent);
+  color: #7c3aed;
   cursor: pointer;
   font-weight: 600;
 }
 
 .auth-switch span span:hover {
   text-decoration: underline;
+  color: #a855f7;
 }
 
-/* ===== АДАПТИВ ДЛЯ МОБИЛ ===== */
-@media (max-width: 450px) {
+.error {
+  color: #ef4444;
+  font-size: 13px;
+  text-align: center;
+  display: none;
+}
+
+@media (max-width: 480px) {
   .auth-form {
-    padding: 20px 16px 18px;
+    padding: 24px 18px 20px;
     max-width: 94%;
   }
-
   .auth-header {
-    font-size: 19px;
+    font-size: 20px;
   }
-
-  .auth-emoji {
-    font-size: 22px;
-  }
-
   .auth-tab {
     font-size: 13px;
-    gap: 5px;
+    padding: 8px 0;
   }
-
-  .auth-tab .tab-emoji {
-    font-size: 16px;
-  }
-
   .field input,
   .field select {
     padding: 11px 13px;
     font-size: 14px;
   }
-
   .btn-gold {
     padding: 13px;
     font-size: 15px;
@@ -404,26 +433,19 @@ button:disabled{opacity:.5;cursor:default}
   </div>
 </div>
 
+<!-- ====== ЭКРАН ВХОДА/РЕГИСТРАЦИИ ====== -->
 <div id="loginScreen">
   <div class="auth-form" id="authForm">
     
-    <!-- ЗАГОЛОВОК С ЭМОДЗИ -->
     <div class="auth-header">
-      <span id="authEmoji" class="auth-emoji">🌌</span>
       <span id="authTitle">Вход в систему</span>
     </div>
 
-    <!-- ВКЛАДКИ ДЛЯ ПЕРЕКЛЮЧЕНИЯ -->
     <div class="auth-tabs">
-      <button class="auth-tab active" id="tabLogin" data-tab="login">
-        <span class="tab-emoji">🌌</span> Вход
-      </button>
-      <button class="auth-tab" id="tabRegister" data-tab="register">
-        <span class="tab-emoji">📝</span> Регистрация
-      </button>
+      <button class="auth-tab active" id="tabLogin" data-tab="login">Вход</button>
+      <button class="auth-tab" id="tabRegister" data-tab="register">Регистрация</button>
     </div>
 
-    <!-- ====== ФОРМА ВХОДА ====== -->
     <div id="loginFields">
       <div class="field">
         <label>Email</label>
@@ -433,10 +455,9 @@ button:disabled{opacity:.5;cursor:default}
         <label>Пароль</label>
         <input type="password" id="loginPassword" placeholder="••••••••">
       </div>
-      <button class="btn-gold" id="loginBtn" type="button">🔑 Войти</button>
+      <button class="btn-gold" id="loginBtn" type="button">Войти</button>
     </div>
 
-    <!-- ====== ФОРМА РЕГИСТРАЦИИ ====== -->
     <div id="registerFields" style="display:none;">
       <div class="field">
         <label>Имя</label>
@@ -452,16 +473,17 @@ button:disabled{opacity:.5;cursor:default}
       </div>
       <div class="field">
         <label>Пункт</label>
-        <select id="regPunkt"></select>
+        <select id="regPunkt">
+          <option value="">— Выберите пункт —</option>
+        </select>
       </div>
       <div class="field">
         <label>ВК ID (опционально)</label>
         <input type="text" id="regVkId" placeholder="265035511">
       </div>
-      <button class="btn-gold" id="registerBtn" type="button">📝 Зарегистрироваться</button>
+      <button class="btn-gold" id="registerBtn" type="button">Зарегистрироваться</button>
     </div>
 
-    <!-- ССЫЛКА ПЕРЕКЛЮЧЕНИЯ ВНИЗУ -->
     <div class="auth-switch">
       <span id="authSwitchText">Нет аккаунта? <span id="authSwitchLink">Зарегистрироваться</span></span>
     </div>
@@ -600,7 +622,7 @@ button:disabled{opacity:.5;cursor:default}
   </div>
 </div>
 
-<!-- ====== СТИКЕРЫ И Т.Д. ====== -->
+<!-- ====== СТИКЕРЫ ====== -->
 <div id="stickerManagerCard" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;overflow-y:auto;z-index:250;padding:10px;background:rgba(0,0,0,.9);">
   <div class="card" style="max-width:500px;margin:20px auto;">
     <h3 style="text-align:center;margin-bottom:12px;">📦 Мои стикерпаки</h3>
@@ -671,7 +693,7 @@ const BASE_EMOJIS = ['😊','😉','😘','❤️','🤘','😓','💀','💪','
 
 // ====== STATE ======
 let App = {
-  user: null, // { name, role, punkt, uid, ... }
+  user: null,
   onShift: false,
   shiftTimer: null,
   allMyShifts: [],
@@ -739,13 +761,72 @@ let isLoginMode = true;
 
 function toggleAuthMode() {
   isLoginMode = !isLoginMode;
-  document.getElementById('authTitle').textContent = isLoginMode ? '🌌 Вход в систему' : '📝 Регистрация';
-  document.getElementById('loginFields').style.display = isLoginMode ? 'flex' : 'none';
-  document.getElementById('registerFields').style.display = isLoginMode ? 'none' : 'flex';
-  document.getElementById('authSwitchText').innerHTML = isLoginMode ? 'Нет аккаунта? <span id="authSwitchLink">Зарегистрироваться</span>' : 'Уже есть аккаунт? <span id="authSwitchLink">Войти</span>';
+  const authTitle = document.getElementById('authTitle');
+  const loginFields = document.getElementById('loginFields');
+  const registerFields = document.getElementById('registerFields');
+  const switchText = document.getElementById('authSwitchText');
+  const tabLogin = document.getElementById('tabLogin');
+  const tabRegister = document.getElementById('tabRegister');
+  
+  if (isLoginMode) {
+    authTitle.textContent = 'Вход в систему';
+    loginFields.style.display = 'flex';
+    registerFields.style.display = 'none';
+    switchText.innerHTML = 'Нет аккаунта? <span id="authSwitchLink">Зарегистрироваться</span>';
+    tabLogin.classList.add('active');
+    tabRegister.classList.remove('active');
+  } else {
+    authTitle.textContent = 'Регистрация';
+    loginFields.style.display = 'none';
+    registerFields.style.display = 'flex';
+    switchText.innerHTML = 'Уже есть аккаунт? <span id="authSwitchLink">Войти</span>';
+    tabRegister.classList.add('active');
+    tabLogin.classList.remove('active');
+  }
+  
   document.getElementById('authError').style.display = 'none';
   document.getElementById('authSwitchLink').addEventListener('click', toggleAuthMode);
 }
+
+// ====== ОБРАБОТЧИКИ ВКЛАДОК ======
+document.addEventListener('DOMContentLoaded', function() {
+  const tabLogin = document.getElementById('tabLogin');
+  const tabRegister = document.getElementById('tabRegister');
+  
+  if (tabLogin) {
+    tabLogin.addEventListener('click', function() {
+      if (isLoginMode) return;
+      isLoginMode = true;
+      document.getElementById('authTitle').textContent = 'Вход в систему';
+      document.getElementById('loginFields').style.display = 'flex';
+      document.getElementById('registerFields').style.display = 'none';
+      document.getElementById('authSwitchText').innerHTML = 'Нет аккаунта? <span id="authSwitchLink">Зарегистрироваться</span>';
+      document.getElementById('authSwitchLink').addEventListener('click', toggleAuthMode);
+      tabLogin.classList.add('active');
+      tabRegister.classList.remove('active');
+      document.getElementById('authError').style.display = 'none';
+    });
+  }
+  
+  if (tabRegister) {
+    tabRegister.addEventListener('click', function() {
+      if (!isLoginMode) return;
+      isLoginMode = false;
+      document.getElementById('authTitle').textContent = 'Регистрация';
+      document.getElementById('loginFields').style.display = 'none';
+      document.getElementById('registerFields').style.display = 'flex';
+      document.getElementById('authSwitchText').innerHTML = 'Уже есть аккаунт? <span id="authSwitchLink">Войти</span>';
+      document.getElementById('authSwitchLink').addEventListener('click', toggleAuthMode);
+      tabRegister.classList.add('active');
+      tabLogin.classList.remove('active');
+      document.getElementById('authError').style.display = 'none';
+    });
+  }
+  
+  // Инициализируем первую ссылку
+  const firstLink = document.getElementById('authSwitchLink');
+  if (firstLink) firstLink.addEventListener('click', toggleAuthMode);
+});
 
 async function handleLogin() {
   const email = document.getElementById('loginEmail').value.trim();
@@ -790,7 +871,6 @@ async function handleRegister() {
     const cred = await AUTH.createUserWithEmailAndPassword(email, password);
     const uid = cred.user.uid;
     
-    // Определяем роль
     let role = 'manager';
     if (name === 'Костя') role = 'creator';
     else if (name === 'Игорь') role = 'god';
@@ -806,69 +886,6 @@ async function handleRegister() {
   }
   loading.style.display = 'none';
 }
-// ====== ОБРАБОТЧИКИ ВКЛАДОК ======
-document.addEventListener('DOMContentLoaded', function() {
-  const tabLogin = document.getElementById('tabLogin');
-  const tabRegister = document.getElementById('tabRegister');
-  
-  // Переключение на вкладку "Вход"
-  if (tabLogin) {
-    tabLogin.addEventListener('click', function() {
-      // Если уже в режиме входа — не делаем ничего
-      if (isLoginMode) return;
-      
-      // Меняем режим
-      isLoginMode = true;
-      
-      // Обновляем формы
-      document.getElementById('loginFields').style.display = 'flex';
-      document.getElementById('registerFields').style.display = 'none';
-      
-      // Обновляем заголовок
-      document.getElementById('authTitle').innerHTML = '🌌 Вход в систему';
-      
-      // Обновляем текст переключения внизу
-      document.getElementById('authSwitchText').innerHTML = 'Нет аккаунта? <span id="authSwitchLink">Зарегистрироваться</span>';
-      document.getElementById('authSwitchLink').addEventListener('click', toggleAuthMode);
-      
-      // Обновляем активную вкладку
-      tabLogin.classList.add('active');
-      tabRegister.classList.remove('active');
-      
-      // Скрываем ошибку
-      document.getElementById('authError').style.display = 'none';
-    });
-  }
-  
-  // Переключение на вкладку "Регистрация"
-  if (tabRegister) {
-    tabRegister.addEventListener('click', function() {
-      // Если уже в режиме регистрации — не делаем ничего
-      if (!isLoginMode) return;
-      
-      // Меняем режим
-      isLoginMode = false;
-      
-      // Обновляем формы
-      document.getElementById('loginFields').style.display = 'none';
-      document.getElementById('registerFields').style.display = 'flex';
-      
-      // Обновляем заголовок
-      document.getElementById('authTitle').innerHTML = '📝 Регистрация';
-      
-      // Обновляем текст переключения внизу
-      document.getElementById('authSwitchText').innerHTML = 'Уже есть аккаунт? <span id="authSwitchLink">Войти</span>';
-      document.getElementById('authSwitchLink').addEventListener('click', toggleAuthMode);
-      
-      // Обновляем активную вкладку
-      tabRegister.classList.add('active');
-      tabLogin.classList.remove('active');
-      
-      // Скрываем ошибку
-      document.getElementById('authError').style.display = 'none';
-    });
-  }
-});
 
 // ====== FINISH LOGIN ======
 function finishLogin() {
@@ -922,7 +939,6 @@ function loadUsersForManagement() {
              '</span></div>';
     }).join('');
     
-    // Обработчики кнопок
     el.querySelectorAll('[data-action="toggleGod"]').forEach(function(btn) {
       btn.addEventListener('click', function() {
         const uid = this.dataset.uid;
@@ -1040,7 +1056,6 @@ function updateProfile() {
   else if (App.user.role === 'creator') { b.className = 'badge badge-creator'; b.innerHTML = '🌌 Создатель'; n.className = 'name-creator'; }
   else { b.className = 'badge badge-manager'; b.innerHTML = '📦 Сотрудник'; n.className = 'name-manager'; }
   updateAvatars();
-  // Показываем вкладку пользователей только создателю
   var usersTab = $('#settingsUsersTab');
   if (usersTab) usersTab.style.display = App.isCreator ? 'inline-block' : 'none';
 }
@@ -1098,7 +1113,7 @@ function renderTab(id) {
   p.dataset.loaded = '1';
 }
 
-// ====== SHIFT (упрощённо) ======
+// ====== SHIFT ======
 function renderShift(p) {
   p.innerHTML = '<div class="card" id="shiftCard"><div class="card-title">⏱ Текущая смена</div><div id="shiftContent">Загрузка...</div></div><button class="btn-gray" id="shiftLogoutBtn" style="margin-top:8px;width:100%;padding:12px;border-radius:12px;background:#444;color:#fff;font-weight:bold;border:none;cursor:pointer;">↩ Выйти</button>';
   $('#shiftLogoutBtn').addEventListener('click', function(){ if(confirm('Выйти из аккаунта?')) logout(); });
@@ -1214,7 +1229,7 @@ function clearNotifs(){ DB.ref('notifications').orderByChild('user').equalTo(App
 function renderBoard(p){ p.innerHTML = '<div class="section-title" style="font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;">🏆 Доска почёта</div><div id="boardContent">Загрузка...</div>'; loadBoard(); }
 function loadBoard(){ DB.ref('shifts').once('value').then(function(s){ var st={}; s.forEach(function(c){ var x=c.val(); if(!st[x.user]) st[x.user] = {hours:0, tovar:0}; st[x.user].hours += x.hours||0; st[x.user].tovar += x.tovar||0; }); var arr=[]; for(var n in st) arr.push({name:n, hours:st[n].hours, tovar:st[n].tovar}); arr.sort(function(a,b){ return b.hours - a.hours; }); var hh=''; for(var i=0; i<Math.min(arr.length,5); i++){ var m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'📌'; hh+='<div class="lb-item" style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg3);border-radius:12px;margin-bottom:6px;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;">'+m+'</span> '+esc(arr[i].name)+' — <b>'+arr[i].hours.toFixed(1)+'ч</b></div>'; } arr.sort(function(a,b){ return b.tovar - a.tovar; }); var ht=''; for(var i=0; i<Math.min(arr.length,5); i++){ var m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'📌'; ht+='<div class="lb-item" style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg3);border-radius:12px;margin-bottom:6px;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;">'+m+'</span> '+esc(arr[i].name)+' — <b>'+arr[i].tovar+' шт</b></div>'; } var best=arr.length ? '<div class="lb-item" style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg3);border-radius:12px;margin-bottom:6px;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;background:linear-gradient(135deg,#f5c518,#ff6b00);color:#fff;">🌟</span> '+esc(arr[0].name)+' — '+arr[0].hours.toFixed(1)+'ч / '+arr[0].tovar+' шт</div>' : 'Нет данных'; $('#boardContent').innerHTML = '<div class="card" style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;backdrop-filter:blur(8px);"><div class="card-title" style="font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px;">⏱ Топ по часам</div>'+ (hh||'<div class="muted" style="color:var(--muted);">Нет данных</div>') +'</div><div class="card" style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;backdrop-filter:blur(8px);"><div class="card-title" style="font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px;">📦 Топ по товарам</div>'+ (ht||'<div class="muted" style="color:var(--muted);">Нет данных</div>') +'</div><div class="card" style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;backdrop-filter:blur(8px);"><div class="card-title" style="font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px;">🌟 Работник месяца</div>'+best+'</div>'; }).catch(function(e){ toast('❌ Ошибка: '+e.message, true); }); }
 
-// ====== POWER (creator only) ======
+// ====== POWER ======
 function renderPower(p) {
   p.innerHTML = '<div class="section-title" style="font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;">⚡ Сила создателя</div><div class="creator-thought-box" style="background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(0,212,255,.1));border:1px solid rgba(124,58,237,.4);border-radius:14px;padding:14px;margin-bottom:12px;"><div style="font-size:12px;color:var(--muted);margin-bottom:6px;">🌌 Отправить мысль создателя</div><div style="display:flex;gap:8px;"><input type="text" id="creatorThoughtInput" placeholder="Ваша мысль..." style="flex:1;padding:9px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;"><button class="btn-primary" id="thoughtSendCreatorBtn" style="padding:9px 14px;border-radius:12px;font-size:14px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;">✉</button></div></div></div>';
   $('#thoughtSendCreatorBtn').addEventListener('click', function() {
@@ -1226,7 +1241,7 @@ function renderPower(p) {
   });
 }
 
-// ====== ANNOUNCE (god only) ======
+// ====== ANNOUNCE ======
 function renderAnnounce(p) {
   p.innerHTML = '<div class="section-title" style="font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;">📜 Объявления</div><div class="card" style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;backdrop-filter:blur(8px);"><div class="card-title" style="font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px;">➕ Новое объявление</div><textarea id="announceText" placeholder="Текст объявления..." style="width:100%;padding:10px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;resize:none;height:80px;"></textarea><div style="display:flex;gap:8px;align-items:center;margin-top:8px;"><select id="announceExpiryType" style="flex:1;padding:12px 14px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;"><option value="forever">Навсегда</option><option value="hours">Часы</option><option value="days">Дни</option></select><input id="announceExpiryValue" type="number" placeholder="Кол-во" value="24" style="flex:1;padding:12px 14px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;"></div><button class="btn-primary mt-8" id="addAnnounceBtn" style="padding:12px;border-radius:14px;font-size:15px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;width:100%;">📜 Опубликовать</button></div><div id="announceList">Загрузка...</div>';
   $('#addAnnounceBtn').addEventListener('click', addAnnounce);
@@ -1237,7 +1252,7 @@ function loadAnnounces(){ var el = $('#announceList'); if(!el) return; DB.ref('a
 
 function addAnnounce(){ var t=$('#announceText').value.trim(); if(!t){ toast('❌ Введите текст', true); return; } var type=$('#announceExpiryType').value, val=parseInt($('#announceExpiryValue').value)||24, exp=null; if(type==='hours') exp=Date.now()+val*3600000; else if(type==='days') exp=Date.now()+val*86400000; DB.ref('announce').push({ text: t, timestamp: Date.now(), expiry: exp }).then(function(){ $('#announceText').value=''; loadAnnounces(); divine(t); toast('📜 Послание свыше!'); }).catch(function(e){ toast('❌ Ошибка: '+e.message, true); }); }
 
-// ====== PUNKTS, WORKERS, SALARY (god only) — упрощённо ======
+// ====== PUNKTS, WORKERS, SALARY ======
 function renderPunkts(p) { p.innerHTML = '<div class="section-title" style="font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;">📍 Пункты выдачи</div><div id="punktsContent">Загрузка...</div>'; loadPunktsSimple(); }
 function loadPunktsSimple() {
   DB.ref('punkts').once('value').then(function(s) {
@@ -1304,7 +1319,7 @@ function saveSettings() {
   closeSettings();
 }
 
-// ====== CHAT (упрощённо) ======
+// ====== CHAT ======
 function toggleChat(){ var c=$('#chat'), a=$('#chatArrow'), i=$('#chatInputBar'); if(c.classList.contains('hidden')){ c.classList.remove('hidden'); App.chatOpened=true; a.classList.add('open'); if(i) i.style.display='flex'; App.lastChatTimestamp=Date.now(); App.unreadCount=0; updateBadge(); setTimeout(function(){ c.scrollTop=c.scrollHeight; },100); } else { c.classList.add('hidden'); App.chatOpened=false; a.classList.remove('open'); if(i) i.style.display='none'; } }
 function updateBadge(){ var b=$('#chatBadge'); if(App.unreadCount>0){ b.style.display='inline'; b.textContent=App.unreadCount; } else { b.style.display='none'; } }
 
