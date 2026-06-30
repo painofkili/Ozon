@@ -9,17 +9,12 @@
 html,body{overflow:hidden;height:100vh;width:100vw}
 body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;color:#eee;font-size:16px;background:#0a0a1a;display:flex;flex-direction:column}
 #bgCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1000;display:block}
-
-/* ====== ТЕМЫ (3 в 1) ====== */
 :root{--accent:#7c3aed;--accent2:#a855f7;--gold:#f5c518;--bg2:rgba(20,20,50,0.85);--bg3:rgba(30,30,60,0.7);--border:rgba(100,80,220,0.25);--text:#e8e8ff;--muted:#888;--green:#22c55e;--red:#ef4444}
 body.theme-creator{--accent:#7c3aed;--accent2:#00d4ff;--gold:#f5c518}
 body.theme-god{--accent:#b8860b;--accent2:#ffd700;--gold:#ffd700}
-
-/* ====== БАЗА ====== */
 .app-container{display:flex;width:100%;height:100vh;position:relative;z-index:1;justify-content:center;overflow:hidden}
 .main-content{width:100%;max-width:720px;padding:12px 16px;display:flex;flex-direction:column;padding-bottom:70px;height:100%}
 .profile-row,.tabs,.tab-content,.announce-block,.thought-block,.chat-header-bar{flex-shrink:0}
-
 .profile-row{display:flex;align-items:center;gap:14px;margin-bottom:12px;padding:8px 0}
 .badge{font-size:12px;font-weight:bold;padding:4px 10px;border-radius:12px;display:inline-block;letter-spacing:.5px}
 .badge-creator{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff}
@@ -28,8 +23,6 @@ body.theme-god{--accent:#b8860b;--accent2:#ffd700;--gold:#ffd700}
 .name-creator{background:linear-gradient(135deg,var(--gold),var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold}
 .name-god{background:linear-gradient(135deg,#FFD700,#FF8C00,#FF4500);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold}
 .name-manager{color:#eee;font-weight:bold}
-
-/* ====== КАРТОЧКИ ====== */
 .card,.stat-card,.pinned,.announce-block,.thought-block{background:var(--bg2);padding:14px;border-radius:14px;margin:6px 0;backdrop-filter:blur(10px);border:1px solid var(--border);overflow:visible}
 input,select,textarea{width:100%;padding:12px 14px;font-size:15px;margin:6px 0;border-radius:12px;border:1px solid #444;background:rgba(15,15,30,0.8);color:#fff;outline:none}
 input:focus,select:focus,textarea:focus{border-color:var(--accent)}
@@ -45,8 +38,6 @@ button:hover{filter:brightness(1.1)}
 .btn-cyan{background:#00BCD4;color:#fff;padding:12px;font-size:15px;margin:4px 0;width:100%}
 .btn-sm{padding:8px 14px;font-size:13px;border-radius:10px;width:auto}
 button:disabled{opacity:.5;cursor:default}
-
-/* ====== ТАБЫ ====== */
 .tabs{display:flex;gap:6px;margin:10px 0;overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
 .tabs button{width:44px;height:44px;display:flex;align-items:center;gap:.5rem;overflow:hidden;border-radius:999px;transition:width .3s,background .3s;background:rgba(255,255,255,.08);color:#ccc;border:1px solid transparent;cursor:pointer;padding:0 12px;font-size:13px;white-space:nowrap;flex-shrink:0}
@@ -57,8 +48,6 @@ button:disabled{opacity:.5;cursor:default}
 .tabs button:hover .menu-label,.tabs button.active .menu-label{opacity:1;max-width:80px;transform:translateX(0)}
 .tab-content{display:none;width:100%;flex-shrink:0}
 .tab-content.active-tab{display:block}
-
-/* ====== ЧАТ ====== */
 .chat-section{margin:8px 0 0;display:flex;flex-direction:column;flex:1;min-height:0}
 .chat-header-bar{display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:var(--bg2);border-radius:12px;border:1px solid var(--border);margin-bottom:6px;font-size:14px}
 .chat-header-bar:hover{background:var(--bg3)}
@@ -72,7 +61,6 @@ button:disabled{opacity:.5;cursor:default}
 #chat.hidden{flex:0;padding:0!important;margin-bottom:0!important;overflow:hidden;opacity:0;border:none;min-height:0}
 #chat::-webkit-scrollbar{width:6px}
 #chat::-webkit-scrollbar-thumb{background:rgba(138,43,226,.5);border-radius:4px}
-
 .chat-bubble-group{margin:2px 0;display:flex;flex-direction:column;position:relative;max-width:100%}
 .chat-bubble-group.mine{align-items:flex-end}
 .chat-bubble-group.other{align-items:flex-start}
@@ -98,8 +86,6 @@ button:disabled{opacity:.5;cursor:default}
 .photo-preview img{width:50px;height:50px;object-fit:cover;border-radius:8px}
 #photoViewer{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);display:none;align-items:center;justify-content:center;z-index:10000}
 #photoViewer img{max-width:95%;max-height:90%;border-radius:12px}
-
-/* ====== ИНПУТ ЧАТА ====== */
 .chat-input-bar{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:720px;background:rgba(10,10,26,.95);backdrop-filter:blur(15px);padding:8px 16px 16px;display:flex;gap:8px;align-items:center;z-index:100;border-top:1px solid var(--border)}
 .input-wrapper{position:relative;flex:1;display:flex}
 .sticker-toggle{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:0 0;border:none;font-size:20px;cursor:pointer;color:#aaa;padding:5px}
@@ -123,8 +109,6 @@ button:disabled{opacity:.5;cursor:default}
 .user-cb-item{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:14px}
 .user-cb-item input{width:auto;margin:0}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-
-/* ====== УВЕДОМЛЕНИЯ ====== */
 .toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:10000;pointer-events:none;display:flex;flex-direction:column;gap:8px}
 .toast-msg{padding:12px 20px;border-radius:12px;background:rgba(20,20,35,.95);border:1px solid var(--accent);color:#fff;font-size:14px;font-weight:bold;box-shadow:0 5px 20px rgba(0,0,0,.6);transform:translateY(-20px);opacity:0;transition:all .3s;text-align:center;backdrop-filter:blur(5px)}
 .toast-msg.error{border-color:#ff1744}
@@ -140,8 +124,6 @@ button:disabled{opacity:.5;cursor:default}
 #toastCosmic .cosmic-box{background:rgba(10,10,30,.95);border:1px solid rgba(99,102,241,.4);border-radius:12px;padding:16px 20px;backdrop-filter:blur(20px);box-shadow:0 10px 40px rgba(0,0,0,.6),0 0 30px rgba(99,102,241,.1);position:relative}
 #toastCosmic .scanline{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(99,102,241,.3),transparent);animation:scanMove 2s linear infinite}
 @keyframes scanMove{0%{top:0;opacity:0}10%{opacity:1}90%{opacity:1}100%{top:100%;opacity:0}}
-
-/* ====== САЙДБАР ====== */
 .avatar-carousel{width:110px;background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;align-items:center;position:fixed;top:0;right:-130px;height:100vh;padding:50px 0 20px;z-index:1000;backdrop-filter:blur(15px);transition:right .3s cubic-bezier(.16,1,.3,1);box-shadow:-10px 0 30px rgba(0,0,0,.7)}
 .avatar-carousel.open{right:0}
 .avatar-carousel-inner{display:flex;flex-direction:column;align-items:center;width:100%;gap:12px;overflow-y:auto;height:100%;padding:10px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
@@ -157,8 +139,6 @@ button:disabled{opacity:.5;cursor:default}
 .avatar-item.active{box-shadow:0 0 15px rgba(138,43,226,.8)}
 .avatar-item.active img,.avatar-item.active .av-placeholder{border-color:var(--gold)}
 .avatar-item .online-dot{position:absolute;bottom:0;right:0;width:12px;height:12px;background:#4CAF50;border-radius:50%;border:2px solid #111;box-shadow:0 0 8px rgba(76,175,80,.8);z-index:2}
-
-/* ====== МИНИ-ПРОФИЛЬ ====== */
 .mini-profile{position:fixed;right:120px;top:50%;transform:translateY(-50%);background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px 16px 16px;width:250px;z-index:1100;display:none;backdrop-filter:blur(20px);box-shadow:0 10px 40px rgba(0,0,0,.8)}
 .mini-profile.show{display:block;animation:slideIn .2s ease-out}
 @keyframes slideIn{from{opacity:0;transform:translateY(-50%) translateX(20px)}to{opacity:1;transform:translateY(-50%) translateX(0)}}
@@ -173,15 +153,11 @@ button:disabled{opacity:.5;cursor:default}
 .mini-profile .mp-calendar div{padding:4px;border-radius:3px;background:rgba(255,255,255,.05)}
 .mini-profile .mp-calendar .mp-shift{background:#4CAF50;color:#fff;font-weight:bold}
 .mini-profile .mp-btn{width:100%;padding:10px;margin-top:8px;border-radius:10px;border:none;cursor:pointer;font-weight:bold;font-size:13px}
-
-/* ====== КАЛЕНДАРЬ ====== */
 .calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;font-size:12px;background:rgba(22,33,62,.5);border-radius:10px;padding:6px;border:1px solid var(--border);margin-bottom:8px;overflow:hidden}
 .calendar div{padding:6px;border-radius:4px;font-size:12px;overflow:hidden;text-overflow:ellipsis}
 .calendar .shift-day{background:#4CAF50;color:#fff;font-weight:bold;cursor:pointer}
 .calendar .today{border:2px solid #2196F3}
 .calendar .header{font-weight:bold;background:rgba(51,51,51,.7)}
-
-/* ====== РАБОЧИЕ СТИЛИ ====== */
 .worker-row{display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid var(--border);gap:4px;flex-wrap:wrap}
 .worker-row button{width:auto;padding:6px 10px;font-size:11px}
 .worker-row .creator-row{background:rgba(245,197,24,.15);border-left:3px solid var(--gold)}
@@ -205,8 +181,6 @@ button:disabled{opacity:.5;cursor:default}
 .punkt-list-wrap{max-height:300px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
 .punkt-list-wrap::-webkit-scrollbar{width:4px}
 .punkt-list-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
-
-/* ====== НАСТРОЙКИ ====== */
 .settings-tabs{display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid var(--border);padding-bottom:8px}
 .settings-tab{padding:8px 16px;border-radius:10px;background:0 0;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;border:none}
 .settings-tab.active{background:var(--accent);color:#fff}
@@ -216,7 +190,6 @@ button:disabled{opacity:.5;cursor:default}
 .settings-title{font-size:18px;font-weight:800;margin-bottom:16px;text-align:center}
 .settings-content{display:none}
 .settings-content.active{display:block}
-
 .avatar-preview-wrap{display:flex;justify-content:center;margin:12px 0}
 .avatar-preview-wrap .preview-container{position:relative;width:120px;height:120px}
 .avatar-preview-wrap .preview-container canvas{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:50%}
@@ -237,14 +210,10 @@ button:disabled{opacity:.5;cursor:default}
 .setting-color .hex{font-size:12px;color:var(--muted);font-family:monospace}
 .spinner{display:inline-block;width:20px;height:20px;border:3px solid rgba(255,255,255,.1);border-radius:50%;border-top-color:var(--accent);animation:spin .6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* ====== ЛОГИН ====== */
 #login{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;height:100vh;max-width:450px;margin:0 auto;position:relative;z-index:1}
 #login form{max-width:320px;width:100%;display:flex;flex-direction:column;align-items:center}
 #login input{width:100%;margin-bottom:8px;padding:14px;border-radius:12px;border:1px solid #444;background:rgba(15,15,30,.8);color:#fff;font-size:16px}
 #login .btn-gold{width:100%;margin-top:10px;padding:14px;border-radius:12px;background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff;font-weight:bold;font-size:16px;border:none;cursor:pointer}
-
-/* ====== АДАПТИВ ====== */
 @media(max-width:600px){
 .mini-profile{right:10px;left:10px;width:calc(100% - 20px);top:auto;bottom:80px;transform:none}
 .mini-profile.show{animation:slideUpMobile .2s ease-out}
@@ -264,7 +233,6 @@ button:disabled{opacity:.5;cursor:default}
 <body>
 
 <canvas id="bgCanvas"></canvas>
-
 <div id="toastContainer" class="toast-container"></div>
 <div id="photoViewer" onclick="this.style.display='none'"><img id="photoViewerImg" src=""></div>
 
@@ -298,8 +266,8 @@ button:disabled{opacity:.5;cursor:default}
 <div id="login">
   <h3 style="text-align:center;margin-bottom:12px;"><span style="font-size:20px;">📦 Вход в систему</span></h3>
   <form id="loginForm" onsubmit="return false;">
-    <input id="loginName" type="text" placeholder="Ваше имя">
-    <input id="loginPass" type="password" placeholder="Пароль">
+    <input id="loginName" type="text" placeholder="Ваше имя" autocomplete="username">
+    <input id="loginPass" type="password" placeholder="Пароль" autocomplete="current-password">
     <div id="loginLoading" style="display:none;margin:8px 0;"><div class="spinner"></div></div>
     <button class="btn-gold" id="loginBtn" type="button">🔑 Войти</button>
   </form>
@@ -310,7 +278,6 @@ button:disabled{opacity:.5;cursor:default}
   <div class="main-content" id="mainContent">
     <div id="announceBlock" class="announce-block" style="display:none"></div>
     <div id="thoughtBlock" class="thought-block" style="display:none"></div>
-    
     <div class="profile-row">
       <div class="avatar-wrapper" id="avatarWrapper">
         <div style="position:relative;width:76px;height:76px;">
@@ -325,11 +292,9 @@ button:disabled{opacity:.5;cursor:default}
       </div>
       <button class="btn-gray" id="settingsBtn" style="width:auto;padding:8px 14px;font-size:13px;">⚙️</button>
     </div>
-    
     <div class="tabs" id="tabsContainer"></div>
     <div id="tabContentContainer"></div>
     <div id="pinnedMessage" class="pinned" style="display:none"></div>
-    
     <div class="chat-section">
       <div class="chat-header-bar" id="chatHeader">
         <div class="chat-icon">💬</div>
@@ -341,7 +306,6 @@ button:disabled{opacity:.5;cursor:default}
       <div id="chat"></div>
     </div>
   </div>
-  
   <div class="chat-input-bar" id="chatInputBar">
     <div class="input-wrapper">
       <input id="chatMsgInput" placeholder="Сообщение..." style="padding-right:40px;">
@@ -355,12 +319,10 @@ button:disabled{opacity:.5;cursor:default}
     <input id="chatPhotoInput" type="file" accept="image/*" multiple style="display:none;">
     <button class="btn-gold" id="sendMsgBtn" style="width:auto;padding:12px 18px;">➤</button>
   </div>
-  
   <div class="avatar-carousel" id="avatarCarousel">
     <button class="sidebar-close-btn" id="sidebarCloseBtn">✕</button>
     <div class="avatar-carousel-inner" id="carouselInner"></div>
   </div>
-  
   <div class="mini-profile" id="miniProfile">
     <button class="mp-close-btn" id="mpCloseBtn">✕</button>
     <div id="mpAvatarContainer" style="position:relative;width:64px;height:64px;margin:0 auto;"></div>
@@ -380,10 +342,10 @@ button:disabled{opacity:.5;cursor:default}
       <button class="settings-tab" data-tab="avatar">🎨 Аватар</button>
     </div>
     <div id="settingsMain" class="settings-content active">
-      <div><label>Новое имя</label><input id="setName" placeholder="Оставьте пустым"></div>
-      <div><label>Новый пароль</label><input id="setPass" type="password" placeholder="Оставьте пустым"></div>
+      <div><label>Новое имя</label><input id="setName" placeholder="Оставьте пустым" autocomplete="off"></div>
+      <div><label>Новый пароль</label><input id="setPass" type="password" placeholder="Оставьте пустым" autocomplete="new-password"></div>
       <div><label>Пункт</label><select id="setPunkt"></select></div>
-      <div><label>ВК ID</label><input id="setVk" placeholder="265035511"></div>
+      <div><label>ВК ID</label><input id="setVk" placeholder="265035511" autocomplete="off"></div>
       <div style="display:flex;gap:8px;margin-top:8px;">
         <button class="btn-green" id="settingsSaveBtn">💾 Сохранить</button>
         <button class="btn-gray" id="settingsCloseBtn">Отмена</button>
@@ -494,6 +456,9 @@ firebase.initializeApp({
 });
 var DB = firebase.database();
 
+// ====== BASE_EMOJIS (перенесён в начало) ======
+var BASE_EMOJIS = ['😊','😉','😘','❤️','🤘','😓','💀','💪','🫠','😂','🤣','😆','😎','🗿','🤷','🤔','😏','🙏','😭','☕️','😴','🤬','👍','👎'];
+
 // ====== STATE ======
 var App = {
   user:null, onShift:false, shiftTimer:null,
@@ -505,7 +470,8 @@ var App = {
   avatarSettings:{style:'neutron',speed:1,size:1,glow:20,count:45,color1:'#6366f1',color2:'#a855f7',ringColor:'#7c3aed',ringThickness:'medium'},
   avatarImageData:null,
   globalStickerPacks:{}, currentStickerTab:'emoji', activePackIdForEdit:null,
-  chatListener:null, notifiedKeys:{}, VK_TOKEN:'', bgAnimId:null
+  chatListener:null, notifiedKeys:{}, VK_TOKEN:'', bgAnimId:null,
+  stickerCache:null
 };
 
 // ====== HELPERS ======
@@ -517,7 +483,7 @@ function divine(t){var el=$('#toastDivine'),c=$('#divineScrollContent'),m=$('#di
 function cosmic(t){var el=$('#toastCosmic'),m=$('#cosmicMsg');m.textContent='';el.classList.remove('show');clearTimeout(el._t);clearInterval(el._tw);setTimeout(function(){el.classList.add('show');var i=0;el._tw=setInterval(function(){if(i<t.length){m.textContent+=t.charAt(i);i++}else{clearInterval(el._tw)}},30)},100);el._t=setTimeout(function(){el.classList.remove('show')},6000)}
 function fmt(d){if(!d)return'';var n=new Date(d);return n.getDate()+'.'+(n.getMonth()+1)+'.'+n.getFullYear()}
 function sec(s){var h=Math.floor(s/3600),m=Math.floor((s%3600)/60),x=s%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(x).padStart(2,'0')}
-function sha256(s){var e=new TextEncoder(),d=e.encode(s);return crypto.subtle.digest('SHA-256',d).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0')}).join('')})}
+function sha256(s){if(!window.crypto||!window.crypto.subtle){toast('❌ Для входа требуется HTTPS',true);return Promise.reject('HTTPS required')}var e=new TextEncoder(),d=e.encode(s);return crypto.subtle.digest('SHA-256',d).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0')}).join('')})}
 function sendVk(v,m){if(!v||!App.VK_TOKEN)return;fetch('https://api.vk.com/method/messages.send?v=5.131&access_token='+App.VK_TOKEN+'&user_id='+v+'&random_id='+Date.now()+'&message='+encodeURIComponent(m)).catch(function(){})}
 
 // ====== WEBGL ======
@@ -552,6 +518,7 @@ var cfg=await DB.ref('config').once('value');var c=cfg.val()||{};
 var ch=c.creatorHash||'f5e9b69ce10f94f87e393a6a8d557762e8b0a6b7a97bd26f1ba4576f0b59ed06';
 var gh=c.godHash||'f8fc0b22985fd85d725e36258c96fdd02c080c35b97877c4752e46d6b2613a2e';
 var ih=await sha256(pass);
+if(!ih){$('#loginBtn').disabled=false;$('#loginLoading').style.display='none';return}
 if(name==='Костя'&&ih===ch){var s=await DB.ref('users/Костя').once('value');App.user=s.exists()?s.val():{name:'Костя'};App.user.role='creator';localStorage.setItem('ozon_session',JSON.stringify({name:'Костя',role:'creator',key:'Костя'}));finish();return}
 if(name==='Игорь'&&ih===gh){var s2=await DB.ref('users/Игорь').once('value');App.user=s2.exists()?s2.val():{name:'Игорь'};App.user.role='god';localStorage.setItem('ozon_session',JSON.stringify({name:'Игорь',role:'god',key:'Игорь'}));finish();return}
 var us=await DB.ref('users').orderByChild('name').equalTo(name).once('value');
@@ -639,7 +606,7 @@ function clearNotifs(){DB.ref('notifications').orderByChild('user').equalTo(App.
 function renderBoard(p){p.innerHTML='<div class="section-title" style="font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;">🏆 Доска почёта</div><div id="boardContent">Загрузка...</div>';loadBoard()}
 function loadBoard(){DB.ref('shifts').once('value').then(function(s){var st={};s.forEach(function(c){var x=c.val();if(!st[x.user])st[x.user]={hours:0,tovar:0};st[x.user].hours+=x.hours||0;st[x.user].tovar+=x.tovar||0});var arr=[];for(var n in st)arr.push({name:n,hours:st[n].hours,tovar:st[n].tovar});arr.sort(function(a,b){return b.hours-a.hours});var hh='';for(var i=0;i<Math.min(arr.length,5);i++){var m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'📌';hh+='<div class="lb-item" style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg3);border-radius:12px;margin-bottom:6px;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;">'+m+'</span> '+esc(arr[i].name)+' — <b>'+arr[i].hours.toFixed(1)+'ч</b></div>'}arr.sort(function(a,b){return b.tovar-a.tovar});var ht='';for(var i=0;i<Math.min(arr.length,5);i++){var m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'📌';ht+='<div class="lb-item" style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg3);border-radius:12px;margin-bottom:6px;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;">'+m+'</span> '+esc(arr[i].name)+' — <b>'+arr[i].tovar+' шт</b></div>'}var best=arr.length?'<div class="lb-item" style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg3);border-radius:12px;margin-bottom:6px;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;background:linear-gradient(135deg,#f5c518,#ff6b00);color:#fff;">🌟</span> '+esc(arr[0].name)+' — '+arr[0].hours.toFixed(1)+'ч / '+arr[0].tovar+' шт</div>':'Нет данных';$('#boardContent').innerHTML='<div class="card" style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;backdrop-filter:blur(8px);"><div class="card-title" style="font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px;">⏱ Топ по часам</div>'+ (hh||'<div class="muted" style="color:var(--muted);">Нет данных</div>') +'</div><div class="card" style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;backdrop-filter:blur(8px);"><div class="card-title" style="font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px;">📦 Топ по товарам</div>'+ (ht||'<div class="muted" style="color:var(--muted);">Нет данных</div>') +'</div><div class="card" style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;backdrop-filter:blur(8px);"><div class="card-title" style="font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px;">🌟 Работник месяца</div>'+best+'</div>'}).catch(function(e){toast('❌ Ошибка: '+e.message,true)})}
 
-// ====== POWER (creator only) ======
+// ====== POWER ======
 function renderPower(p){p.innerHTML='<div class="section-title" style="font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;">⚡ Сила создателя</div><div class="creator-thought-box" style="background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(0,212,255,.1));border:1px solid rgba(124,58,237,.4);border-radius:14px;padding:14px;margin-bottom:12px;"><div style="font-size:12px;color:var(--muted);margin-bottom:6px;">🌌 Отправить мысль создателя</div><div style="display:flex;gap:8px;"><input type="text" id="creatorThoughtInput" placeholder="Ваша мысль..." style="flex:1;padding:9px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;"><button class="btn-primary" id="thoughtSendCreatorBtn" style="padding:9px 14px;border-radius:12px;font-size:14px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;">✉</button></div></div><div class="power-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"><button class="power-btn" id="powerCallGodBtn" style="padding:14px;border-radius:14px;font-size:13px;font-weight:700;background:var(--bg3);border:1px solid var(--border);color:var(--text);display:flex;flex-direction:column;align-items:center;gap:6px;transition:all .2s;"><span style="font-size:24px;">📢</span>Вызвать бога</button><button class="power-btn" id="powerClownBtn" style="padding:14px;border-radius:14px;font-size:13px;font-weight:700;background:var(--bg3);border:1px solid var(--border);color:var(--text);display:flex;flex-direction:column;align-items:center;gap:6px;transition:all .2s;"><span style="font-size:24px;">🤡</span>Клоун дня</button><button class="power-btn" id="powerMonkeyBtn" style="padding:14px;border-radius:14px;font-size:13px;font-weight:700;background:var(--bg3);border:1px solid var(--border);color:var(--text);display:flex;flex-direction:column;align-items:center;gap:6px;transition:all .2s;"><span style="font-size:24px;">🐒</span>Обезьяна 24ч</button><button class="power-btn" id="powerAnnounceBtn" style="padding:14px;border-radius:14px;font-size:13px;font-weight:700;background:var(--bg3);border:1px solid var(--border);color:var(--text);display:flex;flex-direction:column;align-items:center;gap:6px;transition:all .2s;"><span style="font-size:24px;">📣</span>Объявление</button></div>';
 $('#thoughtSendCreatorBtn').addEventListener('click',function(){var t=$('#creatorThoughtInput').value.trim();if(!t){toast('❌ Введите мысль',true);return}DB.ref('creatorThought').set({text:t,timestamp:Date.now(),expiry:Date.now()+86400000}).then(function(){$('#creatorThoughtInput').value='';cosmic(t);toast('🌌 Мысль отправлена!')}).catch(function(e){toast('❌ Ошибка: '+e.message,true)})});
 $('#powerCallGodBtn').addEventListener('click',function(){DB.ref('announce').push({text:'📢 Создатель вызывает Игоря!',timestamp:Date.now(),expiry:Date.now()+3600000}).then(function(){toast('📢 Бог вызван!')}).catch(function(e){toast('❌ Ошибка: '+e.message,true)})});
@@ -647,33 +614,83 @@ $('#powerClownBtn').addEventListener('click',function(){var n=prompt('Имя к�
 $('#powerMonkeyBtn').addEventListener('click',function(){var n=prompt('Кого превратить в обезьяну?');if(!n)return;DB.ref('users/'+n).once('value').then(function(s){if(!s.exists()){toast('❌ Пользователь не найден',true);return}var o=s.val().avatar;return DB.ref('users/'+n+'/avatar').set('https://raw.githubusercontent.com/painofkili/ozon/main/monkey.png').then(function(){return DB.ref('chat').push({user:(App.user.role==='god'?'👑 ':'🌌 ')+App.user.name,text:'🐒 '+n+' теперь обезьяна на 24 часа!',timestamp:Date.now()})}).then(function(){setTimeout(function(){DB.ref('users/'+n+'/avatar').set(o).catch(function(){})},86400000);toast('🐒 Превращение завершено!')})}).catch(function(e){toast('❌ Ошибка: '+e.message,true)})});
 $('#powerAnnounceBtn').addEventListener('click',function(){var t=prompt('Текст объявления:');if(!t)return;DB.ref('announce').push({text:t,timestamp:Date.now(),expiry:Date.now()+7*86400000}).then(function(){toast('📣 Объявление отправлено!')}).catch(function(e){toast('❌ Ошибка: '+e.message,true)})})}
 
-// ====== ANNOUNCE (god only) ======
+// ====== ANNOUNCE ======
 function renderAnnounce(p){p.innerHTML='<div class="section-title" style="font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;">📜 Объявления</div><div class="card" style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;backdrop-filter:blur(8px);"><div class="card-title" style="font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px;">➕ Новое объявление</div><textarea id="announceText" placeholder="Текст объявления..." style="width:100%;padding:10px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;resize:none;height:80px;"></textarea><div style="display:flex;gap:8px;align-items:center;margin-top:8px;"><select id="announceExpiryType" style="flex:1;padding:12px 14px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;"><option value="forever">Навсегда</option><option value="hours">Часы</option><option value="days">Дни</option></select><input id="announceExpiryValue" type="number" placeholder="Кол-во" value="24" style="flex:1;padding:12px 14px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;"></div><button class="btn-primary mt-8" id="addAnnounceBtn" style="padding:12px;border-radius:14px;font-size:15px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;width:100%;">📜 Опубликовать</button></div><div id="announceList">Загрузка...</div>';$('#addAnnounceBtn').addEventListener('click',addAnnounce);loadAnnounces()}
 function loadAnnounces(){var el=$('#announceList');if(!el)return;DB.ref('announce').once('value').then(function(s){if(!s.exists()){el.innerHTML='<div class="empty-state" style="text-align:center;padding:24px;color:var(--muted);font-size:14px;">📭 Нет объявлений</div>';return}var items=[];s.forEach(function(c){var a=c.val();if(!a.expiry||Date.now()<a.expiry)items.push({id:c.key,data:a})});items.sort(function(a,b){return b.data.timestamp-a.data.timestamp});if(!items.length){el.innerHTML='<div class="empty-state" style="text-align:center;padding:24px;color:var(--muted);font-size:14px;">📭 Нет объявлений</div>';return}var canDel=App.user.role==='god';el.innerHTML=items.map(function(item){return'<div class="announce-card" style="background:rgba(200,150,0,.12);border:1px solid rgba(200,150,0,.4);border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 0 20px rgba(200,150,0,.1);"><div style="font-size:14px;line-height:1.6;color:#ffd700;">📜 '+esc(item.data.text)+'</div><div class="announce-meta" style="font-size:11px;color:var(--muted);margin-top:6px;display:flex;justify-content:space-between;"><span>'+fmt(item.data.timestamp)+'</span>'+(canDel?'<button class="delAnnounceBtn" data-id="'+item.id+'" style="background:none;color:var(--red);font-size:12px;border:none;cursor:pointer;">🗑 Удалить</button>':'')+'</div></div>'}).join('');$$('.delAnnounceBtn').forEach(function(b){b.addEventListener('click',function(){var id=this.dataset.id;DB.ref('announce/'+id).remove().then(function(){loadAnnounces();toast('🗑 Удалено')}).catch(function(e){toast('❌ Ошибка: '+e.message,true)})})})}).catch(function(e){toast('❌ Ошибка: '+e.message,true)})}
 function addAnnounce(){var t=$('#announceText').value.trim();if(!t){toast('❌ Введите текст',true);return}var type=$('#announceExpiryType').value,val=parseInt($('#announceExpiryValue').value)||24,exp=null;if(type==='hours')exp=Date.now()+val*3600000;else if(type==='days')exp=Date.now()+val*86400000;DB.ref('announce').push({text:t,timestamp:Date.now(),expiry:exp}).then(function(){$('#announceText').value='';loadAnnounces();divine(t);toast('📜 Послание свыше!')}).catch(function(e){toast('❌ Ошибка: '+e.message,true)})}
 
-// ====== PUNKTS (god only) ======
+// ====== PUNKTS ======
 function renderPunkts(p){p.innerHTML='<div class="section-title" style="font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;">📍 Пункты выдачи</div><div class="card" style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;backdrop-filter:blur(8px);"><div class="punkt-form-toggle" id="punktFormToggle" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:12px 14px;background:var(--bg3);border-radius:12px;border:1px solid var(--border);"><span style="font-weight:600;">➕ Добавить пункт</span><span class="arrow" id="punktFormArrow">▼</span></div><div class="punkt-form-body" id="punktFormBody"><div class="field" style="margin-bottom:12px;"><label style="display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;">ID пункта (например 49)</label><input type="text" id="pAddId" placeholder="49" style="width:100%;padding:12px 14px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;"></div><div class="field" style="margin-bottom:12px;"><label style="display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;">Название</label><input type="text" id="pAddName" placeholder="ПВЗ Центр" style="width:100%;padding:12px 14px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;"></div><div class="field" style="margin-bottom:12px;"><label style="display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;">Ставка ₽/ч</label><input type="number" id="pAddRate" placeholder="150" min="0" style="width:100%;padding:12px 14px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;"></div><button class="btn-primary" id="addPunktBtn" style="padding:12px;border-radius:14px;font-size:15px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;width:100%;">➕ Добавить</button></div></div><div class="punkt-list-wrap"><div id="punktsList">Загрузка...</div></div>';
 $('#punktFormToggle').addEventListener('click',function(){var b=$('#punktFormBody'),a=$('#punktFormArrow');b.classList.toggle('open');a.classList.toggle('open')});$('#addPunktBtn').addEventListener('click',addPunkt);loadPunkts()}
 function loadPunkts(){var el=$('#punktsList');if(!el)return;DB.ref('punkts').once('value').then(function(s){if(!s.exists()){el.innerHTML='<div class="empty-state" style="text-align:center;padding:24px;color:var(--muted);font-size:14px;">📍 Нет пунктов</div>';return}var items=[];s.forEach(function(c){items.push({id:c.key,data:c.val()})});el.innerHTML=items.map(function(item){return'<div class="card" style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;backdrop-filter:blur(8px);"><div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="font-size:15px;font-weight:700;">📍 '+esc(item.data.name||item.id)+'</div><div class="muted" style="font-size:13px;color:var(--muted);">Ставка: '+(item.data.rate||0)+'₽/ч</div></div><div style="display:flex;gap:6px;"><button class="btn-dark btn-sm editPunktBtn" data-id="'+item.id+'" data-rate="'+(item.data.rate||0)+'" style="padding:8px 14px;font-size:13px;border-radius:10px;width:auto;background:rgba(255,255,255,.08);color:var(--text);">✏️</button><button class="btn-danger btn-sm delPunktBtn" data-id="'+item.id+'" style="padding:8px 14px;font-size:13px;border-radius:10px;width:auto;background:var(--red);color:#fff;">🗑</button></div></div></div>'}).join('');$$('.editPunktBtn').forEach(function(b){b.addEventListener('click',function(){var id=this.dataset.id,cur=parseFloat(this.dataset.rate),r=prompt('Новая ставка ₽/ч:',cur);if(r===null)return;DB.ref('punkts/'+id+'/rate').set(parseFloat(r)||0).then(function(){loadPunkts();toast('✅ Ставка обновлена')}).catch(function(e){toast('❌ Ошибка: '+e.message,true)})})});$$('.delPunktBtn').forEach(function(b){b.addEventListener('click',function(){var id=this.dataset.id;if(!confirm('Удалить пункт?'))return;DB.ref('punkts/'+id).remove().then(function(){loadPunkts();toast('🗑 Удалён')}).catch(function(e){toast('❌ Ошибка: '+e.message,true)})})})}).catch(function(e){toast('❌ Ошибка: '+e.message,true)})}
 function addPunkt(){var id=$('#pAddId').value.trim(),name=$('#pAddName').value.trim()||'ПВЗ '+id,rate=parseFloat($('#pAddRate').value)||0;if(!id){toast('❌ Введите ID пункта',true);return}DB.ref('punkts/'+id).set({name:name,rate:rate}).then(function(){loadPunkts();$('#pAddId').value='';$('#pAddName').value='';$('#pAddRate').value='';toast('✅ Пункт добавлен')}).catch(function(e){toast('❌ Ошибка: '+e.message,true)})}
 
-// ====== WORKERS (god only) ======
+// ====== WORKERS ======
 function renderWorkers(p){p.innerHTML='<div class="section-title" style="font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;">👥 Сотрудники</div><div id="workersList">Загрузка...</div>';loadWorkers()}
 function loadWorkers(){var el=$('#workersList');if(!el)return;DB.ref('users').once('value').then(function(s){if(!s.exists()){el.innerHTML='<div class="empty-state" style="text-align:center;padding:24px;color:var(--muted);font-size:14px;">👤 Нет сотрудников</div>';return}var items=[];s.forEach(function(c){var u=c.val();if(u.name&&u.name!==App.user.name)items.push({key:c.key,data:u})});if(!items.length){el.innerHTML='<div class="empty-state" style="text-align:center;padding:24px;color:var(--muted);font-size:14px;">👤 Нет сотрудников</div>';return}el.innerHTML=items.map(function(item){var isC=item.data.name==='Костя',wav=item.data.avatar?'<img src="'+esc(item.data.avatar)+'" style="width:30px;height:30px;border-radius:50%;object-fit:cover;margin-right:6px;vertical-align:middle;">':'';return'<div class="worker-row'+(isC?' creator-row':'')+'" style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid var(--border);gap:4px;flex-wrap:wrap;"><span>'+wav+'<b>'+esc(item.data.name)+'</b>'+(isC?'<span class="creator-badge-sm">🌌 Создатель</span>':'')+'<br>Пункт '+(item.data.punkt||'?')+' | Надбавка: '+(item.data.bonus||0)+' ₽</span><span><button class="btn-orange setBonusBtn" data-key="'+item.key+'" data-name="'+esc(item.data.name)+'" data-bonus="'+(item.data.bonus||0)+'" style="width:auto;padding:6px 10px;font-size:11px;background:#FF9800;color:#fff;border:none;border-radius:10px;cursor:pointer;">💰</button>'+(isC?'<button class="btn-gold creatorPremiumBtn" style="width:auto;padding:6px 10px;font-size:11px;background:var(--gold);color:#000;border:none;border-radius:10px;cursor:pointer;">🎁</button><button class="btn-purple creatorPenaltyBtn" style="width:auto;padding:6px 10px;font-size:11px;background:#9C27B0;color:#fff;border:none;border-radius:10px;cursor:pointer;">⚠️</button><button class="btn-red creatorDeleteBtn" style="width:auto;padding:6px 10px;font-size:11px;background:var(--red);color:#fff;border:none;border-radius:10px;cursor:pointer;">✕</button>':'<button class="btn-gold openPremiumBtn" data-name="'+esc(item.data.name)+'" style="width:auto;padding:6px 10px;font-size:11px;background:var(--gold);color:#000;border:none;border-radius:10px;cursor:pointer;">🎁</button><button class="btn-purple openPunishBtn" data-name="'+esc(item.data.name)+'" style="width:auto;padding:6px 10px;font-size:11px;background:#9C27B0;color:#fff;border:none;border-radius:10px;cursor:pointer;">⚠️</button><button class="btn-red deleteWorkerBtn" data-key="'+item.key+'" data-name="'+esc(item.data.name)+'" style="width:auto;padding:6px 10px;font-size:11px;background:var(--red);color:#fff;border:none;border-radius:10px;cursor:pointer;">✕</button>')+'</span></div>'}).join('');
 $$('.setBonusBtn').forEach(function(b){b.addEventListener('click',function(){var k=this.dataset.key,n=this.dataset.name,c=parseInt(this.dataset.bonus),v=prompt('Надбавка для '+n+':',c);if(v!==null&&!isNaN(parseInt(v))){DB.ref('users/'+k+'/bonus').set(parseInt(v)).then(function(){loadWorkers()}).catch(function(e){toast('❌ Ошибка: '+e.message,true)})}})});
 $$('.creatorPremiumBtn, .creatorPenaltyBtn, .creatorDeleteBtn').forEach(function(b){b.addEventListener('click',function(){toast('🌌 Создатель — вне иерархии!')})});
-$$('.openPremiumBtn').forEach(function(b){b.addEventListener('click',function(){openPremium(this.dataset.name)})});
-$$('.openPunishBtn').forEach(function(b){b.addEventListener('click',function(){openPunish(this.dataset.name)})});
+$$('.openPremiumBtn').forEach(function(b){b.addEventListener('click',function(){openPremiumPanel(this.dataset.name)})});
+$$('.openPunishBtn').forEach(function(b){b.addEventListener('click',function(){openPunishPanel(this.dataset.name)})});
 $$('.deleteWorkerBtn').forEach(function(b){b.addEventListener('click',function(){var k=this.dataset.key,n=this.dataset.name;if(n==='Костя'){toast('🌌 Создатель — вне иерархии!');return}if(!confirm('Удалить '+n+'?'))return;DB.ref('shifts').orderByChild('user').equalTo(n).once('value').then(function(s){var ps=[];s.forEach(function(c){ps.push(DB.ref('shifts/'+c.key).remove())});return Promise.all(ps)}).then(function(){return DB.ref('users/'+k).remove()}).then(function(){loadWorkers();toast('🗑 Удалён')}).catch(function(e){toast('❌ Ошибка: '+e.message,true)})})})}).catch(function(e){toast('❌ Ошибка: '+e.message,true)})}
 
-// ====== PREMIUM & PUNISH ======
-function openPremium(user){App.currentPremiumUser=user;var h='<div class="card" style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;backdrop-filter:blur(8px);"><h4 style="font-size:15px;font-weight:700;margin-bottom:12px;">🎁 Премии: '+esc(user)+'</h4><div id="premiumList"></div><div style="display:flex;gap:4px;margin-top:8px;"><input id="premiumAmount" type="number" placeholder="Сумма" style="flex:1;padding:12px 14px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;"><button class="btn-gold" id="addPremiumBtn" style="width:auto;padding:12px 14px;border-radius:12px;background:var(--gold);color:#000;font-weight:bold;">🎁 Выдать</button></div><button class="btn-gray mt-8" id="premiumBackBtn" style="padding:12px;border-radius:14px;font-size:15px;font-weight:700;background:#444;color:#fff;width:100%;">↩ Назад</button></div>';$('#tabContentContainer').innerHTML=h;$('#addPremiumBtn').addEventListener('click',function(){var am=parseInt($('#premiumAmount').value);if(!am||isNaN(am)){toast('❌ Введи сумму!',true);return}var st=getGodStatus(App.godRating),texts=PREMIUM_TEXTS[st.name]||['+{sum}₽'],msg=randomText(texts,am);DB.ref('premiums').push({user:App.currentPremiumUser,amount:am,timestamp:Date.now()}).then(function(){return DB.ref('notifications').push({user:App.currentPremiumUser,text:msg,timestamp:Date.now()})}).then(function(){App.godRating+=2;updateGodUI();$('#premiumAmount').value='';loadPremiums();toast('✅ Премия '+am+'₽ для '+App.currentPremiumUser)}).catch(function(e){toast('❌ Ошибка: '+e.message,true)})});$('#premiumBackBtn').addEventListener('click',function(){renderTabs();var a=document.querySelector('#tabsContainer .active');if(a)renderTab(a.dataset.tab)});loadPremiums()}
-function loadPremiums(){if(!App.currentPremiumUser)return;DB.ref('premiums').orderByChild('user').equalTo(App.currentPremiumUser).on('value',function(s){var el=$('#premiumList');if(!el)return;var items=[];s.forEach(function(c){items.push({key:c.key,data:c.val()})});el.innerHTML=items.length?items.map(function(item){return'<div class="punish-row" style="display:flex;justify-content:space-between;align-items:center;padding:6px;font-size:13px;border-bottom:1px solid var(--border);"><span>'+item.data.amount+' ₽</span><button class="delPremiumBtn" data-id="'+item.key+'" style="width:auto;padding:4px 8px;font-size:10px;background:var(--red);color:#fff;border:none;border-radius:6px;cursor:pointer;">✕</button></div>'}).join(''):'<p style="color:var(--muted);font-size:13px;">Нет премий</p>';$$('.delPremiumBtn').forEach(function(b){b.addEventListener('click',function(){if(!confirm('Удалить премию?'))return;DB.ref('premiums/'+this.dataset.id).remove().then(function(){recountRating()}).catch(function(e){toast('❌ Ошибка: '+e.message,true)})})})})}
-function openPunish(user){if(user==='Костя'){toast('🌌 Создатель — вне иерархии!');return}App.currentPunish=user;var h='<div class="card" style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;backdrop-filter:blur(8px);"><h4 style="font-size:15px;font-weight:700;margin-bottom:12px;">⚠️ Штрафы: '+esc(user)+'</h4><div id="punishList"></div><div style="display:flex;gap:4px;margin-top:8px;"><input id="punishAmount" type="number" placeholder="Сумма" style="flex:1;padding:12px 14px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;"><input id="punishReason" placeholder="Причина" style="flex:2;padding:12px 14px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;"><button class="btn-red" id="addPunishBtn" style="width:auto;padding:12px 14px;border-radius:12px;background:var(--red);color:#fff;font-weight:bold;">+ Штраф</button></div><button class="btn-gray mt-8" id="punishBackBtn" style="padding:12px;border-radius:14px;font-size:15px;font-weight:700;background:#444;color:#fff;width:100%;">↩ Назад</button></div>';$('#tabContentContainer').innerHTML=h;$('#addPunishBtn').addEventListener('click',function(){var am=parseInt($('#punishAmount').value),r=$('#punishReason').value.trim();if(!am||isNaN(am)||!r){toast('❌ Введи сумму и причину!',true);return}var st=getGodStatus(App.godRating),texts=PUNISH_TEXTS[st.name]||['-{sum}₽'],msg=randomText(texts,am);DB.ref('punishes').push({user:App.currentPunish,amount:am,reason:r,timestamp:Date.now()}).then(function(){return DB.ref('notifications').push({user:App.currentPunish,text:msg,timestamp:Date.now()})}).then(function(){App.godRating-=1;if(App.godRating<0)App.godRating=0;updateGodUI();$('#punishAmount').value='';$('#punishReason').value='';loadPunishes();toast('💀 Штраф '+am+'₽ для '+App.currentPunish)}).catch(function(e){toast('❌ Ошибка: '+e.message,true)})});$('#punishBackBtn').addEventListener('click',function(){renderTabs();var a=document.querySelector('#tabsContainer .active');if(a)renderTab(a.dataset.tab)});loadPunishes()}
-function loadPunishes(){if(!App.currentPunish)return;DB.ref('punishes').orderByChild('user').equalTo(App.currentPunish).on('value',function(s){var el=$('#punishList');if(!el)return;var items=[];s.forEach(function(c){items.push({key:c.key,data:c.val()})});el.innerHTML=items.length?items.map(function(item){return'<div class="punish-row" style="display:flex;justify-content:space-between;align-items:center;padding:6px;font-size:13px;border-bottom:1px solid var(--border);"><span>'+item.data.amount+' ₽ — '+esc(item.data.reason)+'</span><button class="delPunishBtn" data-id="'+item.key+'" style="width:auto;padding:4px 8px;font-size:10px;background:var(--red);color:#fff;border:none;border-radius:6px;cursor:pointer;">✕</button></div>'}).join(''):'<p style="color:var(--muted);font-size:13px;">Нет штрафов</p>';$$('.delPunishBtn').forEach(function(b){b.addEventListener('click',function(){if(!confirm('Удалить штраф?'))return;DB.ref('punishes/'+this.dataset.id).remove().then(function(){recountRating()}).catch(function(e){toast('❌ Ошибка: '+e.message,true)})})})})}
+// ====== PREMIUM & PUNISH (объединены) ======
+function openPremiumPanel(user){App.currentPremiumUser=user;openRewardPanel('premium',user)}
+function openPunishPanel(user){if(user==='Костя'){toast('🌌 Создатель — вне иерархии!');return}App.currentPunish=user;openRewardPanel('punish',user)}
 
-// ====== SALARY (god only) ======
+function openRewardPanel(type,user){
+var isPremium=type==='premium';
+var title=isPremium?'🎁 Премии: ':'⚠️ Штрафы: ';
+var listId=isPremium?'premiumList':'punishList';
+var amountId=isPremium?'premiumAmount':'punishAmount';
+var reasonId=isPremium?'':'punishReason';
+var addBtnId=isPremium?'addPremiumBtn':'addPunishBtn';
+var backBtnId=isPremium?'premiumBackBtn':'punishBackBtn';
+var dataRef=isPremium?DB.ref('premiums'):DB.ref('punishes');
+var notifyRef=isPremium?DB.ref('premiums'):DB.ref('punishes');
+var godDelta=isPremium?2:-1;
+var labels=isPremium?PREMIUM_TEXTS:PUNISH_TEXTS;
+
+var reasonHtml=isPremium?'':'<input id="punishReason" placeholder="Причина" style="flex:2;padding:12px 14px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;">';
+var h='<div class="card" style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;backdrop-filter:blur(8px);"><h4 style="font-size:15px;font-weight:700;margin-bottom:12px;">'+title+esc(user)+'</h4><div id="'+listId+'"></div><div style="display:flex;gap:4px;margin-top:8px;"><input id="'+amountId+'" type="number" placeholder="Сумма" style="flex:1;padding:12px 14px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;">'+reasonHtml+'<button class="btn-gold" id="'+addBtnId+'" style="width:auto;padding:12px 14px;border-radius:12px;background:'+(isPremium?'var(--gold)':'var(--red)')+';color:'+(isPremium?'#000':'#fff')+';font-weight:bold;">'+(isPremium?'🎁 Выдать':'+ Штраф')+'</button></div><button class="btn-gray mt-8" id="'+backBtnId+'" style="padding:12px;border-radius:14px;font-size:15px;font-weight:700;background:#444;color:#fff;width:100%;">↩ Назад</button></div>';
+$('#tabContentContainer').innerHTML=h;
+
+$('#'+addBtnId).addEventListener('click',function(){
+var am=parseInt($('#'+amountId).value);
+var r=isPremium?'':$('#punishReason').value.trim();
+if(!am||isNaN(am)){toast('❌ Введи сумму!',true);return}
+if(!isPremium&&!r){toast('❌ Введи причину!',true);return}
+var st=getGodStatus(App.godRating);
+var texts=labels[st.name]||[(isPremium?'+{sum}₽':'-{sum}₽')];
+var msg=randomText(texts,am);
+var obj={user:isPremium?App.currentPremiumUser:App.currentPunish,amount:am,timestamp:Date.now()};
+if(!isPremium)obj.reason=r;
+dataRef.push(obj).then(function(){
+return DB.ref('notifications').push({user:isPremium?App.currentPremiumUser:App.currentPunish,text:msg,timestamp:Date.now()});
+}).then(function(){
+App.godRating+=godDelta;if(App.godRating<0)App.godRating=0;updateGodUI();
+$('#'+amountId).value='';if(!isPremium)$('#punishReason').value='';
+loadRewards(type,listId);
+toast((isPremium?'✅ Премия':'💀 Штраф')+' '+am+'₽ для '+user);
+}).catch(function(e){toast('❌ Ошибка: '+e.message,true)});
+});
+
+$('#'+backBtnId).addEventListener('click',function(){renderTabs();var a=document.querySelector('#tabsContainer .active');if(a)renderTab(a.dataset.tab)});
+loadRewards(type,listId);
+}
+
+function loadRewards(type,listId){
+var user=type==='premium'?App.currentPremiumUser:App.currentPunish;
+if(!user)return;
+var ref=type==='premium'?DB.ref('premiums'):DB.ref('punishes');
+ref.orderByChild('user').equalTo(user).on('value',function(s){
+var el=$('#'+listId);if(!el)return;var items=[];s.forEach(function(c){items.push({key:c.key,data:c.val()})});
+el.innerHTML=items.length?items.map(function(item){return'<div class="punish-row" style="display:flex;justify-content:space-between;align-items:center;padding:6px;font-size:13px;border-bottom:1px solid var(--border);"><span>'+item.data.amount+' ₽'+(type==='punish'?' — '+esc(item.data.reason):'')+'</span><button class="delRewardBtn" data-id="'+item.key+'" data-type="'+type+'" style="width:auto;padding:4px 8px;font-size:10px;background:var(--red);color:#fff;border:none;border-radius:6px;cursor:pointer;">✕</button></div>'}).join(''):'<p style="color:var(--muted);font-size:13px;">Нет '+(type==='premium'?'премий':'штрафов')+'</p>';
+$$('.delRewardBtn').forEach(function(b){b.addEventListener('click',function(){if(!confirm('Удалить?'))return;var ref2=this.dataset.type==='premium'?DB.ref('premiums'):DB.ref('punishes');ref2.child(this.dataset.id).remove().then(function(){recountRating()}).catch(function(e){toast('❌ Ошибка: '+e.message,true)})})});
+});
+}
+
+// ====== SALARY ======
 function renderSalary(p){p.innerHTML='<div class="section-title" style="font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;">💰 Расчёт зарплаты</div><div class="card" style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;backdrop-filter:blur(8px);"><div class="field" style="margin-bottom:12px;"><label style="display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;">Сотрудник</label><select id="calcUser" style="width:100%;padding:12px 14px;background:rgba(15,15,30,.9);border:1px solid var(--border);border-radius:12px;color:#fff;font-size:15px;"><option value="">— Выбери —</option></select></div><div id="calcBlock" style="display:none;"><div style="display:flex;gap:4px;"><input id="calcFrom" type="date" style="flex:1;padding:12px 14px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;"><span style="display:flex;align-items:center;color:var(--muted);">–</span><input id="calcTo" type="date" style="flex:1;padding:12px 14px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;"></div><div style="display:flex;gap:4px;margin-top:8px;"><button class="btn-cyan" id="addShiftSalaryBtn" style="flex:1;padding:12px;border-radius:12px;background:#00BCD4;color:#fff;font-weight:bold;border:none;">+ Смена</button><button class="btn-green" id="calcZPBtn" style="flex:1;padding:12px;border-radius:12px;background:#4CAF50;color:#fff;font-weight:bold;border:none;">🧮 Посчитать</button><button class="btn-blue" id="markPaidBtn" style="flex:1;padding:12px;border-radius:12px;background:#2196F3;color:#fff;font-weight:bold;border:none;">✅ Оплачено</button></div><div id="zpResult" class="zp-result" style="display:none;"></div><h4 style="margin-top:10px;font-size:14px;font-weight:700;">📅 Календарь смен</h4><div id="calHeader" style="text-align:center;margin-bottom:4px;font-size:13px;font-weight:600;"></div><div class="calendar" id="calcCalendar" style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;font-size:12px;background:rgba(22,33,62,.5);border-radius:10px;padding:6px;border:1px solid var(--border);margin-bottom:8px;overflow:hidden;"></div><div id="shiftDetail" style="margin-top:8px;"></div></div></div>';loadCalcUsers();$('#addShiftSalaryBtn').addEventListener('click',addShiftSalary);$('#calcZPBtn').addEventListener('click',calcZP);$('#markPaidBtn').addEventListener('click',markPaid)}
 function loadCalcUsers(){DB.ref('users').once('value').then(function(s){var sel=$('#calcUser');sel.innerHTML='<option value="">— Выбери —</option>';s.forEach(function(c){var u=c.val();if(u.name&&u.name!=='Костя'&&u.name!=='Игорь')sel.innerHTML+='<option value="'+esc(u.name)+'">'+esc(u.name)+'</option>'});sel.addEventListener('change',function(){var u=this.value,b=$('#calcBlock');b.style.display=u?'block':'none';if(u){var n=new Date(),f=new Date(n);f.setDate(n.getDate()-14);$('#calcFrom').value=f.toISOString().split('T')[0];$('#calcTo').value=n.toISOString().split('T')[0];$('#zpResult').style.display='none';loadShiftsCalc(u)}})}).catch(function(e){toast('❌ Ошибка: '+e.message,true)})}
 function loadShiftsCalc(user){DB.ref('shifts').orderByChild('user').equalTo(user).once('value').then(function(s){App.allShifts=[];s.forEach(function(c){var x=c.val();x._id=c.key;App.allShifts.push(x)});App.allShifts.sort(function(a,b){return new Date(b.timestamp)-new Date(a.timestamp)});renderCalendarCalc()}).catch(function(e){toast('❌ Ошибка: '+e.message,true)})}
@@ -708,7 +725,7 @@ function viewPack(pd){var parts=pd.split('|||'),v=$('#photoViewer'),im=$('#photo
 
 // ====== PRIVATE CHAT ======
 function openPrivateChat(){if(!App.selectedProfile||App.selectedProfile===App.user.name)return;App.privateChatWith=App.selectedProfile;$('#chatLabel').textContent='💬 '+App.selectedProfile;$('#chatBackBtn').style.display='inline-block';closeMiniProfile();$('#avatarCarousel').classList.remove('open');loadChat()}
-function switchGlobal(){App.privateChatWith=null;$('#chatLabel').textContent='Общий чат';$('#chatBackBtn').style.display='none';loadChat()}
+function switchGlobal(){if(App.chatListener){App.chatListener.off();App.chatListener=null}App.privateChatWith=null;$('#chatLabel').textContent='Общий чат';$('#chatBackBtn').style.display='none';loadChat()}
 function getPrivRef(){if(!App.privateChatWith)return DB.ref('chat');var u=[App.user.name,App.privateChatWith].sort();return DB.ref('privateChats/'+u[0]+'_'+u[1])}
 
 // ====== SIDEBAR ======
@@ -725,7 +742,7 @@ function loadThought(){DB.ref('creatorThought').on('value',function(s){var b=$('
 
 // ====== SETTINGS ======
 function openSettings(){$('#mainContent').style.display='none';$('#avatarCarousel').style.display='none';$('#settingsPanel').style.display='flex';$('#setVk').value=App.user.vkId||'';$('#setName').value='';$('#setPass').value='';loadPunktsSettings();updateSettingsUI();updatePreview()}
-function closeSettings(){$('#settingsPanel').style.display='none';$('#mainContent').style.display='flex';$('#avatarCarousel').style.display='flex'}
+function closeSettings(){App._settingsContext=null;$('#settingsPanel').style.display='none';$('#mainContent').style.display='flex';$('#avatarCarousel').style.display='flex'}
 function switchSettingsTab(tab,btn){$$('.settings-tab').forEach(function(t){t.classList.remove('active')});if(btn)btn.classList.add('active');$$('.settings-content').forEach(function(c){c.classList.remove('active')});document.getElementById('settings'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('active')}
 function loadPunktsSettings(){DB.ref('punkts').once('value').then(function(s){var sel=$('#setPunkt');sel.innerHTML='<option value="">Не менять</option>';s.forEach(function(c){sel.innerHTML+='<option value="'+esc(c.key)+'">'+esc(c.key)+'</option>'})}).catch(function(){})}
 function saveSettings(){var nn=$('#setName').value.trim(),np=$('#setPass').value.trim(),npu=$('#setPunkt').value,nvk=$('#setVk').value.trim(),ok=App.user.name,up={};if(nn&&nn!==App.user.name){up['users/'+nn]={name:nn,punkt:npu||App.user.punkt,password:App.user.password,bonus:0,avatar:App.user.avatar||'',vkId:nvk||App.user.vkId||''};if(np)up['users/'+nn+'/password']=np;up['users/'+ok]=null;App.user.name=nn;if(npu)App.user.punkt=npu;if(nvk)App.user.vkId=nvk}else{var uu={name:App.user.name,punkt:App.user.punkt,avatar:App.user.avatar||'',vkId:App.user.vkId||''};if(np)uu.password=np;if(nvk)uu.vkId=nvk;if(npu)uu.punkt=npu;up['users/'+ok]=uu;if(npu)App.user.punkt=npu;if(nvk)App.user.vkId=nvk}if(Object.keys(up).length===0){closeSettings();return}DB.ref().update(up).then(function(){if(np)App.user.password=np;if(nvk)App.user.vkId=nvk;localStorage.setItem('ozon_session',JSON.stringify({name:App.user.name,role:App.user.role,key:App.user.key||ok}));updateProfile();closeSettings();buildCarousel();toast('✅ Настройки сохранены')}).catch(function(e){toast('❌ Ошибка: '+e.message,true)})}
@@ -799,8 +816,6 @@ $('#thoughtCloseBtn').addEventListener('click',closeThoughtModal);
 $('#thoughtSendBtn').addEventListener('click',sendThought);
 $('#thoughtExpiryType').addEventListener('change',toggleExpiryInput);
 });
-
-var BASE_EMOJIS = ['😊','😉','😘','❤️','🤘','😓','💀','💪','🫠','😂','🤣','😆','😎','🗿','🤷','🤔','😏','🙏','😭','☕️','😴','🤬','👍','👎'];
 
 setupListeners();
 if('Notification' in window && Notification.permission==='default')Notification.requestPermission();
