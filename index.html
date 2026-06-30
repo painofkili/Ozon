@@ -241,6 +241,132 @@ button:disabled{opacity:.5;cursor:default}
 #toastCosmic{right:10px;left:10px;max-width:none}
 .auth-form{padding:16px;margin:10px}
 }
+/* ===== ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ АВТОРИЗАЦИИ ===== */
+
+/* ЗАГОЛОВОК С ЭМОДЗИ */
+.auth-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 22px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--gold), var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 4px;
+}
+
+.auth-emoji {
+  font-size: 26px;
+  filter: grayscale(1) brightness(0.5);
+  transition: 0.3s;
+  -webkit-text-fill-color: initial;
+}
+
+.auth-emoji.active {
+  filter: grayscale(0) brightness(1);
+}
+
+/* ===== ВКЛАДКИ ===== */
+.auth-tabs {
+  display: flex;
+  background: rgba(15, 15, 30, 0.6);
+  border-radius: 14px;
+  padding: 4px;
+  margin-bottom: 8px;
+  border: 1px solid var(--border);
+}
+
+.auth-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 0;
+  border: none;
+  border-radius: 11px;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.auth-tab .tab-emoji {
+  font-size: 18px;
+  filter: grayscale(1) brightness(0.5);
+  transition: 0.3s;
+}
+
+.auth-tab:hover .tab-emoji {
+  filter: grayscale(0) brightness(1);
+}
+
+.auth-tab.active {
+  background: rgba(95, 126, 255, 0.15);
+  color: #d6e2ff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.auth-tab.active .tab-emoji {
+  filter: grayscale(0) brightness(1);
+}
+
+/* ===== ПЕРЕКЛЮЧЕНИЕ ВНИЗУ ===== */
+.auth-switch {
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.auth-switch span span {
+  color: var(--accent);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.auth-switch span span:hover {
+  text-decoration: underline;
+}
+
+/* ===== АДАПТИВ ДЛЯ МОБИЛ ===== */
+@media (max-width: 450px) {
+  .auth-form {
+    padding: 20px 16px 18px;
+    max-width: 94%;
+  }
+
+  .auth-header {
+    font-size: 19px;
+  }
+
+  .auth-emoji {
+    font-size: 22px;
+  }
+
+  .auth-tab {
+    font-size: 13px;
+    gap: 5px;
+  }
+
+  .auth-tab .tab-emoji {
+    font-size: 16px;
+  }
+
+  .field input,
+  .field select {
+    padding: 11px 13px;
+    font-size: 14px;
+  }
+
+  .btn-gold {
+    padding: 13px;
+    font-size: 15px;
+  }
+}
 </style>
 </head>
 <body>
@@ -278,11 +404,26 @@ button:disabled{opacity:.5;cursor:default}
   </div>
 </div>
 
-<!-- ====== ЭКРАН ВХОДА ====== -->
 <div id="loginScreen">
   <div class="auth-form" id="authForm">
-    <h2 id="authTitle">🌌 Вход в систему</h2>
     
+    <!-- ЗАГОЛОВОК С ЭМОДЗИ -->
+    <div class="auth-header">
+      <span id="authEmoji" class="auth-emoji">🌌</span>
+      <span id="authTitle">Вход в систему</span>
+    </div>
+
+    <!-- ВКЛАДКИ ДЛЯ ПЕРЕКЛЮЧЕНИЯ -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" data-tab="login">
+        <span class="tab-emoji">🌌</span> Вход
+      </button>
+      <button class="auth-tab" id="tabRegister" data-tab="register">
+        <span class="tab-emoji">📝</span> Регистрация
+      </button>
+    </div>
+
+    <!-- ====== ФОРМА ВХОДА ====== -->
     <div id="loginFields">
       <div class="field">
         <label>Email</label>
@@ -294,7 +435,8 @@ button:disabled{opacity:.5;cursor:default}
       </div>
       <button class="btn-gold" id="loginBtn" type="button">🔑 Войти</button>
     </div>
-    
+
+    <!-- ====== ФОРМА РЕГИСТРАЦИИ ====== -->
     <div id="registerFields" style="display:none;">
       <div class="field">
         <label>Имя</label>
@@ -318,10 +460,12 @@ button:disabled{opacity:.5;cursor:default}
       </div>
       <button class="btn-gold" id="registerBtn" type="button">📝 Зарегистрироваться</button>
     </div>
-    
+
+    <!-- ССЫЛКА ПЕРЕКЛЮЧЕНИЯ ВНИЗУ -->
     <div class="auth-switch">
       <span id="authSwitchText">Нет аккаунта? <span id="authSwitchLink">Зарегистрироваться</span></span>
     </div>
+
     <div class="error" id="authError"></div>
     <div id="authLoading" style="display:none;text-align:center;"><div class="spinner"></div></div>
   </div>
@@ -662,6 +806,69 @@ async function handleRegister() {
   }
   loading.style.display = 'none';
 }
+// ====== ОБРАБОТЧИКИ ВКЛАДОК ======
+document.addEventListener('DOMContentLoaded', function() {
+  const tabLogin = document.getElementById('tabLogin');
+  const tabRegister = document.getElementById('tabRegister');
+  
+  // Переключение на вкладку "Вход"
+  if (tabLogin) {
+    tabLogin.addEventListener('click', function() {
+      // Если уже в режиме входа — не делаем ничего
+      if (isLoginMode) return;
+      
+      // Меняем режим
+      isLoginMode = true;
+      
+      // Обновляем формы
+      document.getElementById('loginFields').style.display = 'flex';
+      document.getElementById('registerFields').style.display = 'none';
+      
+      // Обновляем заголовок
+      document.getElementById('authTitle').innerHTML = '🌌 Вход в систему';
+      
+      // Обновляем текст переключения внизу
+      document.getElementById('authSwitchText').innerHTML = 'Нет аккаунта? <span id="authSwitchLink">Зарегистрироваться</span>';
+      document.getElementById('authSwitchLink').addEventListener('click', toggleAuthMode);
+      
+      // Обновляем активную вкладку
+      tabLogin.classList.add('active');
+      tabRegister.classList.remove('active');
+      
+      // Скрываем ошибку
+      document.getElementById('authError').style.display = 'none';
+    });
+  }
+  
+  // Переключение на вкладку "Регистрация"
+  if (tabRegister) {
+    tabRegister.addEventListener('click', function() {
+      // Если уже в режиме регистрации — не делаем ничего
+      if (!isLoginMode) return;
+      
+      // Меняем режим
+      isLoginMode = false;
+      
+      // Обновляем формы
+      document.getElementById('loginFields').style.display = 'none';
+      document.getElementById('registerFields').style.display = 'flex';
+      
+      // Обновляем заголовок
+      document.getElementById('authTitle').innerHTML = '📝 Регистрация';
+      
+      // Обновляем текст переключения внизу
+      document.getElementById('authSwitchText').innerHTML = 'Уже есть аккаунт? <span id="authSwitchLink">Войти</span>';
+      document.getElementById('authSwitchLink').addEventListener('click', toggleAuthMode);
+      
+      // Обновляем активную вкладку
+      tabRegister.classList.add('active');
+      tabLogin.classList.remove('active');
+      
+      // Скрываем ошибку
+      document.getElementById('authError').style.display = 'none';
+    });
+  }
+});
 
 // ====== FINISH LOGIN ======
 function finishLogin() {
