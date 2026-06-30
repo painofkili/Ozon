@@ -19,32 +19,139 @@ body {
   background: #0a0a1a;
   display: flex;
   flex-direction: column;
+  transition: background 0.5s ease;
 }
 
-/* Базовый строгий стиль для простых смертных */
-body.role-manager { background: #121212; }
-body.role-manager .bg, 
-body.role-manager .stars-overlay { display: none; }
+/* ====== ТЕМЫ ====== */
 
-/* Божественный дизайн (Золотой/Огненный градиент) */
-body.role-god .bg { background: radial-gradient(circle at 50% 20%, #3a2202 0%, #170d01 70%, #050200 100%); }
-body.role-god .stars-overlay { 
+/* --- СОТРУДНИК (по умолчанию) --- */
+body.theme-manager {
+  --bg: #0a0a1a;
+  --bg2: rgba(20,20,50,0.85);
+  --bg3: rgba(30,30,60,0.7);
+  --border: rgba(100,80,220,0.25);
+  --accent: #7c3aed;
+  --accent2: #a855f7;
+  --text: #e8e8ff;
+  --muted: #888;
+  --green: #22c55e;
+  --red: #ef4444;
+  --gold: #f5c518;
+  background: #0a0a1a;
+}
+body.theme-manager .bg { display: none; }
+body.theme-manager .stars-overlay { display: none; }
+
+/* --- СОЗДАТЕЛЬ (Костя) --- */
+body.theme-creator {
+  --bg: #060618;
+  --bg2: rgba(10,10,40,0.9);
+  --bg3: rgba(20,20,50,0.7);
+  --border: rgba(100,80,220,0.35);
+  --accent: #7c3aed;
+  --accent2: #00d4ff;
+  --text: #e8e8ff;
+  --muted: #888;
+  --green: #22c55e;
+  --red: #ef4444;
+  --gold: #f5c518;
+  background: #060618;
+  background-image:
+    radial-gradient(ellipse at 20% 20%, #1a0050 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, #001a50 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, #060618 30%, #020210 100%);
+}
+body.theme-creator .bg { 
+  background: radial-gradient(circle at 50% 20%, #12092b 0%, #060612 70%, #020205 100%); 
+  display: block;
+}
+body.theme-creator .stars-overlay { 
+  background-image: radial-gradient(white, rgba(255,255,255,.2) 1.5px, transparent 40px), 
+                    radial-gradient(rgba(138,43,226,0.25), rgba(255,255,255,.1) 1px, transparent 30px);
+  display: block;
+}
+
+/* --- БОГ (Игорь) --- */
+body.theme-god {
+  --bg: #0f0a00;
+  --bg2: rgba(30,20,0,0.85);
+  --bg3: rgba(40,25,0,0.7);
+  --border: rgba(200,150,0,0.3);
+  --accent: #b8860b;
+  --accent2: #ffd700;
+  --text: #fff0d0;
+  --muted: #a08040;
+  --green: #22c55e;
+  --red: #ef4444;
+  --gold: #ffd700;
+  background: #0f0a00;
+  background-image:
+    radial-gradient(ellipse at 50% 0%, #2a1800 0%, #0f0a00 60%),
+    radial-gradient(ellipse at 80% 100%, #1a0f00 0%, transparent 60%);
+}
+body.theme-god .bg { 
+  background: radial-gradient(circle at 50% 20%, #3a2202 0%, #170d01 70%, #050200 100%);
+  display: block;
+}
+body.theme-god .stars-overlay { 
   background-image: radial-gradient(white, rgba(255,215,0,.2) 1.5px, transparent 40px), 
-                    radial-gradient(rgba(255,69,0,0.25), rgba(255,255,255,.1) 1px, transparent 30px); 
+                    radial-gradient(rgba(255,69,0,0.25), rgba(255,255,255,.1) 1px, transparent 30px);
+  display: block;
 }
 
-.manager-badge { background: #444; color: #fff; font-size: 12px; font-weight: bold; padding: 4px 10px; border-radius: 12px; display: inline-block; }
-.manager-name { color: #eee; font-weight: bold; }
+/* ====== СТИЛИ (общие) ====== */
 
-.bg { width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; background: radial-gradient(circle at 50% 20%, #12092b 0%, #060612 70%, #020205 100%); z-index: -1000; pointer-events: none; }
-.stars-overlay { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-image: radial-gradient(white, rgba(255,255,255,.2) 1.5px, transparent 40px), radial-gradient(rgba(138,43,226,0.25), rgba(255,255,255,.1) 1px, transparent 30px); background-size: 450px 450px, 300px 350px; background-position: 0 0, 40px 60px; opacity: 0.3; animation: backgroundStarRotate 300s linear infinite; will-change: transform; }
+.bg { width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; z-index: -1000; pointer-events: none; }
+.stars-overlay { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-size: 450px 450px, 300px 350px; background-position: 0 0, 40px 60px; opacity: 0.3; animation: backgroundStarRotate 300s linear infinite; will-change: transform; }
 @keyframes backgroundStarRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
 .app-container { display: flex; width: 100%; height: 100vh; position: relative; z-index: 1; justify-content: center; overflow: hidden; }
 .main-content { width: 100%; max-width: 680px; padding: 12px 16px; display: flex; flex-direction: column; padding-bottom: 70px; height: 100%; }
 .profile-row, .tabs, .tab-content, .announce-block, .thought-block, .chat-header-bar { flex-shrink: 0; }
 
-/* ВЫДВИЖНОЙ САЙДБАР С КОЛЛЕГАМИ */
+/* ====== АВАТАР С ЭФФЕКТАМИ ====== */
+.avatar-wrapper { position: relative; display: inline-block; width: 76px; height: 76px; flex-shrink: 0; perspective: 1000px; transform-style: preserve-3d; }
+.avatar { width: 76px; height: 76px; border-radius: 50%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 10; border: 2px solid #111; display: block; transform: translateZ(0); background: #222; }
+
+/* === Эффект Создателя === */
+.avatar-creator { box-shadow: 0 0 15px rgba(138,43,226,0.5); }
+.proton-system { position: absolute; inset: -14px; transform-style: preserve-3d; pointer-events: none; z-index: 15; }
+.orbit-ring { position: absolute; inset: 0; border: 1px dashed rgba(255, 255, 255, 0.15); border-radius: 50%; transform-style: preserve-3d; }
+.ring-1 { transform: rotateX(70deg) rotateY(30deg); animation: rotateRing1 4s linear infinite; border-color: rgba(0, 191, 255, 0.3); }
+.ring-2 { transform: rotateX(70deg) rotateY(-30deg); animation: rotateRing2 5s linear infinite; border-color: rgba(245, 197, 24, 0.3); }
+.ring-3 { transform: rotateX(20deg) rotateY(80deg); animation: rotateRing3 4.5s linear infinite; border-color: rgba(138, 43, 226, 0.3); }
+.electron { position: absolute; width: 8px; height: 8px; border-radius: 50%; top: 0; left: 50%; transform: translate(-50%, -50%); backface-visibility: hidden; }
+.el-cyan { background: #00BFFF; box-shadow: 0 0 10px #00BFFF, 0 0 20px #00BFFF; }
+.el-gold { background: #f5c518; box-shadow: 0 0 10px #f5c518, 0 0 20px #f5c518; }
+.el-purple { background: #8B00FF; box-shadow: 0 0 10px #8B00FF, 0 0 20px #8B00FF; }
+@keyframes rotateRing1 { 0% { transform: rotateX(70deg) rotateY(30deg) rotateZ(0deg); } 100% { transform: rotateX(70deg) rotateY(30deg) rotateZ(360deg); } }
+@keyframes rotateRing2 { 0% { transform: rotateX(70deg) rotateY(-30deg) rotateZ(360deg); } 100% { transform: rotateX(70deg) rotateY(-30deg) rotateZ(0deg); } }
+@keyframes rotateRing3 { 0% { transform: rotateX(20deg) rotateY(80deg) rotateZ(0deg); } 100% { transform: rotateX(20deg) rotateY(80deg) rotateZ(360deg); } }
+.quantum-halo { position: absolute; inset: -6px; border-radius: 50%; background: radial-gradient(circle, rgba(138,43,226,0.2) 0%, transparent 70%); z-index: 1; pointer-events: none; animation: corePulse 3s ease-in-out infinite; }
+@keyframes corePulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } }
+
+/* === Эффект Бога === */
+.avatar-god { border: 2px solid #FFD700; box-shadow: 0 0 20px rgba(255,215,0,0.7); }
+.god-system { position: absolute; inset: -15px; pointer-events: none; z-index: 1; }
+.god-halo-ring { position: absolute; inset: 0; border-radius: 50%; border: 3px solid transparent; border-top-color: #FFD700; border-bottom-color: #FF8C00; animation: godSpin 3s linear infinite; box-shadow: 0 0 15px rgba(255,215,0,0.5); }
+.god-halo-ring:nth-child(2) { animation: godSpinReverse 4s linear infinite; border-top-color: #FF4500; border-bottom-color: #FFD700; inset: 6px; }
+.god-pulse { position: absolute; inset: -8px; border-radius: 50%; background: radial-gradient(circle, rgba(255,215,0,0.3) 0%, transparent 70%); animation: godPulse 2s ease-in-out infinite; z-index: 0; }
+@keyframes godSpin { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.05); } 100% { transform: rotate(360deg) scale(1); } }
+@keyframes godSpinReverse { 0% { transform: rotate(360deg) scale(1.05); } 50% { transform: rotate(180deg) scale(1); } 100% { transform: rotate(0deg) scale(1.05); } }
+@keyframes godPulse { 0%, 100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.15); } }
+
+/* ====== ОСТАЛЬНЫЕ СТИЛИ (твой код) ====== */
+/* Стили для сотрудника */
+.manager-badge { background: #2d6a4f; color: #95d5b2; font-size: 12px; font-weight: bold; padding: 4px 10px; border-radius: 12px; display: inline-block; }
+.manager-name { color: #eee; font-weight: bold; }
+
+.profile-row { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; padding: 8px 0; }
+.creator-badge { font-size: 12px; font-weight: bold; padding: 4px 10px; border-radius: 12px; background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; display: inline-block; letter-spacing: 0.5px; }
+.god-badge { background: linear-gradient(135deg, #FFD700, #FF4500); }
+.creator-name { background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
+.god-name { background: linear-gradient(135deg, #FFD700, #FF8C00, #FF4500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
+
+/* ВЫДВИЖНОЙ САЙДБАР */
 .avatar-carousel { width: 110px; background: rgba(10, 10, 25, 0.95); border-left: 1px solid rgba(138, 43, 226, 0.3); display: flex; flex-direction: column; align-items: center; position: fixed; top: 0; right: -130px; height: 100vh; padding: 50px 0 20px 0; z-index: 1000; backdrop-filter: blur(15px); transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: -10px 0 30px rgba(0, 0, 0, 0.7); }
 .avatar-carousel.open { right: 0; }
 .avatar-carousel-inner { display: flex; flex-direction: column; align-items: center; width: 100%; gap: 12px; overflow-y: auto; height: 100%; padding: 10px 0; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
@@ -79,79 +186,47 @@ body.role-god .stars-overlay {
 .mini-profile .mp-calendar .mp-shift { background: #4CAF50; color: #fff; font-weight: bold; }
 .mini-profile .mp-btn { width: 100%; padding: 10px; margin-top: 8px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; font-size: 13px; }
 
+/* ====== ОСТАЛЬНЫЕ СТИЛИ (сокращённо, твой код) ====== */
 .tab-content { display: none; width: 100%; flex-shrink: 0; }
 .tab-content.active-tab { display: block; }
-.card, .stat-card, .pinned, .announce-block, .thought-block { background: rgba(22,33,62,0.7); padding: 14px; border-radius: 14px; margin: 6px 0; backdrop-filter: blur(10px); border: 1px solid rgba(138,43,226,0.2); overflow: visible; }
+.card, .stat-card, .pinned, .announce-block, .thought-block { background: var(--bg2); padding: 14px; border-radius: 14px; margin: 6px 0; backdrop-filter: blur(10px); border: 1px solid var(--border); overflow: visible; }
 input, select, textarea { width: 100%; padding: 12px 14px; font-size: 15px; margin: 6px 0; border-radius: 12px; border: 1px solid #444; background: rgba(15,15,30,0.8); color: #fff; outline: none; }
-input:focus, select:focus, textarea:focus { border-color: #8B00FF; }
+input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 button { border: none; font-weight: bold; cursor: pointer; border-radius: 12px; transition: filter 0.2s; }
 button:hover { filter: brightness(1.1); }
 .btn-green { background: #4CAF50; color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
 .btn-blue { background: #2196F3; color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
 .btn-red { background: #e94560; color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
 .btn-gray { background: #444; color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
-.btn-gold { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
+.btn-gold { background: linear-gradient(135deg, var(--gold), var(--accent)); color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
 button:disabled { opacity: 0.5; cursor: default; }
 
-.calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 12px; background: rgba(22,33,62,0.5); border-radius: 10px; padding: 6px; border: 1px solid rgba(138,43,226,0.15); margin-bottom: 8px; }
+.calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 12px; background: rgba(22,33,62,0.5); border-radius: 10px; padding: 6px; border: 1px solid var(--border); margin-bottom: 8px; }
 .calendar div { padding: 6px; border-radius: 4px; }
 .calendar .shift-day { background: #4CAF50; color: #fff; font-weight: bold; }
 .calendar .today { border: 2px solid #2196F3; }
 .calendar .header { font-weight: bold; background: rgba(51,51,51,0.7); }
 
-.avatar-wrapper { position: relative; display: inline-block; width: 76px; height: 76px; flex-shrink: 0; perspective: 1000px; transform-style: preserve-3d; }
-.avatar { width: 76px; height: 76px; border-radius: 50%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 10; border: 2px solid #111; display: block; transform: translateZ(0); background: #222; }
-.avatar-creator { box-shadow: 0 0 15px rgba(138,43,226,0.5); }
-.proton-system { position: absolute; inset: -14px; transform-style: preserve-3d; pointer-events: none; z-index: 15; }
-.orbit-ring { position: absolute; inset: 0; border: 1px dashed rgba(255, 255, 255, 0.15); border-radius: 50%; transform-style: preserve-3d; }
-.ring-1 { transform: rotateX(70deg) rotateY(30deg); animation: rotateRing1 4s linear infinite; border-color: rgba(0, 191, 255, 0.3); }
-.ring-2 { transform: rotateX(70deg) rotateY(-30deg); animation: rotateRing2 5s linear infinite; border-color: rgba(245, 197, 24, 0.3); }
-.ring-3 { transform: rotateX(20deg) rotateY(80deg); animation: rotateRing3 4.5s linear infinite; border-color: rgba(138, 43, 226, 0.3); }
-.electron { position: absolute; width: 8px; height: 8px; border-radius: 50%; top: 0; left: 50%; transform: translate(-50%, -50%); backface-visibility: hidden; }
-.el-cyan { background: #00BFFF; box-shadow: 0 0 10px #00BFFF, 0 0 20px #00BFFF; }
-.el-gold { background: #f5c518; box-shadow: 0 0 10px #f5c518, 0 0 20px #f5c518; }
-.el-purple { background: #8B00FF; box-shadow: 0 0 10px #8B00FF, 0 0 20px #8B00FF; }
-@keyframes rotateRing1 { 0% { transform: rotateX(70deg) rotateY(30deg) rotateZ(0deg); } 100% { transform: rotateX(70deg) rotateY(30deg) rotateZ(360deg); } }
-@keyframes rotateRing2 { 0% { transform: rotateX(70deg) rotateY(-30deg) rotateZ(360deg); } 100% { transform: rotateX(70deg) rotateY(-30deg) rotateZ(0deg); } }
-@keyframes rotateRing3 { 0% { transform: rotateX(20deg) rotateY(80deg) rotateZ(0deg); } 100% { transform: rotateX(20deg) rotateY(80deg) rotateZ(360deg); } }
-.quantum-halo { position: absolute; inset: -6px; border-radius: 50%; background: radial-gradient(circle, rgba(138,43,226,0.2) 0%, transparent 70%); z-index: 1; pointer-events: none; animation: corePulse 3s ease-in-out infinite; }
-@keyframes corePulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } }
-
-.avatar-god { border: 2px solid #FFD700; box-shadow: 0 0 20px rgba(255,215,0,0.7); }
-.god-system { position: absolute; inset: -15px; pointer-events: none; z-index: 1; }
-.god-halo-ring { position: absolute; inset: 0; border-radius: 50%; border: 3px solid transparent; border-top-color: #FFD700; border-bottom-color: #FF8C00; animation: godSpin 3s linear infinite; box-shadow: 0 0 15px rgba(255,215,0,0.5); }
-.god-halo-ring:nth-child(2) { animation: godSpinReverse 4s linear infinite; border-top-color: #FF4500; border-bottom-color: #FFD700; inset: 6px; }
-.god-pulse { position: absolute; inset: -8px; border-radius: 50%; background: radial-gradient(circle, rgba(255,215,0,0.3) 0%, transparent 70%); animation: godPulse 2s ease-in-out infinite; z-index: 0; }
-@keyframes godSpin { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.05); } 100% { transform: rotate(360deg) scale(1); } }
-@keyframes godSpinReverse { 0% { transform: rotate(360deg) scale(1.05); } 50% { transform: rotate(180deg) scale(1); } 100% { transform: rotate(0deg) scale(1.05); } }
-@keyframes godPulse { 0%, 100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.15); } }
-
-.profile-row { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; padding: 8px 0; }
-.creator-badge { font-size: 12px; font-weight: bold; padding: 4px 10px; border-radius: 12px; background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; display: inline-block; letter-spacing: 0.5px; }
-.god-badge { background: linear-gradient(135deg, #FFD700, #FF4500); }
-.creator-name { background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
-.god-name { background: linear-gradient(135deg, #FFD700, #FF8C00, #FF4500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
-
 .tabs { display: flex; gap: 6px; margin: 10px 0; overflow-x: auto; scrollbar-width: none; }
 .tabs::-webkit-scrollbar { display: none; }
 .tabs button { width: 44px; height: 44px; display: flex; align-items: center; gap: 0.5rem; overflow: hidden; border-radius: 999px; transition: width .3s ease, background .3s ease; background: rgba(255, 255, 255, 0.08); color: #ccc; border: 1px solid transparent; cursor: pointer; padding: 0 12px; font-size: 13px; white-space: nowrap; flex-shrink: 0; }
 .tabs button:hover { width: 110px; background: rgba(255,255,255,0.15); color: #fff; }
-.tabs button.active { background: linear-gradient(135deg, #f5c518, #8B00FF); color: #fff; width: 110px; box-shadow: 0 4px 12px rgba(138,43,226,0.3); border-color: rgba(255,255,255,0.2); }
+.tabs button.active { background: linear-gradient(135deg, var(--gold), var(--accent)); color: #fff; width: 110px; box-shadow: 0 4px 12px rgba(138,43,226,0.3); border-color: rgba(255,255,255,0.2); }
 .tabs button .menu-icon { font-size: 16px; flex-shrink: 0; }
 .tabs button .menu-label { opacity: 0; max-width: 0; transform: translateX(-6px); transition: all 0.2s ease; }
 .tabs button:hover .menu-label, .tabs button.active .menu-label { opacity: 1; max-width: 80px; transform: translateX(0); }
 
 .chat-section { margin: 8px 0 0 0; display: flex; flex-direction: column; flex: 1; min-height: 0; }
-.chat-header-bar { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px 14px; background: rgba(22,33,62,0.7); border-radius: 12px; border: 1px solid rgba(138, 43, 226, 0.2); margin-bottom: 6px; font-size: 14px; transition: background 0.2s; }
-.chat-header-bar:hover { background: rgba(22,33,62,0.9); }
-.chat-icon { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #f5c518, #8B00FF); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; box-shadow: 0 0 10px rgba(138,43,226,0.4); }
-.chat-label { flex: 1; font-weight: bold; background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.chat-header-bar { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px 14px; background: var(--bg2); border-radius: 12px; border: 1px solid var(--border); margin-bottom: 6px; font-size: 14px; transition: background 0.2s; }
+.chat-header-bar:hover { background: var(--bg3); }
+.chat-icon { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--accent)); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; box-shadow: 0 0 10px rgba(138,43,226,0.4); }
+.chat-label { flex: 1; font-weight: bold; background: linear-gradient(135deg, var(--gold), var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .chat-arrow { color: #aaa; font-size: 12px; transition: transform 0.3s; }
 .chat-arrow.open { transform: rotate(180deg); }
 .chat-badge { background: #e94560; color: #fff; border-radius: 10px; font-size: 11px; padding: 2px 6px; font-weight: bold; }
-.chat-back-btn { background: none; border: 1px solid rgba(138,43,226,0.4); color: #ccc; padding: 4px 10px; border-radius: 8px; font-size: 12px; cursor: pointer; display: none; }
+.chat-back-btn { background: none; border: 1px solid var(--border); color: #ccc; padding: 4px 10px; border-radius: 8px; font-size: 12px; cursor: pointer; display: none; }
 
-#chat { flex: 1; overflow-y: auto; padding: 10px; border-radius: 14px; background: rgba(15, 15, 30, 0.6); font-size: 13px; border: 1px solid rgba(138, 43, 226, 0.15); transition: padding 0.3s ease, flex 0.3s ease; margin-bottom: 0; scrollbar-width: thin; scrollbar-color: rgba(138, 43, 226, 0.5) transparent; }
+#chat { flex: 1; overflow-y: auto; padding: 10px; border-radius: 14px; background: rgba(15, 15, 30, 0.6); font-size: 13px; border: 1px solid var(--border); transition: padding 0.3s ease, flex 0.3s ease; margin-bottom: 0; scrollbar-width: thin; scrollbar-color: rgba(138, 43, 226, 0.5) transparent; }
 #chat.hidden { flex: 0; padding: 0 !important; margin-bottom: 0 !important; overflow: hidden; opacity: 0; border: none; min-height: 0; }
 #chat::-webkit-scrollbar { width: 6px; }
 #chat::-webkit-scrollbar-thumb { background: rgba(138, 43, 226, 0.5); border-radius: 4px; }
@@ -162,20 +237,21 @@ button:disabled { opacity: 0.5; cursor: default; }
 .chat-bubble.mine { background: rgba(76, 175, 80, 0.15); border: 1px solid rgba(76, 175, 80, 0.3); }
 .chat-msg-creator { background: linear-gradient(135deg, rgba(245, 197, 24, 0.15), rgba(138, 43, 226, 0.2)); border: 1px solid rgba(138, 43, 226, 0.4); padding: 8px 12px; border-radius: 14px; margin: 2px 0; display: inline-block; max-width: 82%; position: relative; }
 .chat-msg-god { background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 69, 0, 0.2)); border: 1px solid rgba(255, 215, 0, 0.4); padding: 8px 12px; border-radius: 14px; margin: 2px 0; display: inline-block; max-width: 82%; position: relative; }
-.chat-msg-creator .author { background: linear-gradient(135deg, #f5c518, #8B00FF, #00BFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
+.chat-msg-creator .author { background: linear-gradient(135deg, var(--gold), var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
 .chat-msg-god .author { background: linear-gradient(135deg, #FFD700, #FF8C00, #FF4500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
 .avatar-mini { width: 32px !important; height: 32px !important; border-radius: 50%; object-fit: cover; margin-right: 6px; vertical-align: middle; cursor: pointer; }
-.avatar-mini-creator { border: 2px solid #8B00FF; }
+.avatar-mini-creator { border: 2px solid var(--accent); }
 .avatar-mini-god { border: 2px solid #FFD700; }
 
 .toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10000; pointer-events: none; display: flex; flex-direction: column; gap: 8px; }
-.toast-msg { padding: 12px 20px; border-radius: 12px; background: rgba(20, 20, 35, 0.95); border: 1px solid #8B00FF; color: #fff; font-size: 14px; font-weight: bold; box-shadow: 0 5px 20px rgba(0,0,0,0.6); transform: translateY(-20px); opacity: 0; transition: all 0.3s; text-align: center; backdrop-filter: blur(5px); }
+.toast-msg { padding: 12px 20px; border-radius: 12px; background: rgba(20, 20, 35, 0.95); border: 1px solid var(--accent); color: #fff; font-size: 14px; font-weight: bold; box-shadow: 0 5px 20px rgba(0,0,0,0.6); transform: translateY(-20px); opacity: 0; transition: all 0.3s; text-align: center; backdrop-filter: blur(5px); }
 .toast-msg.error { border-color: #ff1744; }
 .toast-msg.show { transform: translateY(0); opacity: 1; }
+
 .msg-menu-btn { position: absolute; top: 4px; right: 4px; width: 22px; height: 22px; border-radius: 50%; background: rgba(0,0,0,0.5); color: #ccc; border: none; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; z-index: 3; }
 .chat-bubble:hover .msg-menu-btn, .chat-msg-creator:hover .msg-menu-btn, .chat-msg-god:hover .msg-menu-btn { opacity: 1; }
 .msg-menu-btn:hover { background: rgba(138,43,226,0.7); color: #fff; }
-.msg-dropdown { position: absolute; top: 28px; right: 0; background: rgba(15, 15, 30, 0.98); border-radius: 12px; padding: 4px 6px; display: none; gap: 4px; z-index: 10; border: 1px solid rgba(138,43,226,0.5); box-shadow: 0 6px 20px rgba(0,0,0,0.8); }
+.msg-dropdown { position: absolute; top: 28px; right: 0; background: rgba(15, 15, 30, 0.98); border-radius: 12px; padding: 4px 6px; display: none; gap: 4px; z-index: 10; border: 1px solid var(--border); box-shadow: 0 6px 20px rgba(0,0,0,0.8); }
 .msg-dropdown.show { display: flex; }
 .msg-dropdown button { width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.06); color: #fff; }
 .msg-dropdown button:hover { transform: scale(1.1); background: rgba(255,255,255,0.1); }
@@ -192,10 +268,10 @@ button:disabled { opacity: 0.5; cursor: default; }
 .input-wrapper { position: relative; flex: 1; display: flex; }
 .sticker-toggle { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 20px; cursor: pointer; color: #aaa; transition: color 0.2s; padding: 5px; }
 .sticker-toggle:hover { filter: brightness(1.2); }
-.sticker-panel { position: absolute; bottom: 55px; right: 0; width: 300px; height: 350px; background: rgba(15, 15, 30, 0.98); border: 1px solid rgba(138,43,226,0.5); border-radius: 16px; display: none; flex-direction: column; z-index: 1000; box-shadow: 0 10px 40px rgba(0,0,0,0.8); backdrop-filter: blur(20px); overflow: hidden; }
+.sticker-panel { position: absolute; bottom: 55px; right: 0; width: 300px; height: 350px; background: rgba(15, 15, 30, 0.98); border: 1px solid var(--border); border-radius: 16px; display: none; flex-direction: column; z-index: 1000; box-shadow: 0 10px 40px rgba(0,0,0,0.8); backdrop-filter: blur(20px); overflow: hidden; }
 .sticker-panel.show { display: flex; animation: fadeIn 0.2s; }
 .sticker-content { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; scrollbar-width: none; }
-.sticker-tabs { display: flex; background: rgba(22,33,62,0.9); padding: 5px; gap: 5px; overflow-x: auto; scrollbar-width: none; border-top: 1px solid rgba(138,43,226,0.2); }
+.sticker-tabs { display: flex; background: rgba(22,33,62,0.9); padding: 5px; gap: 5px; overflow-x: auto; scrollbar-width: none; border-top: 1px solid var(--border); }
 .st-tab { width: 36px; height: 36px; border-radius: 8px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; opacity: 0.6; transition: 0.2s; flex-shrink: 0; }
 .st-tab.active, .st-tab:hover { opacity: 1; background: rgba(138,43,226,0.3); }
 .st-tab img { width: 24px; height: 24px; object-fit: contain; }
@@ -205,14 +281,14 @@ button:disabled { opacity: 0.5; cursor: default; }
 .emoji-item { width: 42px; height: 42px; font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.1s; }
 .emoji-item:hover { transform: scale(1.2); }
 .chat-sticker { max-width: 140px; max-height: 140px; background: transparent; object-fit: contain; display: block; margin: 4px 0; border: none; }
-.pack-list-item { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid rgba(138,43,226,0.3); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.pack-list-item { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .pack-icon { width: 40px; height: 40px; object-fit: contain; border-radius: 6px; }
 .user-cb-list { max-height: 150px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 8px; margin: 5px 0; border: 1px solid #444; }
 .user-cb-item { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 14px; }
 .user-cb-item input { width: auto; margin: 0; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-.chat-input-bar { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 680px; background: rgba(10, 10, 26, 0.95); backdrop-filter: blur(15px); padding: 8px 16px 16px 16px; display: flex; gap: 8px; align-items: center; z-index: 100; border-top: 1px solid rgba(138, 43, 226, 0.2); }
+.chat-input-bar { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 680px; background: rgba(10, 10, 26, 0.95); backdrop-filter: blur(15px); padding: 8px 16px 16px 16px; display: flex; gap: 8px; align-items: center; z-index: 100; border-top: 1px solid var(--border); }
 
 @media (max-width: 600px) {
   .mini-profile { right: 10px; left: 10px; width: calc(100% - 20px); top: auto; bottom: 80px; transform: none; }
@@ -232,6 +308,7 @@ button:disabled { opacity: 0.5; cursor: default; }
 <div id="toastContainer" class="toast-container"></div>
 <div id="photoViewer" onclick="this.style.display='none'"><img id="photoViewerImg" src=""></div>
 
+<!-- ====== ЛОГИН ====== -->
 <div id="login" style="display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;height:100vh;max-width:450px;margin:0 auto;position:relative;z-index:1">
   <h3 style="text-align:center;margin-bottom:12px;"><span style="font-size:20px">📦 Вход в систему</span></h3>
   <form onsubmit="return false;" style="max-width:320px;width:100%;display:flex;flex-direction:column;align-items:center;">
@@ -241,6 +318,7 @@ button:disabled { opacity: 0.5; cursor: default; }
   </form>
 </div>
 
+<!-- ====== ОСНОВНОЕ ПРИЛОЖЕНИЕ ====== -->
 <div id="app" class="app-container" style="display:none">
   <button class="btn-sidebar-toggle" onclick="toggleSidebar()">👥</button>
 
@@ -366,6 +444,7 @@ button:disabled { opacity: 0.5; cursor: default; }
   </div>
 </div>
 
+<!-- ====== НАСТРОЙКИ ====== -->
 <div id="settingsCard" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;overflow-y:auto;z-index:200;padding:10px; background: rgba(0,0,0,0.85);">
   <div class="card" style="max-width:450px;margin:20px auto">
     <h3 style="text-align:center;margin-bottom:8px">⚙️ Настройки</h3>
@@ -388,6 +467,7 @@ button:disabled { opacity: 0.5; cursor: default; }
   </div>
 </div>
 
+<!-- ====== СТИКЕР-МЕНЕДЖЕР ====== -->
 <div id="stickerManagerCard" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;overflow-y:auto;z-index:250;padding:10px; background: rgba(0,0,0,0.9);">
   <div class="card" style="max-width:500px;margin:20px auto">
     <h3 style="text-align:center;margin-bottom:12px">📦 Мои стикерпаки</h3>
@@ -405,26 +485,23 @@ button:disabled { opacity: 0.5; cursor: default; }
 <div id="packEditorCard" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;overflow-y:auto;z-index:300;padding:10px; background: rgba(0,0,0,0.95);">
   <div class="card" style="max-width:500px;margin:20px auto">
     <h3 id="peTitle" style="text-align:center;margin-bottom:12px">Редактирование</h3>
-    
     <div class="stat-card">
       <h4>👥 Доступ к паку</h4>
       <div id="peUserList" class="user-cb-list"></div>
     </div>
-    
     <div class="stat-card">
       <h4>➕ Добавить стикер (.png)</h4>
       <input id="peNewStickerImg" type="file" accept="image/png">
       <select id="peNewStickerEmoji" style="margin-top:4px;"></select>
       <button class="btn-blue" onclick="uploadStickerToPack()">Загрузить</button>
     </div>
-    
     <h4>Стикеры в паке</h4>
     <div id="peStickersList" style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;"></div>
-    
     <button class="btn-gray" onclick="closePackEditor()" style="margin-top:15px">↩ Назад к списку</button>
   </div>
 </div>
 
+<!-- ====== МЫСЛЬ ====== -->
 <div id="thoughtModal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:999;">
   <div class="card" style="width: 90%; max-width: 400px;">
     <h4 style="text-align:center">💭 Мысль Создателя</h4>
@@ -465,10 +542,11 @@ var privateChatWith = null;
 var openDropdown = null;
 var VK_TOKEN = "vk1.a.1ccqIy8pmM0W_RnIymI9XOMvA6ILX5yxNfZZAiF5HHBdjHK_vOAimgsyljky-TCiReMgJRAlaRvpYEypifmF-iUonUGvldlw5LvDWAOSUpN1WDcnS_7Uit-Yh3BuUF5Ic5NoZ48Qhlmu4ErB87fpTplEI7E3sarTm9LC-Vd8zTbeQp4xgyB1s5yg6oBxTBaNZAFp-ioqBWG25jR8GREmWw";
 
-// Загружаем данные о Боге один раз при старте
+// Загружаем данные о Боге
 db.ref('godSettings').once('value', function(s) {
   godData = s.exists() ? s.val() : null;
 });
+
 /* ДАННЫЕ СТИКЕРОВ */
 const BASE_EMOJIS = ['😊','😉','😘','❤️','🤘','😓','💀','💪','🫠','😂','🤣','😆','😎','🗿','🤷','🤔','😏','🙏','😭','☕️','😴','🤬','👍','👎'];
 let globalStickerPacks = {};
@@ -588,7 +666,6 @@ db.ref('activeShifts').on('value',function(s){activeShifts={};s.forEach(function
 db.ref('shifts').on('value',function(s){allMyShifts=[];s.forEach(function(c){var x=c.val();x._id=c.key;allMyShifts.push(x)})});
 db.ref('sticker_packs').on('value', function(s){ globalStickerPacks = s.val() || {}; if(_user) renderStickerUI(); });
 
-/* ОБНОВЛЕННЫЙ ПЕРЕКЛЮЧАТЕЛЬ ЧАТА (ИСПОЛЬЗУЕТ FLEXBOX) */
 function toggleChat(){
   var chat = document.getElementById('chat');
   var arrow = document.getElementById('chatArrow');
@@ -646,7 +723,7 @@ async function loginUser() {
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   const inputHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toLowerCase();
 
-  // 2. Хэши паролей (SHA-256) - ВЕРНЫЕ ХЕШИ ИЗ БАЗЫ
+  // 2. Хэши паролей (SHA-256)
   const CREATOR_HASH = 'f5e9b69ce10f94f87e393a6a8d557762e8b0a6b7a97bd26f1ba4576f0b59ed06'; 
   const GOD_HASH = '1020a49b41b8d5180b49f12abfb8932fe1ef56ca254755a34a0f96fec1d6b6d0'; 
 
@@ -677,7 +754,6 @@ async function loginUser() {
     let userData = null, userKey = null;
     userSnap.forEach(c => { userData = c.val(); userKey = c.key; });
     
-    // Сверяем введенный пароль с тем, что в базе текстом
     if (userData.password && userData.password === password) {
       _user = userData;
       _user.key = userKey;
@@ -688,19 +764,7 @@ async function loginUser() {
     }
   }
 
-  // 5. Если сотрудник не найден - регаем нового (как у тебя и было)
-  if (confirm('Сотрудник «' + name + '» не найден. Зарегистрировать нового пользователя?')) {
-    const nu = { name: name, punkt: '49', password: password, avatar: '', vkId: '', role: 'manager', bonus: 0 };
-    db.ref('users').push(nu, function(err) {
-      if (err) { showToast('Ошибка регистрации!', true); return; }
-      _user = nu;
-      _user.role = 'manager';
-      localStorage.setItem('creator_user', JSON.stringify(_user));
-      finishLogin();
-    });
-  } else {
-    showToast('❌ Неверный пароль', true);
-  }
+  showToast('❌ Неверный пароль', true);
 }
 
 function updateProfileUI() {
@@ -715,9 +779,9 @@ function updateProfileUI() {
     av.style.display = 'none';
   }
 
-  // Очищаем классы body и вешаем текущую роль
+  // ПРИМЕНЯЕМ ТЕМУ
   document.body.className = '';
-  document.body.classList.add('role-' + _user.role);
+  document.body.classList.add('theme-' + _user.role);
 
   var badge = document.getElementById('roleBadge');
   var nameWrapper = document.getElementById('creatorNameWrapper');
@@ -728,21 +792,20 @@ function updateProfileUI() {
     badge.className = 'creator-badge god-badge';
     badge.innerHTML = '👑 Начальник';
     nameWrapper.className = 'god-name';
-    creatorTab.style.display = 'flex'; // Вкладка Силы доступна
+    creatorTab.style.display = 'flex';
     applyAvatarEffects(wrapperEl, 'god');
   } else if (_user.role === 'creator') {
     badge.className = 'creator-badge';
     badge.innerHTML = '🌌 Создатель';
     nameWrapper.className = 'creator-name';
-    creatorTab.style.display = 'flex'; // Вкладка Силы доступна
+    creatorTab.style.display = 'flex';
     applyAvatarEffects(wrapperEl, 'creator');
   } else {
-    // Простой смертный
     badge.className = 'manager-badge';
     badge.innerHTML = '📦 Сотрудник';
     nameWrapper.className = 'manager-name';
-    creatorTab.style.display = 'none'; // Скрываем вкладку Силы!
-    applyAvatarEffects(wrapperEl, 'manager'); // Убираем спецэффекты с аватарки
+    creatorTab.style.display = 'none';
+    applyAvatarEffects(wrapperEl, 'manager');
   }
 }
 
@@ -757,6 +820,7 @@ function showTab(tab){
   if(tab==='stats')renderMyCalendar(); if(tab==='history')loadHistory(); if(tab==='notify')loadNotifications(); if(tab==='hall')loadHall();
 }
 
+// ====== ОСТАЛЬНЫЕ ФУНКЦИИ (твой код) ======
 function loadNotifications(){if(!_user)return;db.ref('notifications').orderByChild('user').equalTo(_user.name).once('value',function(s){var arr=[];s.forEach(function(c){arr.push(c.val())});arr.sort(function(a,b){return b.timestamp-a.timestamp});document.getElementById('notifyContent').innerHTML=arr.length?arr.map(function(x){return'<div class="notify-item">'+x.text+' <small style="color:#999">'+new Date(x.timestamp).toLocaleString('ru-RU')+'</small></div>'}).join(''):'<p>Нет уведомлений</p>'})}
 function renderMyCalendar(){
   var myShifts=allMyShifts.filter(function(s){return s.user===_user.name}),now=new Date(),y=now.getFullYear(),m=now.getMonth(),dim=new Date(y,m+1,0).getDate(),fd=new Date(y,m,0).getDay();
@@ -786,7 +850,7 @@ function previewPhotos(){photoBase64=[];document.getElementById('photoPreviews')
 function startShift(){onShift=!0;var t=new Date().toLocaleTimeString('ru-RU');db.ref('activeShifts/'+_user.name).set({active:!0,startTime:t,punct:_user.punkt});document.getElementById('startBtn').style.display='none';document.getElementById('onShiftBtn').style.display='block';document.getElementById('shift').style.display='block';db.ref('chat').push({user:(_user.role==='god'?'👑 ':'🌌 ')+_user.name,text:'🔵 Пункт '+_user.punkt+' на смене! ('+t+')',timestamp:Date.now()});}
 function endShift(){var tf=document.getElementById('timeFrom').value||'9',tt=document.getElementById('timeTo').value||'21',tv=parseInt(document.getElementById('tov').value)||0,hh=parseInt(tt)-parseInt(tf),ph=photoBase64.slice(0,5);db.ref('shifts/'+_user.name+'_'+Date.now()).set({user:_user.name,punkt:_user.punkt||'49',date:new Date().toLocaleDateString('ru-RU'),timeFrom:tf,timeTo:tt,hours:hh,tovar:tv,photos:ph,paid:!1,timestamp:new Date().toISOString()});db.ref('chat').push({user:(_user.role==='god'?'👑 ':'🌌 ')+_user.name,text:'🔴 Пункт '+_user.punkt+' с '+tf+' до '+tt+', товаров: '+tv,timestamp:Date.now(),photos:ph});db.ref('activeShifts/'+_user.name).remove();onShift=!1;document.getElementById('shift').style.display='none';document.getElementById('onShiftBtn').style.display='none';document.getElementById('startBtn').style.display='block';document.getElementById('tov').value='';document.getElementById('photos').value='';document.getElementById('photoPreviews').innerHTML='';photoBase64=[];}
 function sendPhoto(){var files=document.getElementById('chatPhoto').files;if(!files.length||!_user)return;var photos=[],count=Math.min(files.length,5);for(var i=0;i<count;i++){(function(file){var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var c=document.createElement('canvas'),mw=300,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);var thumb=c.toDataURL('image/jpeg',0.6);photos.push({full:e.target.result,thumb:thumb});if(photos.length===count){var ref=privateChatWith?getPrivateChatRef():db.ref('chat');ref.push({user:(_user.role==='god'?'👑 ':'🌌 ')+_user.name,text:'📷 '+count+' фото',photos:photos,timestamp:Date.now(),role:_user.role,likes:{}})}};img.src=e.target.result};r.readAsDataURL(file)})(files[i])}document.getElementById('chatPhoto').value=''}
-function logout(){_user=null;onShift=!1;chatOpened=!1;localStorage.removeItem('creator_user');document.getElementById('app').style.display='none';document.getElementById('login').style.display='flex'}
+function logout(){_user=null;onShift=!1;chatOpened=!1;localStorage.removeItem('creator_user');document.getElementById('app').style.display='none';document.getElementById('login').style.display='flex';document.body.className='';}
 
 function loadChat(){
   var cf=localStorage.getItem('chatFont')||'13',chatEl=document.getElementById('chat');
@@ -796,8 +860,6 @@ function loadChat(){
   ref.limitToLast(50).on('value',function(s){
     var groups={},order=[];s.forEach(function(c){var m=c.val(),curUser=m.user||'';if(!groups[curUser]){groups[curUser]=[];order.push(curUser)}groups[curUser].push({key:c.key,msg:m,isCreator:m.user&&m.user.indexOf('🌌')===0,isGod:m.user&&m.user.indexOf('👑')===0||m.role==='god'})});
     var h='';
-    
-    // ПРОВЕРКА РОЛЕЙ ДЛЯ ЧАТА
     var isAdmin = _user && (_user.role === 'creator' || _user.role === 'god');
 
     for(var u=0;u<order.length;u++){
@@ -819,7 +881,6 @@ function loadChat(){
       var avClass = isGodMsg ? 'avatar-mini avatar-mini-god' : (isCreatorMsg ? 'avatar-mini avatar-mini-creator' : 'avatar-mini');
       var btnType = isGodMsg ? 'god' : (isCreatorMsg ? 'creator' : 'normal');
 
-      // Кнопки контекстного меню
       var canDelete = isAdmin || isMine;
       var pinBtnHtml = isAdmin ? '<button class="btn-pin" onclick="event.stopPropagation();pinMsg(\''+firstMsg.key+'\')">📌</button>' : '';
       var delBtnHtml = canDelete ? '<button class="btn-del" onclick="event.stopPropagation();delChatMsg(\''+firstMsg.key+'\',\''+btnType+'\')">✕</button>' : '';
