@@ -43,6 +43,9 @@ button:hover { filter: brightness(1.1); }
 .btn-red { background: #e94560; color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
 .btn-gray { background: #444; color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
 .btn-gold { background: linear-gradient(135deg, var(--gold), var(--accent)); color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
+.btn-purple { background: #9C27B0; color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
+.btn-orange { background: #FF9800; color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
+.btn-cyan { background: #00BCD4; color: #fff; padding: 12px; font-size: 15px; margin: 4px 0; width: 100%; }
 .btn-sm { padding: 8px 14px; font-size: 13px; border-radius: 10px; width: auto; }
 
 .tabs { display: flex; gap: 6px; margin: 10px 0; overflow-x: auto; scrollbar-width: none; }
@@ -94,25 +97,26 @@ button:hover { filter: brightness(1.1); }
 .like-indicator { font-size: 11px; background: rgba(0,0,0,0.5); border-radius: 10px; padding: 2px 7px; display: none; margin-top: 3px; }
 .like-indicator.has-likes { display: inline-block; }
 
-.avatar-mini { width: 28px !important; height: 28px !important; border-radius: 50%; object-fit: cover; margin-right: 6px; vertical-align: middle; cursor: pointer; flex-shrink: 0; }
-.avatar-mini-creator { border: 2px solid var(--accent); }
-.avatar-mini-god { border: 2px solid #FFD700; }
+.avatar-mini { width: 28px !important; height: 28px !important; border-radius: 50%; object-fit: cover; margin-right: 6px; vertical-align: middle; cursor: pointer; flex-shrink: 0; border: 2px solid transparent; }
+.avatar-mini-creator { border-color: var(--accent); }
+.avatar-mini-god { border-color: #FFD700; }
 
 .toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10000; pointer-events: none; display: flex; flex-direction: column; gap: 8px; }
 .toast-msg { padding: 12px 20px; border-radius: 12px; background: rgba(20,20,35,0.95); border: 1px solid var(--accent); color: #fff; font-size: 14px; font-weight: bold; box-shadow: 0 5px 20px rgba(0,0,0,0.6); transform: translateY(-20px); opacity: 0; transition: all 0.3s; text-align: center; backdrop-filter: blur(5px); }
 .toast-msg.error { border-color: #ff1744; }
 .toast-msg.show { transform: translateY(0); opacity: 1; }
 
+/* ====== ЧАТ ВВОД (СКРУГЛЁННАЯ ПОДЛОЖКА) ====== */
 .chat-input-bar { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 680px; background: rgba(10,10,26,0.95); backdrop-filter: blur(15px); padding: 8px 16px 16px 16px; display: flex; gap: 8px; align-items: center; z-index: 100; border-top: 1px solid var(--border); }
-
-.chat-input-row { display: flex; align-items: center; gap: 8px; padding: 4px 8px 4px 0; background: var(--bg2); border-radius: 12px; border: 1px solid var(--border); flex: 1; }
-.chat-input { flex: 1; padding: 10px 14px; border-radius: 20px; background: transparent; border: none; color: var(--text); font-size: 14px; outline: none; min-height: 36px; }
-.chat-emoji-btn { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.06); font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: none; color: var(--muted); cursor: pointer; transition: background 0.2s; }
-.chat-emoji-btn:hover { background: rgba(255,255,255,0.12); }
-.chat-send { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: none; cursor: pointer; transition: filter 0.2s; }
+.chat-input-wrap { flex: 1; display: flex; align-items: center; background: var(--bg2); border-radius: 24px; border: 1px solid var(--border); padding: 4px 4px 4px 16px; gap: 4px; transition: border-color 0.2s; }
+.chat-input-wrap:focus-within { border-color: var(--accent); }
+.chat-input-wrap .chat-input { flex: 1; padding: 10px 0; border: none; background: transparent; color: var(--text); font-size: 14px; outline: none; min-height: 36px; }
+.chat-emoji-btn { width: 36px; height: 36px; border-radius: 50%; background: transparent; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: none; color: var(--muted); cursor: pointer; transition: background 0.2s; }
+.chat-emoji-btn:hover { background: rgba(255,255,255,0.08); }
+.chat-send { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: none; cursor: pointer; transition: filter 0.2s; margin-right: 2px; }
 .chat-send:hover { filter: brightness(1.1); }
 
-.sticker-picker { display: none; flex-wrap: wrap; gap: 6px; padding: 8px; border-top: 1px solid var(--border); max-height: 120px; overflow-y: auto; background: var(--bg2); border-radius: 0 0 12px 12px; }
+.sticker-picker { display: none; flex-wrap: wrap; gap: 6px; padding: 8px 12px; border-top: 1px solid var(--border); max-height: 120px; overflow-y: auto; background: var(--bg2); border-radius: 0 0 16px 16px; }
 .sticker-picker.open { display: flex; }
 .sticker-opt { font-size: 28px; cursor: pointer; padding: 4px; border-radius: 8px; transition: transform 0.15s; }
 .sticker-opt:hover { transform: scale(1.2); }
@@ -151,11 +155,64 @@ button:hover { filter: brightness(1.1); }
 .mini-profile .mp-calendar .mp-shift { background: #4CAF50; color: #fff; font-weight: bold; }
 .mini-profile .mp-btn { width: 100%; padding: 10px; margin-top: 8px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; font-size: 13px; }
 
-.calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 12px; background: rgba(22,33,62,0.5); border-radius: 10px; padding: 6px; border: 1px solid var(--border); margin-bottom: 8px; overflow: hidden; }
+.calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 12px; background: rgba(22,33,62,0.5); border-radius: 10px; padding: 6px; border: 1px solid var(--border); margin-bottom: 8px; overflow: hidden; width: 100%; }
 .calendar div { padding: 6px; border-radius: 4px; font-size: 12px; overflow: hidden; text-overflow: ellipsis; }
 .calendar .shift-day { background: #4CAF50; color: #fff; font-weight: bold; cursor: pointer; }
 .calendar .today { border: 2px solid #2196F3; }
 .calendar .header { font-weight: bold; background: rgba(51,51,51,0.7); }
+
+/* ====== НАСТРОЙКИ АВАТАРА ====== */
+.avatar-preview-wrap { display: flex; justify-content: center; margin: 12px 0; }
+.avatar-preview-wrap .preview-container { position: relative; width: 120px; height: 120px; }
+.avatar-preview-wrap .preview-container canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; }
+.avatar-preview-wrap .preview-container #previewAvatarCanvas { z-index: 1; }
+.avatar-preview-wrap .preview-container #previewFrameCanvas { z-index: 2; pointer-events: none; }
+
+.style-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin: 8px 0; }
+.style-btn { padding: 8px 6px; border-radius: 10px; border: 2px solid #444; background: rgba(255,255,255,0.05); color: #ccc; font-size: 11px; font-weight: 600; text-align: center; cursor: pointer; transition: all 0.2s; }
+.style-btn:hover { border-color: var(--accent); background: rgba(255,255,255,0.08); }
+.style-btn.active { border-color: var(--accent); background: rgba(138,43,226,0.2); color: #fff; }
+.style-btn .emoji { font-size: 20px; display: block; margin-bottom: 2px; }
+
+.setting-slider { display: flex; align-items: center; gap: 12px; margin: 6px 0; }
+.setting-slider label { font-size: 13px; color: var(--muted); min-width: 80px; }
+.setting-slider input[type="range"] { flex: 1; margin: 0; padding: 0; accent-color: var(--accent); }
+.setting-slider .value { font-size: 13px; color: #fff; min-width: 40px; text-align: right; }
+.setting-color { display: flex; align-items: center; gap: 12px; margin: 6px 0; }
+.setting-color label { font-size: 13px; color: var(--muted); min-width: 80px; }
+.setting-color input[type="color"] { width: 40px; height: 40px; border: 2px solid var(--border); border-radius: 8px; padding: 2px; background: transparent; cursor: pointer; }
+.setting-color .hex { font-size: 12px; color: var(--muted); font-family: monospace; }
+
+.settings-panel { position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; padding: 20px; }
+.settings-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 20px; padding: 24px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+.settings-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; text-align: center; }
+.settings-tabs { display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+.settings-tab { padding: 8px 16px; border-radius: 10px; background: none; color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; }
+.settings-tab.active { background: var(--accent); color: #fff; }
+.settings-tab:hover { color: #fff; }
+.settings-content { display: none; }
+.settings-content.active { display: block; }
+
+.worker-row { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid var(--border); gap: 4px; flex-wrap: wrap; }
+.worker-row button { width: auto; padding: 6px 10px; font-size: 11px; }
+.worker-row .creator-row { background: rgba(245,197,24,0.15); border-left: 3px solid var(--gold); }
+.creator-badge-sm { font-size: 10px; background: var(--gold); color: #000; padding: 2px 6px; border-radius: 8px; margin-left: 4px; }
+.punkt-form-toggle { display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 12px 14px; background: var(--bg3); border-radius: 12px; border: 1px solid var(--border); transition: background 0.2s; }
+.punkt-form-toggle:hover { background: var(--bg2); }
+.punkt-form-toggle .arrow { transition: transform 0.3s; }
+.punkt-form-toggle .arrow.open { transform: rotate(180deg); }
+.punkt-form-body { display: none; margin-top: 12px; }
+.punkt-form-body.open { display: block; }
+.punkt-list-wrap { max-height: 300px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+.punkt-list-wrap::-webkit-scrollbar { width: 4px; }
+.punkt-list-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.shift-edit-row { display: flex; gap: 4px; align-items: center; margin: 4px 0; flex-wrap: wrap; }
+.shift-edit-row input { flex: 1; padding: 8px; font-size: 13px; min-width: 40px; }
+.shift-edit-row button { width: auto; padding: 8px 12px; font-size: 12px; }
+.punish-row { display: flex; justify-content: space-between; align-items: center; padding: 6px; font-size: 13px; border-bottom: 1px solid var(--border); }
+.punish-row button { width: auto; padding: 4px 8px; font-size: 10px; }
+.zp-result { background: rgba(34,197,94,0.1); padding: 12px; border-radius: 8px; margin-top: 8px; font-size: 14px; border: 1px solid rgba(34,197,94,0.3); white-space: pre-line; }
 
 #photoViewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 10000; }
 #photoViewer img { max-width: 95%; max-height: 90%; border-radius: 12px; }
@@ -168,6 +225,8 @@ button:hover { filter: brightness(1.1); }
   .chat-input-bar { max-width: 100%; }
   .calendar div { font-size: 10px; padding: 4px; }
   .calendar { gap: 1px; padding: 4px; }
+  .style-grid { grid-template-columns: 1fr 1fr; }
+  .settings-card { padding: 16px; margin: 10px; }
 }
 </style>
 </head>
@@ -221,9 +280,9 @@ button:hover { filter: brightness(1.1); }
   </div>
   
   <div class="chat-input-bar" id="chatInputBar">
-    <div class="chat-input-row">
-      <button class="chat-emoji-btn" onclick="toggleStickerPicker()">😊</button>
+    <div class="chat-input-wrap">
       <input class="chat-input" id="chatMsgInput" placeholder="Сообщение..." onkeydown="if(event.key==='Enter'){event.preventDefault();sendMsg();}">
+      <button class="chat-emoji-btn" onclick="toggleStickerPicker()">😊</button>
       <button class="chat-send" onclick="sendMsg()">➤</button>
     </div>
   </div>
@@ -266,20 +325,71 @@ button:hover { filter: brightness(1.1); }
   </div>
 </div>
 
-<!-- ====== НАСТРОЙКИ (упрощённые) ====== -->
-<div id="settingsPanel" style="display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px;">
-  <div class="card" style="max-width:400px;width:100%;max-height:90vh;overflow-y:auto;padding:20px;">
-    <h3 style="text-align:center;margin-bottom:16px;">⚙️ Настройки</h3>
-    <div class="field"><label>Новое имя</label><input id="setName" placeholder="Оставьте пустым"></div>
-    <div class="field"><label>Новый пароль</label><input id="setPass" type="password" placeholder="Оставьте пустым"></div>
-    <div class="field"><label>Пункт</label><select id="setPunkt"></select></div>
-    <div class="field"><label>ВК ID</label><input id="setVk" placeholder="265035511"></div>
-    <div class="field"><label>📸 Аватарка</label><input id="setAvatarFile" type="file" accept="image/*" onchange="handleAvatarUpload(event)"></div>
-    <div style="display:flex;gap:8px;margin-top:12px;">
-      <button class="btn-green" onclick="saveSettings()" style="flex:1;">💾 Сохранить</button>
-      <button class="btn-gray" onclick="closeSettings()" style="flex:1;">Отмена</button>
+<!-- ====== НАСТРОЙКИ ====== -->
+<div id="settingsPanel" class="settings-panel" style="display:none;">
+  <div class="settings-card">
+    <div class="settings-title">⚙️ Настройки</div>
+    <div class="settings-tabs">
+      <button class="settings-tab active" onclick="switchSettingsTab('main', this)">📝 Основное</button>
+      <button class="settings-tab" onclick="switchSettingsTab('avatar', this)">🎨 Аватар</button>
     </div>
-    <button class="btn-red" onclick="logout()" style="margin-top:12px;">⬅ Выйти</button>
+    
+    <div id="settingsMain" class="settings-content active">
+      <div class="field"><label>Новое имя</label><input id="setName" placeholder="Оставьте пустым"></div>
+      <div class="field"><label>Новый пароль</label><input id="setPass" type="password" placeholder="Оставьте пустым"></div>
+      <div class="field"><label>Пункт</label><select id="setPunkt"></select></div>
+      <div class="field"><label>ВК ID</label><input id="setVk" placeholder="265035511"></div>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button class="btn-green" onclick="saveSettings()" style="flex:1;">💾 Сохранить</button>
+        <button class="btn-gray" onclick="closeSettings()" style="flex:1;">Отмена</button>
+      </div>
+      <button class="btn-red" onclick="logout()" style="margin-top:12px;">⬅ Выйти</button>
+    </div>
+    
+    <div id="settingsAvatar" class="settings-content">
+      <div class="field"><label>📸 Загрузить фото</label><input id="setAvatarFile" type="file" accept="image/*" onchange="handleAvatarUpload(event)"></div>
+      
+      <div class="avatar-preview-wrap">
+        <div class="preview-container">
+          <canvas id="previewAvatarCanvas" width="120" height="120"></canvas>
+          <canvas id="previewFrameCanvas" width="120" height="120"></canvas>
+        </div>
+      </div>
+      
+      <div id="settingsAvatarAdvanced" style="display:none;">
+        <div class="field"><label>🌀 Стиль рамки</label></div>
+        <div class="style-grid">
+          <button class="style-btn active" data-style="neutron" onclick="selectAvatarStyle('neutron')"><span class="emoji">🌀</span>Нейтрон</button>
+          <button class="style-btn" data-style="blackhole" onclick="selectAvatarStyle('blackhole')"><span class="emoji">🕳️</span>Дыра</button>
+          <button class="style-btn" data-style="divine" onclick="selectAvatarStyle('divine')"><span class="emoji">👑</span>Нимб</button>
+          <button class="style-btn" data-style="kitsune" onclick="selectAvatarStyle('kitsune')"><span class="emoji">🦊</span>Кицунэ</button>
+          <button class="style-btn" data-style="wasteland" onclick="selectAvatarStyle('wasteland')"><span class="emoji">☢️</span>Пустошь</button>
+          <button class="style-btn" data-style="enigma" onclick="selectAvatarStyle('enigma')"><span class="emoji">🌀</span>Энигма</button>
+        </div>
+        <div class="setting-slider"><label>Скорость</label><input type="range" id="setSpeed" min="0.1" max="3" step="0.1" value="1" oninput="updateAvatarParam('speed',this.value)"><span class="value" id="setSpeedVal">1.0x</span></div>
+        <div class="setting-slider"><label>Масштаб</label><input type="range" id="setSize" min="0.5" max="1.5" step="0.05" value="1" oninput="updateAvatarParam('size',this.value)"><span class="value" id="setSizeVal">1.0x</span></div>
+        <div class="setting-slider"><label>Свечение</label><input type="range" id="setGlow" min="0" max="50" step="1" value="20" oninput="updateAvatarParam('glow',this.value)"><span class="value" id="setGlowVal">20px</span></div>
+        <div class="setting-slider"><label>Частицы</label><input type="range" id="setCount" min="10" max="200" step="5" value="45" oninput="updateAvatarParam('count',this.value)"><span class="value" id="setCountVal">45</span></div>
+        <div class="setting-color"><label>Цвет 1</label><input type="color" id="setColor1" value="#6366f1" oninput="updateAvatarParam('color1',this.value)"><span class="hex" id="setColor1Val">#6366f1</span></div>
+        <div class="setting-color"><label>Цвет 2</label><input type="color" id="setColor2" value="#a855f7" oninput="updateAvatarParam('color2',this.value)"><span class="hex" id="setColor2Val">#a855f7</span></div>
+      </div>
+      
+      <div id="settingsAvatarSimple" style="display:none;">
+        <div class="setting-color"><label>🎨 Цвет кольца</label><input type="color" id="setRingColor" value="#7c3aed" oninput="updateRingColor(this.value)"><span class="hex" id="setRingColorVal">#7c3aed</span></div>
+        <div class="field"><label>📏 Толщина</label>
+          <select id="setRingThickness">
+            <option value="thin">Тонкая</option>
+            <option value="medium" selected>Средняя</option>
+            <option value="thick">Толстая</option>
+          </select>
+        </div>
+      </div>
+      
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button class="btn-green" onclick="saveAvatarSettings()" style="flex:1;">💾 Сохранить аватар</button>
+        <button class="btn-gray" onclick="closeSettings()" style="flex:1;">Отмена</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -315,6 +425,19 @@ var calYear, calMonth;
 var avatarImageData = null;
 var VK_TOKEN = "vk1.a.1ccqIy8pmM0W_RnIymI9XOMvA6ILX5yxNfZZAiF5HHBdjHK_vOAimgsyljky-TCiReMgJRAlaRvpYEypifmF-iUonUGvldlw5LvDWAOSUpN1WDcnS_7Uit-Yh3BuUF5Ic5NoZ48Qhlmu4ErB87fpTplEI7E3sarTm9LC-Vd8zTbeQp4xgyB1s5yg6oBxTBaNZAFp-ioqBWG25jR8GREmWw";
 
+// ====== НАСТРОЙКИ АВАТАРА ======
+var avatarSettings = {
+  style: 'neutron',
+  speed: 1.0,
+  size: 1.0,
+  glow: 20,
+  count: 45,
+  color1: '#6366f1',
+  color2: '#a855f7',
+  ringColor: '#7c3aed',
+  ringThickness: 'medium'
+};
+
 // ====== ВСПОМОГАТЕЛЬНЫЕ ======
 function showToast(text, isError) {
   var container = document.getElementById('toastContainer');
@@ -342,6 +465,14 @@ function secToHMS(sec) {
   var m = Math.floor((sec % 3600) / 60);
   var s = sec % 60;
   return h.toString().padStart(2,'0') + ':' + m.toString().padStart(2,'0') + ':' + s.toString().padStart(2,'0');
+}
+
+function getAvatarSettingsForUser(username) {
+  if (username === 'Костя' || username === 'Игорь') {
+    return { style: avatarSettings.style, speed: avatarSettings.speed, size: avatarSettings.size, glow: avatarSettings.glow, count: avatarSettings.count, color1: avatarSettings.color1, color2: avatarSettings.color2, isAnimated: true };
+  } else {
+    return { ringColor: avatarSettings.ringColor, ringThickness: avatarSettings.ringThickness, isAnimated: false };
+  }
 }
 
 // ====== WEBGL ФОН ======
@@ -377,9 +508,9 @@ function secToHMS(sec) {
 })();
 
 // ====== АВАТАР ======
-function drawAvatar(canvas, imgData, isCreator, isGod) {
+function drawAvatar(canvas, imgData, settings, width, height) {
+  var w = width || canvas.width, h = height || canvas.height;
   var ctx = canvas.getContext('2d');
-  var w = canvas.width, h = canvas.height;
   ctx.clearRect(0, 0, w, h);
   if (imgData) {
     ctx.save();
@@ -399,26 +530,33 @@ function drawAvatar(canvas, imgData, isCreator, isGod) {
     ctx.fillText('?', w/2, h/2);
   }
   // Рамка
-  if (isCreator) {
-    ctx.strokeStyle = '#7c3aed'; ctx.lineWidth = 3; ctx.shadowColor = '#7c3aed'; ctx.shadowBlur = 15;
-    ctx.beginPath(); ctx.arc(w/2, h/2, w/2 - 2, 0, Math.PI*2); ctx.stroke();
-    ctx.shadowBlur = 0;
-  } else if (isGod) {
-    ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 3; ctx.shadowColor = '#ffd700'; ctx.shadowBlur = 15;
+  if (settings.isAnimated) {
+    ctx.strokeStyle = settings.color1; ctx.lineWidth = 3; ctx.shadowColor = settings.color1; ctx.shadowBlur = parseInt(settings.glow) || 15;
     ctx.beginPath(); ctx.arc(w/2, h/2, w/2 - 2, 0, Math.PI*2); ctx.stroke();
     ctx.shadowBlur = 0;
   } else {
-    ctx.strokeStyle = '#4CAF50'; ctx.lineWidth = 2;
+    var thick = settings.ringThickness === 'thin' ? 2 : (settings.ringThickness === 'thick' ? 6 : 4);
+    ctx.strokeStyle = settings.ringColor || '#7c3aed';
+    ctx.lineWidth = thick;
+    ctx.shadowColor = settings.ringColor || '#7c3aed';
+    ctx.shadowBlur = 10;
     ctx.beginPath(); ctx.arc(w/2, h/2, w/2 - 2, 0, Math.PI*2); ctx.stroke();
+    ctx.shadowBlur = 0;
   }
 }
 
 function updateProfileAvatar() {
   var canvas = document.getElementById('profileAvatarCanvas');
   if (!canvas) return;
-  var isCreator = _user && _user.role === 'creator';
-  var isGod = _user && _user.role === 'god';
-  drawAvatar(canvas, avatarImageData, isCreator, isGod);
+  var settings = getAvatarSettingsForUser(_user.name);
+  drawAvatar(canvas, avatarImageData, settings);
+}
+
+function updatePreviewAvatar() {
+  var canvas = document.getElementById('previewAvatarCanvas');
+  if (!canvas) return;
+  var settings = getAvatarSettingsForUser(_user.name);
+  drawAvatar(canvas, avatarImageData, settings, 120, 120);
 }
 
 function handleAvatarUpload(event) {
@@ -427,7 +565,7 @@ function handleAvatarUpload(event) {
   var reader = new FileReader();
   reader.onload = function(e) {
     var img = new Image();
-    img.onload = function() { avatarImageData = img; updateProfileAvatar(); showToast('✅ Аватар обновлён'); };
+    img.onload = function() { avatarImageData = img; updatePreviewAvatar(); updateProfileAvatar(); showToast('✅ Аватар обновлён'); };
     img.src = e.target.result;
   };
   reader.readAsDataURL(file);
@@ -483,10 +621,118 @@ function finishLogin() {
   });
   buildCarousel();
   updateProfileAvatar();
+  loadAvatarSettings();
 }
 
 var saved = localStorage.getItem('creator_user');
 if (saved) { try { _user = JSON.parse(saved); if (_user) finishLogin(); } catch(e) {} }
+
+// ====== НАСТРОЙКИ АВАТАРА (ЗАГРУЗКА ИЗ FIREBASE) ======
+function loadAvatarSettings() {
+  if (!_user) return;
+  db.ref('users/' + _user.name + '/avatarSettings').once('value', function(snap) {
+    if (snap.exists()) {
+      var data = snap.val();
+      if (data.style) avatarSettings.style = data.style;
+      if (data.speed) avatarSettings.speed = data.speed;
+      if (data.size) avatarSettings.size = data.size;
+      if (data.glow) avatarSettings.glow = data.glow;
+      if (data.count) avatarSettings.count = data.count;
+      if (data.color1) avatarSettings.color1 = data.color1;
+      if (data.color2) avatarSettings.color2 = data.color2;
+      if (data.ringColor) avatarSettings.ringColor = data.ringColor;
+      if (data.ringThickness) avatarSettings.ringThickness = data.ringThickness;
+      if (data.photo) {
+        var img = new Image();
+        img.onload = function() { avatarImageData = img; updatePreviewAvatar(); updateProfileAvatar(); };
+        img.src = data.photo;
+      }
+      updateSettingsUI();
+    }
+  });
+}
+
+function saveAvatarSettings() {
+  if (!_user) return;
+  var data = {
+    style: avatarSettings.style,
+    speed: avatarSettings.speed,
+    size: avatarSettings.size,
+    glow: avatarSettings.glow,
+    count: avatarSettings.count,
+    color1: avatarSettings.color1,
+    color2: avatarSettings.color2,
+    ringColor: avatarSettings.ringColor,
+    ringThickness: avatarSettings.ringThickness
+  };
+  if (avatarImageData) {
+    var canvas = document.createElement('canvas');
+    canvas.width = 200; canvas.height = 200;
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(avatarImageData, 0, 0, 200, 200);
+    data.photo = canvas.toDataURL('image/jpeg', 0.8);
+  }
+  db.ref('users/' + _user.name + '/avatarSettings').update(data, function(err) {
+    if (err) { showToast('❌ Ошибка сохранения', true); return; }
+    showToast('✅ Настройки аватара сохранены');
+    updateProfileAvatar();
+  });
+}
+
+function updateSettingsUI() {
+  if (!_user) return;
+  var isAdvanced = _user.role === 'creator' || _user.role === 'god';
+  document.getElementById('settingsAvatarAdvanced').style.display = isAdvanced ? 'block' : 'none';
+  document.getElementById('settingsAvatarSimple').style.display = isAdvanced ? 'none' : 'block';
+  if (isAdvanced) {
+    document.querySelectorAll('.style-btn').forEach(function(btn) {
+      btn.classList.toggle('active', btn.dataset.style === avatarSettings.style);
+    });
+    document.getElementById('setSpeed').value = avatarSettings.speed;
+    document.getElementById('setSpeedVal').textContent = avatarSettings.speed.toFixed(1) + 'x';
+    document.getElementById('setSize').value = avatarSettings.size;
+    document.getElementById('setSizeVal').textContent = avatarSettings.size.toFixed(1) + 'x';
+    document.getElementById('setGlow').value = avatarSettings.glow;
+    document.getElementById('setGlowVal').textContent = avatarSettings.glow + 'px';
+    document.getElementById('setCount').value = avatarSettings.count;
+    document.getElementById('setCountVal').textContent = avatarSettings.count;
+    document.getElementById('setColor1').value = avatarSettings.color1;
+    document.getElementById('setColor1Val').textContent = avatarSettings.color1;
+    document.getElementById('setColor2').value = avatarSettings.color2;
+    document.getElementById('setColor2Val').textContent = avatarSettings.color2;
+  } else {
+    document.getElementById('setRingColor').value = avatarSettings.ringColor;
+    document.getElementById('setRingColorVal').textContent = avatarSettings.ringColor;
+    document.getElementById('setRingThickness').value = avatarSettings.ringThickness;
+  }
+}
+
+function selectAvatarStyle(style) {
+  avatarSettings.style = style;
+  document.querySelectorAll('.style-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.dataset.style === style);
+  });
+  updatePreviewAvatar();
+}
+
+function updateAvatarParam(param, value) {
+  avatarSettings[param] = parseFloat(value);
+  var valEl = document.getElementById('set' + param.charAt(0).toUpperCase() + param.slice(1) + 'Val');
+  if (valEl) {
+    if (param === 'speed' || param === 'size') valEl.textContent = parseFloat(value).toFixed(1) + 'x';
+    else if (param === 'glow') valEl.textContent = value + 'px';
+    else valEl.textContent = value;
+  }
+  if (param === 'color1') document.getElementById('setColor1Val').textContent = value;
+  if (param === 'color2') document.getElementById('setColor2Val').textContent = value;
+  updatePreviewAvatar();
+}
+
+function updateRingColor(color) {
+  avatarSettings.ringColor = color;
+  document.getElementById('setRingColorVal').textContent = color;
+  updatePreviewAvatar();
+}
 
 // ====== ПРОФИЛЬ ======
 function updateProfileUI() {
@@ -518,9 +764,9 @@ function renderTabs() {
     ];
   } else if (_user.role === 'god') {
     tabsConfig = [
-      { id: 'shift', icon: '🔵', label: 'Смена' },
-      { id: 'stats', icon: '📊', label: 'Стат' },
-      { id: 'notify', icon: '🔔', label: 'Увед' },
+      { id: 'punkts', icon: '📍', label: 'Пункты' },
+      { id: 'workers', icon: '👥', label: 'Сотрудники' },
+      { id: 'salary', icon: '💰', label: 'Расчёт ЗП' },
       { id: 'board', icon: '🏆', label: 'Доска' }
     ];
   } else {
@@ -565,6 +811,9 @@ function renderTabContent(id) {
     case 'notify': renderNotifyTab(panel); break;
     case 'board': renderBoardTab(panel); break;
     case 'power': renderPowerTab(panel); break;
+    case 'punkts': renderPunktsTab(panel); break;
+    case 'workers': renderWorkersTab(panel); break;
+    case 'salary': renderSalaryTab(panel); break;
   }
 }
 
@@ -635,7 +884,7 @@ function endShift() {
 function renderStatsTab(panel) {
   var now = new Date();
   calYear = now.getFullYear(); calMonth = now.getMonth();
-  panel.innerHTML = '<div class="calendar"><div class="cal-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><button class="cal-nav" onclick="changeCalMonth(-1)" style="background:none;color:var(--text);font-size:20px;padding:4px 10px;">◀</button><div class="cal-title" id="calTitle" style="font-size:14px;font-weight:700;text-align:center;"></div><button class="cal-nav" onclick="changeCalMonth(1)" style="background:none;color:var(--text);font-size:20px;padding:4px 10px;">▶</button></div><div class="cal-grid" id="calGrid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;"></div></div><div class="cal-stats card" id="calStats" style="background:var(--bg3);border-radius:12px;padding:12px;margin-bottom:10px;"><div>📅 Смен: <b id="statShifts">0</b></div><div>⏱ Часов: <b id="statHours">0</b></div><div>📦 Товаров: <b id="statTovar">0</b></div></div><button class="btn-red" onclick="clearMyShifts()">🗑 Очистить мои смены</button>';
+  panel.innerHTML = '<div class="calendar" style="width:100%;"><div class="cal-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><button class="cal-nav" onclick="changeCalMonth(-1)" style="background:none;color:var(--text);font-size:20px;padding:4px 10px;">◀</button><div class="cal-title" id="calTitle" style="font-size:14px;font-weight:700;text-align:center;"></div><button class="cal-nav" onclick="changeCalMonth(1)" style="background:none;color:var(--text);font-size:20px;padding:4px 10px;">▶</button></div><div class="cal-grid" id="calGrid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;"></div></div><div class="cal-stats card" id="calStats" style="background:var(--bg3);border-radius:12px;padding:12px;margin-bottom:10px;"><div>📅 Смен: <b id="statShifts">0</b></div><div>⏱ Часов: <b id="statHours">0</b></div><div>📦 Товаров: <b id="statTovar">0</b></div></div><button class="btn-red" onclick="clearMyShifts()">🗑 Очистить мои смены</button>';
   renderCalendar();
 }
 
@@ -800,6 +1049,346 @@ function powerAnnounce() {
   showToast('📣 Объявление отправлено!');
 }
 
+// ====== ПУНКТЫ (для Игоря) ======
+function renderPunktsTab(panel) {
+  panel.innerHTML = '<div class="section-title" style="font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;">📍 Пункты выдачи</div>' +
+    '<div class="card"><div class="punkt-form-toggle" onclick="togglePunktForm()"><span style="font-weight:600;">➕ Добавить пункт</span><span class="arrow" id="punktFormArrow">▼</span></div>' +
+    '<div class="punkt-form-body" id="punktFormBody"><div class="field"><label>ID пункта</label><input type="text" id="pAddId" placeholder="49"></div><div class="field"><label>Название</label><input type="text" id="pAddName" placeholder="ПВЗ Центр"></div><div class="field"><label>Ставка ₽/ч</label><input type="number" id="pAddRate" placeholder="150" min="0"></div><button class="btn-primary" onclick="addPunkt()" style="padding:12px;border-radius:14px;font-size:15px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;width:100%;">➕ Добавить</button></div></div>' +
+    '<div class="punkt-list-wrap" id="punktsListWrap"><div id="punktsList">Загрузка...</div></div>';
+  loadPunktsList();
+}
+
+function togglePunktForm() {
+  var body = document.getElementById('punktFormBody');
+  var arrow = document.getElementById('punktFormArrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+function loadPunktsList() {
+  var el = document.getElementById('punktsList');
+  if (!el) return;
+  db.ref('punkts').once('value', function(snap) {
+    if (!snap.exists()) { el.innerHTML = '<div class="empty-state">📍 Нет пунктов</div>'; return; }
+    var items = [];
+    snap.forEach(function(c) { items.push({ id: c.key, data: c.val() }); });
+    el.innerHTML = items.map(function(item) {
+      return '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="font-size:15px;font-weight:700;">📍 ' + (item.data.name || item.id) + '</div><div class="muted" style="font-size:13px;">Ставка: ' + (item.data.rate || 0) + '₽/ч</div></div><div style="display:flex;gap:6px;"><button class="btn-dark btn-sm" onclick="editPunkt(\'' + item.id + '\',\'' + (item.data.rate || 0) + '\')">✏️</button><button class="btn-danger btn-sm" onclick="delPunkt(\'' + item.id + '\')">🗑</button></div></div></div>';
+    }).join('');
+  });
+}
+
+function addPunkt() {
+  var id = document.getElementById('pAddId').value.trim();
+  var name = document.getElementById('pAddName').value.trim() || 'ПВЗ ' + id;
+  var rate = parseFloat(document.getElementById('pAddRate').value) || 0;
+  if (!id) return;
+  db.ref('punkts/' + id).set({ name: name, rate: rate });
+  loadPunktsList();
+  showToast('✅ Пункт добавлен');
+}
+
+function delPunkt(id) {
+  if (!confirm('Удалить пункт?')) return;
+  db.ref('punkts/' + id).remove();
+  loadPunktsList();
+  showToast('🗑 Удалён');
+}
+
+function editPunkt(id, currentRate) {
+  var r = prompt('Новая ставка ₽/ч:', currentRate);
+  if (r === null) return;
+  db.ref('punkts/' + id + '/rate').set(parseFloat(r) || 0);
+  loadPunktsList();
+  showToast('✅ Ставка обновлена');
+}
+
+// ====== СОТРУДНИКИ (для Игоря) ======
+function renderWorkersTab(panel) {
+  panel.innerHTML = '<div class="section-title" style="font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;">👥 Сотрудники</div><div id="workersList">Загрузка...</div>';
+  loadWorkersList();
+}
+
+function loadWorkersList() {
+  var el = document.getElementById('workersList');
+  if (!el) return;
+  db.ref('users').once('value', function(snap) {
+    if (!snap.exists()) { el.innerHTML = '<div class="empty-state">👤 Нет сотрудников</div>'; return; }
+    var items = [];
+    snap.forEach(function(c) {
+      var u = c.val();
+      if (u.name && u.name !== _user.name) items.push({ key: c.key, data: u });
+    });
+    if (!items.length) { el.innerHTML = '<div class="empty-state">👤 Нет сотрудников</div>'; return; }
+    el.innerHTML = items.map(function(item) {
+      var isCreator = item.data.name === 'Костя';
+      return '<div class="worker-row' + (isCreator ? ' creator-row' : '') + '"><span><b>' + item.data.name + '</b>' + (isCreator ? '<span class="creator-badge-sm">🌌 Создатель</span>' : '') + '<br>Пункт ' + (item.data.punkt || '?') + ' | Надбавка: ' + (item.data.bonus || 0) + ' ₽</span><span>' +
+        '<button class="btn-orange" onclick="setBonus(\'' + item.key + '\',\'' + item.data.name + '\',' + (item.data.bonus || 0) + ')">💰</button>' +
+        (isCreator ?
+          '<button class="btn-gold" onclick="showToast(\'👑 Бог не смеет наказывать Создателя!\')">🎁</button><button class="btn-purple" onclick="showToast(\'👑 Бог не смеет наказывать Создателя!\')">⚠️</button><button class="btn-red" onclick="showToast(\'🌌 Создатель — вне иерархии!\')">✕</button>' :
+          '<button class="btn-gold" onclick="openPremium(\'' + item.data.name + '\')">🎁</button><button class="btn-purple" onclick="openPunish(\'' + item.data.name + '\')">⚠️</button><button class="btn-red" onclick="deleteWorker(\'' + item.key + '\',\'' + item.data.name + '\')">✕</button>') +
+        '</span></div>';
+    }).join('');
+  });
+}
+
+function setBonus(key, name, cur) {
+  var b = prompt('Надбавка для ' + name + ':', cur);
+  if (b !== null && !isNaN(parseInt(b))) { db.ref('users/' + key + '/bonus').set(parseInt(b)); loadWorkersList(); }
+}
+
+function deleteWorker(key, name) {
+  if (name === 'Костя') { showToast('🌌 Создатель — вне иерархии!'); return; }
+  if (!confirm('Удалить ' + name + '?')) return;
+  db.ref('shifts').orderByChild('user').equalTo(name).once('value', function(snap) {
+    snap.forEach(function(c) { db.ref('shifts/' + c.key).remove(); });
+  });
+  db.ref('users/' + key).remove();
+  loadWorkersList();
+  showToast('🗑 Удалён');
+}
+
+// ====== ПРЕМИИ (для Игоря) ======
+function openPremium(user) {
+  currentPremiumUser = user;
+  var html = '<div class="card"><h4>🎁 Премии: ' + user + '</h4><div id="premiumList"></div><div style="display:flex;gap:4px;margin-top:8px;"><input id="premiumAmount" type="number" placeholder="Сумма" style="flex:1;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;"><button class="btn-gold" onclick="addPremium()" style="width:auto;padding:12px 14px;border-radius:12px;background:var(--gold);color:#000;font-weight:bold;">🎁 Выдать</button></div><button class="btn-gray mt-8" onclick="backFromCards()">↩ Назад</button></div>';
+  document.getElementById('tabContentContainer').innerHTML = html;
+  loadPremiums();
+}
+
+function loadPremiums() {
+  if (!currentPremiumUser) return;
+  db.ref('premiums').orderByChild('user').equalTo(currentPremiumUser).on('value', function(snap) {
+    var el = document.getElementById('premiumList');
+    if (!el) return;
+    var items = [];
+    snap.forEach(function(c) { items.push({ key: c.key, data: c.val() }); });
+    el.innerHTML = items.length ? items.map(function(item) {
+      return '<div class="punish-row"><span>' + item.data.amount + ' ₽</span><button class="btn-red" onclick="delPremium(\'' + item.key + '\')">✕</button></div>';
+    }).join('') : '<p style="color:var(--muted);">Нет премий</p>';
+  });
+}
+
+function addPremium() {
+  var am = parseInt(document.getElementById('premiumAmount').value);
+  if (!am || isNaN(am)) { showToast('❌ Введи сумму!', true); return; }
+  db.ref('premiums').push({ user: currentPremiumUser, amount: am, timestamp: Date.now() });
+  db.ref('notifications').push({ user: currentPremiumUser, text: '🎁 Вам начислена премия ' + am + '₽', timestamp: Date.now() });
+  document.getElementById('premiumAmount').value = '';
+  showToast('✅ Премия ' + am + '₽ для ' + currentPremiumUser);
+  loadPremiums();
+}
+
+function delPremium(id) {
+  if (!confirm('Удалить премию?')) return;
+  db.ref('premiums/' + id).remove();
+  showToast('🗑 Удалено');
+}
+
+// ====== ШТРАФЫ (для Игоря) ======
+function openPunish(user) {
+  if (user === 'Костя') { showToast('🌌 Создатель — вне иерархии!'); return; }
+  currentPunish = user;
+  var html = '<div class="card"><h4>⚠️ Штрафы: ' + user + '</h4><div id="punishList"></div><div style="display:flex;gap:4px;margin-top:8px;"><input id="punishAmount" type="number" placeholder="Сумма" style="flex:1;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;"><input id="punishReason" placeholder="Причина" style="flex:2;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;"><button class="btn-red" onclick="addPunish()" style="width:auto;padding:12px 14px;border-radius:12px;background:var(--red);color:#fff;font-weight:bold;">+ Штраф</button></div><button class="btn-gray mt-8" onclick="backFromCards()">↩ Назад</button></div>';
+  document.getElementById('tabContentContainer').innerHTML = html;
+  loadPunishes();
+}
+
+function loadPunishes() {
+  if (!currentPunish) return;
+  db.ref('punishes').orderByChild('user').equalTo(currentPunish).on('value', function(snap) {
+    var el = document.getElementById('punishList');
+    if (!el) return;
+    var items = [];
+    snap.forEach(function(c) { items.push({ key: c.key, data: c.val() }); });
+    el.innerHTML = items.length ? items.map(function(item) {
+      return '<div class="punish-row"><span>' + item.data.amount + ' ₽ — ' + item.data.reason + '</span><button class="btn-red" onclick="delPunish(\'' + item.key + '\')">✕</button></div>';
+    }).join('') : '<p style="color:var(--muted);">Нет штрафов</p>';
+  });
+}
+
+function addPunish() {
+  var am = parseInt(document.getElementById('punishAmount').value);
+  var r = document.getElementById('punishReason').value.trim();
+  if (!am || isNaN(am) || !r) { showToast('❌ Введи сумму и причину!', true); return; }
+  db.ref('punishes').push({ user: currentPunish, amount: am, reason: r, timestamp: Date.now() });
+  db.ref('notifications').push({ user: currentPunish, text: '💀 Вам выписан штраф ' + am + '₽: ' + r, timestamp: Date.now() });
+  document.getElementById('punishAmount').value = '';
+  document.getElementById('punishReason').value = '';
+  showToast('💀 Штраф ' + am + '₽ для ' + currentPunish);
+  loadPunishes();
+}
+
+function delPunish(id) {
+  if (!confirm('Удалить штраф?')) return;
+  db.ref('punishes/' + id).remove();
+  showToast('🗑 Удалено');
+}
+
+// ====== РАСЧЁТ ЗП (для Игоря) ======
+function renderSalaryTab(panel) {
+  panel.innerHTML = '<div class="section-title" style="font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;">💰 Расчёт зарплаты</div>' +
+    '<div class="card"><div class="field"><label>Сотрудник</label><select id="calcUser" onchange="onCalcSelect()" style="width:100%;padding:12px 14px;background:rgba(15,15,30,0.9);border:1px solid var(--border);border-radius:12px;color:#fff;font-size:15px;"><option value="">— Выбери —</option></select></div>' +
+    '<div id="calcBlock" style="display:none;"><div style="display:flex;gap:4px;"><input id="calcFrom" type="date" style="flex:1;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;"><span style="display:flex;align-items:center;color:var(--muted);">–</span><input id="calcTo" type="date" style="flex:1;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;"></div>' +
+    '<div style="display:flex;gap:4px;margin-top:8px;"><button class="btn-cyan" onclick="addShiftForSalary()" style="flex:1;padding:12px;border-radius:12px;background:#00BCD4;color:#fff;font-weight:bold;border:none;">+ Смена</button><button class="btn-green" onclick="calcZP()" style="flex:1;padding:12px;border-radius:12px;background:#4CAF50;color:#fff;font-weight:bold;border:none;">🧮 Посчитать</button><button class="btn-blue" onclick="markPaid()" style="flex:1;padding:12px;border-radius:12px;background:#2196F3;color:#fff;font-weight:bold;border:none;">✅ Оплачено</button></div>' +
+    '<div id="zpResult" class="zp-result" style="display:none;"></div><h4 style="margin-top:10px;font-size:14px;font-weight:700;">📅 Календарь смен</h4><div id="calHeader" style="text-align:center;margin-bottom:4px;font-size:13px;font-weight:600;"></div><div class="calendar" id="calendar" style="width:100%;"></div><div id="shiftDetail" style="margin-top:8px;"></div></div></div>';
+  loadCalcUsers();
+}
+
+function loadCalcUsers() {
+  db.ref('users').once('value', function(snap) {
+    var sel = document.getElementById('calcUser');
+    sel.innerHTML = '<option value="">— Выбери —</option>';
+    snap.forEach(function(c) {
+      var u = c.val();
+      if (u.name && u.name !== 'Костя' && u.name !== 'Игорь') {
+        sel.innerHTML += '<option value="' + u.name + '">' + u.name + '</option>';
+      }
+    });
+  });
+}
+
+function onCalcSelect() {
+  var u = document.getElementById('calcUser').value;
+  var block = document.getElementById('calcBlock');
+  block.style.display = u ? 'block' : 'none';
+  if (u) {
+    var now = new Date();
+    var from = new Date(now); from.setDate(now.getDate() - 14);
+    document.getElementById('calcFrom').value = from.toISOString().split('T')[0];
+    document.getElementById('calcTo').value = now.toISOString().split('T')[0];
+    document.getElementById('zpResult').style.display = 'none';
+    loadShiftsForCalc(u);
+  }
+}
+
+function loadShiftsForCalc(user) {
+  db.ref('shifts').orderByChild('user').equalTo(user).once('value', function(snap) {
+    allShifts = [];
+    snap.forEach(function(c) { var x = c.val(); x._id = c.key; allShifts.push(x); });
+    allShifts.sort(function(a, b) { return new Date(b.timestamp) - new Date(a.timestamp); });
+    renderCalendarForCalc();
+  });
+}
+
+var allShifts = [];
+
+function renderCalendarForCalc() {
+  var now = new Date();
+  var y = now.getFullYear(), m = now.getMonth();
+  var dim = new Date(y, m + 1, 0).getDate();
+  var fd = new Date(y, m, 0).getDay();
+  document.getElementById('calHeader').innerHTML = '<b>' + now.toLocaleDateString('ru-RU', {month:'long', year:'numeric'}) + '</b>';
+  var days = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+  var h = '';
+  for (var i = 0; i < 7; i++) h += '<div class="header">' + days[i] + '</div>';
+  for (var i = 0; i < fd; i++) h += '<div></div>';
+  var sd = {};
+  allShifts.forEach(function(s) { sd[s.date] = s; });
+  var ts = now.toLocaleDateString('ru-RU');
+  for (var d = 1; d <= dim; d++) {
+    var ds = new Date(y, m, d).toLocaleDateString('ru-RU');
+    var cl = '';
+    if (sd[ds]) cl = 'shift-day';
+    if (ds === ts) cl += ' today';
+    h += '<div class="' + cl + '" onclick="showShiftDetail(\'' + ds + '\')">' + d + '</div>';
+  }
+  document.getElementById('calendar').innerHTML = h;
+}
+
+function showShiftDetail(dateStr) {
+  var shifts = allShifts.filter(function(s) { return s.date === dateStr; });
+  var h = '<b>' + dateStr + '</b><br>';
+  shifts.forEach(function(s) {
+    h += '<div class="shift-edit-row"><input id="ed_' + s._id + '_tf" value="' + s.timeFrom + '" style="width:40px;">–<input id="ed_' + s._id + '_tt" value="' + s.timeTo + '" style="width:40px;">Товаров: <input id="ed_' + s._id + '_tv" type="number" value="' + s.tovar + '" style="width:60px;"><button class="btn-blue" onclick="editShiftForCalc(\'' + s._id + '\')">💾</button><button class="btn-red" onclick="delShiftForCalc(\'' + s._id + '\')">✕</button></div>';
+  });
+  document.getElementById('shiftDetail').innerHTML = h;
+}
+
+function editShiftForCalc(id) {
+  var tf = document.getElementById('ed_' + id + '_tf').value;
+  var tt = document.getElementById('ed_' + id + '_tt').value;
+  var tv = parseInt(document.getElementById('ed_' + id + '_tv').value) || 0;
+  db.ref('shifts/' + id).update({ timeFrom: tf, timeTo: tt, hours: parseInt(tt) - parseInt(tf), tovar: tv });
+  showToast('✅ Обновлено');
+  loadShiftsForCalc(document.getElementById('calcUser').value);
+}
+
+function delShiftForCalc(id) {
+  if (!confirm('Удалить смену?')) return;
+  db.ref('shifts/' + id).remove();
+  loadShiftsForCalc(document.getElementById('calcUser').value);
+}
+
+function addShiftForSalary() {
+  var u = document.getElementById('calcUser').value;
+  if (!u) { showToast('❌ Выбери сотрудника!', true); return; }
+  var d = prompt('Дата (ДД.ММ.ГГГГ):', new Date().toLocaleDateString('ru-RU'));
+  if (!d) return;
+  var tf = prompt('Время начала (ч):', '9');
+  var tt = prompt('Время окончания (ч):', '21');
+  var tv = parseInt(prompt('Товаров:', '0')) || 0;
+  if (!d || !tf || !tt) return;
+  var parts = d.split('.');
+  var dateObj = new Date(parts[2], parts[1] - 1, parts[0]);
+  if (isNaN(dateObj)) { showToast('❌ Неверный формат даты!', true); return; }
+  db.ref('shifts/' + u + '_' + Date.now()).set({
+    user: u, punkt: '49', date: d, timeFrom: tf, timeTo: tt,
+    hours: parseInt(tt) - parseInt(tf), tovar: tv, paid: false, timestamp: dateObj.toISOString()
+  });
+  showToast('✅ Смена добавлена!');
+  loadShiftsForCalc(u);
+}
+
+function calcZP() {
+  var u = document.getElementById('calcUser').value;
+  var from = new Date(document.getElementById('calcFrom').value);
+  var to = new Date(document.getElementById('calcTo').value);
+  to.setHours(23, 59, 59);
+  if (!u || isNaN(from) || isNaN(to)) { showToast('❌ Заполни период!', true); return; }
+  db.ref('punkts').once('value', function(pkSnap) {
+    var rates = {};
+    pkSnap.forEach(function(c) { rates[c.key] = c.val().rate || 0; });
+    db.ref('users/' + u).once('value', function(uSnap) {
+      var bonus = uSnap.exists() ? uSnap.val().bonus || 0 : 0;
+      db.ref('punishes').orderByChild('user').equalTo(u).once('value', function(pnSnap) {
+        var totalPunish = 0;
+        pnSnap.forEach(function(c) { var p = c.val(); if (new Date(p.timestamp) >= from && new Date(p.timestamp) <= to) totalPunish += p.amount || 0; });
+        db.ref('premiums').orderByChild('user').equalTo(u).once('value', function(prSnap) {
+          var totalPremium = 0;
+          prSnap.forEach(function(c) { var p = c.val(); if (new Date(p.timestamp) >= from && new Date(p.timestamp) <= to) totalPremium += p.amount || 0; });
+          var shifts = allShifts.filter(function(s) { var t = new Date(s.timestamp); return t >= from && t <= to && !s.paid; });
+          var th = 0, tt = 0, tz = 0;
+          shifts.forEach(function(s) { var h = s.hours || 0, tv = s.tovar || 0; th += h; tt += tv; tz += h * (rates[s.punkt] || 0) + tv + bonus; });
+          tz += totalPremium;
+          var result = document.getElementById('zpResult');
+          result.style.display = 'block';
+          result.innerHTML = '📊 <b>' + u + '</b>\n' + from.toLocaleDateString('ru-RU') + ' – ' + to.toLocaleDateString('ru-RU') + '\n\nЧасов: ' + th + '\nТоваров: ' + tt + '\nЗП: ' + (tz - totalPremium) + ' ₽\nПремии: +' + totalPremium + ' ₽\nШтрафы: -' + totalPunish + ' ₽\n<b>Итого: ' + (tz - totalPunish) + ' ₽</b>';
+          lastCalc = { user: u, from: from.toISOString(), to: to.toISOString(), shifts: shifts.map(function(s) { return s._id; }), total: tz - totalPunish };
+        });
+      });
+    });
+  });
+}
+
+var lastCalc = null;
+
+function markPaid() {
+  if (!lastCalc || !lastCalc.shifts || !lastCalc.shifts.length) { showToast('❌ Сначала нажми "Посчитать"!', true); return; }
+  if (!confirm('Оплачено?\n' + lastCalc.total + ' ₽')) return;
+  db.ref('payments').push({ user: lastCalc.user, dateFrom: lastCalc.from, dateTo: lastCalc.to, total: lastCalc.total, timestamp: Date.now() });
+  lastCalc.shifts.forEach(function(id) { db.ref('shifts/' + id + '/paid').set(true); });
+  showToast('✅ Оплачено ' + lastCalc.total + '₽');
+  document.getElementById('zpResult').style.display = 'none';
+  lastCalc = null;
+}
+
+function backFromCards() {
+  renderTabs();
+  var activeBtn = document.querySelector('#tabsContainer .active');
+  if (activeBtn) { var id = activeBtn.id.replace('tab_', ''); renderTabContent(id); }
+}
+
 // ====== ЧАТ ======
 function toggleChat() {
   var chat = document.getElementById('chat');
@@ -838,6 +1427,7 @@ function loadChat() {
       var alignClass = isMine ? 'mine' : 'other';
       h += '<div class="chat-bubble-group ' + alignClass + '">';
       var m0 = msgs[0].msg, sn = (m0.user || '').replace('📢 ','').replace('🌌 ','').replace('👑 ','');
+      var av = allUsers[sn] || '';
       var msgClass = isGodMsg ? 'chat-msg-god' : (isCreatorMsg ? 'chat-msg-creator' : 'chat-bubble' + (isMine ? ' mine' : ''));
       var canDelete = isAdmin || isMine;
       var pinBtn = isAdmin ? '<button class="btn-pin" onclick="event.stopPropagation();pinMsg(\'' + firstMsg.key + '\')">📌</button>' : '';
@@ -845,6 +1435,7 @@ function loadChat() {
       h += '<div class="' + msgClass + '">';
       h += '<button class="msg-menu-btn" onclick="event.stopPropagation();toggleMsgDropdown(event,\'' + firstMsg.key + '\')">⋮</button>';
       h += '<div class="msg-dropdown" data-dropdown="' + firstMsg.key + '"><button class="btn-like" onclick="event.stopPropagation();likeMsg(\'' + firstMsg.key + '\')">❤️</button>' + pinBtn + delBtn + '</div>';
+      if (av) h += '<img class="avatar-mini ' + (isCreatorMsg ? 'avatar-mini-creator' : isGodMsg ? 'avatar-mini-god' : '') + '" src="' + av + '" onerror="this.style.display=\'none\'">';
       h += '<b class="' + (isGodMsg || isCreatorMsg ? 'author' : '') + '" onclick="selectProfile(\'' + sn + '\')">' + sn + '</b> ';
       h += m0.text || '';
       if (m0.photo) h += '<br><img class="chat-img" src="' + m0.photo + '" onclick="event.stopPropagation();viewPhoto(\'' + m0.photo + '\')">';
@@ -1073,12 +1664,21 @@ function openSettings() {
   document.getElementById('settingsPanel').style.display = 'flex';
   document.getElementById('setVk').value = _user.vkId || '';
   loadPunktsForSettings();
+  updateSettingsUI();
+  updatePreviewAvatar();
 }
 
 function closeSettings() {
   document.getElementById('settingsPanel').style.display = 'none';
   document.getElementById('mainContent').style.display = 'flex';
   document.getElementById('avatarCarousel').style.display = 'flex';
+}
+
+function switchSettingsTab(tab, btn) {
+  document.querySelectorAll('.settings-tab').forEach(function(t) { t.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  document.querySelectorAll('.settings-content').forEach(function(c) { c.classList.remove('active'); });
+  document.getElementById('settings' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
 }
 
 function loadPunktsForSettings() {
@@ -1170,7 +1770,17 @@ function logout() {
   if (window.shiftTimer) clearInterval(window.shiftTimer);
 }
 
-// ====== ЗАПУСК ======
+function loadGodData() {
+  if (_user.role === 'god') {
+    db.ref('godSettings').once('value', function(s) {
+      if (s.exists()) {
+        var data = s.val();
+        document.getElementById('profileSub').innerHTML = '<span class="status-badge" style="background:#b8860b;color:#fff;padding:4px 12px;border-radius:12px;font-size:13px;">👑 Начальник</span>';
+      }
+    });
+  }
+}
+
 console.log('🚀 Ozon Hub запущен!');
 </script>
 </body>
