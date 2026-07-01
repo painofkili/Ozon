@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
 <title>Ozon Hub</title>
 <style>
-/* === CSS ОСТАВЛЕН БЕЗ ИЗМЕНЕНИЙ ДЛЯ СОХРАНЕНИЯ ДИЗАЙНА === */
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{overflow:hidden;height:100vh;width:100vw;background:#0a0a1a}
 body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;color:#eee;font-size:16px;display:flex;flex-direction:column}
@@ -272,41 +270,18 @@ button:active{transform:scale(0.95)}
 (function(){
 'use strict';
 
-// ====== FIREBASE СЕКЦИЯ ======
-// ВНИМАНИЕ: Хранение ключей здесь допустимо для Firebase, 
-// НО обязательно нужно настроить Firebase Realtime Database Security Rules,
-// чтобы пользователи не могли перезаписать базу данных.
+// ====== FIREBASE ======
 firebase.initializeApp({
-  apiKey: "AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",
-  authDomain: "ozon-grafik-4ad9f.firebaseapp.com",
-  databaseURL: "https://ozon-grafik-4ad9f-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "ozon-grafik-4ad9f",
-  storageBucket: "ozon-grafik-4ad9f.firebasestorage.app",
-  messagingSenderId: "798009068634",
-  appId: "1:798009068634:web:4b70eea3cce6c96f4f5c63"
+  apiKey:"AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",
+  authDomain:"ozon-grafik-4ad9f.firebaseapp.com",
+  databaseURL:"https://ozon-grafik-4ad9f-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:"ozon-grafik-4ad9f",
+  storageBucket:"ozon-grafik-4ad9f.firebasestorage.app",
+  messagingSenderId:"798009068634",
+  appId:"1:798009068634:web:4b70eea3cce6c96f4f5c63"
 });
-
 const DB = firebase.database();
 const AUTH = firebase.auth();
-
-// Массив для хранения активных слушателей Firebase, чтобы предотвратить утечки памяти
-const activeListeners = [];
-
-function attachDbListener(ref, event, callback) {
-  ref.on(event, callback);
-  activeListeners.push({ ref, event, callback });
-}
-
-function clearAllListeners() {
-  activeListeners.forEach(listener => {
-    listener.ref.off(listener.event, listener.callback);
-  });
-  activeListeners.length = 0;
-  if (App.chatListener) {
-    App.chatListener.off();
-    App.chatListener = null;
-  }
-}
 
 // ====== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ======
 const App = {
@@ -345,12 +320,12 @@ const GOD_STATUSES = [
   {name:'🗿 Сигма', color:'#2F4F4F', min:15},
   {name:'🌌 Господь', color:'#FFD700', min:21}
 ];
+const activeListeners = [];
 
-// ====== УТИЛИТЫ И БЕЗОПАСНОСТЬ ======
+// ====== УТИЛИТЫ ======
 function $(s) { return document.querySelector(s); }
 function $$(s) { return document.querySelectorAll(s); }
 
-// ИСПРАВЛЕНИЕ: Защита от XSS. Теперь кавычки тоже безопасно экранируются.
 function esc(s) {
   if (!s) return '';
   return String(s)
@@ -367,7 +342,6 @@ function toast(text, isError = false) {
   msg.className = 'toast-msg' + (isError ? ' error' : '');
   msg.innerHTML = text;
   container.appendChild(msg);
-  
   setTimeout(() => msg.classList.add('show'), 10);
   setTimeout(() => {
     msg.classList.remove('show');
@@ -375,12 +349,9 @@ function toast(text, isError = false) {
   }, 3000);
 }
 
-// ИСПРАВЛЕНИЕ: Удалена логика клиента с хардкод токеном ВК.
 function sendVk(vkId, msg) {
   if (!vkId) return;
-  console.warn("Отправка в VK отклонена: Выполняйте этот запрос на сервере (Firebase Functions)!");
-  // Пример серверного запроса:
-  // fetch('/api/sendVkMessage', { method: 'POST', body: JSON.stringify({ vkId, msg }) });
+  console.warn("Отправка в VK: выполняйте на сервере!");
 }
 
 function fmtDate(ts) {
@@ -400,6 +371,22 @@ function getGodStatus(n) {
     if (n >= GOD_STATUSES[i].min) return GOD_STATUSES[i];
   }
   return GOD_STATUSES[0];
+}
+
+function attachDbListener(ref, event, callback) {
+  ref.on(event, callback);
+  activeListeners.push({ ref, event, callback });
+}
+
+function clearAllListeners() {
+  activeListeners.forEach(listener => {
+    listener.ref.off(listener.event, listener.callback);
+  });
+  activeListeners.length = 0;
+  if (App.chatListener) {
+    App.chatListener.off();
+    App.chatListener = null;
+  }
 }
 
 // ====== WEBGL ФОН ======
@@ -473,7 +460,6 @@ function getGodStatus(n) {
   const timeLocation = gl.getUniformLocation(program, "u_time");
 
   function renderBackground(time) {
-    // ИСПРАВЛЕНИЕ: Остановка рендеринга для экономии батареи, если вкладка не активна
     if (!document.hidden) {
       gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
       gl.uniform1f(timeLocation, time * 0.001);
@@ -502,12 +488,11 @@ function toggleAuth() {
 $('#tabLogin').addEventListener('click', toggleAuth);
 $('#tabRegister').addEventListener('click', toggleAuth);
 
-// Загрузка пунктов для регистрации
-DB.ref('punkts').once('value').then(snapshot => {
+DB.ref('punkts').once('value').then(snap => {
   const sel = $('#regPunkt');
   sel.innerHTML = '<option value="">Выберите пункт</option>';
-  snapshot.forEach(childSnap => {
-    sel.innerHTML += `<option value="${childSnap.key}">Пункт ${childSnap.key} (${childSnap.val().rate || 0}₽/ч)</option>`;
+  snap.forEach(child => {
+    sel.innerHTML += `<option value="${child.key}">Пункт ${child.key} (${child.val().rate || 0}₽/ч)</option>`;
   });
 });
 
@@ -515,23 +500,11 @@ async function login() {
   const email = $('#loginEmail').value.trim();
   const pass = $('#loginPass').value.trim();
   const err = $('#authError');
-  
-  if (!email || !pass) { 
-    err.textContent = 'Заполните все поля'; 
-    err.style.display = 'block'; 
-    return; 
-  }
-  
+  if (!email || !pass) { err.textContent = 'Заполните все поля'; err.style.display = 'block'; return; }
   try {
     const cred = await AUTH.signInWithEmailAndPassword(email, pass);
     const snap = await DB.ref('users/' + cred.user.uid).once('value');
-    
-    if (!snap.exists()) { 
-      err.textContent = 'Пользователь не найден'; 
-      err.style.display = 'block'; 
-      return; 
-    }
-    
+    if (!snap.exists()) { err.textContent = 'Пользователь не найден'; err.style.display = 'block'; return; }
     App.user = snap.val();
     App.user.uid = cred.user.uid;
     finishLogin();
@@ -561,25 +534,18 @@ async function register() {
   const pass = $('#regPass').value.trim();
   const punkt = $('#regPunkt').value;
   const err = $('#authError');
-  
   if (!name || !email || !pass || !punkt) {
     err.textContent = 'Заполните все поля';
     err.style.display = 'block';
     return;
   }
-  if (pass.length < 4) { 
-    err.textContent = 'Пароль минимум 4 символа'; 
-    err.style.display = 'block'; 
-    return; 
-  }
-  
+  if (pass.length < 4) { err.textContent = 'Пароль минимум 4 символа'; err.style.display = 'block'; return; }
   try {
     const cred = await AUTH.createUserWithEmailAndPassword(email, pass);
     const role = 'manager';
     await DB.ref('users/' + cred.user.uid).set({
       name, email, role, punkt, avatar: '', vkId: '', bonus: 0
     });
-    
     App.user = { name, email, role, punkt, avatar: '', vkId: '', bonus: 0, uid: cred.user.uid };
     finishLogin();
   } catch (ex) {
@@ -593,12 +559,9 @@ $('#regPass').addEventListener('keydown', e => { if (e.key === 'Enter') register
 
 function logout() {
   if (!confirm('Выйти?')) return;
-  
-  // ИСПРАВЛЕНИЕ: Очищаем все глобальные слушатели, чтобы не дублировались
   clearAllListeners();
-  
   if (App.shiftTimer) clearInterval(App.shiftTimer);
-  
+  if (App.avatarAnimId) cancelAnimationFrame(App.avatarAnimId);
   AUTH.signOut().then(() => {
     localStorage.removeItem('ozon_user');
     App.user = null;
@@ -612,37 +575,29 @@ function logout() {
 function finishLogin() {
   App.isCreator = App.user.role === 'creator';
   App.isGod = App.user.role === 'god';
-  
   localStorage.setItem('ozon_user', JSON.stringify({ uid: App.user.uid, name: App.user.name, role: App.user.role }));
   $('#loginScreen').style.display = 'none';
   $('#app').style.display = 'flex';
   document.body.className = 'theme-' + App.user.role;
-  
   App.chatOpened = true;
   App.lastChatTimestamp = Date.now();
-  
   updateUI();
   renderTabs();
   loadChat();
   loadPinned();
   loadAnnounce();
   loadThought();
-  
-  // ИСПРАВЛЕНИЕ: Инициализация слушателей вынесена сюда для безопасности
   setupDatabaseListeners();
-  
   loadAvatarSettings();
-  
+  buildCarousel();
+  renderStickerUI();
   DB.ref('activeShifts/' + App.user.uid).once('value').then(snap => {
     if (snap.exists() && snap.val().active) App.onShift = true;
   });
-  
   if (App.isGod) recountRating();
-  
   DB.ref('presence/' + App.user.uid).set({ online: true, ts: Date.now() });
 }
 
-// Автологин
 AUTH.onAuthStateChanged(async user => {
   if (user && !App.user) {
     const snap = await DB.ref('users/' + user.uid).once('value');
@@ -654,14 +609,12 @@ AUTH.onAuthStateChanged(async user => {
   }
 });
 
-// ====== ИНТЕРФЕЙС И ПРОФИЛЬ ======
+// ====== ПРОФИЛЬ ======
 function updateUI() {
   $('#uname').textContent = App.user.name;
   $('#upunkt').textContent = App.user.punkt || '—';
-  
   const badge = $('#roleBadge');
   const nameWrap = $('#creatorNameWrapper');
-  
   if (App.user.role === 'god') {
     badge.className = 'badge badge-god';
     badge.textContent = 'Начальник';
@@ -714,7 +667,6 @@ function renderTabs() {
       const id = this.dataset.tab;
       $$('#tabsContainer button').forEach(x => x.classList.remove('active'));
       $$('#tabContentContainer .tab-content').forEach(x => x.classList.remove('active-tab'));
-      
       this.classList.add('active');
       document.getElementById('panel_' + id).classList.add('active-tab');
       renderTab(id);
@@ -726,7 +678,6 @@ function renderTab(id) {
   const panel = document.getElementById('panel_' + id);
   if (!panel) return;
   panel.innerHTML = '';
-  
   switch(id) {
     case 'shift': renderShift(panel); break;
     case 'stats': renderStats(panel); break;
@@ -740,7 +691,7 @@ function renderTab(id) {
   }
 }
 
-// ====== ЛОГИКА ВКЛАДОК (СМЕНА, СТАТИСТИКА, ЗП) ======
+// ====== СМЕНА ======
 function renderShift(p) {
   p.innerHTML = `
     <div class="card"><div id="shiftContent">Загрузка...</div></div>
@@ -753,15 +704,12 @@ function renderShift(p) {
 function loadShift() {
   const el = $('#shiftContent');
   if (!el) return;
-  
   DB.ref('activeShifts/' + App.user.uid).once('value').then(snap => {
     if (snap.exists() && snap.val().active) {
       const startTime = snap.val().startTime;
-      const formattedStart = new Date(startTime).toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' });
-      
       el.innerHTML = `
         <div style="text-align:center;">
-          <div>На смене с <b>${formattedStart}</b></div>
+          <div>На смене с <b>${new Date(startTime).toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' })}</b></div>
           <div style="font-size:28px;font-weight:800;color:var(--green);margin:4px 0;" id="shiftTimerDisplay">00:00:00</div>
         </div>
         <div style="display:flex;gap:8px;margin-top:10px;">
@@ -785,16 +733,14 @@ function startTimer(startTime) {
   if (App.shiftTimer) clearInterval(App.shiftTimer);
   const display = $('#shiftTimerDisplay');
   App.shiftTimer = setInterval(() => {
-    const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
-    if (display) display.textContent = secToHMS(elapsedSeconds);
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    if (display) display.textContent = secToHMS(elapsed);
   }, 1000);
 }
 
 function startShift() {
   DB.ref('activeShifts/' + App.user.uid).set({
-    active: true, 
-    startTime: Date.now(), 
-    punct: App.user.punkt
+    active: true, startTime: Date.now(), punct: App.user.punkt
   }).then(() => {
     const prefix = App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '');
     DB.ref('chat').push({
@@ -809,14 +755,11 @@ function startShift() {
 
 function endShift() {
   const tovarVal = parseInt($('#tovarCount')?.value) || 0;
-  
   DB.ref('activeShifts/' + App.user.uid).once('value').then(snap => {
     if (!snap.exists()) return;
-    
     const startTime = snap.val().startTime;
     const hours = Math.round((Date.now() - startTime) / 3600000 * 100) / 100;
     const shiftId = App.user.uid + '_' + Date.now();
-    
     DB.ref('shifts/' + shiftId).set({
       user: App.user.uid,
       user_name: App.user.name,
@@ -836,7 +779,6 @@ function endShift() {
         timestamp: Date.now()
       });
       DB.ref('activeShifts/' + App.user.uid).remove();
-      
       if (App.shiftTimer) clearInterval(App.shiftTimer);
       loadShift();
       toast(`Смена закрыта! ${hours}ч, ${tovarVal} товаров`);
@@ -844,12 +786,11 @@ function endShift() {
   });
 }
 
-// ... Остальные функции рендеринга вкладок (Статистика, Расчет ЗП и т.д.)
+// ====== СТАТИСТИКА ======
 function renderStats(p) {
   const now = new Date();
   App.calYear = now.getFullYear();
   App.calMonth = now.getMonth();
-  
   p.innerHTML = `
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
@@ -866,7 +807,6 @@ function renderStats(p) {
     </div>
     <button class="btn-red" id="clearShiftsBtn" style="width:100%;padding:12px;margin-top:10px;">Очистить мои смены</button>
   `;
-  
   $('#calPrev').addEventListener('click', () => changeCal(-1));
   $('#calNext').addEventListener('click', () => changeCal(1));
   $('#clearShiftsBtn').addEventListener('click', clearShifts);
@@ -876,11 +816,9 @@ function renderStats(p) {
 function renderCal() {
   const months = ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
   $('#calTitle').textContent = months[App.calMonth] + ' ' + App.calYear;
-  
   DB.ref('shifts').once('value').then(snap => {
     const shifts = {};
     let totalShifts = 0, totalHours = 0, totalTovar = 0;
-    
     snap.forEach(child => {
       const shiftData = child.val();
       if (shiftData.user === App.user.uid) {
@@ -894,26 +832,21 @@ function renderCal() {
         }
       }
     });
-    
     for (const k in shifts) {
       totalShifts += shifts[k].count;
       totalHours += shifts[k].hours;
       totalTovar += shifts[k].tovar;
     }
-    
     $('#statShifts').textContent = totalShifts;
     $('#statHours').textContent = totalHours.toFixed(1);
     $('#statTovar').textContent = totalTovar;
-    
     const firstDay = new Date(App.calYear, App.calMonth, 1).getDay();
     const offset = (firstDay + 6) % 7;
     const daysInMonth = new Date(App.calYear, App.calMonth + 1, 0).getDate();
     const today = new Date();
     const grid = $('#calGrid');
-    
     grid.innerHTML = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(d => `<div class="header">${d}</div>`).join('');
     for (let i = 0; i < offset; i++) grid.innerHTML += '<div></div>';
-    
     for (let d = 1; d <= daysInMonth; d++) {
       const isToday = today.getDate() === d && today.getMonth() === App.calMonth && today.getFullYear() === App.calYear;
       const hasShift = !!shifts[d];
@@ -941,19 +874,20 @@ function clearShifts() {
   });
 }
 
+// ====== ВЫПЛАТЫ ======
 function renderHistory(p) {
   p.innerHTML = '<div class="card"><h4>💳 Выплаты</h4><div id="historyContent">Загрузка...</div></div>';
   DB.ref('payments').orderByChild('user').equalTo(App.user.uid).once('value').then(snap => {
     const items = [];
     snap.forEach(child => items.push(child.val()));
     items.sort((a, b) => b.timestamp - a.timestamp);
-    
     $('#historyContent').innerHTML = items.length
       ? items.map(x => `<div style="padding:10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;"><span>${fmtDate(x.timestamp)}</span><span style="color:var(--green);font-weight:bold;">${x.total}₽</span></div>`).join('')
       : '<p style="color:var(--muted);">Нет выплат</p>';
   });
 }
 
+// ====== УВЕДОМЛЕНИЯ ======
 function renderNotify(p) {
   p.innerHTML = '<div class="card"><h4>🔔 Уведомления</h4><div id="notifyContent">Загрузка...</div><button class="btn-red" id="clearNotifsBtn" style="margin-top:12px;">Очистить</button></div>';
   loadNotifs();
@@ -977,6 +911,7 @@ function loadNotifs() {
   });
 }
 
+// ====== ДОСКА ======
 function renderBoard(p) {
   p.innerHTML = '<div class="card"><h4>🏆 Доска почёта</h4><div id="boardContent">Загрузка...</div></div>';
   DB.ref('shifts').once('value').then(snap => {
@@ -988,28 +923,23 @@ function renderBoard(p) {
       stats[s.user].hours += s.hours || 0;
       stats[s.user].tovar += s.tovar || 0;
     });
-    
     const arr = [];
     for (const name in stats) arr.push({ name, hours: stats[name].hours, tovar: stats[name].tovar });
-    
     arr.sort((a, b) => b.hours - a.hours);
     let htmlHours = '';
     for (let i = 0; i < Math.min(arr.length, 5); i++) {
       const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '📌';
       htmlHours += `<div style="padding:6px;border-bottom:1px solid var(--border);">${medal} ${esc(arr[i].name)} — <b>${arr[i].hours.toFixed(1)}ч</b></div>`;
     }
-    
     arr.sort((a, b) => b.tovar - a.tovar);
     let htmlTovar = '';
     for (let i = 0; i < Math.min(arr.length, 5); i++) {
       const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '📌';
       htmlTovar += `<div style="padding:6px;border-bottom:1px solid var(--border);">${medal} ${esc(arr[i].name)} — <b>${arr[i].tovar} шт</b></div>`;
     }
-    
     const bestUser = arr.length 
       ? `<div style="padding:6px;">🌟 ${esc(arr[0].name)} — ${arr[0].hours.toFixed(1)}ч / ${arr[0].tovar} шт</div>` 
       : '<p style="color:var(--muted);">Нет данных</p>';
-      
     $('#boardContent').innerHTML = `
       <div><b>⏱ Топ по часам</b>${htmlHours}</div>
       <div style="margin-top:12px;"><b>📦 Топ по товарам</b>${htmlTovar}</div>
@@ -1018,7 +948,124 @@ function renderBoard(p) {
   });
 }
 
-// ИСПРАВЛЕНИЕ ХАРДКОДА: Сотрудники
+// ====== ОБЪЯВЛЕНИЯ ======
+function renderAnnounce(p) {
+  p.innerHTML = `
+    <div class="card">
+      <h4>📜 Новое объявление</h4>
+      <textarea id="announceText" placeholder="Текст..." rows="3" style="resize:vertical;margin-bottom:8px;"></textarea>
+      <div style="display:flex;gap:8px;margin-bottom:8px;">
+        <select id="announceExpiry" style="flex:1;">
+          <option value="0">Навсегда</option>
+          <option value="1">1 час</option>
+          <option value="24" selected>24 часа</option>
+          <option value="72">3 дня</option>
+          <option value="168">7 дней</option>
+        </select>
+      </div>
+      <button class="btn-gold" id="addAnnounceBtn">Опубликовать</button>
+    </div>
+    <div id="announceList" style="margin-top:12px;">Загрузка...</div>
+  `;
+  $('#addAnnounceBtn').addEventListener('click', () => {
+    const text = $('#announceText').value.trim();
+    if (!text) return;
+    const hours = parseInt($('#announceExpiry').value);
+    const expiry = hours > 0 ? Date.now() + hours * 3600000 : null;
+    DB.ref('announce').push({ text, timestamp: Date.now(), expiry }).then(() => {
+      $('#announceText').value = '';
+      toast('📜 Послание свыше!');
+      loadAnnounces();
+    });
+  });
+  loadAnnounces();
+}
+
+function loadAnnounces() {
+  const el = $('#announceList');
+  if (!el) return;
+  DB.ref('announce').once('value').then(snap => {
+    if (!snap.exists()) { el.innerHTML = '<p style="color:var(--muted);">Нет объявлений</p>'; return; }
+    const items = [];
+    snap.forEach(child => {
+      const data = child.val();
+      if (!data.expiry || Date.now() < data.expiry) {
+        items.push({ id: child.key, data });
+      }
+    });
+    items.sort((a, b) => b.data.timestamp - a.data.timestamp);
+    el.innerHTML = items.length 
+      ? items.map(i => `
+          <div style="padding:10px;border-bottom:1px solid var(--border);">
+            ${esc(i.data.text)}
+            <br><small style="color:var(--muted);">${new Date(i.data.timestamp).toLocaleString('ru-RU')}</small>
+            ${App.isGod ? `<button class="btn-red" style="width:auto;padding:4px 10px;font-size:11px;margin-top:4px;" data-id="${i.id}">✕</button>` : ''}
+          </div>
+        `).join('')
+      : '<p style="color:var(--muted);">Нет объявлений</p>';
+    el.querySelectorAll('button').forEach(btn => btn.addEventListener('click', function() {
+      DB.ref('announce/' + this.dataset.id).remove();
+      loadAnnounces();
+    }));
+  });
+}
+
+// ====== ПУНКТЫ ======
+function renderPunkts(p) {
+  p.innerHTML = `
+    <div class="card">
+      <h4>📍 Пункты</h4>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+        <input id="pAddId" placeholder="ID" style="flex:1;min-width:80px;">
+        <input id="pAddRate" placeholder="Ставка" style="flex:1;min-width:80px;">
+        <button class="btn-green" id="pAddBtn" style="width:auto;padding:8px 16px;">+</button>
+      </div>
+      <div id="punktsList">Загрузка...</div>
+    </div>
+  `;
+  $('#pAddBtn').addEventListener('click', () => {
+    const id = $('#pAddId').value.trim();
+    const rate = parseInt($('#pAddRate').value) || 0;
+    if (!id) { toast('Введите ID', true); return; }
+    DB.ref('punkts/' + id).set({ name: 'ПВЗ ' + id, rate }).then(() => {
+      $('#pAddId').value = '';
+      $('#pAddRate').value = '';
+      loadPunkts();
+      toast('Пункт добавлен');
+    });
+  });
+  loadPunkts();
+}
+
+function loadPunkts() {
+  DB.ref('punkts').once('value').then(snap => {
+    const el = $('#punktsList');
+    if (!snap.exists()) { el.innerHTML = '<p style="color:var(--muted);">Нет пунктов</p>'; return; }
+    let html = '';
+    snap.forEach(child => {
+      const data = child.val();
+      html += `
+        <div style="display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid var(--border);">
+          <span><b>${esc(child.key)}</b> (${data.rate}₽/ч)</span>
+          <span>
+            <button class="btn-orange btn-sm edit-punkt" data-id="${child.key}" data-rate="${data.rate}" style="width:auto;padding:4px 10px;">✏️</button>
+            <button class="btn-red btn-sm delete-punkt" data-id="${child.key}" style="width:auto;padding:4px 10px;">✕</button>
+          </span>
+        </div>
+      `;
+    });
+    el.innerHTML = html;
+    el.querySelectorAll('.delete-punkt').forEach(btn => btn.addEventListener('click', function() {
+      if (confirm('Удалить пункт?')) { DB.ref('punkts/' + this.dataset.id).remove(); loadPunkts(); }
+    }));
+    el.querySelectorAll('.edit-punkt').forEach(btn => btn.addEventListener('click', function() {
+      const newRate = prompt('Новая ставка:', this.dataset.rate);
+      if (newRate !== null) { DB.ref('punkts/' + this.dataset.id + '/rate').set(parseInt(newRate) || 0).then(loadPunkts); }
+    }));
+  });
+}
+
+// ====== СОТРУДНИКИ ======
 function renderWorkers(p) {
   p.innerHTML = '<div class="card"><h4>👥 Сотрудники</h4><div id="workersList">Загрузка...</div></div>';
   loadWorkers();
@@ -1028,33 +1075,28 @@ function loadWorkers() {
   DB.ref('users').once('value').then(snap => {
     const el = $('#workersList');
     let html = '';
-    
     snap.forEach(child => {
       const u = child.val();
       if (u.uid === App.user.uid) return;
-      
-      // ИСПРАВЛЕНИЕ: Проверка по роли, а не по имени
       const isCreator = u.role === 'creator';
-      
       html += `
         <div class="worker-row${isCreator ? ' creator-row' : ''}">
           <span>
             <b>${esc(u.name)}</b>
-            ${isCreator ? ' <span style="font-size:10px;background:var(--gold);color:#000;padding:2px 6px;border-radius:8px;">Создатель</span>' : ''}<br>
-            <span style="font-size:11px;color:var(--muted);">Пункт ${u.punkt || '?'} | Надбавка: ${u.bonus || 0}₽</span>
+            ${isCreator ? ' <span style="font-size:10px;background:var(--gold);color:#000;padding:2px 6px;border-radius:8px;">Создатель</span>' : ''}
+            <br><span style="font-size:11px;color:var(--muted);">Пункт ${u.punkt || '?'} | Надбавка: ${u.bonus || 0}₽</span>
           </span>
           <span>
-            <button class="btn-gold btn-sm" data-name="${esc(u.name)}" data-uid="${child.key}" data-role="${u.role}">🎁</button>
-            <button class="btn-purple btn-sm" data-name="${esc(u.name)}" data-uid="${child.key}" data-role="${u.role}">⚠️</button>
-            <button class="btn-red btn-sm" data-name="${esc(u.name)}" data-uid="${child.key}" data-role="${u.role}">✕</button>
+            <button class="btn-gold btn-sm worker-bonus" data-name="${esc(u.name)}" data-uid="${child.key}" data-role="${u.role}">🎁</button>
+            <button class="btn-purple btn-sm worker-penalty" data-name="${esc(u.name)}" data-uid="${child.key}" data-role="${u.role}">⚠️</button>
+            <button class="btn-red btn-sm worker-delete" data-name="${esc(u.name)}" data-uid="${child.key}" data-role="${u.role}">✕</button>
           </span>
         </div>
       `;
     });
-    
     el.innerHTML = html || '<p style="color:var(--muted);">Нет сотрудников</p>';
     
-    el.querySelectorAll('.btn-gold').forEach(btn => btn.addEventListener('click', function() {
+    el.querySelectorAll('.worker-bonus').forEach(btn => btn.addEventListener('click', function() {
       if (this.dataset.role === 'creator') { toast('👑 Вы не можете выдать премию Создателю!'); return; }
       const amt = prompt('Сумма премии:');
       if (!amt) return;
@@ -1063,7 +1105,7 @@ function loadWorkers() {
       toast(`✅ Премия ${amt}₽`);
     }));
     
-    el.querySelectorAll('.btn-purple').forEach(btn => btn.addEventListener('click', function() {
+    el.querySelectorAll('.worker-penalty').forEach(btn => btn.addEventListener('click', function() {
       if (this.dataset.role === 'creator') { toast('🌌 Создатель — вне наказаний!'); return; }
       const amt = prompt('Сумма штрафа:');
       if (!amt) return;
@@ -1073,42 +1115,111 @@ function loadWorkers() {
       toast(`💀 Штраф ${amt}₽`);
     }));
     
-    el.querySelectorAll('.btn-red').forEach(btn => btn.addEventListener('click', function() {
+    el.querySelectorAll('.worker-delete').forEach(btn => btn.addEventListener('click', function() {
       if (this.dataset.role === 'creator') { toast('🌌 Создатель — вне иерархии!'); return; }
-      if (confirm(`Удалить ${this.dataset.name}?`)) {
-        DB.ref('users/' + this.dataset.uid).remove();
-        loadWorkers();
-      }
+      if (confirm(`Удалить ${this.dataset.name}?`)) { DB.ref('users/' + this.dataset.uid).remove(); loadWorkers(); }
     }));
   });
 }
 
-// ... Другие функции вкладок (Announce, Punkts, Salary) оставлены с похожим рефакторингом для читаемости
-function renderAnnounce(p){ /* ... */ }
-function loadAnnounces(){ /* ... */ }
-function renderPunkts(p){ /* ... */ }
-function loadPunkts(){ /* ... */ }
-function renderSalary(p){ /* ... */ }
+// ====== РАСЧЁТ ЗП ======
+function renderSalary(p) {
+  p.innerHTML = `
+    <div class="card">
+      <h4>💰 Расчёт ЗП</h4>
+      <select id="salUser" style="margin-bottom:12px;"><option value="">— Выберите сотрудника —</option></select>
+      <div style="display:flex;gap:8px;">
+        <input type="date" id="salFrom" style="flex:1;">
+        <input type="date" id="salTo" style="flex:1;">
+      </div>
+      <button class="btn-green" id="salCalcBtn" style="margin-top:8px;">🧮 Посчитать</button>
+      <button class="btn-blue" id="salPayBtn" style="margin-top:4px;">✅ Оплатить</button>
+      <div id="salResult" style="margin-top:12px;"></div>
+    </div>
+  `;
+  DB.ref('users').once('value').then(snap => {
+    const sel = $('#salUser');
+    snap.forEach(child => {
+      const u = child.val();
+      if (u.name !== 'Костя' && u.uid !== App.user.uid) {
+        sel.innerHTML += `<option value="${child.key}">${esc(u.name)}</option>`;
+      }
+    });
+  });
+  let lastCalc = null;
+  $('#salCalcBtn').addEventListener('click', () => {
+    const uid = $('#salUser').value;
+    const from = $('#salFrom').value;
+    const to = $('#salTo').value;
+    if (!uid || !from || !to) { toast('Заполните все поля', true); return; }
+    DB.ref('shifts').orderByChild('user').equalTo(uid).once('value').then(ss => {
+      let totalH = 0, totalT = 0, shifts = [];
+      ss.forEach(child => {
+        const s = child.val();
+        if (s.date >= from && s.date <= to) {
+          totalH += s.hours || 0;
+          totalT += s.tovar || 0;
+          shifts.push(child.key);
+        }
+      });
+      DB.ref('punkts').once('value').then(ps => {
+        let rate = 0;
+        ps.forEach(child => { if (child.key === App.user.punkt) rate = child.val().rate || 0; });
+        rate = rate || 150;
+        const base = Math.round(totalH * rate);
+        DB.ref('premiums').orderByChild('user').equalTo(uid).once('value').then(pr => {
+          let prem = 0;
+          pr.forEach(child => {
+            const p = child.val();
+            if (p.timestamp >= Date.parse(from) && p.timestamp <= Date.parse(to)) prem += p.amount || 0;
+          });
+          DB.ref('punishes').orderByChild('user').equalTo(uid).once('value').then(pu => {
+            let pun = 0;
+            pu.forEach(child => {
+              const p = child.val();
+              if (p.timestamp >= Date.parse(from) && p.timestamp <= Date.parse(to)) pun += p.amount || 0;
+            });
+            const total = Math.max(0, base + prem - pun);
+            const el = $('#salResult');
+            el.innerHTML = `
+              <div class="zp-result">
+                Смен: ${shifts.length}, часов: ${totalH.toFixed(1)}, товаров: ${totalT}
+                <br>База: ${base}₽, премии: +${prem}₽, штрафы: -${pun}₽
+                <br><b>Итого: ${total}₽</b>
+              </div>
+            `;
+            lastCalc = { uid, from, to, total, shifts };
+          });
+        });
+      });
+    });
+  });
+  $('#salPayBtn').addEventListener('click', () => {
+    if (!lastCalc) { toast('Сначала посчитайте!', true); return; }
+    if (!confirm(`Оплатить ${lastCalc.total}₽?`)) return;
+    DB.ref('payments').push({
+      user: lastCalc.uid,
+      total: lastCalc.total,
+      dateFrom: lastCalc.from,
+      dateTo: lastCalc.to,
+      timestamp: Date.now()
+    });
+    lastCalc.shifts.forEach(id => DB.ref('shifts/' + id + '/paid').set(true));
+    toast(`✅ Оплачено ${lastCalc.total}₽`);
+    lastCalc = null;
+  });
+}
 
 // ====== ЧАТ ======
 function loadChat() {
-  if (App.chatListener) {
-    App.chatListener.off();
-    App.chatListener = null;
-  }
-  
+  if (App.chatListener) { App.chatListener.off(); App.chatListener = null; }
   const ref = App.privateChatWith ? getPrivRef() : DB.ref('chat');
   App.chatListener = ref.limitToLast(50);
-  
   App.chatListener.on('value', snap => {
     const msgs = [];
-    snap.forEach(child => {
-      if (child.val()) msgs.push({ key: child.key, msg: child.val() });
-    });
-    
+    snap.forEach(child => { if (child.val()) msgs.push({ key: child.key, msg: child.val() }); });
     msgs.sort((a, b) => a.msg.timestamp - b.msg.timestamp);
     let html = '', group = [];
-    
     const renderMsg = m => {
       let content = '';
       if (m.text) content += esc(m.text);
@@ -1125,12 +1236,10 @@ function loadChat() {
       }
       return content;
     };
-    
     for (let i = 0; i < msgs.length; i++) {
       const item = msgs[i], m = item.msg;
       const userName = (m.user || '?').replace(/^[🌌👑📢]\s/, '');
       const isMine = App.user && (m.user === '🌌 ' + App.user.name || m.user === '👑 ' + App.user.name || m.user === App.user.name);
-      
       if (group.length === 0 || group[0].userName !== userName || group[0].isMine !== isMine) {
         if (group.length > 0) html += renderGroup(group, renderMsg);
         group = [{ item, userName, isMine, m }];
@@ -1138,17 +1247,13 @@ function loadChat() {
         group.push({ item, userName, isMine, m });
       }
     }
-    
     if (group.length > 0) html += renderGroup(group, renderMsg);
-    
     const el = $('#chat');
     const isScrolledToBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 60;
     el.innerHTML = html;
-    
     if (isScrolledToBottom || document.activeElement === $('#chatMsgInput')) {
       el.scrollTop = el.scrollHeight;
     }
-    
     el.querySelectorAll('.msg-author').forEach(authorEl => authorEl.addEventListener('click', function() {
       const name = this.querySelector('span').textContent.trim();
       for (const uid in App.allUserData) {
@@ -1168,7 +1273,6 @@ function renderGroup(group, renderMsg) {
   const isMine = first.isMine;
   const isCreator = first.m.user && first.m.user.indexOf('🌌') === 0;
   const isGod = first.m.user && first.m.user.indexOf('👑') === 0;
-  
   let avatarUrl = '';
   for (const uid in App.allUserData) {
     if (App.allUserData[uid].name === userName) {
@@ -1176,9 +1280,7 @@ function renderGroup(group, renderMsg) {
       break;
     }
   }
-  
   let html = `<div class="chat-bubble-group ${isMine ? 'mine' : 'other'}">`;
-  
   if (!isMine) {
     html += '<div class="msg-author">';
     if (avatarUrl) {
@@ -1189,7 +1291,6 @@ function renderGroup(group, renderMsg) {
     const nameStyle = (isCreator || isGod) ? 'background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;' : '';
     html += `<span style="${nameStyle}">${esc(userName)}</span></div>`;
   }
-  
   group.forEach(g => {
     let cls = 'chat-bubble';
     if (isMine) cls += ' mine';
@@ -1197,15 +1298,8 @@ function renderGroup(group, renderMsg) {
     else if (isGod) cls += ' god';
     html += `<div class="${cls}">${renderMsg(g.m)}</div>`;
   });
-  
   html += '</div>';
   return html;
-}
-
-function getPrivRef() {
-  if (!App.privateChatWith) return DB.ref('chat');
-  const users = [App.user.uid, App.privateChatWith].sort();
-  return DB.ref('privateChats/' + users[0] + '_' + users[1]);
 }
 
 function toggleChat() {
@@ -1239,16 +1333,11 @@ function sendMsg() {
   const input = $('#chatMsgInput');
   const text = input.value.trim();
   if (!text || !App.user) return;
-  
   const ref = App.privateChatWith ? getPrivRef() : DB.ref('chat');
-  
-  // ИСПРАВЛЕНИЕ: Логика упоминаний без выгрузки всей БД и без дыр
   const mentions = text.match(/@(\S+)/g);
   if (mentions) {
-    console.log("Найдены упоминания:", mentions, "— Уведомления VK должны быть реализованы на бэкенде!");
-    // Здесь мог бы быть вызов Firebase Functions для безопасной отправки
+    console.log("Упоминания:", mentions, "— отправляйте на бэкенде!");
   }
-  
   ref.push({
     user: (App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '')) + App.user.name,
     text: text,
@@ -1258,7 +1347,180 @@ function sendMsg() {
   }).then(() => input.value = '');
 }
 
-// ====== АНИМАЦИИ И CANVAS ======
+function sendPhoto() {
+  const input = $('#chatPhotoInput');
+  const files = input.files;
+  if (!files.length || !App.user) return;
+  const photos = [];
+  const count = Math.min(files.length, 5);
+  for (let i = 0; i < count; i++) {
+    (function(f) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const mw = 300;
+          const s = mw / img.width;
+          canvas.width = mw;
+          canvas.height = img.height * s;
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+          photos.push({ full: e.target.result, thumb: canvas.toDataURL('image/jpeg', 0.6) });
+          if (photos.length === count) {
+            const ref = App.privateChatWith ? getPrivRef() : DB.ref('chat');
+            ref.push({
+              user: (App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '')) + App.user.name,
+              text: `📷 ${count} фото`,
+              photos,
+              timestamp: Date.now(),
+              role: App.user.role,
+              likes: {}
+            });
+          }
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(f);
+    })(files[i]);
+  }
+  input.value = '';
+}
+
+function getPrivRef() {
+  if (!App.privateChatWith) return DB.ref('chat');
+  const users = [App.user.uid, App.privateChatWith].sort();
+  return DB.ref('privateChats/' + users[0] + '_' + users[1]);
+}
+
+function openPriv() {
+  if (!App.selectedProfile || App.selectedProfile === App.user.uid) return;
+  App.privateChatWith = App.selectedProfile;
+  const d = App.allUserData[App.selectedProfile];
+  $('#chatLabel').textContent = d ? d.name : '...';
+  $('#chatBackBtn').style.display = 'inline-block';
+  closeMini();
+  $('#avatarCarousel').classList.remove('open');
+  loadChat();
+}
+
+function switchGlobal() {
+  App.privateChatWith = null;
+  $('#chatLabel').textContent = 'Общий чат';
+  $('#chatBackBtn').style.display = 'none';
+  loadChat();
+}
+
+// ====== СТИКЕРЫ ======
+function renderStickerUI() {
+  const content = $('#stickerContent');
+  const tabs = $('#stickerTabs');
+  content.innerHTML = BASE_EMOJIS.map(e => `<div class="emoji-item" data-emoji="${e}">${e}</div>`).join('');
+  content.querySelectorAll('.emoji-item').forEach(el => el.addEventListener('click', function(ev) {
+    ev.stopPropagation();
+    $('#chatMsgInput').value += this.dataset.emoji;
+    $('#chatMsgInput').focus();
+  }));
+  tabs.innerHTML = '<button class="st-tab active" data-tab="emoji">😀</button>';
+  DB.ref('sticker_packs').once('value').then(snap => {
+    if (snap.exists()) {
+      snap.forEach(child => {
+        const p = child.val();
+        if (p.creator === App.user.uid || App.isCreator || App.isGod || (p.allowed_users && p.allowed_users[App.user.uid])) {
+          tabs.innerHTML += `<button class="st-tab" data-tab="${child.key}">📦</button>`;
+        }
+      });
+    }
+  });
+  tabs.querySelectorAll('.st-tab').forEach(btn => btn.addEventListener('click', function(ev) {
+    ev.stopPropagation();
+    const tab = this.dataset.tab;
+    tabs.querySelectorAll('.st-tab').forEach(x => x.classList.toggle('active', x === this));
+    if (tab === 'emoji') {
+      content.innerHTML = BASE_EMOJIS.map(e => `<div class="emoji-item" data-emoji="${e}">${e}</div>`).join('');
+      content.querySelectorAll('.emoji-item').forEach(el => el.addEventListener('click', function(ev2) {
+        ev2.stopPropagation();
+        $('#chatMsgInput').value += this.dataset.emoji;
+        $('#chatMsgInput').focus();
+      }));
+    } else {
+      DB.ref('sticker_packs/' + tab).once('value').then(sp => {
+        const pack = sp.val();
+        if (pack && pack.stickers) {
+          content.innerHTML = pack.stickers.map(st => `
+            <div class="st-item" onclick="event.stopPropagation();sendSticker('${esc(st)}')">
+              <img src="${esc(st)}">
+            </div>
+          `).join('');
+        } else {
+          content.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:12px;">Нет стикеров</p>';
+        }
+      });
+    }
+  }));
+}
+
+function sendSticker(img) {
+  if (!App.user) return;
+  const ref = App.privateChatWith ? getPrivRef() : DB.ref('chat');
+  ref.push({
+    user: (App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '')) + App.user.name,
+    text: '',
+    sticker: img,
+    timestamp: Date.now(),
+    role: App.user.role,
+    likes: {}
+  });
+  $('#stickerPanel').classList.remove('open');
+}
+
+// ====== САЙДБАР ======
+function toggleSidebar() { $('#avatarCarousel').classList.toggle('open'); }
+
+function buildCarousel() {
+  const el = $('#carouselInner');
+  if (!el) return;
+  el.innerHTML = '';
+  const added = new Set();
+  for (const uid in App.allUserData) {
+    if (uid === App.user.uid) continue;
+    const d = App.allUserData[uid];
+    if (added.has(d.name)) continue;
+    added.add(d.name);
+    const online = !!App.activeShifts[uid];
+    el.innerHTML += `
+      <div class="avatar-item${App.selectedProfile === uid ? ' active' : ''}" data-uid="${uid}">
+        ${d.avatar ? `<img src="${esc(d.avatar)}" onerror="this.style.display='none'">` : `<div style="width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#222,#444);display:flex;align-items:center;justify-content:center;font-size:18px;color:#ccc;">${esc(d.name.charAt(0))}</div>`}
+        ${online ? '<div class="online-dot"></div>' : ''}
+      </div>
+    `;
+  }
+  el.querySelectorAll('.avatar-item').forEach(el2 => el2.addEventListener('click', function() {
+    const uid = this.dataset.uid;
+    App.selectedProfile = uid;
+    el.querySelectorAll('.avatar-item').forEach(x => x.classList.toggle('active', x.dataset.uid === uid));
+    showMini(uid);
+  }));
+}
+
+function showMini(uid) {
+  const d = App.allUserData[uid];
+  if (!d) return;
+  $('#mpName').textContent = d.name;
+  const c = $('#mpAvatarContainer');
+  c.innerHTML = `<div style="position:relative;width:64px;height:64px;">
+    ${d.avatar ? `<img src="${esc(d.avatar)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--accent);">` : `<div style="width:100%;height:100%;border-radius:50%;background:#444;display:flex;align-items:center;justify-content:center;font-size:24px;color:#ccc;">${esc(d.name.charAt(0))}</div>`}
+  </div>`;
+  $('#mpStatus').textContent = d.role === 'god' ? 'Начальник' : (d.role === 'creator' ? 'Создатель' : 'Сотрудник');
+  $('#mpPunkt').textContent = App.activeShifts[uid] ? '🟢 На смене' : '🔴 Выходной';
+  $('#miniProfile').classList.add('show');
+}
+
+function closeMini() {
+  $('#miniProfile').classList.remove('show');
+  App.selectedProfile = null;
+}
+
+// ====== АВАТАР ======
 function loadAvatarSettings() {
   DB.ref('users/' + App.user.uid + '/avatarSettings').once('value').then(snap => {
     if (snap.exists()) {
@@ -1270,19 +1532,13 @@ function loadAvatarSettings() {
         img.src = data.photo;
       }
     }
-    
     if (App.user.avatar && !App.avatarImageData) {
       const img = new Image();
       img.onload = () => { App.avatarImageData = img; drawProfileAvatar(); };
       img.src = App.user.avatar;
     }
-    
     drawProfileAvatar();
-    
-    // ИСПРАВЛЕНИЕ: Безопасный запуск цикла анимации рамок
-    if (!App.avatarAnimId) {
-      updateAllFrames();
-    }
+    if (!App.avatarAnimId) updateAllFrames();
   });
 }
 
@@ -1291,7 +1547,6 @@ function drawProfileAvatar() {
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, 76, 76);
-  
   if (App.avatarImageData) {
     ctx.save();
     ctx.beginPath();
@@ -1321,7 +1576,6 @@ function drawFrame(ctx, w, h, settings) {
   ctx.clearRect(0, 0, w, h);
   ctx.shadowBlur = settings.glow || 20;
   ctx.shadowColor = settings.color1 || '#7c3aed';
-  
   if (settings.style === 'neutron') {
     for (let i = 0; i < 3; i++) {
       ctx.save();
@@ -1333,17 +1587,62 @@ function drawFrame(ctx, w, h, settings) {
       ctx.stroke();
       ctx.restore();
     }
+  } else if (settings.style === 'blackhole') {
+    const grad = ctx.createRadialGradient(cx, cy, 80, cx, cy, 160);
+    grad.addColorStop(0, 'transparent');
+    grad.addColorStop(0.3, 'rgba(0,0,0,0.5)');
+    grad.addColorStop(0.6, settings.color1);
+    grad.addColorStop(1, 'transparent');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 160, 0, Math.PI * 2);
+    ctx.fill();
+  } else if (settings.style === 'divine') {
+    ctx.strokeStyle = settings.color1;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 115, 0, Math.PI * 2);
+    ctx.stroke();
+    for (let i = 0; i < 30; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const d = 115 + Math.sin(time * 5 + i) * 10;
+      ctx.fillStyle = settings.color2;
+      ctx.beginPath();
+      ctx.arc(cx + d * Math.cos(a), cy + d * Math.sin(a), 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  } else if (settings.style === 'kitsune') {
+    for (let i = 0; i < 6; i++) {
+      ctx.fillStyle = 'rgba(255,69,0,0.3)';
+      ctx.beginPath();
+      ctx.arc(cx + Math.cos(time * 2 + i) * 30, cy + Math.sin(time * 2 + i) * 30, 20 + Math.sin(time * 3 + i) * 10, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  } else if (settings.style === 'wasteland') {
+    ctx.fillStyle = settings.color1 + '40';
+    ctx.beginPath();
+    ctx.arc(cx, cy, 115 * (1 + Math.sin(time * 5) * 0.05), 0, Math.PI * 2);
+    ctx.fill();
+  } else if (settings.style === 'enigma') {
+    ctx.strokeStyle = settings.color1;
+    ctx.lineWidth = 15;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 115, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.strokeStyle = settings.color2;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 115, 0, Math.PI * 2);
+    ctx.stroke();
   }
-  // Добавьте остальные стили рамок (blackhole, divine, etc) по аналогии с оригиналом...
+  ctx.shadowBlur = 0;
 }
 
 function updateAllFrames() {
-  // ИСПРАВЛЕНИЕ: Пауза анимации Canvas, если вкладка свернута (Экономия батареи)
   if (document.hidden) {
     App.avatarAnimId = requestAnimationFrame(updateAllFrames);
     return;
   }
-  
   const profileCanvas = $('#profileFrameCanvas');
   if (profileCanvas) {
     const ctx = profileCanvas.getContext('2d');
@@ -1352,13 +1651,196 @@ function updateAllFrames() {
     drawFrame(ctx, 76, 76, App.avatarSettings);
     ctx.restore();
   }
-  
+  // Обновляем мини-профиль
+  if ($('#miniProfile').classList.contains('show') && App.selectedProfile) {
+    const d = App.allUserData[App.selectedProfile];
+    if (d && d.avatar) {
+      const c = $('#mpAvatarContainer');
+      if (c) {
+        c.innerHTML = `<div style="position:relative;width:64px;height:64px;"><img src="${esc(d.avatar)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--accent);"></div>`;
+      }
+    }
+  }
+  // Обновляем сайдбар
+  document.querySelectorAll('.avatar-item').forEach(item => {
+    const uid = item.dataset.uid;
+    if (uid && App.allUserData[uid] && App.allUserData[uid].avatar) {
+      const img = item.querySelector('img');
+      if (img) img.src = App.allUserData[uid].avatar;
+    }
+  });
   App.avatarAnimId = requestAnimationFrame(updateAllFrames);
 }
 
-// ====== СЛУШАТЕЛИ FIREBASE (С ЗАЩИТОЙ ОТ УТЕЧЕК) ======
+function updateSettingsUI() {
+  const adv = App.isCreator || App.isGod;
+  document.getElementById('avatarAdvanced').style.display = adv ? 'block' : 'none';
+  document.getElementById('avatarSimple').style.display = adv ? 'none' : 'block';
+  document.querySelectorAll('.style-btn').forEach(b => { b.classList.toggle('active', b.dataset.style === App.avatarSettings.style); });
+  document.getElementById('setSpeed').value = App.avatarSettings.speed;
+  document.getElementById('setSpeedVal').textContent = App.avatarSettings.speed + 'x';
+  document.getElementById('setGlow').value = App.avatarSettings.glow;
+  document.getElementById('setGlowVal').textContent = App.avatarSettings.glow + 'px';
+  document.getElementById('setColor1').value = App.avatarSettings.color1;
+  document.getElementById('setColor2').value = App.avatarSettings.color2;
+  document.getElementById('setRingColor').value = App.avatarSettings.ringColor;
+  document.getElementById('setRingThickness').value = App.avatarSettings.ringThickness;
+}
+
+// ====== НАСТРОЙКИ ======
+function openSettings() {
+  document.getElementById('mainContent').style.display = 'none';
+  document.getElementById('avatarCarousel').style.display = 'none';
+  document.getElementById('settingsPanel').style.display = 'flex';
+  document.getElementById('setVk').value = App.user.vkId || '';
+  document.getElementById('setName').value = '';
+  loadPunktsSettings();
+  updateSettingsUI();
+}
+
+function closeSettings() {
+  document.getElementById('settingsPanel').style.display = 'none';
+  document.getElementById('mainContent').style.display = 'flex';
+  document.getElementById('avatarCarousel').style.display = 'flex';
+}
+
+function loadPunktsSettings() {
+  DB.ref('punkts').once('value').then(snap => {
+    const sel = $('#setPunkt');
+    sel.innerHTML = '<option value="">Не менять</option>';
+    snap.forEach(child => {
+      sel.innerHTML += `<option value="${child.key}">${child.key}</option>`;
+    });
+  });
+}
+
+function saveSettings() {
+  const nn = $('#setName').value.trim();
+  const npu = $('#setPunkt').value;
+  const nvk = $('#setVk').value.trim();
+  const updates = {};
+  if (nn) updates.name = nn;
+  if (npu) updates.punkt = npu;
+  if (nvk) updates.vkId = nvk;
+  if (Object.keys(updates).length) {
+    DB.ref('users/' + App.user.uid).update(updates).then(() => {
+      if (nn) App.user.name = nn;
+      if (npu) App.user.punkt = npu;
+      if (nvk) App.user.vkId = nvk;
+      updateUI();
+      toast('Сохранено');
+    });
+  }
+  closeSettings();
+}
+
+function saveAvatar() {
+  const data = {
+    style: App.avatarSettings.style,
+    speed: App.avatarSettings.speed,
+    glow: App.avatarSettings.glow,
+    color1: App.avatarSettings.color1,
+    color2: App.avatarSettings.color2,
+    ringColor: App.avatarSettings.ringColor,
+    ringThickness: App.avatarSettings.ringThickness
+  };
+  if (App.avatarImageData) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 200;
+    canvas.height = 200;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(App.avatarImageData, 0, 0, 200, 200);
+    data.photo = canvas.toDataURL('image/jpeg', 0.8);
+  }
+  const updates = { avatarSettings: data };
+  if (data.photo) updates.avatar = data.photo;
+  DB.ref('users/' + App.user.uid).update(updates).then(() => {
+    if (data.photo) App.user.avatar = data.photo;
+    toast('Аватар сохранён');
+    closeSettings();
+  });
+}
+
+// ====== PINNED, ANNOUNCE, THOUGHT ======
+function loadPinned() {
+  DB.ref('pinned').on('value', snap => {
+    const el = $('#pinnedMessage');
+    if (!snap.exists()) { el.style.display = 'none'; return; }
+    const data = snap.val();
+    el.style.display = 'block';
+    el.innerHTML = `📌 <b>${esc(data.user || '?')}:</b> ${esc(data.text)}`;
+  });
+}
+
+function loadAnnounce() {
+  DB.ref('announce').limitToLast(1).on('value', snap => {
+    const el = $('#announceBlock');
+    if (!snap.exists()) { el.style.display = 'none'; return; }
+    let last = null;
+    snap.forEach(child => { last = child.val(); last._key = child.key; });
+    if (last.expiry && Date.now() > last.expiry) {
+      DB.ref('announce/' + last._key).remove();
+      el.style.display = 'none';
+      return;
+    }
+    el.style.display = 'block';
+    el.innerHTML = `
+      ${esc(last.text)}
+      <br><small style="color:var(--muted);">${new Date(last.timestamp).toLocaleString('ru-RU')}</small>
+    `;
+    if (App.isCreator || App.isGod) {
+      const delBtn = document.createElement('button');
+      delBtn.textContent = '✕';
+      delBtn.style.cssText = 'position:absolute;right:8px;top:8px;background:none;border:none;color:var(--red);cursor:pointer;font-size:14px;';
+      delBtn.addEventListener('click', () => DB.ref('announce/' + last._key).remove());
+      el.appendChild(delBtn);
+    }
+  });
+}
+
+function loadThought() {
+  DB.ref('creatorThought').on('value', snap => {
+    const el = $('#thoughtBlock');
+    if (!snap.exists()) { el.style.display = 'none'; return; }
+    const data = snap.val();
+    if (data.expiry && Date.now() > data.expiry) {
+      DB.ref('creatorThought').remove();
+      el.style.display = 'none';
+      return;
+    }
+    el.style.display = 'block';
+    el.innerHTML = `
+      💭 ${esc(data.text)}
+      <br><small style="color:var(--muted);">${data.expiry ? 'До: ' + new Date(data.expiry).toLocaleString('ru-RU') : 'Навсегда'}</small>
+    `;
+    if (App.isCreator) {
+      const delBtn = document.createElement('button');
+      delBtn.textContent = '✕';
+      delBtn.style.cssText = 'position:absolute;right:8px;top:8px;background:none;border:none;color:var(--red);cursor:pointer;font-size:14px;';
+      delBtn.addEventListener('click', () => DB.ref('creatorThought').remove());
+      el.appendChild(delBtn);
+    }
+  });
+}
+
+function recountRating() {
+  DB.ref('premiums').once('value').then(snap => {
+    let rating = snap.numChildren() * 2;
+    DB.ref('punishes').once('value').then(p => {
+      rating -= p.numChildren();
+      if (rating < 0) rating = 0;
+      const status = getGodStatus(rating);
+      const badge = document.getElementById('godStatusBadge');
+      if (badge) {
+        badge.textContent = status.name;
+        badge.style.background = status.color;
+      }
+    });
+  });
+}
+
+// ====== ЛИСТЕНЕРЫ FIREBASE ======
 function setupDatabaseListeners() {
-  // 1. Слушатель пользователей
   attachDbListener(DB.ref('users'), 'value', snap => {
     App.allUsers = {};
     App.allUserData = {};
@@ -1366,51 +1848,129 @@ function setupDatabaseListeners() {
       App.allUsers[child.key] = child.val().avatar || '';
       App.allUserData[child.key] = child.val();
     });
-    // buildCarousel();
+    buildCarousel();
   });
-  
-  // 2. Слушатель смен
   attachDbListener(DB.ref('activeShifts'), 'value', snap => {
     App.activeShifts = {};
     snap.forEach(child => {
       if (child.val() && child.val().active) App.activeShifts[child.key] = true;
     });
-    // buildCarousel();
+    buildCarousel();
   });
-  
-  // 3. Уведомления в фоне (Чат)
   attachDbListener(DB.ref('chat').limitToLast(1), 'child_added', snap => {
     if (App.chatOpened) return;
-    
     const msg = snap.val();
     if (!msg || !App.user) return;
     if (msg.timestamp <= App.lastChatTimestamp) return;
-    
     const isMine = msg.user === '🌌 ' + App.user.name || msg.user === '👑 ' + App.user.name || msg.user === App.user.name;
     if (isMine) return;
-    
     if (App.notifiedKeys[snap.key]) return;
     App.notifiedKeys[snap.key] = true;
-    
     App.lastChatTimestamp = Math.max(App.lastChatTimestamp, msg.timestamp || 0);
     App.unreadCount++;
     updateBadge();
   });
 }
 
-// ====== ИНИЦИАЛИЗАЦИЯ И DOM ======
+// ====== DOM EVENTS ======
 document.addEventListener('DOMContentLoaded', () => {
+  // Chat
   $('#chatHeader').addEventListener('click', toggleChat);
-  $('#chatMsgInput').addEventListener('keydown', e => { if(e.key === 'Enter') { e.preventDefault(); sendMsg(); } });
+  $('#chatBackBtn').addEventListener('click', switchGlobal);
+  $('#chatMsgInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); sendMsg(); } });
   $('#sendMsgBtn').addEventListener('click', sendMsg);
-  $('#settingsBtn').addEventListener('click', () => { $('#settingsPanel').style.display='flex'; });
-  $('#settingsCloseBtn').addEventListener('click', () => { $('#settingsPanel').style.display='none'; });
-  $('#settingsLogoutBtn').addEventListener('click', () => { $('#settingsPanel').style.display='none'; logout(); });
+  $('#chatPhotoBtn').addEventListener('click', () => $('#chatPhotoInput').click());
+  $('#chatPhotoInput').addEventListener('change', sendPhoto);
+  $('#stickerToggleBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    const p = $('#stickerPanel');
+    p.classList.toggle('open');
+    if (p.classList.contains('open')) renderStickerUI();
+  });
+  document.addEventListener('click', e => {
+    const p = $('#stickerPanel');
+    if (p && p.classList.contains('open') && !e.target.closest('#stickerPanel') && !e.target.closest('.sticker-toggle')) {
+      p.classList.remove('open');
+    }
+  });
+  // Sidebar
+  $('#sidebarToggleBtn').addEventListener('click', toggleSidebar);
+  $('#sidebarCloseBtn').addEventListener('click', () => $('#avatarCarousel').classList.remove('open'));
+  $('#mpCloseBtn').addEventListener('click', closeMini);
+  $('#mpChatBtn').addEventListener('click', openPriv);
+  document.addEventListener('click', e => {
+    const mp = $('#miniProfile');
+    if (mp && mp.classList.contains('show') && !e.target.closest('#miniProfile') && !e.target.closest('.avatar-item') && !e.target.closest('#sidebarToggleBtn') && !e.target.closest('.msg-author')) {
+      closeMini();
+    }
+  });
+  // Settings
+  $('#settingsBtn').addEventListener('click', openSettings);
+  $('#settingsCloseBtn').addEventListener('click', closeSettings);
+  $('#settingsSaveBtn').addEventListener('click', saveSettings);
+  $('#settingsLogoutBtn').addEventListener('click', () => { closeSettings(); logout(); });
+  $('#avatarCloseBtn').addEventListener('click', closeSettings);
+  $('#avatarSaveBtn').addEventListener('click', saveAvatar);
+  $('#setAvatarFile').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => { App.avatarImageData = img; drawProfileAvatar(); toast('Фото загружено'); };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+  // Settings tabs
+  document.querySelectorAll('.settings-tab').forEach(btn => btn.addEventListener('click', function() {
+    const tab = this.dataset.tab;
+    document.querySelectorAll('.settings-tab').forEach(x => {
+      x.classList.remove('active');
+      x.style.background = 'transparent';
+      x.style.color = 'var(--muted)';
+    });
+    this.classList.add('active');
+    this.style.background = 'var(--accent)';
+    this.style.color = '#fff';
+    document.getElementById('stab-main').style.display = tab === 'main' ? 'flex' : 'none';
+    document.getElementById('stab-avatar').style.display = tab === 'avatar' ? 'flex' : 'none';
+  }));
+  // Style buttons
+  document.querySelectorAll('.style-btn').forEach(btn => btn.addEventListener('click', function() {
+    App.avatarSettings.style = this.dataset.style;
+    document.querySelectorAll('.style-btn').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+    updateAllFrames();
+  }));
+  // Range inputs
+  document.getElementById('setSpeed').addEventListener('input', function() {
+    App.avatarSettings.speed = parseFloat(this.value);
+    document.getElementById('setSpeedVal').textContent = App.avatarSettings.speed + 'x';
+    updateAllFrames();
+  });
+  document.getElementById('setGlow').addEventListener('input', function() {
+    App.avatarSettings.glow = parseInt(this.value);
+    document.getElementById('setGlowVal').textContent = App.avatarSettings.glow + 'px';
+    updateAllFrames();
+  });
+  document.getElementById('setColor1').addEventListener('input', function() {
+    App.avatarSettings.color1 = this.value;
+    updateAllFrames();
+  });
+  document.getElementById('setColor2').addEventListener('input', function() {
+    App.avatarSettings.color2 = this.value;
+    updateAllFrames();
+  });
+  document.getElementById('setRingColor').addEventListener('input', function() {
+    App.avatarSettings.ringColor = this.value;
+  });
+  document.getElementById('setRingThickness').addEventListener('change', function() {
+    App.avatarSettings.ringThickness = this.value;
+  });
 });
 
 })();
 </script>
 </body>
 </html>
-
-```
