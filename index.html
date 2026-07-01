@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
@@ -9,244 +9,260 @@
 html,body{overflow:hidden;height:100vh;width:100vw;background:#0a0a1a}
 body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;color:#eee;font-size:16px;display:flex;flex-direction:column}
 #bgCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1000;display:block}
-:root{--accent:#7c3aed;--accent2:#a855f7;--gold:#f5c518;--bg2:rgba(20,22,40,0.85);--bg3:rgba(30,32,55,0.65);--border:rgba(100,80,220,0.2);--text:#e8e8ff;--muted:#888;--green:#22c55e;--red:#ef4444}
+:root{--accent:#7c3aed;--accent2:#a855f7;--gold:#f5c518;--bg2:rgba(20,20,50,0.85);--bg3:rgba(30,30,60,0.7);--border:rgba(100,80,220,0.25);--text:#e8e8ff;--muted:#888;--green:#22c55e;--red:#ef4444}
 body.theme-creator{--accent:#7c3aed;--accent2:#00d4ff;--gold:#f5c518}
 body.theme-god{--accent:#b8860b;--accent2:#ffd700;--gold:#ffd700}
-
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(12px);padding:16px;margin-bottom:8px}
-input,select,textarea{width:100%;padding:10px 14px;font-size:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:rgba(10,10,25,0.6);color:#fff;outline:none}
-input:focus,select:focus,textarea:focus{border-color:var(--accent)}
-button{border:none;font-weight:bold;cursor:pointer;border-radius:10px;transition:all .2s;padding:10px 14px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(12px);padding:16px;margin:6px 0}
+input,select,textarea{width:100%;padding:12px 14px;font-size:15px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);background:rgba(10,10,25,0.6);color:#fff;outline:none;transition:0.2s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,58,237,0.15)}
+button{border:none;font-weight:bold;cursor:pointer;border-radius:12px;transition:all .2s;padding:12px 16px;font-size:15px}
 button:hover{transform:scale(1.02);filter:brightness(1.1)}
-.btn-green{background:linear-gradient(135deg,#43a047,#2e7d32);color:#fff}
-.btn-red{background:linear-gradient(135deg,#e94560,#c62828);color:#fff}
-.btn-gray{background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.1)}
-.btn-gold{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff}
-.btn-blue{background:linear-gradient(135deg,#2196F3,#1565C0);color:#fff}
-.tabs{display:flex;gap:6px;margin:0;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
-.tabs::-webkit-scrollbar{display:none}
-.tabs button{height:40px;display:flex;align-items:center;gap:6px;border-radius:99px;background:rgba(255,255,255,0.06);color:#aaa;border:1px solid transparent;padding:0 14px;font-size:13px;white-space:nowrap;flex-shrink:0;cursor:pointer}
-.tabs button.active{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff}
-.tab-content{display:none;width:100%;animation:fadeIn 0.3s ease}
-.tab-content.active-tab{display:block}
+button:active{transform:scale(0.95)}
+.btn-green{background:linear-gradient(135deg,#43a047,#2e7d32);color:#fff;width:100%}
+.btn-red{background:linear-gradient(135deg,#e94560,#c62828);color:#fff;width:100%}
+.btn-gray{background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.1);width:100%}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff;width:100%}
+.btn-blue{background:linear-gradient(135deg,#2196F3,#1565C0);color:#fff;width:100%}
+.btn-purple{background:#9C27B0;color:#fff}
+.btn-orange{background:#FF9800;color:#fff}
+.btn-sm{padding:6px 12px;font-size:12px;width:auto}
 .app-container{display:flex;width:100%;height:100vh;position:relative;z-index:1;justify-content:center;overflow:hidden}
-.main-content{width:100%;max-width:720px;padding:10px 14px;display:flex;flex-direction:column;padding-bottom:80px;height:100%;gap:6px}
-.profile-row{display:flex;align-items:center;gap:12px;padding:8px 0;flex-shrink:0}
-.badge{font-size:11px;font-weight:bold;padding:3px 10px;border-radius:20px;display:inline-block}
+.main-content{width:100%;max-width:720px;padding:12px 16px;display:flex;flex-direction:column;padding-bottom:80px;height:100%;gap:6px}
+.profile-card{display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(12px);flex-shrink:0}
+.badge{font-size:12px;font-weight:bold;padding:4px 12px;border-radius:20px;display:inline-block}
 .badge-creator{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff}
 .badge-god{background:linear-gradient(135deg,#FFD700,#FF4500);color:#fff}
 .badge-manager{background:#2d6a4f;color:#95d5b2}
 .name-creator{background:linear-gradient(135deg,var(--gold),var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold}
 .name-god{background:linear-gradient(135deg,#FFD700,#FF8C00,#FF4500);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold}
 .name-manager{color:#eee;font-weight:bold}
-
-/* ====== АВАТАР С РАМКОЙ (CANVAS) ====== */
-.avatar-wrap{position:relative;width:44px;height:44px;flex-shrink:0}
-.avatar-wrap.big{width:60px;height:60px}
+.tabs{display:flex;gap:6px;margin:0;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{height:44px;display:flex;align-items:center;gap:8px;border-radius:99px;background:rgba(255,255,255,0.06);color:#aaa;border:1px solid transparent;padding:0 16px;font-size:13px;white-space:nowrap;flex-shrink:0;transition:0.3s;min-width:44px;overflow:hidden}
+.tabs button .tab-label{opacity:0;max-width:0;transition:all 0.3s}
+.tabs button:hover .tab-label,.tabs button.active .tab-label{opacity:1;max-width:80px}
+.tabs button.active{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff;box-shadow:0 4px 15px rgba(138,43,226,0.3)}
+.tab-content{display:none;width:100%;flex-shrink:0;animation:fadeIn 0.3s ease}
+.tab-content.active-tab{display:block}
+.chat-section{background:var(--bg2);border:1px solid var(--border);border-radius:16px;display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;margin:0}
+.chat-header-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.2);cursor:pointer;flex-shrink:0}
+.chat-header-bar:hover{background:rgba(0,0,0,0.3)}
+#chat{flex:1;overflow-y:auto;padding:10px 14px;scrollbar-width:thin;scrollbar-color:var(--accent) transparent;background:transparent;display:flex;flex-direction:column;gap:2px}
+#chat.hidden{display:none}
+.chat-bubble-group{display:flex;flex-direction:column;max-width:85%;position:relative;margin:1px 0}
+.chat-bubble-group.mine{align-self:flex-end;align-items:flex-end}
+.chat-bubble-group.other{align-self:flex-start;align-items:flex-start}
+.chat-bubble-group .msg-author{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:1px;display:flex;align-items:center;gap:6px;cursor:pointer}
+.chat-bubble-group .msg-author .auth-avatar{width:20px;height:20px;border-radius:50%;object-fit:cover;border:1px solid rgba(255,255,255,0.2)}
+.chat-bubble{background:rgba(255,255,255,0.04);padding:8px 14px;word-break:break-word;line-height:1.4;font-size:14px;border:1px solid rgba(255,255,255,0.03);position:relative;border-radius:12px}
+.chat-bubble.mine{background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.1)}
+.chat-bubble.creator{border-left:2px solid var(--gold);background:rgba(245,197,24,0.06)}
+.chat-bubble.god{border-left:2px solid #FFD700;background:rgba(255,215,0,0.06)}
+.chat-img{max-width:200px;max-height:150px;border-radius:8px;margin-top:4px;cursor:pointer;object-fit:cover}
+.chat-sticker{max-width:120px;max-height:120px;object-fit:contain;margin:2px 0}
+.chat-input-bar{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:720px;background:var(--bg2);backdrop-filter:blur(16px);padding:8px 12px;display:flex;gap:8px;align-items:center;z-index:100;border-top:1px solid var(--border);border-radius:16px 16px 0 0}
+.input-wrapper{position:relative;flex:1;display:flex;align-items:center;background:rgba(0,0,0,0.3);border-radius:20px;border:1px solid rgba(255,255,255,0.05)}
+.input-wrapper input{background:transparent;border:none;padding:10px 40px 10px 16px;font-size:15px;width:100%}
+.sticker-toggle{position:absolute;right:8px;background:transparent;border:none;font-size:20px;cursor:pointer;color:#aaa;padding:0}
+#sendMsgBtn,#chatPhotoBtn{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;padding:0;flex-shrink:0;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.05);color:#aaa}
+#sendMsgBtn{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff;border:none}
+.avatar-carousel{width:110px;background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;right:-130px;height:100vh;padding:50px 0 20px;z-index:1000;backdrop-filter:blur(20px);transition:right 0.3s cubic-bezier(0.16,1,0.3,1);box-shadow:-10px 0 30px rgba(0,0,0,0.5)}
+.avatar-carousel.open{right:0}
+.avatar-carousel-inner{display:flex;flex-direction:column;align-items:center;width:100%;gap:12px;overflow-y:auto;height:100%;padding:10px 0;scrollbar-width:none;padding-bottom:30px}
+.avatar-carousel-inner::-webkit-scrollbar{display:none}
+.avatar-item{width:56px;height:56px;border-radius:50%;cursor:pointer;position:relative;transition:0.2s;flex-shrink:0}
+.avatar-item:hover{transform:scale(1.05)}
+.avatar-item img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid transparent}
+.avatar-item.active img{border-color:var(--gold);box-shadow:0 0 15px rgba(245,197,24,0.3)}
+.avatar-item .online-dot{position:absolute;bottom:2px;right:2px;width:10px;height:10px;background:#4CAF50;border-radius:50%;border:2px solid #111}
+.btn-sidebar-toggle{position:fixed;right:0;top:50%;transform:translateY(-50%);width:36px;height:50px;background:var(--bg2);border:1px solid var(--border);border-right:none;border-radius:14px 0 0 14px;color:#fff;font-size:14px;cursor:pointer;z-index:999;backdrop-filter:blur(8px)}
+.sidebar-close-btn{position:absolute;top:12px;left:12px;background:rgba(255,255,255,0.05);border:none;color:#aaa;width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer}
+.sidebar-close-btn:hover{background:#e94560;color:#fff}
+.mini-profile{position:fixed;right:130px;top:50%;transform:translateY(-50%);background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px;width:220px;z-index:1100;display:none;backdrop-filter:blur(20px);box-shadow:0 10px 40px rgba(0,0,0,0.6)}
+.mini-profile.show{display:block;animation:slideIn 0.2s ease-out}
+@keyframes slideIn{from{opacity:0;transform:translateY(-50%) translateX(20px)}to{opacity:1;transform:translateY(-50%) translateX(0)}}
+.mini-profile .mp-close{position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.05);border:none;color:#aaa;width:28px;height:28px;border-radius:50%;font-size:12px;cursor:pointer}
+.mini-profile .mp-close:hover{background:#e94560;color:#fff}
+#stickerPanel{position:absolute;bottom:70px;right:0;width:300px;height:340px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;display:none;flex-direction:column;z-index:1000;box-shadow:0 10px 40px rgba(0,0,0,0.6);backdrop-filter:blur(20px);overflow:hidden}
+#stickerPanel.open{display:flex}
+#stickerContent{flex:1;overflow-y:auto;padding:12px;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start}
+.emoji-item{width:40px;height:40px;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:10px;transition:0.15s}
+.emoji-item:hover{background:rgba(255,255,255,0.1);transform:scale(1.1)}
+.st-item{width:60px;height:60px;cursor:pointer;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.02);transition:0.15s}
+.st-item:hover{background:rgba(255,255,255,0.08);transform:scale(1.05)}
+.st-item img{max-width:100%;max-height:100%;object-fit:contain}
+.sticker-tabs{display:flex;background:rgba(0,0,0,0.3);padding:6px;gap:4px;overflow-x:auto;border-top:1px solid var(--border);scrollbar-width:none}
+.sticker-tabs::-webkit-scrollbar{display:none}
+.st-tab{width:32px;height:32px;border-radius:8px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;opacity:0.6;transition:0.2s;flex-shrink:0}
+.st-tab.active,.st-tab:hover{opacity:1;background:rgba(124,58,237,0.2)}
+.toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:10000;pointer-events:none;display:flex;flex-direction:column;gap:8px}
+.toast-msg{padding:12px 20px;border-radius:16px;background:var(--bg2);border:1px solid var(--accent);color:#fff;font-size:14px;box-shadow:0 5px 20px rgba(0,0,0,0.6);transform:translateY(-20px);opacity:0;transition:all 0.3s;text-align:center;backdrop-filter:blur(10px)}
+.toast-msg.error{border-color:var(--red)}
+.toast-msg.show{transform:translateY(0);opacity:1}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;font-size:12px;background:rgba(22,33,62,0.4);border-radius:10px;padding:6px;border:1px solid var(--border)}
+.calendar div{padding:6px;border-radius:4px}
+.calendar .shift-day{background:#4CAF50;color:#fff;font-weight:bold;cursor:pointer}
+.calendar .today{border:2px solid #2196F3}
+.calendar .header{font-weight:bold;background:rgba(51,51,51,0.7)}
+.worker-row{display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid var(--border);gap:6px;flex-wrap:wrap}
+.worker-row button{width:auto;padding:4px 10px;font-size:11px}
+.creator-row{background:rgba(245,197,24,0.1);border-left:3px solid var(--gold)}
+.shift-edit-row{display:flex;gap:4px;align-items:center;margin:4px 0;flex-wrap:wrap}
+.shift-edit-row input{flex:1;padding:6px 8px;font-size:12px;min-width:40px}
+.shift-edit-row button{width:auto;padding:4px 10px;font-size:11px}
+.punish-row{display:flex;justify-content:space-between;align-items:center;padding:6px;font-size:13px;border-bottom:1px solid var(--border)}
+.punish-row button{width:auto;padding:4px 8px;font-size:10px}
+.zp-result{background:rgba(34,197,94,0.1);padding:12px;border-radius:8px;margin-top:8px;font-size:14px;border:1px solid rgba(34,197,94,0.3);white-space:pre-line}
+.status-badge{font-size:14px;font-weight:bold;padding:4px 12px;border-radius:12px;display:inline-block;margin:4px 0}
+.progress-bar{height:6px;background:#333;border-radius:3px;margin-top:4px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;transition:width 0.5s}
+.progress-text{font-size:11px;color:var(--muted)}
+.settings-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:20px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;backdrop-filter:blur(20px)}
+#settingsPanel{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px}
+.settings-tab{flex:1;padding:8px;border-radius:10px;font-size:13px;background:transparent;color:var(--muted);border:none;cursor:pointer;transition:0.2s}
+.settings-tab.active{background:var(--accent);color:#fff}
+.style-btn{padding:8px 6px;border-radius:10px;border:2px solid #444;background:rgba(0,0,0,0.3);color:#ccc;font-size:11px;cursor:pointer;transition:0.2s;width:100%}
+.style-btn.active{border-color:var(--accent);background:rgba(124,58,237,0.2);color:#fff}
+#avatarAdvanced{display:block}
+#avatarSimple{display:none}
+.avatar-wrap{position:relative;width:76px;height:76px;flex-shrink:0}
 .avatar-wrap canvas{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:50%}
 .avatar-wrap .avatar-base{z-index:1}
 .avatar-wrap .avatar-frame{z-index:2;pointer-events:none}
-
-/* ====== ЧАТ ====== */
-.chat-section{background:var(--bg2);border:1px solid var(--border);border-radius:14px;display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;margin:0}
-.chat-header-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.2);cursor:pointer;flex-shrink:0}
-.chat-label{flex:1;font-weight:bold;background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-#chat{flex:1;overflow-y:auto;padding:10px;scrollbar-width:thin;scrollbar-color:var(--accent) transparent;background:transparent;display:flex;flex-direction:column;gap:4px}
-#chat.hidden{display:none}
-.chat-message-row{display:flex;align-items:flex-start;gap:8px;padding:4px 8px;border-radius:8px;transition:background 0.2s}
-.chat-message-row:hover{background:rgba(255,255,255,0.02)}
-.chat-message-row.own{flex-direction:row-reverse}
-.chat-message-content{flex:1;min-width:0}
-.chat-message-header{display:flex;align-items:center;gap:6px;margin-bottom:2px;flex-wrap:wrap}
-.chat-message-header.own{justify-content:flex-end}
-.chat-message-header .name{font-weight:600;font-size:13px}
-.chat-message-header .time{font-size:10px;color:var(--muted)}
-.chat-message-text{font-size:14px;word-break:break-word;color:#ddd;line-height:1.4}
-.chat-message-text .chat-img{max-width:200px;max-height:140px;border-radius:8px;margin-top:4px;cursor:pointer;object-fit:cover}
-.chat-message-text .chat-sticker{max-width:100px;max-height:100px;object-fit:contain;margin:2px 0}
-.chat-input-bar{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:720px;background:var(--bg2);backdrop-filter:blur(16px);padding:8px 12px;display:flex;gap:8px;align-items:center;z-index:100;border-top:1px solid var(--border)}
-.input-wrapper{position:relative;flex:1;display:flex;align-items:center;background:rgba(0,0,0,0.3);border-radius:10px;border:1px solid rgba(255,255,255,0.05)}
-.input-wrapper input{background:transparent;border:none;padding:10px 36px 10px 14px;font-size:14px;width:100%;margin:0}
-.input-wrapper input:focus{box-shadow:none;background:transparent}
-.sticker-toggle{position:absolute;right:6px;background:transparent;border:none;font-size:18px;cursor:pointer;color:#aaa;padding:0}
-#sendMsgBtn{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;padding:0;flex-shrink:0;background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff}
-#chatPhotoBtn{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;padding:0;flex-shrink:0;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.05);color:#aaa}
-.sticker-panel{position:absolute;bottom:60px;right:0;width:280px;height:300px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;display:none;flex-direction:column;z-index:1000;box-shadow:0 10px 40px rgba(0,0,0,0.6);backdrop-filter:blur(20px);overflow:hidden}
-.sticker-panel.open{display:flex}
-.sticker-content{flex:1;overflow-y:auto;padding:10px;display:flex;flex-wrap:wrap;gap:4px;align-content:flex-start}
-.emoji-item{width:36px;height:36px;font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:6px;transition:0.1s}
-.emoji-item:hover{transform:scale(1.2);background:rgba(255,255,255,0.05)}
-.avatar-carousel{width:100px;background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;right:-120px;height:100vh;padding:50px 0 20px;z-index:1000;backdrop-filter:blur(20px);transition:right 0.3s cubic-bezier(0.16,1,0.3,1);box-shadow:-10px 0 30px rgba(0,0,0,0.5)}
-.avatar-carousel.open{right:0}
-.avatar-carousel-inner{display:flex;flex-direction:column;align-items:center;width:100%;gap:10px;overflow-y:auto;height:100%;padding:10px 0}
-.avatar-item{width:50px;height:50px;border-radius:50%;cursor:pointer;position:relative;transition:0.2s;flex-shrink:0}
-.avatar-item img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid transparent}
-.avatar-item .online-dot{position:absolute;bottom:0;right:0;width:10px;height:10px;background:#4CAF50;border-radius:50%;border:2px solid #111}
-.btn-sidebar-toggle{position:fixed;right:0;top:50%;transform:translateY(-50%);width:32px;height:44px;background:var(--bg2);border:1px solid var(--border);border-right:none;border-radius:10px 0 0 10px;color:#fff;font-size:13px;cursor:pointer;z-index:999;backdrop-filter:blur(8px)}
-.sidebar-close-btn{position:absolute;top:10px;left:10px;background:rgba(255,255,255,0.05);border:none;color:#aaa;width:24px;height:24px;border-radius:50%;font-size:12px;cursor:pointer}
-.mini-profile{position:fixed;right:120px;top:50%;transform:translateY(-50%);background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;width:200px;z-index:1100;display:none;backdrop-filter:blur(20px);box-shadow:0 10px 40px rgba(0,0,0,0.6)}
-.mini-profile.show{display:block;animation:slideIn 0.2s ease-out}
-@keyframes slideIn{from{opacity:0;transform:translateY(-50%) translateX(20px)}to{opacity:1;transform:translateY(-50%) translateX(0)}}
-.mp-close-btn{position:absolute;top:6px;right:6px;background:rgba(255,255,255,0.05);border:none;color:#aaa;width:22px;height:22px;border-radius:50%;font-size:10px;cursor:pointer}
-.calendar{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:10px}
-.cal-header{display:flex;justify-content:space-between;align-items:center;padding:0 4px}
-.cal-nav{background:rgba(255,255,255,0.05);color:#fff;width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;border:1px solid rgba(255,255,255,0.05)}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:6px}
-.cal-day-name{text-align:center;font-size:10px;color:var(--muted);padding-bottom:4px;font-weight:600}
-.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:6px;font-size:12px;background:rgba(255,255,255,0.02)}
-.cal-day.today{border:1px solid var(--accent);color:var(--accent);font-weight:700;background:rgba(124,58,237,0.1)}
-.cal-day.has-shift{background:rgba(34,197,94,0.15);color:#4ade80;font-weight:700}
-.management-item{background:rgba(255,255,255,0.03);border:1px solid var(--border);padding:10px;border-radius:8px;margin-bottom:6px}
-.worker-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);gap:6px;flex-wrap:wrap}
-.worker-row button{width:auto;padding:4px 10px;font-size:11px}
-.toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:10000;pointer-events:none;display:flex;flex-direction:column;gap:6px}
-.toast-msg{padding:10px 18px;border-radius:12px;background:var(--bg2);border:1px solid var(--accent);color:#fff;font-size:13px;box-shadow:0 5px 20px rgba(0,0,0,0.6);transform:translateY(-20px);opacity:0;transition:all 0.3s;text-align:center;backdrop-filter:blur(10px)}
-.toast-msg.error{border-color:var(--red)}
-.toast-msg.show{transform:translateY(0);opacity:1}
-#photoViewer{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.9);z-index:10000;display:none;align-items:center;justify-content:center}
-#photoViewer img{max-width:90%;max-height:90%;border-radius:8px}
-#settingsPanel{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px}
-.settings-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px;max-width:460px;width:100%;max-height:90vh;overflow-y:auto}
-.settings-tab{flex:1;padding:8px;border-radius:8px;font-size:13px;background:transparent;color:var(--muted);border:none;cursor:pointer;transition:0.2s}
-.settings-tab.active{background:var(--accent);color:#fff}
-#stab-avatar{display:none}
-#stab-main{display:flex;flex-direction:column;gap:10px}
-.avatar-preview-wrap{position:relative;width:60px;height:60px;flex-shrink:0}
-.avatar-preview-wrap canvas{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:50%}
-.avatar-preview-wrap .preview-base{z-index:1}
-.avatar-preview-wrap .preview-frame{z-index:2;pointer-events:none}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:480px){.tabs button{padding:0 10px;font-size:11px}.main-content{padding:6px 8px;padding-bottom:70px}.chat-input-bar{padding:6px 8px}.mini-profile{right:10px;width:180px}.avatar-carousel{width:80px}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@media(max-width:600px){.main-content{padding:8px;padding-bottom:70px}.chat-input-bar{border-radius:12px 12px 0 0;padding:6px 8px}.mini-profile{right:10px;width:190px}.avatar-carousel{width:90px}.avatar-item{width:44px;height:44px}}
 </style>
 </head>
 <body>
-
 <canvas id="bgCanvas"></canvas>
 <div id="toastContainer" class="toast-container"></div>
-<div id="photoViewer" onclick="this.style.display='none'"><img id="photoViewerImg"></div>
-
-<!-- ====== ЛОГИН ====== -->
 <div id="loginScreen" style="display:flex;align-items:center;justify-content:center;height:100vh;padding:20px;">
-  <div style="max-width:380px;width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:28px;backdrop-filter:blur(20px);display:flex;flex-direction:column;gap:12px;">
-    <div style="text-align:center;font-size:22px;font-weight:800;background:linear-gradient(135deg,#f5c518,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">🌌 Ozon Hub</div>
-    <div style="display:flex;background:rgba(0,0,0,0.3);border-radius:10px;padding:4px;">
-      <button id="tabLogin" style="flex:1;padding:8px;border:none;border-radius:8px;background:#7c3aed;font-size:14px;font-weight:600;color:#fff;">Вход</button>
-      <button id="tabRegister" style="flex:1;padding:8px;border:none;border-radius:8px;background:transparent;font-size:14px;font-weight:600;color:#6a7a94;">Регистрация</button>
+  <div style="max-width:380px;width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:32px;backdrop-filter:blur(20px);display:flex;flex-direction:column;gap:14px;">
+    <div style="text-align:center;font-size:24px;font-weight:800;background:linear-gradient(135deg,#f5c518,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Ozon Hub</div>
+    <div style="display:flex;background:rgba(0,0,0,0.3);border-radius:12px;padding:4px;">
+      <button id="tabLogin" style="flex:1;padding:10px;border:none;border-radius:10px;background:#7c3aed;font-size:15px;font-weight:600;color:#fff;">Вход</button>
+      <button id="tabRegister" style="flex:1;padding:10px;border:none;border-radius:10px;background:transparent;font-size:15px;font-weight:600;color:#6a7a94;">Регистрация</button>
     </div>
-    <div id="loginFields" style="display:flex;flex-direction:column;gap:10px;">
-      <input type="email" id="loginEmail" placeholder="Email">
-      <input type="password" id="loginPass" placeholder="Пароль">
-      <button class="btn-gold" id="loginBtn" style="padding:12px;font-size:15px;">🔑 Войти</button>
+    <div id="loginFields" style="display:flex;flex-direction:column;gap:12px;">
+      <input id="loginEmail" type="email" placeholder="Email">
+      <input id="loginPass" type="password" placeholder="Пароль">
+      <button class="btn-gold" id="loginBtn">Войти</button>
+      <button class="btn-gray" id="resetPassBtn" style="width:100%;padding:10px;font-size:13px;background:transparent;border:1px solid var(--border);">Забыли пароль?</button>
     </div>
-    <div id="registerFields" style="display:none;flex-direction:column;gap:10px;">
-      <input type="text" id="regName" placeholder="Имя">
-      <input type="email" id="regEmail" placeholder="Email">
-      <input type="password" id="regPass" placeholder="Пароль">
-      <button class="btn-gold" id="registerBtn" style="padding:12px;font-size:15px;">📝 Зарегистрироваться</button>
+    <div id="registerFields" style="display:none;flex-direction:column;gap:12px;">
+      <input id="regName" placeholder="Имя">
+      <input id="regEmail" type="email" placeholder="Email">
+      <input id="regPass" type="password" placeholder="Пароль (мин. 6 символов)">
+      <select id="regPunkt"><option value="">Выберите пункт</option></select>
+      <button class="btn-gold" id="registerBtn">Зарегистрироваться</button>
     </div>
     <div id="authError" style="color:var(--red);font-size:13px;text-align:center;display:none;"></div>
   </div>
 </div>
-
-<!-- ====== ОСНОВНОЕ ПРИЛОЖЕНИЕ ====== -->
 <div id="app" class="app-container" style="display:none">
   <button class="btn-sidebar-toggle" id="sidebarToggleBtn">👥</button>
   <div class="main-content" id="mainContent">
-    <div id="announceBlock" style="display:none;background:rgba(200,150,0,0.08);border:1px solid rgba(200,150,0,0.3);padding:10px;border-radius:10px;text-align:center;font-size:13px;color:#ffd700;"></div>
-    <div id="thoughtBlock" style="display:none;background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(0,212,255,0.05));border:1px solid rgba(124,58,237,0.4);padding:12px;border-radius:10px;text-align:center;font-size:14px;color:#e0e0ff;position:relative;"></div>
-    
-    <div class="profile-row">
-      <div id="profileAvatarWrap" class="avatar-wrap big"></div>
-      <div style="flex:1">
-        <b id="creatorNameWrapper" class="name-manager" style="font-size:17px;"><span id="uname"></span></b> 
-        <span id="roleBadge" class="badge badge-manager">Сотрудник</span><br>
-        <span style="font-size:11px;color:#aaa;">Пункт <span id="upunkt">—</span></span>
+    <div id="announceBlock" style="display:none;background:rgba(200,150,0,0.1);border:1px solid rgba(200,150,0,0.3);padding:12px 16px;border-radius:16px;text-align:center;font-size:14px;color:#ffd700;margin-bottom:4px;"></div>
+    <div id="thoughtBlock" style="display:none;background:linear-gradient(135deg,rgba(124,58,237,0.1),rgba(0,212,255,0.05));border:1px solid rgba(124,58,237,0.3);padding:14px 16px;border-radius:16px;text-align:center;font-size:14px;color:#e0e0ff;margin-bottom:4px;position:relative;"></div>
+    <div class="profile-card">
+      <div class="avatar-wrap">
+        <canvas id="profileAvatarCanvas" class="avatar-base" width="76" height="76"></canvas>
+        <canvas id="profileFrameCanvas" class="avatar-frame" width="76" height="76"></canvas>
       </div>
-      <button class="btn-gray" id="settingsBtn" style="width:auto;padding:6px 12px;font-size:12px;">⚙️</button>
+      <div style="flex:1">
+        <b id="creatorNameWrapper" class="name-creator" style="font-size:18px;"><span id="uname"></span></b> 
+        <span id="roleBadge" class="badge badge-creator">Создатель</span><br>
+        <span style="font-size:12px;color:#aaa;">Пункт <span id="upunkt"></span></span>
+      </div>
+      <button class="btn-gray" id="settingsBtn" style="width:auto;padding:8px 14px;font-size:13px;">⚙️</button>
     </div>
-    
     <div class="tabs" id="tabsContainer"></div>
-    <div id="tabContentContainer" style="flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;padding-bottom:4px;"></div>
-    
-    <div class="chat-section" id="chatContainer">
+    <div id="tabContentContainer" style="flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;padding-bottom:6px;"></div>
+    <div id="pinnedMessage" style="display:none;padding:10px 16px;margin-bottom:4px;border-radius:16px;background:rgba(245,197,24,0.05);border:1px solid rgba(245,197,24,0.2);font-size:13px;"></div>
+    <div class="chat-section">
       <div class="chat-header-bar" id="chatHeader">
-        <span style="font-size:16px;">💬</span>
-        <span class="chat-label" id="chatLabel">Общий чат</span>
-        <button class="chat-back-btn" id="chatBackBtn" style="display:none;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#ccc;padding:3px 8px;border-radius:6px;font-size:11px;">↩ Назад</button>
-        <span id="chatArrow" style="color:#aaa;font-size:12px;transition:transform 0.3s;transform:rotate(180deg);">▼</span>
+        <span style="font-size:18px;">💬</span>
+        <span id="chatLabel" style="flex:1;font-weight:bold;background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Общий чат</span>
+        <span id="chatBadge" style="display:none;background:var(--red);color:#fff;border-radius:10px;font-size:11px;padding:2px 6px;font-weight:bold;">0</span>
+        <button class="btn-gray" id="chatBackBtn" style="display:none;width:auto;padding:4px 12px;font-size:12px;">Назад</button>
       </div>
       <div id="chat"></div>
     </div>
   </div>
-  
   <div class="chat-input-bar" id="chatInputBar">
     <div class="input-wrapper">
       <input id="chatMsgInput" placeholder="Сообщение...">
       <button class="sticker-toggle" id="stickerToggleBtn">😀</button>
-      <div id="stickerPanel" class="sticker-panel">
-        <div class="sticker-content" id="stickerContent"></div>
-      </div>
     </div>
-    <button class="btn-gray" id="chatPhotoBtn" style="width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;padding:0;">📎</button>
+    <button id="chatPhotoBtn">📎</button>
     <input id="chatPhotoInput" type="file" accept="image/*" multiple style="display:none;">
-    <button class="btn-gold" id="sendMsgBtn">➤</button>
+    <button id="sendMsgBtn">➤</button>
   </div>
-  
+  <div id="stickerPanel">
+    <div id="stickerContent"></div>
+    <div class="sticker-tabs" id="stickerTabs"></div>
+  </div>
   <div class="avatar-carousel" id="avatarCarousel">
     <button class="sidebar-close-btn" id="sidebarCloseBtn">✕</button>
     <div class="avatar-carousel-inner" id="carouselInner"></div>
   </div>
-  
   <div class="mini-profile" id="miniProfile">
-    <button class="mp-close-btn" id="mpCloseBtn">✕</button>
-    <div id="mpAvatarWrap" style="display:flex;justify-content:center;margin:4px 0;"></div>
-    <div id="mpName" style="text-align:center;font-weight:bold;font-size:15px;"></div>
-    <div id="mpStatus" style="text-align:center;font-size:12px;padding:2px 8px;border-radius:8px;display:inline-block;width:auto;margin:4px auto;background:rgba(124,58,237,0.2);border:1px solid rgba(124,58,237,0.3);"></div>
-    <div id="mpPunkt" style="text-align:center;font-size:11px;color:var(--muted);margin:4px 0;"></div>
-    <button class="btn-gold" id="mpChatBtn" style="width:100%;padding:8px;margin-top:8px;font-size:12px;">💬 Личный чат</button>
+    <button class="mp-close" id="mpCloseBtn">✕</button>
+    <div id="mpAvatarContainer" style="position:relative;width:64px;height:64px;margin:0 auto;"></div>
+    <div id="mpName" style="text-align:center;font-weight:bold;font-size:16px;margin-top:8px;"></div>
+    <div id="mpStatus" style="text-align:center;font-size:12px;margin:4px 0;"></div>
+    <div id="mpPunkt" style="text-align:center;font-size:12px;color:var(--muted);"></div>
+    <button class="btn-gold" id="mpChatBtn" style="width:100%;padding:10px;margin-top:12px;font-size:13px;">Личный чат</button>
   </div>
 </div>
-
-<!-- ====== НАСТРОЙКИ ====== -->
 <div id="settingsPanel">
   <div class="settings-card">
-    <h3 style="text-align:center;margin-bottom:12px;">⚙️ Настройки</h3>
-    <div style="display:flex;gap:4px;margin-bottom:12px;">
-      <button class="settings-tab active" data-tab="main" style="flex:1;padding:8px;border-radius:8px;background:var(--accent);color:#fff;font-size:12px;">Основное</button>
-      <button class="settings-tab" data-tab="avatar" style="flex:1;padding:8px;border-radius:8px;background:transparent;color:var(--muted);font-size:12px;">Аватар</button>
+    <h3 style="text-align:center;margin-bottom:16px;">⚙️ Настройки</h3>
+    <div style="display:flex;gap:4px;margin-bottom:16px;">
+      <button class="settings-tab active" data-tab="main" style="flex:1;padding:8px;border-radius:10px;background:var(--accent);color:#fff;font-size:13px;">Основное</button>
+      <button class="settings-tab" data-tab="avatar" style="flex:1;padding:8px;border-radius:10px;background:transparent;color:var(--muted);font-size:13px;">Аватар</button>
     </div>
-    <div id="stab-main">
-      <div><label style="font-size:11px;color:var(--muted);">Новое имя</label><input id="setName" placeholder="Оставьте пустым"></div>
-      <div><label style="font-size:11px;color:var(--muted);">Пункт</label><select id="setPunkt"><option value="">Не менять</option></select></div>
-      <div><label style="font-size:11px;color:var(--muted);">ВК ID</label><input id="setVk" placeholder="265035511"></div>
-      <button class="btn-green" id="settingsSaveBtn">💾 Сохранить</button>
-      <button class="btn-red" id="settingsLogoutBtn">🚪 Выйти</button>
+    <div id="stab-main" style="display:flex;flex-direction:column;gap:12px;">
+      <div><label style="font-size:12px;color:var(--muted);">Новое имя</label><input id="setName" placeholder="Оставьте пустым"></div>
+      <div><label style="font-size:12px;color:var(--muted);">Пункт</label><select id="setPunkt"><option value="">Не менять</option></select></div>
+      <button class="btn-green" id="settingsSaveBtn">Сохранить</button>
+      <button class="btn-red" id="settingsLogoutBtn">Выйти</button>
       <button class="btn-gray" id="settingsCloseBtn">Отмена</button>
     </div>
-    <div id="stab-avatar" style="display:none;flex-direction:column;gap:10px;">
-      <div style="display:flex;align-items:center;gap:14px;padding:8px;background:rgba(255,255,255,0.03);border-radius:10px;">
-        <div id="previewAvatarWrap" class="avatar-preview-wrap"></div>
-        <div>
-          <button class="btn-blue" id="avatarUploadBtn" style="padding:6px 12px;font-size:12px;width:auto;">📷 Выбрать фото</button>
-          <input type="file" id="avatarFileInput" accept="image/*" style="display:none;">
-          <p style="font-size:10px;color:var(--muted);margin-top:4px;">Макс. 200x200, ~1MB</p>
+    <div id="stab-avatar" style="display:none;flex-direction:column;gap:12px;">
+      <div><label style="font-size:12px;color:var(--muted);">Загрузить фото</label><input type="file" id="setAvatarFile" accept="image/*"></div>
+      <div id="avatarAdvanced">
+        <label style="font-size:12px;color:var(--muted);">Стиль рамки</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:4px;">
+          <button class="style-btn active" data-style="neutron">🌀 Нейтрон</button>
+          <button class="style-btn" data-style="blackhole">🕳️ Дыра</button>
+          <button class="style-btn" data-style="divine">👑 Нимб</button>
+          <button class="style-btn" data-style="kitsune">🦊 Кицунэ</button>
+          <button class="style-btn" data-style="wasteland">☢️ Пустошь</button>
+          <button class="style-btn" data-style="enigma">🌀 Энигма</button>
         </div>
+        <div style="margin-top:8px;"><label style="font-size:12px;color:var(--muted);">Скорость <span id="setSpeedVal">1x</span></label><input type="range" id="setSpeed" min="0.1" max="3" step="0.1" value="1"></div>
+        <div><label style="font-size:12px;color:var(--muted);">Свечение <span id="setGlowVal">20px</span></label><input type="range" id="setGlow" min="0" max="50" step="1" value="20"></div>
+        <div><label style="font-size:12px;color:var(--muted);">Цвет 1</label><input type="color" id="setColor1" value="#6366f1"></div>
+        <div><label style="font-size:12px;color:var(--muted);">Цвет 2</label><input type="color" id="setColor2" value="#a855f7"></div>
       </div>
-      <button class="btn-green" id="avatarSaveBtn">💾 Сохранить аватар</button>
+      <div id="avatarSimple">
+        <div><label style="font-size:12px;color:var(--muted);">Цвет кольца</label><input type="color" id="setRingColor" value="#7c3aed"></div>
+        <div><label style="font-size:12px;color:var(--muted);">Толщина</label><select id="setRingThickness"><option value="thin">Тонкая</option><option value="medium" selected>Средняя</option><option value="thick">Толстая</option></select></div>
+      </div>
+      <button class="btn-green" id="avatarSaveBtn">Сохранить аватар</button>
       <button class="btn-gray" id="avatarCloseBtn">Отмена</button>
     </div>
   </div>
 </div>
-
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-
 <script>
 (function(){
 'use strict';
 
-// ====== FIREBASE ======
+// Firebase config
 firebase.initializeApp({
   apiKey:"AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",
   authDomain:"ozon-grafik-4ad9f.firebaseapp.com",
@@ -256,823 +272,1931 @@ firebase.initializeApp({
   messagingSenderId:"798009068634",
   appId:"1:798009068634:web:4b70eea3cce6c96f4f5c63"
 });
+
 const DB = firebase.database();
 const AUTH = firebase.auth();
 
-// ====== ГЛОБАЛЬНЫЕ ======
-let App = {
+// ---------- App State ----------
+const App = {
   user: null,
-  uid: null,
   onShift: false,
   shiftTimer: null,
+  allShifts: [],
+  allUsers: {},
   allUserData: {},
   activeShifts: {},
-  calYear: new Date().getFullYear(),
-  calMonth: new Date().getMonth(),
+  unreadCount: 0,
+  chatOpened: true,
+  lastChatTimestamp: 0,
+  selectedProfile: null,
   privateChatWith: null,
+  calYear: null,
+  calMonth: null,
+  avatarSettings: {
+    style: 'neutron',
+    speed: 1,
+    glow: 20,
+    color1: '#6366f1',
+    color2: '#a855f7',
+    ringColor: '#7c3aed',
+    ringThickness: 'medium'
+  },
+  avatarImageData: null,
   chatListener: null,
-  avatarFileData: null,
+  notifiedKeys: {},
+  bgAnimId: null,
+  avatarAnimId: null,
   isCreator: false,
-  isGod: false
+  isGod: false,
+  stickerPacks: {},
+  currentStickerTab: 'emoji'
 };
 
-const VK_TOKEN = "vk1.a.1ccqIy8pmM0W_RnIymI9XOMvA6ILX5yxNfZZAiF5HHBdjHK_vOAimgsyljky-TCiReMgJRAlaRvpYEypifmF-iUonUGvldlw5LvDWAOSUpN1WDcnS_7Uit-Yh3BuUF5Ic5NoZ48Qhlmu4ErB87fpTplEI7E3sarTm9LC-Vd8zTbeQp4xgyB1s5yg6oBxTBaNZAFp-ioqBWG25jR8GREmWw";
 const BASE_EMOJIS = ['😊','😉','😘','❤️','🤘','😓','💀','💪','🫠','😂','🤣','😆','😎','🗿','🤷','🤔','😏','🙏','😭','☕️','😴','🤬','👍','👎'];
+const activeListeners = [];
 
-function $(s){return document.querySelector(s)}
-function $$(s){return document.querySelectorAll(s)}
-function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
-function toast(t,e){e=e||false;const c=$('#toastContainer');const to=document.createElement('div');to.className='toast-msg'+(e?' error':'');to.innerHTML=t;c.appendChild(to);setTimeout(()=>to.classList.add('show'),10);setTimeout(()=>{to.classList.remove('show');setTimeout(()=>to.remove(),300)},3000)}
-function stringToColor(str){if(!str)return'#444';let h=0;for(let i=0;i<str.length;i++){h=str.charCodeAt(i)+((h<<5)-h)}let c='#';for(let i=0;i<3;i++){let v=(h>>(i*8))&0xFF;c+=('00'+v.toString(16)).substr(-2)}return c}
-function sendVkNotify(vkId, msg){if(!vkId)return;fetch('https://api.vk.com/method/messages.send?v=5.131&access_token='+VK_TOKEN+'&user_id='+vkId+'&random_id='+Date.now()+'&message='+encodeURIComponent(msg)).catch(e=>console.log('VK error:',e))}
+// ---------- Utilities ----------
+function $(s) { return document.querySelector(s); }
+function $$(s) { return document.querySelectorAll(s); }
 
-// ====== АНИМИРОВАННЫЕ РАМКИ (CANVAS) ======
-function drawFrame(ctx, w, h, role, settings){
-  const cx = w/2, cy = h/2;
-  const time = Date.now() / 1000 * (settings.speed || 1);
-  ctx.clearRect(0, 0, w, h);
-  ctx.shadowBlur = settings.glow || 20;
-  
-  if(role === 'creator'){
-    // КОСМИЧЕСКИЕ ОРБИТЫ (для Кости)
-    const colors = ['#00d4ff', '#7c3aed', '#f5c518'];
-    ctx.shadowColor = '#00d4ff';
-    for(let i=0; i<3; i++){
-      ctx.save();
-      ctx.rotate(i * Math.PI * 2/3 + time * 0.5);
-      ctx.strokeStyle = colors[i];
-      ctx.lineWidth = 2.5;
-      ctx.globalAlpha = 0.8;
-      ctx.shadowBlur = settings.glow || 20;
-      ctx.shadowColor = colors[i];
-      ctx.beginPath();
-      ctx.ellipse(0, 0, w/2-2, h/3, 0, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.restore();
-    }
-    // Протоны на орбитах
-    for(let i=0; i<3; i++){
-      const angle = time * 0.7 + i * Math.PI * 2/3;
-      const rx = w/2-2, ry = h/3;
-      const x = rx * Math.cos(angle) * Math.cos(i*0.8) - ry * Math.sin(angle) * Math.sin(i*0.8);
-      const y = rx * Math.cos(angle) * Math.sin(i*0.8) + ry * Math.sin(angle) * Math.cos(i*0.8);
-      ctx.shadowBlur = 15;
-      ctx.shadowColor = colors[i];
-      ctx.fillStyle = colors[i];
-      ctx.beginPath();
-      ctx.arc(x, y, 4, 0, Math.PI*2);
-      ctx.fill();
-      ctx.shadowBlur = 8;
-      ctx.fillStyle = '#fff';
-      ctx.beginPath();
-      ctx.arc(x, y, 1.5, 0, Math.PI*2);
-      ctx.fill();
-    }
-    ctx.shadowBlur = 0;
-  } else if(role === 'god'){
-    // БОЖЕСТВЕННЫЙ НИМБ (для Игоря)
-    const colors = ['#ffd700', '#ff8c00', '#fff700'];
-    ctx.shadowColor = '#ffd700';
-    // Золотое кольцо
-    ctx.shadowBlur = settings.glow || 30;
-    ctx.strokeStyle = '#ffd700';
-    ctx.lineWidth = 4;
-    ctx.globalAlpha = 0.9;
-    ctx.beginPath();
-    ctx.arc(cx, cy, w/2-2, 0, Math.PI * 2);
-    ctx.stroke();
-    // Лучи
-    for(let i=0; i<16; i++){
-      const angle = time * 0.3 + i * Math.PI/8;
-      const len = w/2 + Math.sin(time * 0.5 + i) * 8;
-      ctx.shadowBlur = 12;
-      ctx.shadowColor = '#ffd700';
-      ctx.strokeStyle = i%2===0 ? '#ffd700' : '#ff8c00';
-      ctx.lineWidth = 1.5;
-      ctx.globalAlpha = 0.5 + Math.sin(time + i) * 0.2;
-      ctx.beginPath();
-      ctx.moveTo(cx + (w/2-6) * Math.cos(angle), cy + (w/2-6) * Math.sin(angle));
-      ctx.lineTo(cx + len * Math.cos(angle), cy + len * Math.sin(angle));
-      ctx.stroke();
-    }
-    // Искры (частицы)
-    for(let i=0; i<20; i++){
-      const angle = time * 0.5 + i * 1.2;
-      const dist = w/2 + Math.sin(time * 0.7 + i * 0.5) * 6;
-      const x = cx + dist * Math.cos(angle);
-      const y = cy + dist * Math.sin(angle);
-      const size = 1.5 + Math.sin(time + i) * 0.5;
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = '#ffd700';
-      ctx.fillStyle = i%2===0 ? '#fff7a0' : '#ffd700';
-      ctx.globalAlpha = 0.6 + Math.sin(time * 0.5 + i) * 0.3;
-      ctx.beginPath();
-      ctx.arc(x, y, size, 0, Math.PI*2);
-      ctx.fill();
-    }
-    ctx.shadowBlur = 0;
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function toast(message, isError = false) {
+  const container = $('#toastContainer');
+  const el = document.createElement('div');
+  el.className = 'toast-msg' + (isError ? ' error' : '');
+  el.textContent = message;
+  container.appendChild(el);
+  setTimeout(() => el.classList.add('show'), 10);
+  setTimeout(() => {
+    el.classList.remove('show');
+    setTimeout(() => el.remove(), 300);
+  }, 3000);
+}
+
+function formatDate(timestamp) {
+  const d = new Date(timestamp);
+  return d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear();
+}
+
+function secToHMS(sec) {
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+  return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+}
+
+function attachDbListener(ref, event, callback) {
+  ref.on(event, callback);
+  activeListeners.push({ ref, event, callback });
+}
+
+function clearAllListeners() {
+  activeListeners.forEach(l => l.ref.off(l.event, l.callback));
+  activeListeners.length = 0;
+  if (App.chatListener) {
+    App.chatListener.off();
+    App.chatListener = null;
   }
 }
 
-function renderAvatarWithFrame(containerId, name, role, avatarBase64, size){
-  size = size || 44;
-  const container = document.getElementById(containerId);
-  if(!container) return;
-  
-  const isBig = size > 50;
-  container.style.width = size + 'px';
-  container.style.height = size + 'px';
-  container.className = 'avatar-wrap' + (isBig ? ' big' : '');
-  container.innerHTML = `
-    <canvas id="${containerId}_base" class="avatar-base" width="${size}" height="${size}"></canvas>
-    <canvas id="${containerId}_frame" class="avatar-frame" width="${size}" height="${size}"></canvas>
+// ---------- Background Canvas ----------
+(function() {
+  const canvas = $('#bgCanvas');
+  const gl = canvas.getContext('webgl');
+  if (!gl) return;
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  const vertexShader = 'attribute vec2 a_position; void main() { gl_Position = vec4(a_position, 0.0, 1.0); }';
+  const fragmentShader = `
+    precision highp float;
+    uniform vec2 u_resolution;
+    uniform float u_time;
+    void main() {
+      vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+      vec2 p = uv * 2.0 - 1.0;
+      p.x *= u_resolution.x / u_resolution.y;
+      float time = u_time * 0.7;
+      float wave = sin(p.y * 2.5 + time) * 0.4 + cos(p.y * 6.0 - time * 0.8) * 0.2 + sin(p.y * 12.0 + time * 1.2) * 0.1;
+      vec2 wp = p;
+      wp.x -= wave;
+      float dist = length(wp * vec2(0.9, 1.2));
+      vec3 cb = vec3(0.0, 0.63, 1.0), cp = vec3(1.0, 0.0, 0.45), cpurp = vec3(0.75, 0.0, 1.0);
+      float blob = smoothstep(1.1, 0.2, dist);
+      float edge = smoothstep(1.3, 0.6, dist) - smoothstep(0.7, 0.2, dist);
+      vec3 fc = mix(cb, cp, blob);
+      fc = mix(fc, cpurp, edge * 0.7);
+      float ds = sin(gl_FragCoord.x / 1.5) * sin(gl_FragCoord.y / 1.5);
+      ds = ds * 0.5 + 0.5;
+      fc = mix(fc, fc * ds, 0.18);
+      float vig = 1.0 - smoothstep(0.6, 1.8, length(p * vec2(0.5, 1.0)));
+      fc *= vig;
+      gl_FragColor = vec4(fc, 1.0);
+    }
   `;
-  
-  // Рисуем аватарку
-  const baseCanvas = document.getElementById(containerId + '_base');
-  const baseCtx = baseCanvas.getContext('2d');
-  baseCtx.clearRect(0, 0, size, size);
-  baseCtx.beginPath();
-  baseCtx.arc(size/2, size/2, size/2-2, 0, Math.PI*2);
-  baseCtx.clip();
-  
-  if(avatarBase64 && avatarBase64.startsWith('data:image')){
-    const img = new Image();
-    img.onload = function(){
-      baseCtx.drawImage(img, 0, 0, size, size);
-    };
-    img.src = avatarBase64;
-  } else {
-    baseCtx.fillStyle = '#2a2a4a';
-    baseCtx.fillRect(0, 0, size, size);
-    baseCtx.fillStyle = '#6366f1';
-    baseCtx.font = 'bold ' + (size * 0.4) + 'px sans-serif';
-    baseCtx.textAlign = 'center';
-    baseCtx.textBaseline = 'middle';
-    baseCtx.fillText(name.charAt(0).toUpperCase(), size/2, size/2);
-  }
-  
-  // Рисуем рамку (анимируется через requestAnimationFrame)
-  const frameCanvas = document.getElementById(containerId + '_frame');
-  const frameCtx = frameCanvas.getContext('2d');
-  const settings = { speed: 1, glow: 25 };
-  
-  function animateFrame(){
-    if(!document.getElementById(containerId)) return;
-    drawFrame(frameCtx, size, size, role, settings);
-    requestAnimationFrame(animateFrame);
-  }
-  animateFrame();
-}
 
-function updateProfileAvatar(){
-  if(!App.user) return;
-  renderAvatarWithFrame(
-    'profileAvatarWrap',
-    App.user.name,
-    App.user.role,
-    App.user.avatar || '',
-    60
-  );
-}
+  function compileShader(type, source) {
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    return shader;
+  }
 
-// ====== WEBGL ФОН ======
-(function(){
-const c=$('#bgCanvas'),g=c.getContext('webgl');if(!g)return;
-function r(){c.width=window.innerWidth;c.height=window.innerHeight;g.viewport(0,0,c.width,c.height)}
-window.addEventListener('resize',r);r();
-const vs='attribute vec2 a_position;void main(){gl_Position=vec4(a_position,0.0,1.0);}';
-const fs='precision highp float;uniform vec2 u_resolution;uniform float u_time;void main(){vec2 uv=gl_FragCoord.xy/u_resolution.xy;vec2 p=uv*2.0-1.0;p.x*=u_resolution.x/u_resolution.y;float time=u_time*0.7;float wave=sin(p.y*2.5+time)*0.4+cos(p.y*6.0-time*0.8)*0.2+sin(p.y*12.0+time*1.2)*0.1;vec2 wp=p;wp.x-=wave;float dist=length(wp*vec2(0.9,1.2));vec3 cb=vec3(0.0,0.63,1.0),cp=vec3(1.0,0.0,0.45),cpurp=vec3(0.75,0.0,1.0);float blob=smoothstep(1.1,0.2,dist),edge=smoothstep(1.3,0.6,dist)-smoothstep(0.7,0.2,dist);vec3 fc=mix(cb,cp,blob);fc=mix(fc,cpurp,edge*0.7);float ds=sin(gl_FragCoord.x/1.5)*sin(gl_FragCoord.y/1.5);ds=ds*0.5+0.5;fc=mix(fc,fc*ds,0.18);float vig=1.0-smoothstep(0.6,1.8,length(p*vec2(0.5,1.0)));fc*=vig;gl_FragColor=vec4(fc,1.0);}';
-function cs(t,s){const sh=g.createShader(t);g.shaderSource(sh,s);g.compileShader(sh);return sh}
-const v=cs(g.VERTEX_SHADER,vs),f=cs(g.FRAGMENT_SHADER,fs),p=g.createProgram();g.attachShader(p,v);g.attachShader(p,f);g.linkProgram(p);g.useProgram(p);
-const b=g.createBuffer();g.bindBuffer(g.ARRAY_BUFFER,b);g.bufferData(g.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),g.STATIC_DRAW);
-const pl=g.getAttribLocation(p,"a_position");g.enableVertexAttribArray(pl);g.vertexAttribPointer(pl,2,g.FLOAT,false,0,0);
-const rl=g.getUniformLocation(p,"u_resolution"),tl=g.getUniformLocation(p,"u_time");
-function anim(t){if(!document.hidden){g.uniform2f(rl,c.width,c.height);g.uniform1f(tl,t*0.001);g.drawArrays(g.TRIANGLES,0,6)}requestAnimationFrame(anim)}
-anim(performance.now());
+  const vs = compileShader(gl.VERTEX_SHADER, vertexShader);
+  const fs = compileShader(gl.FRAGMENT_SHADER, fragmentShader);
+  const program = gl.createProgram();
+  gl.attachShader(program, vs);
+  gl.attachShader(program, fs);
+  gl.linkProgram(program);
+  gl.useProgram(program);
+
+  const buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]), gl.STATIC_DRAW);
+
+  const posLoc = gl.getAttribLocation(program, 'a_position');
+  gl.enableVertexAttribArray(posLoc);
+  gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+  const resLoc = gl.getUniformLocation(program, 'u_resolution');
+  const timeLoc = gl.getUniformLocation(program, 'u_time');
+
+  function animate(timestamp) {
+    if (!document.hidden) {
+      gl.uniform2f(resLoc, canvas.width, canvas.height);
+      gl.uniform1f(timeLoc, timestamp * 0.001);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+    }
+    App.bgAnimId = requestAnimationFrame(animate);
+  }
+  animate(performance.now());
 })();
 
-// ====== АВТОРИЗАЦИЯ ======
+// ---------- Auth ----------
 let isLoginMode = true;
-function toggleAuth(){
+
+function toggleAuthMode() {
   isLoginMode = !isLoginMode;
-  $('#loginFields').style.display = isLoginMode ? 'flex' : 'none';
-  $('#registerFields').style.display = isLoginMode ? 'none' : 'flex';
-  $('#tabLogin').style.background = isLoginMode ? '#7c3aed' : 'transparent';
-  $('#tabLogin').style.color = isLoginMode ? '#fff' : '#6a7a94';
-  $('#tabRegister').style.background = isLoginMode ? 'transparent' : '#7c3aed';
-  $('#tabRegister').style.color = isLoginMode ? '#6a7a94' : '#fff';
-  $('#authError').style.display = 'none';
+  document.getElementById('loginFields').style.display = isLoginMode ? 'flex' : 'none';
+  document.getElementById('registerFields').style.display = isLoginMode ? 'none' : 'flex';
+  const tabLogin = document.getElementById('tabLogin');
+  const tabReg = document.getElementById('tabRegister');
+  tabLogin.style.background = isLoginMode ? '#7c3aed' : 'transparent';
+  tabLogin.style.color = isLoginMode ? '#fff' : '#6a7a94';
+  tabReg.style.background = isLoginMode ? 'transparent' : '#7c3aed';
+  tabReg.style.color = isLoginMode ? '#6a7a94' : '#fff';
+  document.getElementById('authError').style.display = 'none';
 }
-$('#tabLogin').addEventListener('click',toggleAuth);
-$('#tabRegister').addEventListener('click',toggleAuth);
 
-async function login(){
-  const email = $('#loginEmail').value.trim();
-  const pass = $('#loginPass').value.trim();
-  const err = $('#authError');
-  if(!email || !pass){err.textContent='Заполните все поля';err.style.display='block';return}
-  try{
+document.getElementById('tabLogin').addEventListener('click', toggleAuthMode);
+document.getElementById('tabRegister').addEventListener('click', toggleAuthMode);
+
+// Load punkts for registration
+DB.ref('punkts').once('value').then(snap => {
+  const sel = document.getElementById('regPunkt');
+  sel.innerHTML = '<option value="">Выберите пункт</option>';
+  snap.forEach(child => {
+    const data = child.val();
+    sel.innerHTML += `<option value="${child.key}">Пункт ${child.key} (${data.rate || 0}₽/ч)</option>`;
+  });
+});
+
+async function login() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value.trim();
+  const err = document.getElementById('authError');
+  if (!email || !pass) {
+    err.textContent = 'Заполните все поля';
+    err.style.display = 'block';
+    return;
+  }
+  try {
     const cred = await AUTH.signInWithEmailAndPassword(email, pass);
-    const snap = await DB.ref('users/'+cred.user.uid).once('value');
-    if(!snap.exists()){err.textContent='Пользователь не найден';err.style.display='block';return}
-    App.user = snap.val(); App.uid = cred.user.uid;
+    const snap = await DB.ref('users/' + cred.user.uid).once('value');
+    if (!snap.exists()) {
+      err.textContent = 'Пользователь не найден';
+      err.style.display = 'block';
+      return;
+    }
+    App.user = snap.val();
+    App.user.uid = cred.user.uid;
     finishLogin();
-  }catch(e){err.textContent=e.message;err.style.display='block'}
-}
-$('#loginBtn').addEventListener('click',login);
-$('#loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
-
-async function register(){
-  const name = $('#regName').value.trim();
-  const email = $('#regEmail').value.trim();
-  const pass = $('#regPass').value.trim();
-  const err = $('#authError');
-  if(!name||!email||!pass){err.textContent='Заполните все поля';err.style.display='block';return}
-  if(pass.length<4){err.textContent='Пароль минимум 4 символа';err.style.display='block';return}
-  try{
-    const cred = await AUTH.createUserWithEmailAndPassword(email, pass);
-    const role = name === 'Костя' ? 'creator' : (name === 'Игорь' ? 'god' : 'manager');
-    await DB.ref('users/'+cred.user.uid).set({name, role, punkt:'49', avatar:'', vkId:''});
-    App.user = {name, role, punkt:'49', avatar:'', vkId:'', uid:cred.user.uid}; App.uid = cred.user.uid;
-    finishLogin();
-  }catch(e){err.textContent=e.message;err.style.display='block'}
-}
-$('#registerBtn').addEventListener('click',register);
-$('#regPass').addEventListener('keydown',e=>{if(e.key==='Enter')register()});
-
-function finishLogin(){
-  App.isCreator = App.user.role === 'creator';
-  App.isGod = App.user.role === 'god';
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('app').style.display = 'flex';
-  document.body.className = 'theme-' + App.user.role;
-  updateUI();
-  renderTabs();
-  loadChat();
-  loadAnnounce();
-  loadThought();
-  initListeners();
-  buildCarousel();
-  DB.ref('activeShifts/'+App.uid).once('value').then(s=>{if(s.exists()&&s.val().active)App.onShift=true});
+  } catch (ex) {
+    err.textContent = ex.message;
+    err.style.display = 'block';
+  }
 }
 
-AUTH.onAuthStateChanged(async user=>{
-  if(user && !App.user){
-    const snap = await DB.ref('users/'+user.uid).once('value');
-    if(snap.exists()){App.user = snap.val(); App.uid = user.uid; finishLogin();}
+document.getElementById('loginBtn').addEventListener('click', login);
+document.getElementById('loginPass').addEventListener('keydown', e => {
+  if (e.key === 'Enter') login();
+});
+
+document.getElementById('resetPassBtn').addEventListener('click', async () => {
+  const email = document.getElementById('loginEmail').value.trim();
+  if (!email) {
+    toast('Введите email', true);
+    return;
+  }
+  try {
+    await AUTH.sendPasswordResetEmail(email);
+    toast('Ссылка для сброса отправлена на ' + email);
+  } catch (ex) {
+    toast(ex.message, true);
   }
 });
 
-function updateUI(){
-  $('#uname').textContent = App.user.name;
-  $('#upunkt').textContent = App.user.punkt || '—';
-  const badge = $('#roleBadge'), nameWrap = $('#creatorNameWrapper');
-  if(App.isGod){badge.className='badge badge-god';badge.innerHTML='👑 Начальник';nameWrap.className='name-god'}
-  else if(App.isCreator){badge.className='badge badge-creator';badge.innerHTML='🌌 Создатель';nameWrap.className='name-creator'}
-  else{badge.className='badge badge-manager';badge.innerHTML='📦 Сотрудник';nameWrap.className='name-manager'}
-  updateProfileAvatar();
-}
+async function register() {
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const pass = document.getElementById('regPass').value.trim();
+  const punkt = document.getElementById('regPunkt').value;
+  const err = document.getElementById('authError');
 
-// ====== ВКЛАДКИ (С ВОЗМОЖНОСТЬЮ СВОРАЧИВАТЬ) ======
-function renderTabs(){
-  let cfg = App.isCreator ? [
-    {id:'shift',icon:'🔵',label:'Смена'},{id:'stats',icon:'📊',label:'Стат'},
-    {id:'history',icon:'💳',label:'Выплаты'},{id:'board',icon:'🏆',label:'Доска'},{id:'power',icon:'⚡',label:'Сила'}
-  ] : App.isGod ? [
-    {id:'punkts',icon:'📍',label:'Пункты'},{id:'workers',icon:'👥',label:'Сотрудники'},
-    {id:'salary',icon:'💰',label:'Расчёт ЗП'},{id:'announce',icon:'📢',label:'Объявления'}
-  ] : [
-    {id:'shift',icon:'🔵',label:'Смена'},{id:'stats',icon:'📊',label:'Стат'},
-    {id:'history',icon:'💳',label:'Выплаты'},{id:'board',icon:'🏆',label:'Доска'}
-  ];
-  $('#tabsContainer').innerHTML = cfg.map((t,i)=>`<button id="tab_${t.id}" class="${i===0?'active':''}" data-tab="${t.id}">${t.icon} <span>${t.label}</span></button>`).join('');
-  $('#tabContentContainer').innerHTML = cfg.map((t,i)=>`<div id="panel_${t.id}" class="tab-content${i===0?' active-tab':''}"></div>`).join('');
-  if(cfg.length) renderTab(cfg[0].id);
-  $$('#tabsContainer button').forEach(b=>b.addEventListener('click',function(){
-    const id=this.dataset.tab;
-    // Если вкладка уже активна — сворачиваем
-    if(this.classList.contains('active')){
-      this.classList.remove('active');
-      document.getElementById('panel_'+id).classList.remove('active-tab');
-      return;
-    }
-    $$('#tabsContainer button, #tabContentContainer .tab-content').forEach(x=>x.classList.remove('active','active-tab'));
-    this.classList.add('active');
-    document.getElementById('panel_'+id).classList.add('active-tab');
-    renderTab(id);
-  }));
-}
-function renderTab(id){
-  const p = document.getElementById('panel_'+id); if(!p) return;
-  p.innerHTML = '';
-  switch(id){
-    case 'shift': renderShift(p); break;
-    case 'stats': renderStats(p); break;
-    case 'history': renderHistory(p); break;
-    case 'board': renderBoard(p); break;
-    case 'power': renderPower(p); break;
-    case 'announce': renderAnnounce(p); break;
-    case 'punkts': renderPunkts(p); break;
-    case 'workers': renderWorkers(p); break;
-    case 'salary': renderSalary(p); break;
+  if (!name || !email || !pass || !punkt) {
+    err.textContent = 'Заполните все поля';
+    err.style.display = 'block';
+    return;
+  }
+  if (pass.length < 6) {
+    err.textContent = 'Пароль минимум 6 символов';
+    err.style.display = 'block';
+    return;
+  }
+  if (!email.includes('@') || !email.includes('.')) {
+    err.textContent = 'Введите корректный email';
+    err.style.display = 'block';
+    return;
+  }
+
+  try {
+    const cred = await AUTH.createUserWithEmailAndPassword(email, pass);
+    const role = 'manager';
+    await DB.ref('users/' + cred.user.uid).set({
+      name: name,
+      email: email,
+      role: role,
+      punkt: punkt,
+      avatar: '',
+      bonus: 0
+    });
+    App.user = { name, email, role, punkt, avatar: '', bonus: 0, uid: cred.user.uid };
+    finishLogin();
+  } catch (ex) {
+    err.textContent = ex.message;
+    err.style.display = 'block';
   }
 }
 
-// ====== СМЕНА ======
-function renderShift(p){
-  p.innerHTML = `<div class="card"><div id="shiftContent">Загрузка...</div></div><button class="btn-gray" id="shiftLogoutBtn" style="margin-top:6px;width:100%;padding:8px;">↩ Выйти</button>`;
-  document.getElementById('shiftLogoutBtn').addEventListener('click', logout);
+document.getElementById('registerBtn').addEventListener('click', register);
+document.getElementById('regPass').addEventListener('keydown', e => {
+  if (e.key === 'Enter') register();
+});
+
+function logout() {
+  if (!confirm('Выйти?')) return;
+  clearAllListeners();
+  if (App.shiftTimer) clearInterval(App.shiftTimer);
+  if (App.avatarAnimId) cancelAnimationFrame(App.avatarAnimId);
+  AUTH.signOut().then(() => {
+    localStorage.removeItem('ozon_user');
+    App.user = null;
+    App.chatOpened = false;
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.body.className = '';
+  });
+}
+
+function finishLogin() {
+  App.isCreator = App.user.role === 'creator';
+  App.isGod = App.user.role === 'god';
+  localStorage.setItem('ozon_user', JSON.stringify({
+    uid: App.user.uid,
+    name: App.user.name,
+    role: App.user.role
+  }));
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  document.body.className = 'theme-' + App.user.role;
+  App.chatOpened = true;
+  App.lastChatTimestamp = Date.now();
+  updateUI();
+  renderTabs();
+  loadChat();
+  loadPinned();
+  loadAnnounce();
+  loadThought();
+  setupDatabaseListeners();
+  loadAvatarSettings();
+  buildCarousel();
+  renderStickerUI();
+  DB.ref('activeShifts/' + App.user.uid).once('value').then(snap => {
+    if (snap.exists() && snap.val().active) App.onShift = true;
+  });
+  DB.ref('presence/' + App.user.uid).set({ online: true, ts: Date.now() });
+}
+
+AUTH.onAuthStateChanged(async user => {
+  if (user && !App.user) {
+    const snap = await DB.ref('users/' + user.uid).once('value');
+    if (snap.exists()) {
+      App.user = snap.val();
+      App.user.uid = user.uid;
+      finishLogin();
+    }
+  }
+});
+
+// ---------- UI Updates ----------
+function updateUI() {
+  document.getElementById('uname').textContent = App.user.name;
+  document.getElementById('upunkt').textContent = App.user.punkt || '—';
+  const badge = document.getElementById('roleBadge');
+  const nameWrapper = document.getElementById('creatorNameWrapper');
+  if (App.user.role === 'god') {
+    badge.className = 'badge badge-god';
+    badge.textContent = 'Начальник';
+    nameWrapper.className = 'name-god';
+  } else if (App.user.role === 'creator') {
+    badge.className = 'badge badge-creator';
+    badge.textContent = 'Создатель';
+    nameWrapper.className = 'name-creator';
+  } else {
+    badge.className = 'badge badge-manager';
+    badge.textContent = 'Сотрудник';
+    nameWrapper.className = 'name-manager';
+  }
+}
+
+// ---------- Tabs ----------
+function renderTabs() {
+  let config;
+  if (App.isCreator) {
+    config = [
+      { id: 'shift', icon: '🔵', label: 'Смена' },
+      { id: 'stats', icon: '📊', label: 'Стат' },
+      { id: 'history', icon: '💳', label: 'Выплаты' },
+      { id: 'board', icon: '🏆', label: 'Доска' },
+      { id: 'power', icon: '⚡', label: 'Сила' }
+    ];
+  } else if (App.isGod) {
+    config = [
+      { id: 'shift', icon: '🔵', label: 'Смена' },
+      { id: 'stats', icon: '📊', label: 'Стат' },
+      { id: 'workers', icon: '👥', label: 'Сотрудники' },
+      { id: 'salary', icon: '💰', label: 'Расчёт ЗП' },
+      { id: 'announce', icon: '📢', label: 'Объявления' },
+      { id: 'board', icon: '🏆', label: 'Доска' }
+    ];
+  } else {
+    config = [
+      { id: 'shift', icon: '🔵', label: 'Смена' },
+      { id: 'stats', icon: '📊', label: 'Стат' },
+      { id: 'history', icon: '💳', label: 'Выплаты' },
+      { id: 'board', icon: '🏆', label: 'Доска' }
+    ];
+  }
+
+  const tabsContainer = document.getElementById('tabsContainer');
+  tabsContainer.innerHTML = config.map((t, i) =>
+    `<button id="tab_${t.id}" class="${i === 0 ? 'active' : ''}" data-tab="${t.id}">${t.icon} <span class="tab-label">${t.label}</span></button>`
+  ).join('');
+
+  const contentContainer = document.getElementById('tabContentContainer');
+  contentContainer.innerHTML = config.map((t, i) =>
+    `<div id="panel_${t.id}" class="tab-content${i === 0 ? ' active-tab' : ''}"></div>`
+  ).join('');
+
+  if (config.length) renderTab(config[0].id);
+
+  tabsContainer.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const id = this.dataset.tab;
+      document.querySelectorAll('#tabsContainer button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('#tabContentContainer .tab-content').forEach(p => p.classList.remove('active-tab'));
+      this.classList.add('active');
+      document.getElementById('panel_' + id).classList.add('active-tab');
+      renderTab(id);
+    });
+  });
+}
+
+function renderTab(id) {
+  const panel = document.getElementById('panel_' + id);
+  if (!panel) return;
+  panel.innerHTML = '';
+  switch (id) {
+    case 'shift': renderShift(panel); break;
+    case 'stats': renderStats(panel); break;
+    case 'history': renderHistory(panel); break;
+    case 'board': renderBoard(panel); break;
+    case 'power': renderPower(panel); break;
+    case 'workers': renderWorkers(panel); break;
+    case 'salary': renderSalary(panel); break;
+    case 'announce': renderAnnounce(panel); break;
+  }
+}
+
+// ---------- Shift ----------
+function renderShift(panel) {
+  panel.innerHTML = `
+    <div class="card"><div id="shiftContent">Загрузка...</div></div>
+    <button class="btn-gray" id="shiftLogoutBtn" style="margin-top:8px;width:100%;">Выйти</button>
+  `;
+  document.getElementById('shiftLogoutBtn').addEventListener('click', () => {
+    if (confirm('Выйти?')) logout();
+  });
   loadShift();
 }
-function loadShift(){
-  const el = $('#shiftContent'); if(!el) return;
-  if(App.onShift){
-    const st = App.activeShifts[App.uid].startTime;
-    el.innerHTML = `<div style="text-align:center;"><div>ПВЗ: <b>${esc(App.activeShifts[App.uid].punct||'49')}</b></div><div style="font-size:24px;font-weight:800;color:var(--green);margin:4px 0;" id="shiftTimerDisplay">00:00:00</div></div><input type="number" id="tovarCount" placeholder="Товаров" min="0" style="margin:4px 0;"><button class="btn-red" id="endShiftBtn" style="width:100%;padding:10px;">🔴 ЗАВЕРШИТЬ</button>`;
-    document.getElementById('endShiftBtn').addEventListener('click', endShift);
-    startTimer(st);
-  }else{
-    el.innerHTML = `<p style="color:var(--muted);text-align:center;">Вы не на смене</p><button class="btn-green" id="startShiftBtn" style="width:100%;padding:10px;">🟢 НА СМЕНУ</button>`;
-    document.getElementById('startShiftBtn').addEventListener('click', startShift);
-  }
+
+function loadShift() {
+  const el = document.getElementById('shiftContent');
+  if (!el) return;
+  DB.ref('activeShifts/' + App.user.uid).once('value').then(snap => {
+    if (snap.exists() && snap.val().active) {
+      const st = snap.val().startTime;
+      el.innerHTML = `
+        <div style="text-align:center;">
+          <div>На смене с <b>${new Date(st).toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' })}</b></div>
+          <div style="font-size:28px;font-weight:800;color:var(--green);margin:4px 0;" id="shiftTimerDisplay">00:00:00</div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <input type="number" id="tovarCount" placeholder="Кол-во товаров" min="0" style="flex:1;">
+        </div>
+        <button class="btn-red" id="endShiftBtn" style="padding:16px;width:100%;margin-top:10px;">СО СМЕНЫ</button>
+      `;
+      document.getElementById('endShiftBtn').addEventListener('click', endShift);
+      startTimer(st);
+    } else {
+      el.innerHTML = `
+        <p style="color:var(--muted);margin-bottom:12px;">Вы не на смене</p>
+        <button class="btn-green" id="startShiftBtn" style="padding:16px;width:100%;">НА СМЕНУ</button>
+      `;
+      document.getElementById('startShiftBtn').addEventListener('click', startShift);
+    }
+  });
 }
-function startTimer(st){
-  if(App.shiftTimer)clearInterval(App.shiftTimer);
-  const d = $('#shiftTimerDisplay');
-  App.shiftTimer = setInterval(()=>{
-    const e = Math.floor((Date.now()-st)/1000);
-    if(d) d.textContent = String(Math.floor(e/3600)).padStart(2,'0')+':'+String(Math.floor((e%3600)/60)).padStart(2,'0')+':'+String(e%60).padStart(2,'0');
+
+function startTimer(startTime) {
+  if (App.shiftTimer) clearInterval(App.shiftTimer);
+  const display = document.getElementById('shiftTimerDisplay');
+  App.shiftTimer = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    if (display) display.textContent = secToHMS(elapsed);
   }, 1000);
 }
-function startShift(){
-  DB.ref('activeShifts/'+App.uid).set({active:true,startTime:Date.now(),punct:App.user.punkt||'49'}).then(()=>{
-    DB.ref('chat').push({user:App.user.name, text:'🟢 Вышел на смену', timestamp:Date.now(), role:App.user.role, avatar:App.user.avatar||''});
-    loadShift(); toast('✅ Смена начата!');
-  });
-}
-function endShift(){
-  const tv = parseInt($('#tovarCount').value)||0;
-  const st = App.activeShifts[App.uid].startTime;
-  const hr = Math.round((Date.now()-st)/3600000*100)/100;
-  DB.ref('shifts').push({user:App.uid, user_name:App.user.name, punkt:App.user.punkt||'49', date:new Date().toLocaleDateString('ru-RU'), hours:hr, tovar:tv, paid:false, timestamp:Date.now()}).then(()=>{
-    DB.ref('chat').push({user:App.user.name, text:`🔴 Завершил смену: ${hr}ч, ${tv} товаров`, timestamp:Date.now(), role:App.user.role, avatar:App.user.avatar||''});
-    return DB.ref('activeShifts/'+App.uid).remove();
-  }).then(()=>{
-    if(App.shiftTimer)clearInterval(App.shiftTimer); App.onShift=false; loadShift(); toast('✅ Смена закрыта!');
-  });
-}
 
-// ====== СТАТИСТИКА ======
-function renderStats(p){
-  p.innerHTML = `<div class="calendar"><div class="cal-header"><button class="cal-nav" id="calPrev">◀</button><div id="calTitle" style="font-size:13px;font-weight:700;"></div><button class="cal-nav" id="calNext">▶</button></div><div class="cal-grid" id="calGrid"></div></div><div class="card" style="margin-top:8px;"><div>Смен: <b id="statShifts">0</b></div><div>Часов: <b id="statHours">0</b></div><div>Товаров: <b id="statTovar">0</b></div></div>`;
-  $('#calPrev').addEventListener('click', ()=>changeCal(-1));
-  $('#calNext').addEventListener('click', ()=>changeCal(1));
-  renderCalendar();
-}
-function renderCalendar(){
-  const months = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
-  $('#calTitle').textContent = months[App.calMonth] + ' ' + App.calYear;
-  DB.ref('shifts').orderByChild('user').equalTo(App.uid).once('value').then(s=>{
-    const dayMap={}; let ts=0,th=0,tt=0;
-    s.forEach(c=>{
-      const x=c.val(); const d=new Date(x.timestamp);
-      if(d.getFullYear()===App.calYear && d.getMonth()===App.calMonth){
-        dayMap[d.getDate()]=true; ts++; th+=x.hours||0; tt+=x.tovar||0;
-      }
+function startShift() {
+  DB.ref('activeShifts/' + App.user.uid).set({
+    active: true,
+    startTime: Date.now(),
+    punkt: App.user.punkt
+  }).then(() => {
+    const prefix = App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '');
+    DB.ref('chat').push({
+      user: prefix + App.user.name,
+      text: '🔵 Пункт ' + App.user.punkt + ' на смене!',
+      timestamp: Date.now()
     });
-    $('#statShifts').textContent=ts; $('#statHours').textContent=th.toFixed(1); $('#statTovar').textContent=tt;
-    const fd = new Date(App.calYear, App.calMonth, 1).getDay(), off=(fd+6)%7, dim = new Date(App.calYear, App.calMonth+1, 0).getDate();
-    const grid = $('#calGrid');
-    grid.innerHTML = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(d=>'<div class="cal-day-name">'+d+'</div>').join('');
-    for(let i=0;i<off;i++) grid.innerHTML += '<div class="cal-day" style="opacity:0;"></div>';
-    for(let d=1;d<=dim;d++){
-      const has = dayMap[d] ? 'has-shift' : '';
-      grid.innerHTML += `<div class="cal-day ${has}">${d}</div>`;
-    }
-  });
-}
-function changeCal(dir){App.calMonth+=dir; if(App.calMonth<0){App.calMonth=11;App.calYear--} if(App.calMonth>11){App.calMonth=0;App.calYear++} renderCalendar(); }
-
-// ====== ВЫПЛАТЫ ======
-function renderHistory(p){
-  p.innerHTML = `<div class="card"><h3 style="font-size:15px;">💳 Выплаты</h3><div id="payoutsList" style="margin-top:6px;">Загрузка...</div></div>`;
-  DB.ref('payouts').orderByChild('user').equalTo(App.uid).once('value').then(s=>{
-    const list = $('#payoutsList');
-    if(!s.exists()){list.innerHTML='<p style="color:var(--muted);font-size:13px;">Нет выплат</p>';return}
-    let h=''; s.forEach(c=>{const p=c.val(); h+=`<div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;">💰 <b>${p.amount}₽</b> (${p.hours}ч, ${p.tovar} товаров)<br><small style="color:var(--muted);">${p.date}</small></div>`});
-    list.innerHTML=h;
+    loadShift();
+    toast('Смена начата!');
   });
 }
 
-// ====== ДОСКА ======
-function renderBoard(p){
-  p.innerHTML = `<div class="card"><h3 style="font-size:15px;">🏆 Доска почёта</h3><div id="boardContent" style="margin-top:6px;">Загрузка...</div></div>`;
-  DB.ref('shifts').once('value').then(s=>{
-    const data={};
-    s.forEach(c=>{
-      const x=c.val();
-      if(!data[x.user_name]) data[x.user_name] = {hours:0, tovar:0};
-      data[x.user_name].hours += x.hours||0;
-      data[x.user_name].tovar += x.tovar||0;
-    });
-    const sorted = Object.keys(data).map(n=>({name:n, ...data[n]})).sort((a,b)=>b.tovar-a.tovar);
-    $('#boardContent').innerHTML = sorted.map((u,i)=>`<div style="padding:4px 0;border-bottom:1px solid var(--border);font-size:13px;">${i+1}. <b>${esc(u.name)}</b> — ${u.tovar} товаров (${u.hours.toFixed(1)}ч)</div>`).join('') || 'Нет данных';
-  });
-}
-
-// ====== СИЛА (Костя) ======
-function renderPower(p){
-  p.innerHTML = `<div class="card"><h3 style="font-size:15px;">⚡ Мысль создателя</h3><p style="font-size:11px;color:var(--muted);">Увидят все пользователи</p><textarea id="thoughtText" rows="2" style="resize:vertical;margin:4px 0;"></textarea><button class="btn-gold" id="sendThoughtBtn" style="width:100%;padding:8px;">🌌 Излучить</button></div>`;
-  $('#sendThoughtBtn').addEventListener('click', ()=>{
-    const text = $('#thoughtText').value.trim();
-    if(!text) return;
-    DB.ref('creatorThought').set({text, timestamp:Date.now()}).then(()=>{toast('✅ Мысль отправлена!'); $('#thoughtText').value='';});
-  });
-}
-
-// ====== ОБЪЯВЛЕНИЯ (Игорь) ======
-function renderAnnounce(p){
-  p.innerHTML = `<div class="card"><h3 style="font-size:15px;">📢 Объявление</h3><textarea id="announceText" rows="2" style="resize:vertical;margin:4px 0;"></textarea><button class="btn-gold" id="sendAnnounceBtn" style="width:100%;padding:8px;">📣 Опубликовать</button></div>`;
-  $('#sendAnnounceBtn').addEventListener('click', ()=>{
-    const text = $('#announceText').value.trim();
-    if(!text) return;
-    DB.ref('announce').push({text, timestamp:Date.now()}).then(()=>{
-      toast('✅ Опубликовано!');
-      $('#announceText').value='';
-      DB.ref('users').once('value').then(s=>{
-        s.forEach(c=>{const u=c.val(); if(u.vkId) sendVkNotify(u.vkId, '📢 Новое объявление от начальника:\n'+text);});
+function endShift() {
+  const tovar = parseInt(document.getElementById('tovarCount')?.value) || 0;
+  DB.ref('activeShifts/' + App.user.uid).once('value').then(snap => {
+    if (!snap.exists()) return;
+    const startTime = snap.val().startTime;
+    const hours = Math.round((Date.now() - startTime) / 3600000 * 100) / 100;
+    const id = App.user.uid + '_' + Date.now();
+    DB.ref('shifts/' + id).set({
+      user: App.user.uid,
+      user_name: App.user.name,
+      punkt: App.user.punkt || 'Не указан',
+      date: new Date().toLocaleDateString('ru-RU'),
+      timeFrom: new Date(startTime).toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' }),
+      timeTo: new Date().toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' }),
+      hours: hours,
+      tovar: tovar,
+      paid: false,
+      timestamp: Date.now()
+    }).then(() => {
+      const prefix = App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '');
+      DB.ref('chat').push({
+        user: prefix + App.user.name,
+        text: '🔴 Пункт ' + App.user.punkt + ' закончил, товаров: ' + tovar,
+        timestamp: Date.now()
       });
+      DB.ref('activeShifts/' + App.user.uid).remove();
+      if (App.shiftTimer) clearInterval(App.shiftTimer);
+      loadShift();
+      toast('Смена закрыта! ' + hours + 'ч, ' + tovar + ' товаров');
     });
   });
 }
 
-// ====== ПУНКТЫ (Игорь) ======
-function renderPunkts(p){
-  p.innerHTML = `<div class="card"><h3 style="font-size:15px;">📍 Пункты</h3><div id="punktsList">Загрузка...</div></div>`;
-  DB.ref('punkts').once('value').then(s=>{
-    const el=$('#punktsList');
-    if(!s.exists()){el.innerHTML='<p style="color:var(--muted);">Нет пунктов</p>';return}
-    let h='';
-    s.forEach(c=>{h+=`<div style="padding:4px 0;border-bottom:1px solid var(--border);font-size:13px;">📍 ${esc(c.key)} — ${c.val().rate||0}₽/ч</div>`});
-    el.innerHTML=h;
-  });
+// ---------- Stats ----------
+function renderStats(panel) {
+  const now = new Date();
+  App.calYear = now.getFullYear();
+  App.calMonth = now.getMonth();
+  panel.innerHTML = `
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <button class="btn-gray" id="calPrev" style="width:auto;padding:6px 12px;">◀</button>
+        <div id="calTitle" style="font-size:14px;font-weight:700;"></div>
+        <button class="btn-gray" id="calNext" style="width:auto;padding:6px 12px;">▶</button>
+      </div>
+      <div id="calGrid" class="calendar"></div>
+    </div>
+    <div class="card">
+      <div>Смен: <b id="statShifts">0</b></div>
+      <div>Часов: <b id="statHours">0</b></div>
+      <div>Товаров: <b id="statTovar">0</b></div>
+    </div>
+    <button class="btn-red" id="clearShiftsBtn" style="width:100%;padding:12px;margin-top:10px;">Очистить мои смены</button>
+  `;
+  document.getElementById('calPrev').addEventListener('click', () => changeCal(-1));
+  document.getElementById('calNext').addEventListener('click', () => changeCal(1));
+  document.getElementById('clearShiftsBtn').addEventListener('click', clearShifts);
+  renderCal();
 }
 
-// ====== СОТРУДНИКИ (Игорь) ======
-function renderWorkers(p){
-  p.innerHTML = `<div class="card"><h3 style="font-size:15px;">👥 Сотрудники</h3><div id="workersList">Загрузка...</div></div>`;
-  DB.ref('users').once('value').then(s=>{
-    const el=$('#workersList'); let h='';
-    s.forEach(c=>{
-      const u=c.val(); if(u.uid===App.uid) return;
-      h += `<div class="worker-row"><span><b>${esc(u.name)}</b> <span style="font-size:10px;color:var(--muted);">${u.role||'manager'}</span></span><span><button class="btn-blue btn-sm" onclick="setUserPunkt('${c.key}')" style="padding:3px 8px;font-size:10px;">📍</button><button class="btn-gold btn-sm" onclick="giveBonus('${c.key}','${esc(u.name)}')" style="padding:3px 8px;font-size:10px;">🎁</button><button class="btn-red btn-sm" onclick="givePenalty('${c.key}','${esc(u.name)}')" style="padding:3px 8px;font-size:10px;">💀</button></span></div>`;
-    });
-    el.innerHTML = h || '<p style="color:var(--muted);">Нет сотрудников</p>';
-  });
-}
-window.setUserPunkt = function(uid){
-  const p = prompt('Номер ПВЗ:');
-  if(p) DB.ref('users/'+uid+'/punkt').set(p).then(()=>toast('✅ Пункт обновлён'));
-};
-window.giveBonus = function(uid, name){
-  const amt = parseInt(prompt('Сумма премии (₽):'));
-  if(!amt) return;
-  DB.ref('bonus_penalties/'+uid).push({type:'bonus', amount:amt, reason:'Премия', timestamp:Date.now()}).then(()=>{
-    toast(`✅ Премия ${amt}₽ для ${name}`);
-    DB.ref('users/'+uid).once('value').then(s=>{const u=s.val(); if(u&&u.vkId) sendVkNotify(u.vkId, `💰 Премия ${amt}₽!`);});
-  });
-};
-window.givePenalty = function(uid, name){
-  const amt = parseInt(prompt('Сумма штрафа (₽):'));
-  if(!amt) return;
-  DB.ref('bonus_penalties/'+uid).push({type:'penalty', amount:-amt, reason:'Штраф', timestamp:Date.now()}).then(()=>{
-    toast(`💀 Штраф ${amt}₽ для ${name}`);
-    DB.ref('users/'+uid).once('value').then(s=>{const u=s.val(); if(u&&u.vkId) sendVkNotify(u.vkId, `⚠️ Штраф ${amt}₽`);});
-  });
-};
+function renderCal() {
+  const months = ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
+  document.getElementById('calTitle').textContent = months[App.calMonth] + ' ' + App.calYear;
+  const userName = App.user.name;
 
-// ====== РАСЧЁТ ЗП (Игорь) ======
-function renderSalary(p){
-  p.innerHTML = `<div class="card"><h3 style="font-size:15px;">💰 Расчёт ЗП</h3><div id="salaryList">Загрузка...</div></div>`;
-  calculateSalary();
-}
-function calculateSalary(){
-  Promise.all([DB.ref('users').once('value'), DB.ref('shifts').once('value'), DB.ref('bonus_penalties').once('value')]).then(([usersSnap, shiftsSnap, bonusSnap])=>{
-    const users = usersSnap.val()||{};
-    const shifts = shiftsSnap.val()||{};
-    const bonuses = bonusSnap.val()||{};
-    const el = $('#salaryList');
-    let h = '';
-    const unpaid = {};
-    for(const key in shifts){
-      const s = shifts[key];
-      if(!s.paid){
-        if(!unpaid[s.user]) unpaid[s.user] = {hours:0, tovar:0, keys:[]};
-        unpaid[s.user].hours += s.hours||0;
-        unpaid[s.user].tovar += s.tovar||0;
-        unpaid[s.user].keys.push(key);
-      }
-    }
-    for(const uid in unpaid){
-      const u = users[uid]; if(!u) continue;
-      const data = unpaid[uid];
-      let bonusTotal = 0;
-      if(bonuses[uid]){
-        for(const key in bonuses[uid]){
-          bonusTotal += bonuses[uid][key].amount || 0;
+  DB.ref('shifts').once('value').then(snap => {
+    const shifts = {};
+    let totalShifts = 0, totalHours = 0, totalTovar = 0;
+
+    snap.forEach(child => {
+      const data = child.val();
+      if (data.user === App.user.uid || data.user_name === userName) {
+        const d = new Date(data.date || data.timestamp);
+        if (d.getFullYear() === App.calYear && d.getMonth() === App.calMonth) {
+          const day = d.getDate();
+          if (!shifts[day]) shifts[day] = { count: 0, hours: 0, tovar: 0 };
+          shifts[day].count++;
+          shifts[day].hours += data.hours || 0;
+          shifts[day].tovar += data.tovar || 0;
         }
       }
-      const rate = 150;
-      const base = Math.round(data.hours * rate + data.tovar * 2);
-      const total = Math.max(0, base + bonusTotal);
-      h += `<div class="management-item">
-        <b>${esc(u.name)}</b> (ПВЗ: ${esc(u.punkt||'49')})
-        <div style="font-size:12px;">Часы: <b>${data.hours.toFixed(1)}ч</b> | Товары: <b>${data.tovar}</b> | Премии/штрафы: <b>${bonusTotal>0?'+':''}${bonusTotal}₽</b></div>
-        <div style="color:var(--green);font-weight:bold;font-size:16px;">К выплате: ${total}₽</div>
-        <button class="btn-green" style="width:100%;padding:6px;font-size:12px;" onclick="payoutSalary('${uid}', ${total}, ${data.hours}, ${data.tovar}, '${data.keys.join(',')}')">💳 Выплатить</button>
-      </div>`;
+    });
+
+    for (const k in shifts) {
+      totalShifts += shifts[k].count;
+      totalHours += shifts[k].hours;
+      totalTovar += shifts[k].tovar;
     }
-    el.innerHTML = h || '<p style="color:var(--muted);">Нет неоплаченных смен</p>';
+
+    document.getElementById('statShifts').textContent = totalShifts;
+    document.getElementById('statHours').textContent = totalHours.toFixed(1);
+    document.getElementById('statTovar').textContent = totalTovar;
+
+    const firstDay = new Date(App.calYear, App.calMonth, 1).getDay();
+    const offset = (firstDay + 6) % 7;
+    const daysInMonth = new Date(App.calYear, App.calMonth + 1, 0).getDate();
+    const today = new Date();
+    const grid = document.getElementById('calGrid');
+
+    grid.innerHTML = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс']
+      .map(d => `<div class="header">${d}</div>`).join('');
+
+    for (let i = 0; i < offset; i++) grid.innerHTML += '<div></div>';
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const isToday = today.getDate() === d && today.getMonth() === App.calMonth && today.getFullYear() === App.calYear;
+      const hasShift = !!shifts[d];
+      grid.innerHTML += `<div class="${isToday ? 'today ' : ''}${hasShift ? 'shift-day' : ''}">${d}</div>`;
+    }
   });
 }
-window.payoutSalary = function(uid, amount, hours, tovar, keysStr){
-  if(!confirm(`Выплатить ${amount}₽?`)) return;
-  const keys = keysStr.split(',');
-  const updates = {};
-  keys.forEach(k=>{ updates['shifts/'+k+'/paid'] = true; });
-  const payoutKey = DB.ref('payouts').push().key;
-  updates['payouts/'+payoutKey] = {user:uid, amount, hours, tovar, date:new Date().toLocaleDateString('ru-RU')};
-  DB.ref().update(updates).then(()=>{
-    toast(`✅ Выплачено ${amount}₽`);
-    DB.ref('users/'+uid).once('value').then(s=>{const u=s.val(); if(u&&u.vkId) sendVkNotify(u.vkId, `💵 Выплата ЗП ${amount}₽`);});
-    calculateSalary();
-  });
-};
 
-// ====== ЧАТ ======
-function loadChat(){
-  const ref = App.privateChatWith ? DB.ref('privateChats/'+[App.uid, App.privateChatWith].sort().join('_')) : DB.ref('chat');
-  if(App.chatListener) App.chatListener.off();
-  App.chatListener = ref.limitToLast(50);
-  App.chatListener.on('value', s=>{
-    let h='';
-    s.forEach(c=>{
-      const m = c.val();
-      const isMine = m.user === App.user.name;
-      const avatarHtml = `<div id="chat_avatar_${c.key}" style="width:32px;height:32px;flex-shrink:0;"></div>`;
-      const time = m.timestamp ? new Date(m.timestamp).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'}) : '';
-      let content = '';
-      if(m.text) content += esc(m.text);
-      if(m.sticker) content += `<img class="chat-sticker" src="${esc(m.sticker)}">`;
-      if(m.photo) content += `<br><img class="chat-img" src="${esc(m.photo)}" onclick="document.getElementById('photoViewerImg').src='${esc(m.photo)}';document.getElementById('photoViewer').style.display='flex';">`;
-      h += `<div class="chat-message-row ${isMine ? 'own' : ''}">
-        ${avatarHtml}
-        <div class="chat-message-content">
-          <div class="chat-message-header ${isMine ? 'own' : ''}">
-            <span class="name" style="color:${stringToColor(m.user)}">${esc(m.user)}</span>
-            <span class="time">${time}</span>
-          </div>
-          <div class="chat-message-text">${content}</div>
+function changeCal(dir) {
+  App.calMonth += dir;
+  if (App.calMonth < 0) { App.calMonth = 11; App.calYear--; }
+  if (App.calMonth > 11) { App.calMonth = 0; App.calYear++; }
+  renderCal();
+}
+
+function clearShifts() {
+  if (!confirm('Очистить все смены?')) return;
+  DB.ref('shifts').orderByChild('user').equalTo(App.user.uid).once('value').then(snap => {
+    const promises = [];
+    snap.forEach(child => promises.push(DB.ref('shifts/' + child.key).remove()));
+    return Promise.all(promises);
+  }).then(() => {
+    toast('Очищено');
+    renderCal();
+  });
+}
+
+// ---------- History ----------
+function renderHistory(panel) {
+  panel.innerHTML = '<div class="card"><h4>💳 Выплаты</h4><div id="historyContent">Загрузка...</div></div>';
+  DB.ref('payments').orderByChild('user').equalTo(App.user.uid).once('value').then(snap => {
+    const items = [];
+    snap.forEach(child => items.push(child.val()));
+    items.sort((a, b) => b.timestamp - a.timestamp);
+    const el = document.getElementById('historyContent');
+    if (items.length) {
+      el.innerHTML = items.map(x =>
+        `<div style="padding:10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;">
+          <span>${formatDate(x.timestamp)}</span>
+          <span style="color:var(--green);font-weight:bold;">${x.total}₽</span>
+        </div>`
+      ).join('');
+    } else {
+      el.innerHTML = '<p style="color:var(--muted);">Нет выплат</p>';
+    }
+  });
+}
+
+// ---------- Board ----------
+function renderBoard(panel) {
+  panel.innerHTML = '<div class="card"><h4>🏆 Доска почёта</h4><div id="boardContent">Загрузка...</div></div>';
+  DB.ref('shifts').once('value').then(snap => {
+    const stats = {};
+    snap.forEach(child => {
+      const data = child.val();
+      if (!data.user) return;
+      const uid = data.user;
+      if (!stats[uid]) stats[uid] = { hours: 0, tovar: 0 };
+      stats[uid].hours += data.hours || 0;
+      stats[uid].tovar += data.tovar || 0;
+    });
+
+    const arr = [];
+    for (const uid in stats) {
+      const name = App.allUserData[uid]?.name || uid;
+      arr.push({ name, hours: stats[uid].hours, tovar: stats[uid].tovar });
+    }
+
+    // Top by hours
+    const byHours = [...arr].sort((a, b) => b.hours - a.hours);
+    let hoursHtml = '';
+    for (let i = 0; i < Math.min(byHours.length, 5); i++) {
+      const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '📌';
+      hoursHtml += `<div style="padding:6px;border-bottom:1px solid var(--border);">${medal} ${escapeHtml(byHours[i].name)} — <b>${byHours[i].hours.toFixed(1)}ч</b></div>`;
+    }
+
+    // Top by tovar
+    const byTovar = [...arr].sort((a, b) => b.tovar - a.tovar);
+    let tovarHtml = '';
+    for (let i = 0; i < Math.min(byTovar.length, 5); i++) {
+      const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '📌';
+      tovarHtml += `<div style="padding:6px;border-bottom:1px solid var(--border);">${medal} ${escapeHtml(byTovar[i].name)} — <b>${byTovar[i].tovar} шт</b></div>`;
+    }
+
+    const best = arr.length ?
+      `<div style="padding:6px;">🌟 ${escapeHtml(byHours[0]?.name || '')} — ${(byHours[0]?.hours || 0).toFixed(1)}ч / ${(byTovar[0]?.tovar || 0)} шт</div>` :
+      '<p style="color:var(--muted);">Нет данных</p>';
+
+    document.getElementById('boardContent').innerHTML = `
+      <div><b>⏱ Топ по часам</b>${hoursHtml}</div>
+      <div style="margin-top:12px;"><b>📦 Топ по товарам</b>${tovarHtml}</div>
+      <div style="margin-top:12px;"><b>🌟 Работник месяца</b>${best}</div>
+    `;
+  });
+}
+
+// ---------- Power (Creator only) ----------
+function renderPower(panel) {
+  if (!App.isCreator) return;
+  panel.innerHTML = `
+    <div class="card">
+      <h4>⚡ Управление ролями</h4>
+      <div id="powerList">Загрузка...</div>
+    </div>
+  `;
+  loadPower();
+}
+
+function loadPower() {
+  const el = document.getElementById('powerList');
+  if (!el) return;
+  DB.ref('users').once('value').then(snap => {
+    let html = '';
+    snap.forEach(child => {
+      const user = child.val();
+      const uid = child.key;
+      if (uid === App.user.uid) return;
+      html += `
+        <div class="worker-row">
+          <span>
+            <b>${escapeHtml(user.name)}</b>
+            <span style="font-size:11px;color:var(--muted);"> — ${user.role === 'god' ? '👑 Начальник' : user.role === 'creator' ? '🌌 Создатель' : '👤 Сотрудник'}</span>
+          </span>
+          ${user.role !== 'god' ? `<button class="btn-gold btn-sm power-promote" data-uid="${uid}" data-name="${escapeHtml(user.name)}">⬆ Повысить до начальника</button>` : ''}
         </div>
-      </div>`;
+      `;
     });
-    $('#chat').innerHTML = h || '<p style="color:var(--muted);text-align:center;padding:20px;font-size:13px;">Нет сообщений</p>';
-    $('#chat').scrollTop = $('#chat').scrollHeight;
-    
-    // Рендерим аватарки в сообщениях
-    s.forEach(c=>{
-      const m = c.val();
-      const containerId = 'chat_avatar_' + c.key;
-      const container = document.getElementById(containerId);
-      if(container){
-        renderAvatarWithFrame(containerId, m.user, m.role, m.avatar || '', 32);
+    el.innerHTML = html || '<p style="color:var(--muted);">Нет сотрудников</p>';
+
+    el.querySelectorAll('.power-promote').forEach(btn => {
+      btn.addEventListener('click', function() {
+        if (!confirm('Повысить ' + this.dataset.name + ' до начальника?')) return;
+        DB.ref('users/' + this.dataset.uid + '/role').set('god').then(() => {
+          toast('✅ ' + this.dataset.name + ' теперь начальник!');
+          loadPower();
+        });
+      });
+    });
+  });
+}
+
+// ---------- Workers (God only) ----------
+function renderWorkers(panel) {
+  if (!App.isGod) return;
+  panel.innerHTML = `
+    <div class="card">
+      <h4>👥 Сотрудники</h4>
+      <div id="workersList">Загрузка...</div>
+    </div>
+  `;
+  loadWorkers();
+}
+
+function loadWorkers() {
+  const el = document.getElementById('workersList');
+  if (!el) return;
+  DB.ref('users').once('value').then(snap => {
+    let html = '';
+    snap.forEach(child => {
+      const user = child.val();
+      const uid = child.key;
+      if (uid === App.user.uid) return;
+      const isCreator = user.role === 'creator';
+      html += `
+        <div class="worker-row${isCreator ? ' creator-row' : ''}">
+          <span>
+            <b>${escapeHtml(user.name)}</b>
+            ${isCreator ? ' <span style="font-size:10px;background:var(--gold);color:#000;padding:2px 6px;border-radius:8px;">Создатель</span>' : ''}
+            <br>
+            <span style="font-size:11px;color:var(--muted);">Пункт ${user.punkt || '?'} | Надбавка: ${user.bonus || 0}₽</span>
+          </span>
+          <span>
+            <button class="btn-gold btn-sm worker-bonus" data-uid="${uid}" data-name="${escapeHtml(user.name)}">🎁</button>
+            <button class="btn-purple btn-sm worker-penalty" data-uid="${uid}" data-name="${escapeHtml(user.name)}">⚠️</button>
+            ${!isCreator ? `<button class="btn-red btn-sm worker-delete" data-uid="${uid}" data-name="${escapeHtml(user.name)}">✕</button>` : ''}
+          </span>
+        </div>
+      `;
+    });
+    el.innerHTML = html || '<p style="color:var(--muted);">Нет сотрудников</p>';
+
+    el.querySelectorAll('.worker-bonus').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const amount = prompt('Сумма премии:');
+        if (!amount) return;
+        const num = parseInt(amount);
+        if (isNaN(num) || num <= 0) { toast('Введите корректную сумму', true); return; }
+        DB.ref('premiums').push({
+          user: this.dataset.uid,
+          amount: num,
+          timestamp: Date.now()
+        });
+        DB.ref('notifications').push({
+          user: this.dataset.uid,
+          text: '💰 Премия ' + num + '₽ от начальника!',
+          timestamp: Date.now()
+        });
+        toast('✅ Премия ' + num + '₽');
+      });
+    });
+
+    el.querySelectorAll('.worker-penalty').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const amount = prompt('Сумма штрафа:');
+        if (!amount) return;
+        const num = parseInt(amount);
+        if (isNaN(num) || num <= 0) { toast('Введите корректную сумму', true); return; }
+        const reason = prompt('Причина:') || 'Нарушение';
+        DB.ref('punishes').push({
+          user: this.dataset.uid,
+          amount: num,
+          reason: reason,
+          timestamp: Date.now()
+        });
+        DB.ref('notifications').push({
+          user: this.dataset.uid,
+          text: '💀 Штраф ' + num + '₽ за: ' + reason,
+          timestamp: Date.now()
+        });
+        toast('💀 Штраф ' + num + '₽');
+      });
+    });
+
+    el.querySelectorAll('.worker-delete').forEach(btn => {
+      btn.addEventListener('click', function() {
+        if (confirm('Удалить ' + this.dataset.name + '?')) {
+          DB.ref('users/' + this.dataset.uid).remove();
+          loadWorkers();
+        }
+      });
+    });
+  });
+}
+
+// ---------- Salary ----------
+function renderSalary(panel) {
+  if (!App.isGod) return;
+  panel.innerHTML = `
+    <div class="card">
+      <h4>💰 Расчёт ЗП</h4>
+      <select id="salUser" style="margin-bottom:12px;"><option value="">— Выберите сотрудника —</option></select>
+      <div style="display:flex;gap:8px;">
+        <input type="date" id="salFrom" style="flex:1;">
+        <input type="date" id="salTo" style="flex:1;">
+      </div>
+      <button class="btn-green" id="salCalcBtn" style="margin-top:8px;">🧮 Посчитать</button>
+      <button class="btn-blue" id="salPayBtn" style="margin-top:4px;">✅ Оплатить</button>
+      <div id="salResult" style="margin-top:12px;"></div>
+    </div>
+  `;
+
+  DB.ref('users').once('value').then(snap => {
+    const sel = document.getElementById('salUser');
+    snap.forEach(child => {
+      const user = child.val();
+      if (user.uid !== App.user.uid) {
+        sel.innerHTML += `<option value="${child.key}">${escapeHtml(user.name)}</option>`;
+      }
+    });
+  });
+
+  let lastCalc = null;
+
+  document.getElementById('salCalcBtn').addEventListener('click', function() {
+    const uid = document.getElementById('salUser').value;
+    const from = document.getElementById('salFrom').value;
+    const to = document.getElementById('salTo').value;
+    if (!uid || !from || !to) {
+      toast('Заполните все поля', true);
+      return;
+    }
+
+    DB.ref('users/' + uid).once('value').then(userSnap => {
+      const userData = userSnap.val();
+      if (!userData) { toast('Пользователь не найден', true); return; }
+      const punktId = userData.punkt || '';
+      let rate = 0;
+
+      DB.ref('punkts').once('value').then(punktsSnap => {
+        punktsSnap.forEach(child => {
+          if (child.key === punktId) {
+            rate = child.val().rate || 0;
+          }
+        });
+        if (rate === 0) rate = 150;
+
+        let totalHours = 0, totalTovar = 0, shiftIds = [];
+        const userName = userData.name || '';
+
+        // Get shifts by uid
+        DB.ref('shifts').orderByChild('user').equalTo(uid).once('value').then(snap1 => {
+          snap1.forEach(child => {
+            const shift = child.val();
+            if (shift.date >= from && shift.date <= to) {
+              totalHours += shift.hours || 0;
+              totalTovar += shift.tovar || 0;
+              shiftIds.push(child.key);
+            }
+          });
+
+          // Also get shifts by user_name (fallback)
+          DB.ref('shifts').orderByChild('user_name').equalTo(userName).once('value').then(snap2 => {
+            snap2.forEach(child => {
+              const shift = child.val();
+              if (shift.date >= from && shift.date <= to && shift.user !== uid) {
+                totalHours += shift.hours || 0;
+                totalTovar += shift.tovar || 0;
+                shiftIds.push(child.key);
+              }
+            });
+
+            const fromTs = new Date(from).getTime();
+            const toTs = new Date(to + 'T23:59:59').getTime();
+            let premium = 0, punish = 0;
+
+            // Premiums
+            DB.ref('premiums').orderByChild('user').equalTo(uid).once('value').then(premSnap => {
+              premSnap.forEach(child => {
+                const p = child.val();
+                if (p.timestamp >= fromTs && p.timestamp <= toTs) {
+                  premium += p.amount || 0;
+                }
+              });
+
+              // Punishes
+              DB.ref('punishes').orderByChild('user').equalTo(uid).once('value').then(punSnap => {
+                punSnap.forEach(child => {
+                  const p = child.val();
+                  if (p.timestamp >= fromTs && p.timestamp <= toTs) {
+                    punish += p.amount || 0;
+                  }
+                });
+
+                const base = Math.round(totalHours * rate);
+                const total = Math.max(0, base + premium - punish);
+                const el = document.getElementById('salResult');
+                el.innerHTML = `
+                  <div class="zp-result">
+                    Смен: ${shiftIds.length}, часов: ${totalHours.toFixed(1)}, товаров: ${totalTovar}
+                    <br>База: ${base}₽, премии: +${premium}₽, штрафы: -${punish}₽
+                    <br><b>Итого: ${total}₽</b>
+                  </div>
+                `;
+                lastCalc = { uid, from, to, total, shiftIds };
+              });
+            });
+          });
+        });
+      });
+    });
+  });
+
+  document.getElementById('salPayBtn').addEventListener('click', function() {
+    if (!lastCalc) {
+      toast('Сначала посчитайте!', true);
+      return;
+    }
+    if (!confirm('Оплатить ' + lastCalc.total + '₽?')) return;
+    DB.ref('payments').push({
+      user: lastCalc.uid,
+      total: lastCalc.total,
+      dateFrom: lastCalc.from,
+      dateTo: lastCalc.to,
+      timestamp: Date.now()
+    });
+    lastCalc.shiftIds.forEach(id => DB.ref('shifts/' + id + '/paid').set(true));
+    toast('✅ Оплачено ' + lastCalc.total + '₽');
+    lastCalc = null;
+    document.getElementById('salResult').innerHTML = '';
+  });
+}
+
+// ---------- Announce ----------
+function renderAnnounce(panel) {
+  if (!App.isGod) return;
+  panel.innerHTML = `
+    <div class="card">
+      <h4>📜 Новое объявление</h4>
+      <textarea id="announceText" placeholder="Текст..." rows="3" style="resize:vertical;margin-bottom:8px;"></textarea>
+      <div style="display:flex;gap:8px;margin-bottom:8px;">
+        <select id="announceExpiry" style="flex:1;">
+          <option value="0">Навсегда</option>
+          <option value="1">1 час</option>
+          <option value="24" selected>24 часа</option>
+          <option value="72">3 дня</option>
+          <option value="168">7 дней</option>
+        </select>
+      </div>
+      <button class="btn-gold" id="addAnnounceBtn">Опубликовать</button>
+    </div>
+    <div id="announceList" style="margin-top:12px;">Загрузка...</div>
+  `;
+
+  document.getElementById('addAnnounceBtn').addEventListener('click', () => {
+    const text = document.getElementById('announceText').value.trim();
+    if (!text) { toast('Введите текст', true); return; }
+    const hours = parseInt(document.getElementById('announceExpiry').value);
+    const expiry = hours > 0 ? Date.now() + hours * 3600000 : null;
+    DB.ref('announce').push({
+      text: text,
+      timestamp: Date.now(),
+      expiry: expiry
+    }).then(() => {
+      document.getElementById('announceText').value = '';
+      toast('📜 Объявление опубликовано!');
+      loadAnnounces();
+    });
+  });
+
+  loadAnnounces();
+}
+
+function loadAnnounces() {
+  const el = document.getElementById('announceList');
+  if (!el) return;
+  DB.ref('announce').once('value').then(snap => {
+    if (!snap.exists()) {
+      el.innerHTML = '<p style="color:var(--muted);">Нет объявлений</p>';
+      return;
+    }
+    const items = [];
+    snap.forEach(child => {
+      const data = child.val();
+      if (!data.expiry || Date.now() < data.expiry) {
+        items.push({ id: child.key, data: data });
+      }
+    });
+    items.sort((a, b) => b.data.timestamp - a.data.timestamp);
+    el.innerHTML = items.length ?
+      items.map(item =>
+        `<div style="padding:10px;border-bottom:1px solid var(--border);">
+          ${escapeHtml(item.data.text)}
+          <br><small style="color:var(--muted);">${new Date(item.data.timestamp).toLocaleString('ru-RU')}</small>
+          ${App.isGod ? `<button class="btn-red" style="width:auto;padding:4px 10px;font-size:11px;margin-top:4px;" data-id="${item.id}">✕</button>` : ''}
+        </div>`
+      ).join('') :
+      '<p style="color:var(--muted);">Нет объявлений</p>';
+
+    el.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', function() {
+        DB.ref('announce/' + this.dataset.id).remove();
+        loadAnnounces();
+      });
+    });
+  });
+}
+
+// ---------- Chat ----------
+function loadChat() {
+  if (App.chatListener) {
+    App.chatListener.off();
+    App.chatListener = null;
+  }
+
+  const ref = App.privateChatWith ? getPrivateChatRef() : DB.ref('chat');
+  App.chatListener = ref.limitToLast(50);
+
+  App.chatListener.on('value', snap => {
+    const messages = [];
+    snap.forEach(child => {
+      if (child.val()) messages.push({ key: child.key, msg: child.val() });
+    });
+    messages.sort((a, b) => a.msg.timestamp - b.msg.timestamp);
+
+    let html = '';
+    let group = [];
+
+    const renderMessageContent = (msg) => {
+      let content = '';
+      if (msg.text) content += escapeHtml(msg.text);
+      if (msg.photo) {
+        content += `<br><img class="chat-img" src="${escapeHtml(msg.thumb || msg.photo)}" onclick="event.stopPropagation(); window.open('${escapeHtml(msg.photo)}', '_blank')">`;
+      }
+      if (msg.sticker) {
+        content += `<img class="chat-sticker" src="${escapeHtml(msg.sticker)}">`;
+      }
+      if (msg.photos && msg.photos.length) {
+        content += '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;">';
+        msg.photos.forEach(p => {
+          const thumb = typeof p === 'object' ? escapeHtml(p.thumb) : escapeHtml(p);
+          const full = typeof p === 'object' ? escapeHtml(p.full) : escapeHtml(p);
+          content += `<img class="chat-img" src="${thumb}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;cursor:pointer;" onclick="event.stopPropagation(); window.open('${full}', '_blank')">`;
+        });
+        content += '</div>';
+      }
+      return content;
+    };
+
+    const renderGroup = (group) => {
+      const first = group[0];
+      const userName = first.userName;
+      const isMine = first.isMine;
+      const isCreator = first.msg.user && first.msg.user.indexOf('🌌') === 0;
+      const isGod = first.msg.user && first.msg.user.indexOf('👑') === 0;
+
+      let avatar = '';
+      for (const uid in App.allUserData) {
+        if (App.allUserData[uid].name === userName) {
+          avatar = App.allUserData[uid].avatar || '';
+          break;
+        }
+      }
+
+      let groupHtml = `<div class="chat-bubble-group ${isMine ? 'mine' : 'other'}">`;
+      if (!isMine) {
+        groupHtml += '<div class="msg-author">';
+        if (avatar) {
+          groupHtml += `<img class="auth-avatar" src="${escapeHtml(avatar)}" onerror="this.style.display='none'">`;
+        } else {
+          groupHtml += `<div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#444,#555);display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:#ccc;">${escapeHtml(userName.charAt(0))}</div>`;
+        }
+        const style = (isCreator || isGod) ?
+          'background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;' :
+          '';
+        groupHtml += `<span style="${style}">${escapeHtml(userName)}</span></div>`;
+      }
+
+      group.forEach(g => {
+        let cls = 'chat-bubble';
+        if (isMine) cls += ' mine';
+        else if (isCreator) cls += ' creator';
+        else if (isGod) cls += ' god';
+        groupHtml += `<div class="${cls}">${renderMessageContent(g.msg)}</div>`;
+      });
+
+      groupHtml += '</div>';
+      return groupHtml;
+    };
+
+    for (let i = 0; i < messages.length; i++) {
+      const item = messages[i];
+      const msg = item.msg;
+      const userName = (msg.user || '?').replace(/^[🌌👑📢]\s/, '');
+      const isMine = App.user && (msg.user === '🌌 ' + App.user.name || msg.user === '👑 ' + App.user.name || msg.user === App.user.name);
+
+      if (group.length === 0 || group[0].userName !== userName || group[0].isMine !== isMine) {
+        if (group.length > 0) html += renderGroup(group);
+        group = [{ userName, isMine, msg }];
+      } else {
+        group.push({ userName, isMine, msg });
+      }
+    }
+    if (group.length > 0) html += renderGroup(group);
+
+    const chatEl = document.getElementById('chat');
+    const wasNearBottom = chatEl.scrollHeight - chatEl.scrollTop - chatEl.clientHeight < 60;
+    chatEl.innerHTML = html;
+    if (wasNearBottom || document.activeElement === document.getElementById('chatMsgInput')) {
+      chatEl.scrollTop = chatEl.scrollHeight;
+    }
+
+    // Author click -> show mini profile
+    chatEl.querySelectorAll('.msg-author').forEach(el => {
+      el.addEventListener('click', function() {
+        const name = this.querySelector('span').textContent.trim();
+        for (const uid in App.allUserData) {
+          if (App.allUserData[uid].name === name) {
+            App.selectedProfile = uid;
+            showMiniProfile(uid);
+            break;
+          }
+        }
+      });
+    });
+  });
+}
+
+function toggleChat() {
+  const chatEl = document.getElementById('chat');
+  const inputBar = document.getElementById('chatInputBar');
+  if (chatEl.classList.contains('hidden')) {
+    chatEl.classList.remove('hidden');
+    App.chatOpened = true;
+    inputBar.style.display = 'flex';
+    App.lastChatTimestamp = Date.now();
+    App.unreadCount = 0;
+    updateBadge();
+    setTimeout(() => chatEl.scrollTop = chatEl.scrollHeight, 100);
+  } else {
+    chatEl.classList.add('hidden');
+    App.chatOpened = false;
+    inputBar.style.display = 'none';
+  }
+}
+
+function updateBadge() {
+  const badge = document.getElementById('chatBadge');
+  if (App.unreadCount > 0) {
+    badge.style.display = 'inline';
+    badge.textContent = App.unreadCount;
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+function sendMessage() {
+  const input = document.getElementById('chatMsgInput');
+  const text = input.value.trim();
+  if (!text || !App.user) return;
+
+  const ref = App.privateChatWith ? getPrivateChatRef() : DB.ref('chat');
+  const prefix = App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '');
+
+  // Check mentions (just log for now)
+  const mentions = text.match(/@(\S+)/g);
+  if (mentions) {
+    console.log('Упоминания:', mentions);
+  }
+
+  ref.push({
+    user: prefix + App.user.name,
+    text: text,
+    timestamp: Date.now(),
+    role: App.user.role,
+    likes: {}
+  }).then(() => input.value = '');
+}
+
+function sendPhoto() {
+  const input = document.getElementById('chatPhotoInput');
+  const files = input.files;
+  if (!files.length || !App.user) return;
+
+  const photos = [];
+  const count = Math.min(files.length, 5);
+
+  for (let i = 0; i < count; i++) {
+    (function(file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxWidth = 300;
+          const scale = maxWidth / img.width;
+          canvas.width = maxWidth;
+          canvas.height = img.height * scale;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          photos.push({
+            full: e.target.result,
+            thumb: canvas.toDataURL('image/jpeg', 0.6)
+          });
+          if (photos.length === count) {
+            const ref = App.privateChatWith ? getPrivateChatRef() : DB.ref('chat');
+            const prefix = App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '');
+            ref.push({
+              user: prefix + App.user.name,
+              text: '📷 ' + count + ' фото',
+              photos: photos,
+              timestamp: Date.now(),
+              role: App.user.role,
+              likes: {}
+            });
+          }
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    })(files[i]);
+  }
+  input.value = '';
+}
+
+function getPrivateChatRef() {
+  if (!App.privateChatWith) return DB.ref('chat');
+  const users = [App.user.uid, App.privateChatWith].sort();
+  return DB.ref('privateChats/' + users[0] + '_' + users[1]);
+}
+
+function openPrivateChat() {
+  if (!App.selectedProfile || App.selectedProfile === App.user.uid) return;
+  App.privateChatWith = App.selectedProfile;
+  const userData = App.allUserData[App.selectedProfile];
+  document.getElementById('chatLabel').textContent = userData ? userData.name : '...';
+  document.getElementById('chatBackBtn').style.display = 'inline-block';
+  closeMiniProfile();
+  document.getElementById('avatarCarousel').classList.remove('open');
+  loadChat();
+}
+
+function switchToGlobalChat() {
+  App.privateChatWith = null;
+  document.getElementById('chatLabel').textContent = 'Общий чат';
+  document.getElementById('chatBackBtn').style.display = 'none';
+  loadChat();
+}
+
+// ---------- Stickers ----------
+function renderStickerUI() {
+  const content = document.getElementById('stickerContent');
+  const tabs = document.getElementById('stickerTabs');
+
+  content.innerHTML = BASE_EMOJIS.map(e => `<div class="emoji-item" data-emoji="${e}">${e}</div>`).join('');
+  content.querySelectorAll('.emoji-item').forEach(el => {
+    el.addEventListener('click', function(ev) {
+      ev.stopPropagation();
+      document.getElementById('chatMsgInput').value += this.dataset.emoji;
+      document.getElementById('chatMsgInput').focus();
+    });
+  });
+
+  tabs.innerHTML = '<button class="st-tab active" data-tab="emoji">😀</button>';
+
+  DB.ref('sticker_packs').once('value').then(snap => {
+    if (snap.exists()) {
+      snap.forEach(child => {
+        const pack = child.val();
+        const packId = child.key;
+        // Check access: creator, god, or allowed user
+        if (pack.creator === App.user.uid || App.isCreator || App.isGod ||
+            (pack.allowed_users && pack.allowed_users[App.user.uid])) {
+          tabs.innerHTML += `<button class="st-tab" data-tab="${packId}">📦</button>`;
+        }
+      });
+    }
+  });
+
+  tabs.querySelectorAll('.st-tab').forEach(btn => {
+    btn.addEventListener('click', function(ev) {
+      ev.stopPropagation();
+      const tab = this.dataset.tab;
+      tabs.querySelectorAll('.st-tab').forEach(b => b.classList.toggle('active', b === this));
+
+      if (tab === 'emoji') {
+        content.innerHTML = BASE_EMOJIS.map(e => `<div class="emoji-item" data-emoji="${e}">${e}</div>`).join('');
+        content.querySelectorAll('.emoji-item').forEach(el => {
+          el.addEventListener('click', function(ev2) {
+            ev2.stopPropagation();
+            document.getElementById('chatMsgInput').value += this.dataset.emoji;
+            document.getElementById('chatMsgInput').focus();
+          });
+        });
+      } else {
+        DB.ref('sticker_packs/' + tab).once('value').then(packSnap => {
+          const pack = packSnap.val();
+          if (pack && pack.stickers) {
+            // stickers is an object: { id: { img, emoji } }
+            let html = '';
+            for (const id in pack.stickers) {
+              const st = pack.stickers[id];
+              if (st.img) {
+                html += `<div class="st-item" onclick="event.stopPropagation();sendSticker('${escapeHtml(st.img)}')"><img src="${escapeHtml(st.img)}"></div>`;
+              } else if (st.emoji) {
+                html += `<div class="emoji-item" onclick="event.stopPropagation();document.getElementById('chatMsgInput').value += '${escapeHtml(st.emoji)}';document.getElementById('chatMsgInput').focus();">${escapeHtml(st.emoji)}</div>`;
+              }
+            }
+            content.innerHTML = html || '<p style="color:var(--muted);font-size:13px;padding:12px;">Нет стикеров</p>';
+          } else {
+            content.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:12px;">Нет стикеров</p>';
+          }
+        });
       }
     });
   });
 }
-function toggleChat(){
-  if($('#chat').classList.contains('hidden')){
-    $('#chat').classList.remove('hidden'); $('#chatArrow').style.transform='rotate(180deg)'; $('#chatInputBar').style.display='flex';
-    $('#chat').scrollTop = $('#chat').scrollHeight;
-  }else{
-    $('#chat').classList.add('hidden'); $('#chatArrow').style.transform='rotate(0deg)'; $('#chatInputBar').style.display='none';
-  }
-}
-function sendMsg(){
-  const t = $('#chatMsgInput').value.trim(); if(!t) return;
-  const ref = App.privateChatWith ? DB.ref('privateChats/'+[App.uid, App.privateChatWith].sort().join('_')) : DB.ref('chat');
-  const msgData = {user:App.user.name, text:t, timestamp:Date.now(), role:App.user.role, avatar:App.user.avatar||''};
-  const mentions = t.match(/@(\S+)/g);
-  if(mentions){
-    DB.ref('users').once('value').then(s=>{
-      s.forEach(c=>{
-        const u=c.val();
-        if(u.vkId){
-          mentions.forEach(m=>{
-            const name = m.slice(1);
-            if(u.name === name) sendVkNotify(u.vkId, `📢 Упоминание в чате от ${App.user.name}:\n"${t}"`);
-          });
-        }
-      });
-    });
-  }
-  ref.push(msgData).then(()=>{ $('#chatMsgInput').value=''; });
-}
-function sendPhoto(){
-  const file = $('#chatPhotoInput').files[0]; if(!file) return;
-  const r = new FileReader();
-  r.onload = function(e){
-    const ref = App.privateChatWith ? DB.ref('privateChats/'+[App.uid, App.privateChatWith].sort().join('_')) : DB.ref('chat');
-    ref.push({user:App.user.name, photo:e.target.result, timestamp:Date.now(), role:App.user.role, avatar:App.user.avatar||''});
-  };
-  r.readAsDataURL(file);
-  $('#chatPhotoInput').value='';
-}
-function sendSticker(sticker){
-  const ref = App.privateChatWith ? DB.ref('privateChats/'+[App.uid, App.privateChatWith].sort().join('_')) : DB.ref('chat');
-  ref.push({user:App.user.name, sticker:sticker, timestamp:Date.now(), role:App.user.role, avatar:App.user.avatar||''});
-  $('#stickerPanel').classList.remove('open');
-}
-function renderStickers(){
-  const content = $('#stickerContent');
-  content.innerHTML = BASE_EMOJIS.map(e => `<div class="emoji-item" onclick="document.getElementById('chatMsgInput').value += '${e}'">${e}</div>`).join('');
-}
 
-// ====== САЙДБАР ======
-function buildCarousel(){
-  const el = $('#carouselInner'); if(!el) return; el.innerHTML='';
-  for(const uid in App.allUserData){
-    if(uid === App.uid) continue;
-    const d = App.allUserData[uid];
-    const online = App.activeShifts[uid] ? '<div class="online-dot"></div>' : '';
-    const avatar = d.avatar ? `<img src="${esc(d.avatar)}">` : `<div style="width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#334,#112);display:flex;align-items:center;justify-content:center;font-size:18px;color:#ccc;font-weight:bold;">${esc(d.name.charAt(0))}</div>`;
-    el.innerHTML += `<div class="avatar-item" onclick="openMini('${uid}')">${avatar}${online}</div>`;
-  }
-}
-function openMini(uid){
-  const d = App.allUserData[uid]; if(!d) return;
-  renderAvatarWithFrame('mpAvatarWrap', d.name, d.role, d.avatar||'', 44);
-  $('#mpName').textContent = d.name;
-  $('#mpStatus').textContent = d.role === 'god' ? '👑 Начальник' : d.role === 'creator' ? '🌌 Создатель' : '📦 Сотрудник';
-  $('#mpStatus').style.background = d.role === 'god' ? 'rgba(255,215,0,0.3)' : d.role === 'creator' ? 'rgba(124,58,237,0.3)' : 'rgba(34,197,94,0.2)';
-  $('#mpPunkt').textContent = App.activeShifts[uid] ? `🟢 На смене (ПВЗ: ${d.punkt||'49'})` : '🔴 Выходной';
-  $('#mpChatBtn').onclick = function(){ startPrivateChat(uid, d.name); };
-  $('#miniProfile').classList.add('show');
-}
-function startPrivateChat(uid, name){
-  App.privateChatWith = uid;
-  $('#chatLabel').textContent = '💬 ' + name;
-  $('#chatBackBtn').style.display = 'inline-block';
-  $('#miniProfile').classList.remove('show');
-  $('#avatarCarousel').classList.remove('open');
-  loadChat();
-}
-function switchGlobalChat(){
-  App.privateChatWith = null;
-  $('#chatLabel').textContent = 'Общий чат';
-  $('#chatBackBtn').style.display = 'none';
-  loadChat();
-}
+window.sendSticker = function(img) {
+  if (!App.user) return;
+  const ref = App.privateChatWith ? getPrivateChatRef() : DB.ref('chat');
+  const prefix = App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '');
+  ref.push({
+    user: prefix + App.user.name,
+    text: '',
+    sticker: img,
+    timestamp: Date.now(),
+    role: App.user.role,
+    likes: {}
+  });
+  document.getElementById('stickerPanel').classList.remove('open');
+};
 
-// ====== НАСТРОЙКИ ======
-function openSettings(){
-  $('#mainContent').style.display = 'none';
-  $('#avatarCarousel').style.display = 'none';
-  $('#settingsPanel').style.display = 'flex';
-  $('#setVk').value = App.user.vkId||''; 
-  $('#setName').value = '';
-  loadPunktsSettings();
-  // Превью аватара с рамкой
-  renderAvatarWithFrame('previewAvatarWrap', App.user.name, App.user.role, App.user.avatar||'', 60);
-}
-function closeSettings(){
-  $('#settingsPanel').style.display = 'none';
-  $('#mainContent').style.display = 'flex';
-  $('#avatarCarousel').style.display = 'flex';
-}
-function loadPunktsSettings(){
-  DB.ref('punkts').once('value').then(s=>{
-    const sel=$('#setPunkt'); sel.innerHTML='<option value="">Не менять</option>';
-    s.forEach(c=>{sel.innerHTML+=`<option value="${c.key}">${c.key}</option>`});
+// ---------- Avatar ----------
+function loadAvatarSettings() {
+  DB.ref('users/' + App.user.uid + '/avatarSettings').once('value').then(snap => {
+    if (snap.exists()) {
+      const data = snap.val();
+      Object.assign(App.avatarSettings, data);
+      if (data.photo) {
+        const img = new Image();
+        img.onload = () => { App.avatarImageData = img; drawProfileAvatar(); };
+        img.src = data.photo;
+      }
+    }
+    if (App.user.avatar && !App.avatarImageData) {
+      const img = new Image();
+      img.onload = () => { App.avatarImageData = img; drawProfileAvatar(); };
+      img.src = App.user.avatar;
+    }
+    drawProfileAvatar();
+    if (!App.avatarAnimId) updateAllFrames();
   });
 }
-function saveSettings(){
-  const nn=$('#setName').value.trim(), npu=$('#setPunkt').value, nvk=$('#setVk').value.trim();
-  const up={}; if(nn) up.name=nn; if(npu) up.punkt=npu; if(nvk) up.vkId=nvk;
-  if(Object.keys(up).length){
-    DB.ref('users/'+App.uid).update(up).then(()=>{
-      if(nn) App.user.name=nn; if(npu) App.user.punkt=npu; if(nvk) App.user.vkId=nvk;
-      updateUI(); toast('✅ Сохранено');
+
+function drawProfileAvatar() {
+  const canvas = document.getElementById('profileAvatarCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, 76, 76);
+
+  if (App.avatarImageData) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(38, 38, 36, 0, Math.PI * 2);
+    ctx.clip();
+    const ratio = Math.max(76 / App.avatarImageData.width, 76 / App.avatarImageData.height);
+    const dw = App.avatarImageData.width * ratio;
+    const dh = App.avatarImageData.height * ratio;
+    ctx.drawImage(App.avatarImageData, (76 - dw) / 2, (76 - dh) / 2, dw, dh);
+    ctx.restore();
+  } else {
+    ctx.fillStyle = '#1e1b4b';
+    ctx.beginPath();
+    ctx.arc(38, 38, 36, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#6366f1';
+    ctx.font = 'bold 28px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(App.user.name.charAt(0).toUpperCase(), 38, 40);
+  }
+}
+
+function updateAllFrames() {
+  if (document.hidden) {
+    App.avatarAnimId = requestAnimationFrame(updateAllFrames);
+    return;
+  }
+
+  const frameCanvas = document.getElementById('profileFrameCanvas');
+  if (frameCanvas) {
+    const ctx = frameCanvas.getContext('2d');
+    ctx.save();
+    ctx.translate(38, 38);
+    drawFrame(ctx, 76, 76, App.avatarSettings);
+    ctx.restore();
+  }
+
+  // Update mini profile avatar if shown
+  if (document.getElementById('miniProfile').classList.contains('show') && App.selectedProfile) {
+    const userData = App.allUserData[App.selectedProfile];
+    if (userData && userData.avatar) {
+      const container = document.getElementById('mpAvatarContainer');
+      if (container) {
+        container.innerHTML = `<div style="position:relative;width:64px;height:64px;"><img src="${escapeHtml(userData.avatar)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--accent);"></div>`;
+      }
+    }
+  }
+
+  // Update carousel avatars
+  document.querySelectorAll('.avatar-item').forEach(item => {
+    const uid = item.dataset.uid;
+    if (uid && App.allUserData[uid] && App.allUserData[uid].avatar) {
+      const img = item.querySelector('img');
+      if (img) img.src = App.allUserData[uid].avatar;
+    }
+  });
+
+  App.avatarAnimId = requestAnimationFrame(updateAllFrames);
+}
+
+function drawFrame(ctx, w, h, settings) {
+  const cx = w / 2, cy = h / 2;
+  const time = Date.now() / 1000 * settings.speed;
+  ctx.clearRect(0, 0, w, h);
+  ctx.shadowBlur = settings.glow || 20;
+  ctx.shadowColor = settings.color1 || '#7c3aed';
+
+  // For managers, only draw simple ring
+  if (!App.isCreator && !App.isGod) {
+    const thickness = settings.ringThickness === 'thin' ? 2 : settings.ringThickness === 'thick' ? 6 : 4;
+    ctx.strokeStyle = settings.ringColor || '#7c3aed';
+    ctx.lineWidth = thickness;
+    ctx.beginPath();
+    ctx.arc(cx, cy, w/2 - thickness/2, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    return;
+  }
+
+  // Advanced frames for creator/god
+  if (settings.style === 'neutron') {
+    for (let i = 0; i < 3; i++) {
+      ctx.save();
+      ctx.rotate(i * Math.PI * 2 / 3 + time);
+      ctx.strokeStyle = i === 0 ? settings.color1 : settings.color2;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, Math.max(0, w/2 - 5), Math.max(0, h/4), 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+  } else if (settings.style === 'blackhole') {
+    const grad = ctx.createRadialGradient(cx, cy, 80, cx, cy, 160);
+    grad.addColorStop(0, 'transparent');
+    grad.addColorStop(0.3, 'rgba(0,0,0,0.5)');
+    grad.addColorStop(0.6, settings.color1);
+    grad.addColorStop(1, 'transparent');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 160, 0, Math.PI * 2);
+    ctx.fill();
+  } else if (settings.style === 'divine') {
+    ctx.strokeStyle = settings.color1;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 115, 0, Math.PI * 2);
+    ctx.stroke();
+    for (let i = 0; i < 30; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 115 + Math.sin(time * 5 + i) * 10;
+      ctx.fillStyle = settings.color2;
+      ctx.beginPath();
+      ctx.arc(cx + dist * Math.cos(angle), cy + dist * Math.sin(angle), 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  } else if (settings.style === 'kitsune') {
+    for (let i = 0; i < 6; i++) {
+      ctx.fillStyle = 'rgba(255,69,0,0.3)';
+      ctx.beginPath();
+      ctx.arc(cx + Math.cos(time * 2 + i) * 30, cy + Math.sin(time * 2 + i) * 30, 20 + Math.sin(time * 3 + i) * 10, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  } else if (settings.style === 'wasteland') {
+    ctx.fillStyle = settings.color1 + '40';
+    ctx.beginPath();
+    ctx.arc(cx, cy, 115 * (1 + Math.sin(time * 5) * 0.05), 0, Math.PI * 2);
+    ctx.fill();
+  } else if (settings.style === 'enigma') {
+    ctx.strokeStyle = settings.color1;
+    ctx.lineWidth = 15;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 115, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.strokeStyle = settings.color2;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 115, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  ctx.shadowBlur = 0;
+}
+
+// ---------- Sidebar ----------
+function toggleSidebar() {
+  document.getElementById('avatarCarousel').classList.toggle('open');
+}
+
+function buildCarousel() {
+  const el = document.getElementById('carouselInner');
+  if (!el) return;
+  el.innerHTML = '';
+  const added = new Set();
+
+  for (const uid in App.allUserData) {
+    if (uid === App.user.uid) continue;
+    const data = App.allUserData[uid];
+    if (added.has(data.name)) continue;
+    added.add(data.name);
+
+    const online = !!App.activeShifts[uid];
+    el.innerHTML += `
+      <div class="avatar-item${App.selectedProfile === uid ? ' active' : ''}" data-uid="${uid}">
+        ${data.avatar ? `<img src="${escapeHtml(data.avatar)}" onerror="this.style.display='none'">` : `<div style="width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#222,#444);display:flex;align-items:center;justify-content:center;font-size:18px;color:#ccc;">${escapeHtml(data.name.charAt(0))}</div>`}
+        ${online ? '<div class="online-dot"></div>' : ''}
+      </div>
+    `;
+  }
+
+  el.querySelectorAll('.avatar-item').forEach(item => {
+    item.addEventListener('click', function() {
+      const uid = this.dataset.uid;
+      App.selectedProfile = uid;
+      el.querySelectorAll('.avatar-item').forEach(x => x.classList.toggle('active', x.dataset.uid === uid));
+      showMiniProfile(uid);
+    });
+  });
+}
+
+// ---------- Mini Profile ----------
+function showMiniProfile(uid) {
+  const data = App.allUserData[uid];
+  if (!data) return;
+  document.getElementById('mpName').textContent = data.name;
+  const container = document.getElementById('mpAvatarContainer');
+  container.innerHTML = `<div style="position:relative;width:64px;height:64px;">${data.avatar ? `<img src="${escapeHtml(data.avatar)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--accent);">` : `<div style="width:100%;height:100%;border-radius:50%;background:#444;display:flex;align-items:center;justify-content:center;font-size:24px;color:#ccc;">${escapeHtml(data.name.charAt(0))}</div>`}</div>`;
+  document.getElementById('mpStatus').textContent = data.role === 'god' ? 'Начальник' : (data.role === 'creator' ? 'Создатель' : 'Сотрудник');
+  document.getElementById('mpPunkt').textContent = App.activeShifts[uid] ? '🟢 На смене' : '🔴 Выходной';
+  document.getElementById('miniProfile').classList.add('show');
+}
+
+function closeMiniProfile() {
+  document.getElementById('miniProfile').classList.remove('show');
+  App.selectedProfile = null;
+}
+
+// ---------- Settings ----------
+function openSettings() {
+  document.getElementById('mainContent').style.display = 'none';
+  document.getElementById('avatarCarousel').style.display = 'none';
+  document.getElementById('settingsPanel').style.display = 'flex';
+  document.getElementById('setName').value = '';
+  loadPunktsForSettings();
+  updateSettingsUI();
+}
+
+function closeSettings() {
+  document.getElementById('settingsPanel').style.display = 'none';
+  document.getElementById('mainContent').style.display = 'flex';
+  document.getElementById('avatarCarousel').style.display = 'flex';
+}
+
+function loadPunktsForSettings() {
+  DB.ref('punkts').once('value').then(snap => {
+    const sel = document.getElementById('setPunkt');
+    sel.innerHTML = '<option value="">Не менять</option>';
+    snap.forEach(child => {
+      sel.innerHTML += `<option value="${child.key}">${child.key}</option>`;
+    });
+  });
+}
+
+function saveSettings() {
+  const newName = document.getElementById('setName').value.trim();
+  const newPunkt = document.getElementById('setPunkt').value;
+  const updates = {};
+
+  if (newName) updates.name = newName;
+  if (newPunkt) updates.punkt = newPunkt;
+
+  if (Object.keys(updates).length) {
+    DB.ref('users/' + App.user.uid).update(updates).then(() => {
+      if (newName) App.user.name = newName;
+      if (newPunkt) App.user.punkt = newPunkt;
+      updateUI();
+      toast('Сохранено');
     });
   }
   closeSettings();
 }
-function saveAvatar(){
-  if(!App.avatarFileData){toast('Выберите фото',true); return;}
-  DB.ref('users/'+App.uid+'/avatar').set(App.avatarFileData).then(()=>{
-    App.user.avatar = App.avatarFileData;
-    updateUI();
-    toast('✅ Аватар сохранён');
+
+function saveAvatar() {
+  const data = {
+    style: App.avatarSettings.style,
+    speed: App.avatarSettings.speed,
+    glow: App.avatarSettings.glow,
+    color1: App.avatarSettings.color1,
+    color2: App.avatarSettings.color2,
+    ringColor: App.avatarSettings.ringColor,
+    ringThickness: App.avatarSettings.ringThickness
+  };
+
+  if (App.avatarImageData) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 200;
+    canvas.height = 200;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(App.avatarImageData, 0, 0, 200, 200);
+    data.photo = canvas.toDataURL('image/jpeg', 0.8);
+  }
+
+  const updates = { avatarSettings: data };
+  if (data.photo) updates.avatar = data.photo;
+
+  DB.ref('users/' + App.user.uid).update(updates).then(() => {
+    if (data.photo) App.user.avatar = data.photo;
+    toast('Аватар сохранён');
     closeSettings();
   });
 }
-function logout(){
-  if(!confirm('Выйти?'))return;
-  if(App.shiftTimer)clearInterval(App.shiftTimer);
-  if(App.chatListener) App.chatListener.off();
-  AUTH.signOut().then(()=>{
-    App.user=null; App.uid=null;
-    $('#app').style.display='none'; $('#loginScreen').style.display='flex';
-    document.body.className='';
+
+function updateSettingsUI() {
+  const advanced = App.isCreator || App.isGod;
+  document.getElementById('avatarAdvanced').style.display = advanced ? 'block' : 'none';
+  document.getElementById('avatarSimple').style.display = advanced ? 'none' : 'block';
+
+  document.querySelectorAll('.style-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.style === App.avatarSettings.style);
+  });
+  document.getElementById('setSpeed').value = App.avatarSettings.speed;
+  document.getElementById('setSpeedVal').textContent = App.avatarSettings.speed + 'x';
+  document.getElementById('setGlow').value = App.avatarSettings.glow;
+  document.getElementById('setGlowVal').textContent = App.avatarSettings.glow + 'px';
+  document.getElementById('setColor1').value = App.avatarSettings.color1;
+  document.getElementById('setColor2').value = App.avatarSettings.color2;
+  document.getElementById('setRingColor').value = App.avatarSettings.ringColor;
+  document.getElementById('setRingThickness').value = App.avatarSettings.ringThickness;
+}
+
+// ---------- External Data ----------
+function loadPinned() {
+  DB.ref('pinned').on('value', snap => {
+    const el = document.getElementById('pinnedMessage');
+    if (!snap.exists()) {
+      el.style.display = 'none';
+      return;
+    }
+    const data = snap.val();
+    el.style.display = 'block';
+    el.innerHTML = `📌 <b>${escapeHtml(data.user || '?')}:</b> ${escapeHtml(data.text)}`;
   });
 }
 
-// ====== ОБЪЯВЛЕНИЯ И МЫСЛИ ======
-function loadAnnounce(){
-  DB.ref('announce').limitToLast(1).on('value', s=>{
-    const el = $('#announceBlock');
-    if(!s.exists()){el.style.display='none'; return}
-    let last; s.forEach(c=>{last=c.val()});
-    el.style.display='block'; el.innerHTML = '📢 ' + esc(last.text);
-  });
-}
-function loadThought(){
-  DB.ref('creatorThought').on('value', s=>{
-    const el = $('#thoughtBlock');
-    if(!s.exists()){el.style.display='none'; return}
-    el.style.display='block'; el.innerHTML = '💭 ' + esc(s.val().text);
+function loadAnnounce() {
+  DB.ref('announce').limitToLast(1).on('value', snap => {
+    const el = document.getElementById('announceBlock');
+    if (!snap.exists()) {
+      el.style.display = 'none';
+      return;
+    }
+    let last = null;
+    snap.forEach(child => { last = child.val(); last._key = child.key; });
+    if (last.expiry && Date.now() > last.expiry) {
+      DB.ref('announce/' + last._key).remove();
+      el.style.display = 'none';
+      return;
+    }
+    el.style.display = 'block';
+    el.innerHTML = `${escapeHtml(last.text)}<br><small style="color:var(--muted);">${new Date(last.timestamp).toLocaleString('ru-RU')}</small>`;
+    if (App.isCreator || App.isGod) {
+      const delBtn = document.createElement('button');
+      delBtn.textContent = '✕';
+      delBtn.style.cssText = 'position:absolute;right:8px;top:8px;background:none;border:none;color:var(--red);cursor:pointer;font-size:14px;';
+      delBtn.addEventListener('click', () => DB.ref('announce/' + last._key).remove());
+      el.appendChild(delBtn);
+    }
   });
 }
 
-// ====== ЛИСТЕНЕРЫ ======
-function initListeners(){
-  DB.ref('users').on('value', s=>{
-    App.allUserData = s.val()||{};
+function loadThought() {
+  DB.ref('creatorThought').on('value', snap => {
+    const el = document.getElementById('thoughtBlock');
+    if (!snap.exists()) {
+      el.style.display = 'none';
+      return;
+    }
+    const data = snap.val();
+    if (data.expiry && Date.now() > data.expiry) {
+      DB.ref('creatorThought').remove();
+      el.style.display = 'none';
+      return;
+    }
+    el.style.display = 'block';
+    el.innerHTML = `💭 ${escapeHtml(data.text)}<br><small style="color:var(--muted);">${data.expiry ? 'До: ' + new Date(data.expiry).toLocaleString('ru-RU') : 'Навсегда'}</small>`;
+    if (App.isCreator) {
+      const delBtn = document.createElement('button');
+      delBtn.textContent = '✕';
+      delBtn.style.cssText = 'position:absolute;right:8px;top:8px;background:none;border:none;color:var(--red);cursor:pointer;font-size:14px;';
+      delBtn.addEventListener('click', () => DB.ref('creatorThought').remove());
+      el.appendChild(delBtn);
+    }
+  });
+}
+
+// ---------- Database Listeners ----------
+function setupDatabaseListeners() {
+  attachDbListener(DB.ref('users'), 'value', snap => {
+    App.allUsers = {};
+    App.allUserData = {};
+    snap.forEach(child => {
+      App.allUsers[child.key] = child.val().avatar || '';
+      App.allUserData[child.key] = child.val();
+    });
     buildCarousel();
-    if(App.user && App.user.uid) updateProfileAvatar();
   });
-  DB.ref('activeShifts').on('value', s=>{
-    App.activeShifts = s.val()||{};
-    if(App.activeShifts[App.uid] && App.activeShifts[App.uid].active){ App.onShift=true; } else { App.onShift=false; }
+
+  attachDbListener(DB.ref('activeShifts'), 'value', snap => {
+    App.activeShifts = {};
+    snap.forEach(child => {
+      if (child.val() && child.val().active) App.activeShifts[child.key] = true;
+    });
     buildCarousel();
-    if(document.getElementById('shiftContent')) loadShift();
+  });
+
+  attachDbListener(DB.ref('chat').limitToLast(1), 'child_added', snap => {
+    if (App.chatOpened) return;
+    const msg = snap.val();
+    if (!msg || !App.user) return;
+    if (msg.timestamp <= App.lastChatTimestamp) return;
+    const isMine = msg.user === '🌌 ' + App.user.name || msg.user === '👑 ' + App.user.name || msg.user === App.user.name;
+    if (isMine) return;
+    if (App.notifiedKeys[snap.key]) return;
+    App.notifiedKeys[snap.key] = true;
+    App.lastChatTimestamp = Math.max(App.lastChatTimestamp, msg.timestamp || 0);
+    App.unreadCount++;
+    updateBadge();
   });
 }
 
-// ====== DOM СОБЫТИЯ ======
-document.addEventListener('DOMContentLoaded', function(){
-  // Чат
-  $('#chatHeader').addEventListener('click', toggleChat);
-  $('#chatBackBtn').addEventListener('click', switchGlobalChat);
-  $('#sendMsgBtn').addEventListener('click', sendMsg);
-  $('#chatMsgInput').addEventListener('keydown', e=>{if(e.key==='Enter'){e.preventDefault(); sendMsg();}});
-  $('#chatPhotoBtn').addEventListener('click', ()=>$('#chatPhotoInput').click());
-  $('#chatPhotoInput').addEventListener('change', sendPhoto);
-  $('#stickerToggleBtn').addEventListener('click', function(e){
-    e.stopPropagation(); const p=$('#stickerPanel'); p.classList.toggle('open');
-    if(p.classList.contains('open')) renderStickers();
+// ---------- Event Listeners ----------
+document.addEventListener('DOMContentLoaded', function() {
+  // Chat events
+  document.getElementById('chatHeader').addEventListener('click', toggleChat);
+  document.getElementById('chatBackBtn').addEventListener('click', switchToGlobalChat);
+  document.getElementById('chatMsgInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      sendMessage();
+    }
   });
-  document.addEventListener('click', ()=>{ $('#stickerPanel').classList.remove('open'); });
-  // Сайдбар
-  $('#sidebarToggleBtn').addEventListener('click', ()=>$('#avatarCarousel').classList.toggle('open'));
-  $('#sidebarCloseBtn').addEventListener('click', ()=>$('#avatarCarousel').classList.remove('open'));
-  $('#mpCloseBtn').addEventListener('click', ()=>$('#miniProfile').classList.remove('show'));
-  // Настройки
-  $('#settingsBtn').addEventListener('click', openSettings);
-  $('#settingsCloseBtn').addEventListener('click', closeSettings);
-  $('#settingsSaveBtn').addEventListener('click', saveSettings);
-  $('#settingsLogoutBtn').addEventListener('click', ()=>{closeSettings(); logout();});
-  $('#avatarCloseBtn').addEventListener('click', closeSettings);
-  $('#avatarSaveBtn').addEventListener('click', saveAvatar);
-  $('#avatarUploadBtn').addEventListener('click', ()=>$('#avatarFileInput').click());
-  $('#avatarFileInput').addEventListener('change', function(e){
-    const file = e.target.files[0]; if(!file) return;
+  document.getElementById('sendMsgBtn').addEventListener('click', sendMessage);
+  document.getElementById('chatPhotoBtn').addEventListener('click', () => document.getElementById('chatPhotoInput').click());
+  document.getElementById('chatPhotoInput').addEventListener('change', sendPhoto);
+
+  // Sticker panel
+  document.getElementById('stickerToggleBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    const panel = document.getElementById('stickerPanel');
+    panel.classList.toggle('open');
+    if (panel.classList.contains('open')) renderStickerUI();
+  });
+  document.addEventListener('click', e => {
+    const panel = document.getElementById('stickerPanel');
+    if (panel && panel.classList.contains('open') && !e.target.closest('#stickerPanel') && !e.target.closest('.sticker-toggle')) {
+      panel.classList.remove('open');
+    }
+  });
+
+  // Sidebar
+  document.getElementById('sidebarToggleBtn').addEventListener('click', toggleSidebar);
+  document.getElementById('sidebarCloseBtn').addEventListener('click', () => document.getElementById('avatarCarousel').classList.remove('open'));
+
+  // Mini profile
+  document.getElementById('mpCloseBtn').addEventListener('click', closeMiniProfile);
+  document.getElementById('mpChatBtn').addEventListener('click', openPrivateChat);
+  document.addEventListener('click', e => {
+    const mp = document.getElementById('miniProfile');
+    if (mp && mp.classList.contains('show') && !e.target.closest('#miniProfile') &&
+        !e.target.closest('.avatar-item') && !e.target.closest('#sidebarToggleBtn') &&
+        !e.target.closest('.msg-author')) {
+      closeMiniProfile();
+    }
+  });
+
+  // Settings
+  document.getElementById('settingsBtn').addEventListener('click', openSettings);
+  document.getElementById('settingsCloseBtn').addEventListener('click', closeSettings);
+  document.getElementById('settingsSaveBtn').addEventListener('click', saveSettings);
+  document.getElementById('settingsLogoutBtn').addEventListener('click', () => {
+    closeSettings();
+    logout();
+  });
+  document.getElementById('avatarCloseBtn').addEventListener('click', closeSettings);
+  document.getElementById('avatarSaveBtn').addEventListener('click', saveAvatar);
+
+  document.getElementById('setAvatarFile').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
     const reader = new FileReader();
-    reader.onload = function(ev){
+    reader.onload = ev => {
       const img = new Image();
-      img.onload = function(){
-        const canvas = document.createElement('canvas');
-        let w=img.width, h=img.height;
-        const max=200; if(w>h){if(w>max){h*=max/w; w=max;}}else{if(h>max){w*=max/h; h=max;}}
-        canvas.width=w; canvas.height=h;
-        canvas.getContext('2d').drawImage(img,0,0,w,h);
-        App.avatarFileData = canvas.toDataURL('image/jpeg',0.7);
-        renderAvatarWithFrame('previewAvatarWrap', App.user.name, App.user.role, App.avatarFileData, 60);
-        toast('✅ Фото загружено, сохраните изменения');
+      img.onload = () => {
+        App.avatarImageData = img;
+        drawProfileAvatar();
+        toast('Фото загружено');
       };
       img.src = ev.target.result;
     };
     reader.readAsDataURL(file);
   });
-  // Табы настроек
-  $$('.settings-tab').forEach(b=>b.addEventListener('click', function(){
-    const tab=this.dataset.tab;
-    $$('.settings-tab').forEach(x=>{x.classList.remove('active'); x.style.background='transparent'; x.style.color='var(--muted)';});
-    this.classList.add('active'); this.style.background='var(--accent)'; this.style.color='#fff';
-    $('#stab-main').style.display = tab==='main' ? 'flex' : 'none';
-    $('#stab-avatar').style.display = tab==='avatar' ? 'flex' : 'none';
-  }));
+
+  // Settings tabs
+  document.querySelectorAll('.settings-tab').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const tab = this.dataset.tab;
+      document.querySelectorAll('.settings-tab').forEach(b => {
+        b.classList.remove('active');
+        b.style.background = 'transparent';
+        b.style.color = 'var(--muted)';
+      });
+      this.classList.add('active');
+      this.style.background = 'var(--accent)';
+      this.style.color = '#fff';
+      document.getElementById('stab-main').style.display = tab === 'main' ? 'flex' : 'none';
+      document.getElementById('stab-avatar').style.display = tab === 'avatar' ? 'flex' : 'none';
+    });
+  });
+
+  // Style buttons
+  document.querySelectorAll('.style-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      App.avatarSettings.style = this.dataset.style;
+      document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      updateAllFrames();
+    });
+  });
+
+  // Avatar settings sliders
+  document.getElementById('setSpeed').addEventListener('input', function() {
+    App.avatarSettings.speed = parseFloat(this.value);
+    document.getElementById('setSpeedVal').textContent = App.avatarSettings.speed + 'x';
+    updateAllFrames();
+  });
+  document.getElementById('setGlow').addEventListener('input', function() {
+    App.avatarSettings.glow = parseInt(this.value);
+    document.getElementById('setGlowVal').textContent = App.avatarSettings.glow + 'px';
+    updateAllFrames();
+  });
+  document.getElementById('setColor1').addEventListener('input', function() {
+    App.avatarSettings.color1 = this.value;
+    updateAllFrames();
+  });
+  document.getElementById('setColor2').addEventListener('input', function() {
+    App.avatarSettings.color2 = this.value;
+    updateAllFrames();
+  });
+  document.getElementById('setRingColor').addEventListener('input', function() {
+    App.avatarSettings.ringColor = this.value;
+  });
+  document.getElementById('setRingThickness').addEventListener('change', function() {
+    App.avatarSettings.ringThickness = this.value;
+  });
 });
 
 })();
