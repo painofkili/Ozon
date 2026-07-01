@@ -25,7 +25,7 @@ button:hover{transform:scale(1.02);filter:brightness(1.1)}
 .btn-blue{background:linear-gradient(135deg,#2196F3,#1565C0);color:#fff}
 .tabs{display:flex;gap:6px;margin:0;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
 .tabs::-webkit-scrollbar{display:none}
-.tabs button{height:40px;display:flex;align-items:center;gap:6px;border-radius:99px;background:rgba(255,255,255,0.06);color:#aaa;border:1px solid transparent;padding:0 14px;font-size:13px;white-space:nowrap;flex-shrink:0}
+.tabs button{height:40px;display:flex;align-items:center;gap:6px;border-radius:99px;background:rgba(255,255,255,0.06);color:#aaa;border:1px solid transparent;padding:0 14px;font-size:13px;white-space:nowrap;flex-shrink:0;cursor:pointer}
 .tabs button.active{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff}
 .tab-content{display:none;width:100%;animation:fadeIn 0.3s ease}
 .tab-content.active-tab{display:block}
@@ -40,18 +40,12 @@ button:hover{transform:scale(1.02);filter:brightness(1.1)}
 .name-god{background:linear-gradient(135deg,#FFD700,#FF8C00,#FF4500);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold}
 .name-manager{color:#eee;font-weight:bold}
 
-/* ====== АВАТАР С РАМКОЙ ====== */
-.avatar-container{position:relative;width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0}
-.avatar-image{width:38px;height:38px;border-radius:50%;object-fit:cover;background:#2a2a4a;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;border:2px solid #1a1a2e;z-index:2;flex-shrink:0}
-.avatar-container.big .avatar-image{width:54px;height:54px;font-size:20px}
-
-/* Рамка Игоря (God) — Золотой нимб */
-.avatar-container.role-god::before{content:'';position:absolute;top:-2px;left:-2px;right:-2px;bottom:-2px;border-radius:50%;background:linear-gradient(45deg,#ffd700,#ffa500,#fff700,#ff8c00);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;padding:3px;pointer-events:none;z-index:1;animation:gold-glow 3s linear infinite}
-@keyframes gold-glow{0%{transform:rotate(0deg);filter:drop-shadow(0 0 2px #ffd700)}50%{filter:drop-shadow(0 0 10px #ff8c00)}100%{transform:rotate(360deg);filter:drop-shadow(0 0 2px #ffd700)}}
-
-/* Рамка Кости (Creator) — Космические орбиты */
-.avatar-container.role-creator::before{content:'';position:absolute;top:-2px;left:-2px;right:-2px;bottom:-2px;border-radius:50%;background:linear-gradient(135deg,#00f2fe,#4facfe,#7f00ff,#ff007f);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;padding:3px;pointer-events:none;z-index:1;animation:cosmic-orbit 4s linear infinite}
-@keyframes cosmic-orbit{0%{transform:rotate(0deg);filter:hue-rotate(0deg)}100%{transform:rotate(360deg);filter:hue-rotate(360deg)}}
+/* ====== АВАТАР С РАМКОЙ (CANVAS) ====== */
+.avatar-wrap{position:relative;width:44px;height:44px;flex-shrink:0}
+.avatar-wrap.big{width:60px;height:60px}
+.avatar-wrap canvas{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:50%}
+.avatar-wrap .avatar-base{z-index:1}
+.avatar-wrap .avatar-frame{z-index:2;pointer-events:none}
 
 /* ====== ЧАТ ====== */
 .chat-section{background:var(--bg2);border:1px solid var(--border);border-radius:14px;display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;margin:0}
@@ -59,10 +53,12 @@ button:hover{transform:scale(1.02);filter:brightness(1.1)}
 .chat-label{flex:1;font-weight:bold;background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 #chat{flex:1;overflow-y:auto;padding:10px;scrollbar-width:thin;scrollbar-color:var(--accent) transparent;background:transparent;display:flex;flex-direction:column;gap:4px}
 #chat.hidden{display:none}
-.chat-message-row{display:flex;align-items:flex-start;gap:10px;padding:4px 8px;border-radius:8px;transition:background 0.2s}
+.chat-message-row{display:flex;align-items:flex-start;gap:8px;padding:4px 8px;border-radius:8px;transition:background 0.2s}
 .chat-message-row:hover{background:rgba(255,255,255,0.02)}
+.chat-message-row.own{flex-direction:row-reverse}
 .chat-message-content{flex:1;min-width:0}
 .chat-message-header{display:flex;align-items:center;gap:6px;margin-bottom:2px;flex-wrap:wrap}
+.chat-message-header.own{justify-content:flex-end}
 .chat-message-header .name{font-weight:600;font-size:13px}
 .chat-message-header .time{font-size:10px;color:var(--muted)}
 .chat-message-text{font-size:14px;word-break:break-word;color:#ddd;line-height:1.4}
@@ -73,31 +69,25 @@ button:hover{transform:scale(1.02);filter:brightness(1.1)}
 .input-wrapper input{background:transparent;border:none;padding:10px 36px 10px 14px;font-size:14px;width:100%;margin:0}
 .input-wrapper input:focus{box-shadow:none;background:transparent}
 .sticker-toggle{position:absolute;right:6px;background:transparent;border:none;font-size:18px;cursor:pointer;color:#aaa;padding:0}
-.sticker-toggle:hover{transform:scale(1.1);filter:none}
 #sendMsgBtn{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;padding:0;flex-shrink:0;background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff}
 #chatPhotoBtn{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;padding:0;flex-shrink:0;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.05);color:#aaa}
-
 .sticker-panel{position:absolute;bottom:60px;right:0;width:280px;height:300px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;display:none;flex-direction:column;z-index:1000;box-shadow:0 10px 40px rgba(0,0,0,0.6);backdrop-filter:blur(20px);overflow:hidden}
 .sticker-panel.open{display:flex}
 .sticker-content{flex:1;overflow-y:auto;padding:10px;display:flex;flex-wrap:wrap;gap:4px;align-content:flex-start}
 .emoji-item{width:36px;height:36px;font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:6px;transition:0.1s}
 .emoji-item:hover{transform:scale(1.2);background:rgba(255,255,255,0.05)}
-.sticker-tabs{display:flex;padding:6px;gap:4px;background:rgba(0,0,0,0.3);border-top:1px solid var(--border);overflow-x:auto}
-
 .avatar-carousel{width:100px;background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;right:-120px;height:100vh;padding:50px 0 20px;z-index:1000;backdrop-filter:blur(20px);transition:right 0.3s cubic-bezier(0.16,1,0.3,1);box-shadow:-10px 0 30px rgba(0,0,0,0.5)}
 .avatar-carousel.open{right:0}
 .avatar-carousel-inner{display:flex;flex-direction:column;align-items:center;width:100%;gap:10px;overflow-y:auto;height:100%;padding:10px 0}
 .avatar-item{width:50px;height:50px;border-radius:50%;cursor:pointer;position:relative;transition:0.2s;flex-shrink:0}
 .avatar-item img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid transparent}
-.avatar-item .online-dot{position:absolute;bottom:0;right:0;width:10px;height:10px;background:#4CAF50;border-radius:50%;border:2px solid #111;box-shadow:0 0 6px rgba(76,175,80,0.6)}
+.avatar-item .online-dot{position:absolute;bottom:0;right:0;width:10px;height:10px;background:#4CAF50;border-radius:50%;border:2px solid #111}
 .btn-sidebar-toggle{position:fixed;right:0;top:50%;transform:translateY(-50%);width:32px;height:44px;background:var(--bg2);border:1px solid var(--border);border-right:none;border-radius:10px 0 0 10px;color:#fff;font-size:13px;cursor:pointer;z-index:999;backdrop-filter:blur(8px)}
 .sidebar-close-btn{position:absolute;top:10px;left:10px;background:rgba(255,255,255,0.05);border:none;color:#aaa;width:24px;height:24px;border-radius:50%;font-size:12px;cursor:pointer}
-
 .mini-profile{position:fixed;right:120px;top:50%;transform:translateY(-50%);background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;width:200px;z-index:1100;display:none;backdrop-filter:blur(20px);box-shadow:0 10px 40px rgba(0,0,0,0.6)}
 .mini-profile.show{display:block;animation:slideIn 0.2s ease-out}
 @keyframes slideIn{from{opacity:0;transform:translateY(-50%) translateX(20px)}to{opacity:1;transform:translateY(-50%) translateX(0)}}
 .mp-close-btn{position:absolute;top:6px;right:6px;background:rgba(255,255,255,0.05);border:none;color:#aaa;width:22px;height:22px;border-radius:50%;font-size:10px;cursor:pointer}
-
 .calendar{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:10px}
 .cal-header{display:flex;justify-content:space-between;align-items:center;padding:0 4px}
 .cal-nav{background:rgba(255,255,255,0.05);color:#fff;width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;border:1px solid rgba(255,255,255,0.05)}
@@ -106,26 +96,25 @@ button:hover{transform:scale(1.02);filter:brightness(1.1)}
 .cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:6px;font-size:12px;background:rgba(255,255,255,0.02)}
 .cal-day.today{border:1px solid var(--accent);color:var(--accent);font-weight:700;background:rgba(124,58,237,0.1)}
 .cal-day.has-shift{background:rgba(34,197,94,0.15);color:#4ade80;font-weight:700}
-
 .management-item{background:rgba(255,255,255,0.03);border:1px solid var(--border);padding:10px;border-radius:8px;margin-bottom:6px}
 .worker-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);gap:6px;flex-wrap:wrap}
 .worker-row button{width:auto;padding:4px 10px;font-size:11px}
-
 .toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:10000;pointer-events:none;display:flex;flex-direction:column;gap:6px}
 .toast-msg{padding:10px 18px;border-radius:12px;background:var(--bg2);border:1px solid var(--accent);color:#fff;font-size:13px;box-shadow:0 5px 20px rgba(0,0,0,0.6);transform:translateY(-20px);opacity:0;transition:all 0.3s;text-align:center;backdrop-filter:blur(10px)}
 .toast-msg.error{border-color:var(--red)}
 .toast-msg.show{transform:translateY(0);opacity:1}
-
 #photoViewer{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.9);z-index:10000;display:none;align-items:center;justify-content:center}
 #photoViewer img{max-width:90%;max-height:90%;border-radius:8px}
-
 #settingsPanel{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px}
 .settings-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px;max-width:460px;width:100%;max-height:90vh;overflow-y:auto}
 .settings-tab{flex:1;padding:8px;border-radius:8px;font-size:13px;background:transparent;color:var(--muted);border:none;cursor:pointer;transition:0.2s}
 .settings-tab.active{background:var(--accent);color:#fff}
 #stab-avatar{display:none}
 #stab-main{display:flex;flex-direction:column;gap:10px}
-
+.avatar-preview-wrap{position:relative;width:60px;height:60px;flex-shrink:0}
+.avatar-preview-wrap canvas{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:50%}
+.avatar-preview-wrap .preview-base{z-index:1}
+.avatar-preview-wrap .preview-frame{z-index:2;pointer-events:none}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:480px){.tabs button{padding:0 10px;font-size:11px}.main-content{padding:6px 8px;padding-bottom:70px}.chat-input-bar{padding:6px 8px}.mini-profile{right:10px;width:180px}.avatar-carousel{width:80px}}
 </style>
@@ -162,12 +151,12 @@ button:hover{transform:scale(1.02);filter:brightness(1.1)}
 <!-- ====== ОСНОВНОЕ ПРИЛОЖЕНИЕ ====== -->
 <div id="app" class="app-container" style="display:none">
   <button class="btn-sidebar-toggle" id="sidebarToggleBtn">👥</button>
-  <div class="main-content">
+  <div class="main-content" id="mainContent">
     <div id="announceBlock" style="display:none;background:rgba(200,150,0,0.08);border:1px solid rgba(200,150,0,0.3);padding:10px;border-radius:10px;text-align:center;font-size:13px;color:#ffd700;"></div>
     <div id="thoughtBlock" style="display:none;background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(0,212,255,0.05));border:1px solid rgba(124,58,237,0.4);padding:12px;border-radius:10px;text-align:center;font-size:14px;color:#e0e0ff;position:relative;"></div>
     
     <div class="profile-row">
-      <div id="profileAvatarContainer" class="avatar-container big"></div>
+      <div id="profileAvatarWrap" class="avatar-wrap big"></div>
       <div style="flex:1">
         <b id="creatorNameWrapper" class="name-manager" style="font-size:17px;"><span id="uname"></span></b> 
         <span id="roleBadge" class="badge badge-manager">Сотрудник</span><br>
@@ -210,7 +199,7 @@ button:hover{transform:scale(1.02);filter:brightness(1.1)}
   
   <div class="mini-profile" id="miniProfile">
     <button class="mp-close-btn" id="mpCloseBtn">✕</button>
-    <div id="mpAvatarContainer" style="display:flex;justify-content:center;margin:4px 0;"></div>
+    <div id="mpAvatarWrap" style="display:flex;justify-content:center;margin:4px 0;"></div>
     <div id="mpName" style="text-align:center;font-weight:bold;font-size:15px;"></div>
     <div id="mpStatus" style="text-align:center;font-size:12px;padding:2px 8px;border-radius:8px;display:inline-block;width:auto;margin:4px auto;background:rgba(124,58,237,0.2);border:1px solid rgba(124,58,237,0.3);"></div>
     <div id="mpPunkt" style="text-align:center;font-size:11px;color:var(--muted);margin:4px 0;"></div>
@@ -236,7 +225,7 @@ button:hover{transform:scale(1.02);filter:brightness(1.1)}
     </div>
     <div id="stab-avatar" style="display:none;flex-direction:column;gap:10px;">
       <div style="display:flex;align-items:center;gap:14px;padding:8px;background:rgba(255,255,255,0.03);border-radius:10px;">
-        <div id="previewAvatarContainer" class="avatar-container big"></div>
+        <div id="previewAvatarWrap" class="avatar-preview-wrap"></div>
         <div>
           <button class="btn-blue" id="avatarUploadBtn" style="padding:6px 12px;font-size:12px;width:auto;">📷 Выбрать фото</button>
           <input type="file" id="avatarFileInput" accept="image/*" style="display:none;">
@@ -290,7 +279,6 @@ let App = {
 const VK_TOKEN = "vk1.a.1ccqIy8pmM0W_RnIymI9XOMvA6ILX5yxNfZZAiF5HHBdjHK_vOAimgsyljky-TCiReMgJRAlaRvpYEypifmF-iUonUGvldlw5LvDWAOSUpN1WDcnS_7Uit-Yh3BuUF5Ic5NoZ48Qhlmu4ErB87fpTplEI7E3sarTm9LC-Vd8zTbeQp4xgyB1s5yg6oBxTBaNZAFp-ioqBWG25jR8GREmWw";
 const BASE_EMOJIS = ['😊','😉','😘','❤️','🤘','😓','💀','💪','🫠','😂','🤣','😆','😎','🗿','🤷','🤔','😏','🙏','😭','☕️','😴','🤬','👍','👎'];
 
-// ====== УТИЛИТЫ ======
 function $(s){return document.querySelector(s)}
 function $$(s){return document.querySelectorAll(s)}
 function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
@@ -298,26 +286,154 @@ function toast(t,e){e=e||false;const c=$('#toastContainer');const to=document.cr
 function stringToColor(str){if(!str)return'#444';let h=0;for(let i=0;i<str.length;i++){h=str.charCodeAt(i)+((h<<5)-h)}let c='#';for(let i=0;i<3;i++){let v=(h>>(i*8))&0xFF;c+=('00'+v.toString(16)).substr(-2)}return c}
 function sendVkNotify(vkId, msg){if(!vkId)return;fetch('https://api.vk.com/method/messages.send?v=5.131&access_token='+VK_TOKEN+'&user_id='+vkId+'&random_id='+Date.now()+'&message='+encodeURIComponent(msg)).catch(e=>console.log('VK error:',e))}
 
-// ====== АВАТАР С РАМКОЙ ======
-function createAvatarHTML(name, role, avatarBase64, sizeClass){
-  sizeClass = sizeClass || '';
-  let roleClass = '';
-  if(role === 'god') roleClass = 'role-god';
-  if(role === 'creator') roleClass = 'role-creator';
-  if(avatarBase64 && avatarBase64.startsWith('data:image')){
-    return `<div class="avatar-container ${roleClass} ${sizeClass}"><img src="${esc(avatarBase64)}" class="avatar-image" alt="${esc(name)}"></div>`;
-  }else{
-    const firstLetter = name ? name.charAt(0).toUpperCase() : '?';
-    const bgColor = stringToColor(name);
-    return `<div class="avatar-container ${roleClass} ${sizeClass}"><div class="avatar-image" style="background-color:${bgColor}">${firstLetter}</div></div>`;
+// ====== АНИМИРОВАННЫЕ РАМКИ (CANVAS) ======
+function drawFrame(ctx, w, h, role, settings){
+  const cx = w/2, cy = h/2;
+  const time = Date.now() / 1000 * (settings.speed || 1);
+  ctx.clearRect(0, 0, w, h);
+  ctx.shadowBlur = settings.glow || 20;
+  
+  if(role === 'creator'){
+    // КОСМИЧЕСКИЕ ОРБИТЫ (для Кости)
+    const colors = ['#00d4ff', '#7c3aed', '#f5c518'];
+    ctx.shadowColor = '#00d4ff';
+    for(let i=0; i<3; i++){
+      ctx.save();
+      ctx.rotate(i * Math.PI * 2/3 + time * 0.5);
+      ctx.strokeStyle = colors[i];
+      ctx.lineWidth = 2.5;
+      ctx.globalAlpha = 0.8;
+      ctx.shadowBlur = settings.glow || 20;
+      ctx.shadowColor = colors[i];
+      ctx.beginPath();
+      ctx.ellipse(0, 0, w/2-2, h/3, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+    // Протоны на орбитах
+    for(let i=0; i<3; i++){
+      const angle = time * 0.7 + i * Math.PI * 2/3;
+      const rx = w/2-2, ry = h/3;
+      const x = rx * Math.cos(angle) * Math.cos(i*0.8) - ry * Math.sin(angle) * Math.sin(i*0.8);
+      const y = rx * Math.cos(angle) * Math.sin(i*0.8) + ry * Math.sin(angle) * Math.cos(i*0.8);
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = colors[i];
+      ctx.fillStyle = colors[i];
+      ctx.beginPath();
+      ctx.arc(x, y, 4, 0, Math.PI*2);
+      ctx.fill();
+      ctx.shadowBlur = 8;
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.arc(x, y, 1.5, 0, Math.PI*2);
+      ctx.fill();
+    }
+    ctx.shadowBlur = 0;
+  } else if(role === 'god'){
+    // БОЖЕСТВЕННЫЙ НИМБ (для Игоря)
+    const colors = ['#ffd700', '#ff8c00', '#fff700'];
+    ctx.shadowColor = '#ffd700';
+    // Золотое кольцо
+    ctx.shadowBlur = settings.glow || 30;
+    ctx.strokeStyle = '#ffd700';
+    ctx.lineWidth = 4;
+    ctx.globalAlpha = 0.9;
+    ctx.beginPath();
+    ctx.arc(cx, cy, w/2-2, 0, Math.PI * 2);
+    ctx.stroke();
+    // Лучи
+    for(let i=0; i<16; i++){
+      const angle = time * 0.3 + i * Math.PI/8;
+      const len = w/2 + Math.sin(time * 0.5 + i) * 8;
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = '#ffd700';
+      ctx.strokeStyle = i%2===0 ? '#ffd700' : '#ff8c00';
+      ctx.lineWidth = 1.5;
+      ctx.globalAlpha = 0.5 + Math.sin(time + i) * 0.2;
+      ctx.beginPath();
+      ctx.moveTo(cx + (w/2-6) * Math.cos(angle), cy + (w/2-6) * Math.sin(angle));
+      ctx.lineTo(cx + len * Math.cos(angle), cy + len * Math.sin(angle));
+      ctx.stroke();
+    }
+    // Искры (частицы)
+    for(let i=0; i<20; i++){
+      const angle = time * 0.5 + i * 1.2;
+      const dist = w/2 + Math.sin(time * 0.7 + i * 0.5) * 6;
+      const x = cx + dist * Math.cos(angle);
+      const y = cy + dist * Math.sin(angle);
+      const size = 1.5 + Math.sin(time + i) * 0.5;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = '#ffd700';
+      ctx.fillStyle = i%2===0 ? '#fff7a0' : '#ffd700';
+      ctx.globalAlpha = 0.6 + Math.sin(time * 0.5 + i) * 0.3;
+      ctx.beginPath();
+      ctx.arc(x, y, size, 0, Math.PI*2);
+      ctx.fill();
+    }
+    ctx.shadowBlur = 0;
   }
 }
 
-function updateProfileAvatar(){
-  const container = document.getElementById('profileAvatarContainer');
+function renderAvatarWithFrame(containerId, name, role, avatarBase64, size){
+  size = size || 44;
+  const container = document.getElementById(containerId);
   if(!container) return;
-  const avatar = App.user.avatar || '';
-  container.outerHTML = createAvatarHTML(App.user.name, App.user.role, avatar, 'big');
+  
+  const isBig = size > 50;
+  container.style.width = size + 'px';
+  container.style.height = size + 'px';
+  container.className = 'avatar-wrap' + (isBig ? ' big' : '');
+  container.innerHTML = `
+    <canvas id="${containerId}_base" class="avatar-base" width="${size}" height="${size}"></canvas>
+    <canvas id="${containerId}_frame" class="avatar-frame" width="${size}" height="${size}"></canvas>
+  `;
+  
+  // Рисуем аватарку
+  const baseCanvas = document.getElementById(containerId + '_base');
+  const baseCtx = baseCanvas.getContext('2d');
+  baseCtx.clearRect(0, 0, size, size);
+  baseCtx.beginPath();
+  baseCtx.arc(size/2, size/2, size/2-2, 0, Math.PI*2);
+  baseCtx.clip();
+  
+  if(avatarBase64 && avatarBase64.startsWith('data:image')){
+    const img = new Image();
+    img.onload = function(){
+      baseCtx.drawImage(img, 0, 0, size, size);
+    };
+    img.src = avatarBase64;
+  } else {
+    baseCtx.fillStyle = '#2a2a4a';
+    baseCtx.fillRect(0, 0, size, size);
+    baseCtx.fillStyle = '#6366f1';
+    baseCtx.font = 'bold ' + (size * 0.4) + 'px sans-serif';
+    baseCtx.textAlign = 'center';
+    baseCtx.textBaseline = 'middle';
+    baseCtx.fillText(name.charAt(0).toUpperCase(), size/2, size/2);
+  }
+  
+  // Рисуем рамку (анимируется через requestAnimationFrame)
+  const frameCanvas = document.getElementById(containerId + '_frame');
+  const frameCtx = frameCanvas.getContext('2d');
+  const settings = { speed: 1, glow: 25 };
+  
+  function animateFrame(){
+    if(!document.getElementById(containerId)) return;
+    drawFrame(frameCtx, size, size, role, settings);
+    requestAnimationFrame(animateFrame);
+  }
+  animateFrame();
+}
+
+function updateProfileAvatar(){
+  if(!App.user) return;
+  renderAvatarWithFrame(
+    'profileAvatarWrap',
+    App.user.name,
+    App.user.role,
+    App.user.avatar || '',
+    60
+  );
 }
 
 // ====== WEBGL ФОН ======
@@ -398,7 +514,6 @@ function finishLogin(){
   loadThought();
   initListeners();
   buildCarousel();
-  if(App.user.avatar) updateProfileAvatar();
   DB.ref('activeShifts/'+App.uid).once('value').then(s=>{if(s.exists()&&s.val().active)App.onShift=true});
 }
 
@@ -419,7 +534,7 @@ function updateUI(){
   updateProfileAvatar();
 }
 
-// ====== ВКЛАДКИ ======
+// ====== ВКЛАДКИ (С ВОЗМОЖНОСТЬЮ СВОРАЧИВАТЬ) ======
 function renderTabs(){
   let cfg = App.isCreator ? [
     {id:'shift',icon:'🔵',label:'Смена'},{id:'stats',icon:'📊',label:'Стат'},
@@ -436,8 +551,14 @@ function renderTabs(){
   if(cfg.length) renderTab(cfg[0].id);
   $$('#tabsContainer button').forEach(b=>b.addEventListener('click',function(){
     const id=this.dataset.tab;
+    // Если вкладка уже активна — сворачиваем
+    if(this.classList.contains('active')){
+      this.classList.remove('active');
+      document.getElementById('panel_'+id).classList.remove('active-tab');
+      return;
+    }
     $$('#tabsContainer button, #tabContentContainer .tab-content').forEach(x=>x.classList.remove('active','active-tab'));
-    document.getElementById('tab_'+id).classList.add('active');
+    this.classList.add('active');
     document.getElementById('panel_'+id).classList.add('active-tab');
     renderTab(id);
   }));
@@ -579,7 +700,6 @@ function renderAnnounce(p){
     DB.ref('announce').push({text, timestamp:Date.now()}).then(()=>{
       toast('✅ Опубликовано!');
       $('#announceText').value='';
-      // VK уведомление всем
       DB.ref('users').once('value').then(s=>{
         s.forEach(c=>{const u=c.val(); if(u.vkId) sendVkNotify(u.vkId, '📢 Новое объявление от начальника:\n'+text);});
       });
@@ -659,9 +779,11 @@ function calculateSalary(){
       const data = unpaid[uid];
       let bonusTotal = 0;
       if(bonuses[uid]){
-        bonuses[uid].forEach(tx=>{ bonusTotal += tx.amount || 0; });
+        for(const key in bonuses[uid]){
+          bonusTotal += bonuses[uid][key].amount || 0;
+        }
       }
-      const rate = 150; // базовая ставка
+      const rate = 150;
       const base = Math.round(data.hours * rate + data.tovar * 2);
       const total = Math.max(0, base + bonusTotal);
       h += `<div class="management-item">
@@ -698,16 +820,16 @@ function loadChat(){
     s.forEach(c=>{
       const m = c.val();
       const isMine = m.user === App.user.name;
-      const avatarHtml = createAvatarHTML(m.user, m.role, m.avatar || '');
+      const avatarHtml = `<div id="chat_avatar_${c.key}" style="width:32px;height:32px;flex-shrink:0;"></div>`;
       const time = m.timestamp ? new Date(m.timestamp).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'}) : '';
       let content = '';
       if(m.text) content += esc(m.text);
       if(m.sticker) content += `<img class="chat-sticker" src="${esc(m.sticker)}">`;
       if(m.photo) content += `<br><img class="chat-img" src="${esc(m.photo)}" onclick="document.getElementById('photoViewerImg').src='${esc(m.photo)}';document.getElementById('photoViewer').style.display='flex';">`;
-      h += `<div class="chat-message-row" style="${isMine ? 'flex-direction:row-reverse;' : ''}">
+      h += `<div class="chat-message-row ${isMine ? 'own' : ''}">
         ${avatarHtml}
-        <div class="chat-message-content" style="${isMine ? 'text-align:right;' : ''}">
-          <div class="chat-message-header" style="${isMine ? 'justify-content:flex-end;' : ''}">
+        <div class="chat-message-content">
+          <div class="chat-message-header ${isMine ? 'own' : ''}">
             <span class="name" style="color:${stringToColor(m.user)}">${esc(m.user)}</span>
             <span class="time">${time}</span>
           </div>
@@ -717,6 +839,16 @@ function loadChat(){
     });
     $('#chat').innerHTML = h || '<p style="color:var(--muted);text-align:center;padding:20px;font-size:13px;">Нет сообщений</p>';
     $('#chat').scrollTop = $('#chat').scrollHeight;
+    
+    // Рендерим аватарки в сообщениях
+    s.forEach(c=>{
+      const m = c.val();
+      const containerId = 'chat_avatar_' + c.key;
+      const container = document.getElementById(containerId);
+      if(container){
+        renderAvatarWithFrame(containerId, m.user, m.role, m.avatar || '', 32);
+      }
+    });
   });
 }
 function toggleChat(){
@@ -731,7 +863,6 @@ function sendMsg(){
   const t = $('#chatMsgInput').value.trim(); if(!t) return;
   const ref = App.privateChatWith ? DB.ref('privateChats/'+[App.uid, App.privateChatWith].sort().join('_')) : DB.ref('chat');
   const msgData = {user:App.user.name, text:t, timestamp:Date.now(), role:App.user.role, avatar:App.user.avatar||''};
-  // Упоминания
   const mentions = t.match(/@(\S+)/g);
   if(mentions){
     DB.ref('users').once('value').then(s=>{
@@ -781,7 +912,7 @@ function buildCarousel(){
 }
 function openMini(uid){
   const d = App.allUserData[uid]; if(!d) return;
-  $('#mpAvatarContainer').innerHTML = createAvatarHTML(d.name, d.role, d.avatar || '');
+  renderAvatarWithFrame('mpAvatarWrap', d.name, d.role, d.avatar||'', 44);
   $('#mpName').textContent = d.name;
   $('#mpStatus').textContent = d.role === 'god' ? '👑 Начальник' : d.role === 'creator' ? '🌌 Создатель' : '📦 Сотрудник';
   $('#mpStatus').style.background = d.role === 'god' ? 'rgba(255,215,0,0.3)' : d.role === 'creator' ? 'rgba(124,58,237,0.3)' : 'rgba(34,197,94,0.2)';
@@ -806,15 +937,19 @@ function switchGlobalChat(){
 
 // ====== НАСТРОЙКИ ======
 function openSettings(){
-  $('#mainContent').style.display='none'; $('#avatarCarousel').style.display='none'; $('#settingsPanel').style.display='flex';
-  $('#setVk').value = App.user.vkId||''; $('#setName').value='';
+  $('#mainContent').style.display = 'none';
+  $('#avatarCarousel').style.display = 'none';
+  $('#settingsPanel').style.display = 'flex';
+  $('#setVk').value = App.user.vkId||''; 
+  $('#setName').value = '';
   loadPunktsSettings();
-  // Превью аватара
-  const container = document.getElementById('previewAvatarContainer');
-  if(container) container.outerHTML = createAvatarHTML(App.user.name, App.user.role, App.user.avatar||'', 'big');
+  // Превью аватара с рамкой
+  renderAvatarWithFrame('previewAvatarWrap', App.user.name, App.user.role, App.user.avatar||'', 60);
 }
 function closeSettings(){
-  $('#settingsPanel').style.display='none'; $('#mainContent').style.display='flex'; $('#avatarCarousel').style.display='flex';
+  $('#settingsPanel').style.display = 'none';
+  $('#mainContent').style.display = 'flex';
+  $('#avatarCarousel').style.display = 'flex';
 }
 function loadPunktsSettings(){
   DB.ref('punkts').once('value').then(s=>{
@@ -923,8 +1058,7 @@ document.addEventListener('DOMContentLoaded', function(){
         canvas.width=w; canvas.height=h;
         canvas.getContext('2d').drawImage(img,0,0,w,h);
         App.avatarFileData = canvas.toDataURL('image/jpeg',0.7);
-        const container = document.getElementById('previewAvatarContainer');
-        if(container) container.outerHTML = `<div class="avatar-container big"><img src="${App.avatarFileData}" class="avatar-image" alt="preview"></div>`;
+        renderAvatarWithFrame('previewAvatarWrap', App.user.name, App.user.role, App.avatarFileData, 60);
         toast('✅ Фото загружено, сохраните изменения');
       };
       img.src = ev.target.result;
