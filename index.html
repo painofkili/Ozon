@@ -24,7 +24,6 @@ button:active{transform:scale(0.95)}
 .btn-gold{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff;width:100%}
 .btn-blue{background:linear-gradient(135deg,#2196F3,#1565C0);color:#fff;width:100%}
 .btn-purple{background:#9C27B0;color:#fff}
-.btn-orange{background:#FF9800;color:#fff}
 .btn-sm{padding:6px 12px;font-size:12px;width:auto}
 .app-container{display:flex;width:100%;height:100vh;position:relative;z-index:1;justify-content:center;overflow:hidden}
 .main-content{width:100%;max-width:720px;padding:12px 16px;display:flex;flex-direction:column;padding-bottom:80px;height:100%;gap:6px}
@@ -46,7 +45,6 @@ button:active{transform:scale(0.95)}
 .tab-content.active-tab{display:block}
 .chat-section{background:var(--bg2);border:1px solid var(--border);border-radius:16px;display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;margin:0}
 .chat-header-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.2);cursor:pointer;flex-shrink:0}
-.chat-header-bar:hover{background:rgba(0,0,0,0.3)}
 #chat{flex:1;overflow-y:auto;padding:10px 14px;scrollbar-width:thin;scrollbar-color:var(--accent) transparent;background:transparent;display:flex;flex-direction:column;gap:2px}
 #chat.hidden{display:none}
 .chat-bubble-group{display:flex;flex-direction:column;max-width:85%;position:relative;margin:1px 0}
@@ -106,25 +104,13 @@ button:active{transform:scale(0.95)}
 .calendar .header{font-weight:bold;background:rgba(51,51,51,0.7)}
 .worker-row{display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid var(--border);gap:6px;flex-wrap:wrap}
 .worker-row button{width:auto;padding:4px 10px;font-size:11px}
-.creator-row{background:rgba(245,197,24,0.1);border-left:3px solid var(--gold)}
-.shift-edit-row{display:flex;gap:4px;align-items:center;margin:4px 0;flex-wrap:wrap}
-.shift-edit-row input{flex:1;padding:6px 8px;font-size:12px;min-width:40px}
-.shift-edit-row button{width:auto;padding:4px 10px;font-size:11px}
-.punish-row{display:flex;justify-content:space-between;align-items:center;padding:6px;font-size:13px;border-bottom:1px solid var(--border)}
-.punish-row button{width:auto;padding:4px 8px;font-size:10px}
 .zp-result{background:rgba(34,197,94,0.1);padding:12px;border-radius:8px;margin-top:8px;font-size:14px;border:1px solid rgba(34,197,94,0.3);white-space:pre-line}
-.status-badge{font-size:14px;font-weight:bold;padding:4px 12px;border-radius:12px;display:inline-block;margin:4px 0}
-.progress-bar{height:6px;background:#333;border-radius:3px;margin-top:4px;overflow:hidden}
-.progress-fill{height:100%;border-radius:3px;transition:width 0.5s}
-.progress-text{font-size:11px;color:var(--muted)}
 .settings-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:20px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;backdrop-filter:blur(20px)}
 #settingsPanel{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px}
 .settings-tab{flex:1;padding:8px;border-radius:10px;font-size:13px;background:transparent;color:var(--muted);border:none;cursor:pointer;transition:0.2s}
 .settings-tab.active{background:var(--accent);color:#fff}
 .style-btn{padding:8px 6px;border-radius:10px;border:2px solid #444;background:rgba(0,0,0,0.3);color:#ccc;font-size:11px;cursor:pointer;transition:0.2s;width:100%}
 .style-btn.active{border-color:var(--accent);background:rgba(124,58,237,0.2);color:#fff}
-#avatarAdvanced{display:block}
-#avatarSimple{display:none}
 .avatar-wrap{position:relative;width:76px;height:76px;flex-shrink:0}
 .avatar-wrap canvas{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:50%}
 .avatar-wrap .avatar-base{z-index:1}
@@ -136,6 +122,8 @@ button:active{transform:scale(0.95)}
 <body>
 <canvas id="bgCanvas"></canvas>
 <div id="toastContainer" class="toast-container"></div>
+
+<!-- Login Screen -->
 <div id="loginScreen" style="display:flex;align-items:center;justify-content:center;height:100vh;padding:20px;">
   <div style="max-width:380px;width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:32px;backdrop-filter:blur(20px);display:flex;flex-direction:column;gap:14px;">
     <div style="text-align:center;font-size:24px;font-weight:800;background:linear-gradient(135deg,#f5c518,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Ozon Hub</div>
@@ -144,41 +132,47 @@ button:active{transform:scale(0.95)}
       <button id="tabRegister" style="flex:1;padding:10px;border:none;border-radius:10px;background:transparent;font-size:15px;font-weight:600;color:#6a7a94;">Регистрация</button>
     </div>
     <div id="loginFields" style="display:flex;flex-direction:column;gap:12px;">
-      <input id="loginEmail" type="email" placeholder="Email">
-      <input id="loginPass" type="password" placeholder="Пароль">
+      <input id="loginEmail" type="email" placeholder="Email" autocomplete="email">
+      <input id="loginPass" type="password" placeholder="Пароль" autocomplete="current-password">
       <button class="btn-gold" id="loginBtn">Войти</button>
       <button class="btn-gray" id="resetPassBtn" style="width:100%;padding:10px;font-size:13px;background:transparent;border:1px solid var(--border);">Забыли пароль?</button>
     </div>
     <div id="registerFields" style="display:none;flex-direction:column;gap:12px;">
-      <input id="regName" placeholder="Имя">
-      <input id="regEmail" type="email" placeholder="Email">
-      <input id="regPass" type="password" placeholder="Пароль (мин. 6 символов)">
+      <input id="regName" placeholder="Имя" autocomplete="name">
+      <input id="regEmail" type="email" placeholder="Email" autocomplete="email">
+      <input id="regPass" type="password" placeholder="Пароль (мин. 4 символа)" autocomplete="new-password">
       <select id="regPunkt"><option value="">Выберите пункт</option></select>
       <button class="btn-gold" id="registerBtn">Зарегистрироваться</button>
     </div>
     <div id="authError" style="color:var(--red);font-size:13px;text-align:center;display:none;"></div>
   </div>
 </div>
+
+<!-- Main App -->
 <div id="app" class="app-container" style="display:none">
   <button class="btn-sidebar-toggle" id="sidebarToggleBtn">👥</button>
+  
   <div class="main-content" id="mainContent">
     <div id="announceBlock" style="display:none;background:rgba(200,150,0,0.1);border:1px solid rgba(200,150,0,0.3);padding:12px 16px;border-radius:16px;text-align:center;font-size:14px;color:#ffd700;margin-bottom:4px;"></div>
-    <div id="thoughtBlock" style="display:none;background:linear-gradient(135deg,rgba(124,58,237,0.1),rgba(0,212,255,0.05));border:1px solid rgba(124,58,237,0.3);padding:14px 16px;border-radius:16px;text-align:center;font-size:14px;color:#e0e0ff;margin-bottom:4px;position:relative;"></div>
+    
     <div class="profile-card">
       <div class="avatar-wrap">
         <canvas id="profileAvatarCanvas" class="avatar-base" width="76" height="76"></canvas>
         <canvas id="profileFrameCanvas" class="avatar-frame" width="76" height="76"></canvas>
       </div>
       <div style="flex:1">
-        <b id="creatorNameWrapper" class="name-creator" style="font-size:18px;"><span id="uname"></span></b> 
+        <b id="creatorNameWrapper" class="name-creator" style="font-size:18px;"><span id="uname"></span></b>
         <span id="roleBadge" class="badge badge-creator">Создатель</span><br>
         <span style="font-size:12px;color:#aaa;">Пункт <span id="upunkt"></span></span>
       </div>
       <button class="btn-gray" id="settingsBtn" style="width:auto;padding:8px 14px;font-size:13px;">⚙️</button>
     </div>
+    
     <div class="tabs" id="tabsContainer"></div>
     <div id="tabContentContainer" style="flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;padding-bottom:6px;"></div>
+    
     <div id="pinnedMessage" style="display:none;padding:10px 16px;margin-bottom:4px;border-radius:16px;background:rgba(245,197,24,0.05);border:1px solid rgba(245,197,24,0.2);font-size:13px;"></div>
+    
     <div class="chat-section">
       <div class="chat-header-bar" id="chatHeader">
         <span style="font-size:18px;">💬</span>
@@ -189,6 +183,7 @@ button:active{transform:scale(0.95)}
       <div id="chat"></div>
     </div>
   </div>
+  
   <div class="chat-input-bar" id="chatInputBar">
     <div class="input-wrapper">
       <input id="chatMsgInput" placeholder="Сообщение...">
@@ -198,14 +193,17 @@ button:active{transform:scale(0.95)}
     <input id="chatPhotoInput" type="file" accept="image/*" multiple style="display:none;">
     <button id="sendMsgBtn">➤</button>
   </div>
+  
   <div id="stickerPanel">
     <div id="stickerContent"></div>
     <div class="sticker-tabs" id="stickerTabs"></div>
   </div>
+  
   <div class="avatar-carousel" id="avatarCarousel">
     <button class="sidebar-close-btn" id="sidebarCloseBtn">✕</button>
     <div class="avatar-carousel-inner" id="carouselInner"></div>
   </div>
+  
   <div class="mini-profile" id="miniProfile">
     <button class="mp-close" id="mpCloseBtn">✕</button>
     <div id="mpAvatarContainer" style="position:relative;width:64px;height:64px;margin:0 auto;"></div>
@@ -215,6 +213,8 @@ button:active{transform:scale(0.95)}
     <button class="btn-gold" id="mpChatBtn" style="width:100%;padding:10px;margin-top:12px;font-size:13px;">Личный чат</button>
   </div>
 </div>
+
+<!-- Settings Panel -->
 <div id="settingsPanel">
   <div class="settings-card">
     <h3 style="text-align:center;margin-bottom:16px;">⚙️ Настройки</h3>
@@ -255,1950 +255,2180 @@ button:active{transform:scale(0.95)}
     </div>
   </div>
 </div>
+
+<!-- Sticker Manager Panel -->
+<div id="stickerManagerPanel" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px;">
+  <div class="settings-card">
+    <h3 style="text-align:center;margin-bottom:16px;">🎨 Стикер-менеджер</h3>
+    <div id="stickerManagerContent"></div>
+    <button class="btn-gray" onclick="document.getElementById('stickerManagerPanel').style.display='none'" style="margin-top:12px;">Закрыть</button>
+  </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
 <script>
-(function(){
-'use strict';
-
-// Firebase config
-firebase.initializeApp({
-  apiKey:"AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",
-  authDomain:"ozon-grafik-4ad9f.firebaseapp.com",
-  databaseURL:"https://ozon-grafik-4ad9f-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId:"ozon-grafik-4ad9f",
-  storageBucket:"ozon-grafik-4ad9f.firebasestorage.app",
-  messagingSenderId:"798009068634",
-  appId:"1:798009068634:web:4b70eea3cce6c96f4f5c63"
-});
-
-const DB = firebase.database();
-const AUTH = firebase.auth();
-
-// ---------- App State ----------
-const App = {
-  user: null,
-  onShift: false,
-  shiftTimer: null,
-  allShifts: [],
-  allUsers: {},
-  allUserData: {},
-  activeShifts: {},
-  unreadCount: 0,
-  chatOpened: true,
-  lastChatTimestamp: 0,
-  selectedProfile: null,
-  privateChatWith: null,
-  calYear: null,
-  calMonth: null,
-  avatarSettings: {
-    style: 'neutron',
-    speed: 1,
-    glow: 20,
-    color1: '#6366f1',
-    color2: '#a855f7',
-    ringColor: '#7c3aed',
-    ringThickness: 'medium'
-  },
-  avatarImageData: null,
-  chatListener: null,
-  notifiedKeys: {},
-  bgAnimId: null,
-  avatarAnimId: null,
-  isCreator: false,
-  isGod: false,
-  stickerPacks: {},
-  currentStickerTab: 'emoji'
-};
-
-const BASE_EMOJIS = ['😊','😉','😘','❤️','🤘','😓','💀','💪','🫠','😂','🤣','😆','😎','🗿','🤷','🤔','😏','🙏','😭','☕️','😴','🤬','👍','👎'];
-const activeListeners = [];
-
-// ---------- Utilities ----------
-function $(s) { return document.querySelector(s); }
-function $$(s) { return document.querySelectorAll(s); }
-
-function escapeHtml(str) {
-  if (!str) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-function toast(message, isError = false) {
-  const container = $('#toastContainer');
-  const el = document.createElement('div');
-  el.className = 'toast-msg' + (isError ? ' error' : '');
-  el.textContent = message;
-  container.appendChild(el);
-  setTimeout(() => el.classList.add('show'), 10);
-  setTimeout(() => {
-    el.classList.remove('show');
-    setTimeout(() => el.remove(), 300);
-  }, 3000);
-}
-
-function formatDate(timestamp) {
-  const d = new Date(timestamp);
-  return d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear();
-}
-
-function secToHMS(sec) {
-  const h = Math.floor(sec / 3600);
-  const m = Math.floor((sec % 3600) / 60);
-  const s = sec % 60;
-  return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
-}
-
-function attachDbListener(ref, event, callback) {
-  ref.on(event, callback);
-  activeListeners.push({ ref, event, callback });
-}
-
-function clearAllListeners() {
-  activeListeners.forEach(l => l.ref.off(l.event, l.callback));
-  activeListeners.length = 0;
-  if (App.chatListener) {
-    App.chatListener.off();
-    App.chatListener = null;
-  }
-}
-
-// ---------- Background Canvas ----------
 (function() {
-  const canvas = $('#bgCanvas');
-  const gl = canvas.getContext('webgl');
-  if (!gl) return;
+  'use strict';
 
-  function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    gl.viewport(0, 0, canvas.width, canvas.height);
+  // ============ Firebase Init ============
+  const firebaseConfig = {
+    apiKey: "AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",
+    authDomain: "ozon-grafik-4ad9f.firebaseapp.com",
+    databaseURL: "https://ozon-grafik-4ad9f-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "ozon-grafik-4ad9f",
+    storageBucket: "ozon-grafik-4ad9f.firebasestorage.app",
+    messagingSenderId: "798009068634",
+    appId: "1:798009068634:web:4b70eea3cce6c96f4f5c63"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const DB = firebase.database();
+  const AUTH = firebase.auth();
+
+  // ============ Globals ============
+  const App = {
+    user: null,
+    onShift: false,
+    shiftTimer: null,
+    allUserData: {},
+    activeShifts: {},
+    unreadCount: 0,
+    chatOpened: true,
+    lastChatTimestamp: 0,
+    selectedProfile: null,
+    privateChatWith: null,
+    calYear: null,
+    calMonth: null,
+    avatarSettings: {
+      style: 'neutron',
+      speed: 1,
+      glow: 20,
+      color1: '#6366f1',
+      color2: '#a855f7',
+      ringColor: '#7c3aed',
+      ringThickness: 'medium'
+    },
+    avatarImageData: null,
+    chatListener: null,
+    notifiedKeys: {},
+    bgAnimId: null,
+    avatarAnimId: null,
+    isCreator: false,
+    isGod: false,
+    stickerPacks: {},
+    currentStickerTab: 'emoji',
+    activeListeners: []
+  };
+
+  const BASE_EMOJIS = ['😊','😉','😘','❤️','🤘','😓','💀','💪','🫠','😂','🤣','😆','😎','🗿','🤷','🤔','😏','🙏','😭','☕️','😴','🤬','👍','👎'];
+
+  // ============ Utility Functions ============
+  function $(selector) { return document.querySelector(selector); }
+  function $$(selector) { return document.querySelectorAll(selector); }
+
+  function esc(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
   }
-  window.addEventListener('resize', resize);
-  resize();
 
-  const vertexShader = 'attribute vec2 a_position; void main() { gl_Position = vec4(a_position, 0.0, 1.0); }';
-  const fragmentShader = `
-    precision highp float;
-    uniform vec2 u_resolution;
-    uniform float u_time;
-    void main() {
-      vec2 uv = gl_FragCoord.xy / u_resolution.xy;
-      vec2 p = uv * 2.0 - 1.0;
-      p.x *= u_resolution.x / u_resolution.y;
-      float time = u_time * 0.7;
-      float wave = sin(p.y * 2.5 + time) * 0.4 + cos(p.y * 6.0 - time * 0.8) * 0.2 + sin(p.y * 12.0 + time * 1.2) * 0.1;
-      vec2 wp = p;
-      wp.x -= wave;
-      float dist = length(wp * vec2(0.9, 1.2));
-      vec3 cb = vec3(0.0, 0.63, 1.0), cp = vec3(1.0, 0.0, 0.45), cpurp = vec3(0.75, 0.0, 1.0);
-      float blob = smoothstep(1.1, 0.2, dist);
-      float edge = smoothstep(1.3, 0.6, dist) - smoothstep(0.7, 0.2, dist);
-      vec3 fc = mix(cb, cp, blob);
-      fc = mix(fc, cpurp, edge * 0.7);
-      float ds = sin(gl_FragCoord.x / 1.5) * sin(gl_FragCoord.y / 1.5);
-      ds = ds * 0.5 + 0.5;
-      fc = mix(fc, fc * ds, 0.18);
-      float vig = 1.0 - smoothstep(0.6, 1.8, length(p * vec2(0.5, 1.0)));
-      fc *= vig;
-      gl_FragColor = vec4(fc, 1.0);
+  function toast(msg, isError) {
+    const container = $('#toastContainer');
+    const el = document.createElement('div');
+    el.className = 'toast-msg' + (isError ? ' error' : '');
+    el.textContent = msg;
+    container.appendChild(el);
+    requestAnimationFrame(() => el.classList.add('show'));
+    setTimeout(() => {
+      el.classList.remove('show');
+      setTimeout(() => el.remove(), 300);
+    }, 3000);
+  }
+
+  function fmtDate(t) {
+    const d = new Date(t);
+    return d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear();
+  }
+
+  function secToHMS(sec) {
+    const h = Math.floor(sec / 3600);
+    const m = Math.floor((sec % 3600) / 60);
+    const s = sec % 60;
+    return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  }
+
+  function attachDbListener(ref, event, callback) {
+    ref.on(event, callback);
+    App.activeListeners.push({ ref, event, callback });
+  }
+
+  function clearAllListeners() {
+    App.activeListeners.forEach(l => l.ref.off(l.event, l.callback));
+    App.activeListeners.length = 0;
+    if (App.chatListener) {
+      App.chatListener.off();
+      App.chatListener = null;
     }
-  `;
-
-  function compileShader(type, source) {
-    const shader = gl.createShader(type);
-    gl.shaderSource(shader, source);
-    gl.compileShader(shader);
-    return shader;
   }
 
-  const vs = compileShader(gl.VERTEX_SHADER, vertexShader);
-  const fs = compileShader(gl.FRAGMENT_SHADER, fragmentShader);
-  const program = gl.createProgram();
-  gl.attachShader(program, vs);
-  gl.attachShader(program, fs);
-  gl.linkProgram(program);
-  gl.useProgram(program);
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
 
-  const buffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]), gl.STATIC_DRAW);
+  // ============ Background Animation ============
+  function initBackground() {
+    const canvas = $('#bgCanvas');
+    const gl = canvas.getContext('webgl');
+    if (!gl) return;
 
-  const posLoc = gl.getAttribLocation(program, 'a_position');
-  gl.enableVertexAttribArray(posLoc);
-  gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
-
-  const resLoc = gl.getUniformLocation(program, 'u_resolution');
-  const timeLoc = gl.getUniformLocation(program, 'u_time');
-
-  function animate(timestamp) {
-    if (!document.hidden) {
-      gl.uniform2f(resLoc, canvas.width, canvas.height);
-      gl.uniform1f(timeLoc, timestamp * 0.001);
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      gl.viewport(0, 0, canvas.width, canvas.height);
     }
-    App.bgAnimId = requestAnimationFrame(animate);
+    window.addEventListener('resize', resize);
+    resize();
+
+    const vs = 'attribute vec2 a_position;void main(){gl_Position=vec4(a_position,0.0,1.0);}';
+    const fs = 'precision highp float;uniform vec2 u_resolution;uniform float u_time;void main(){vec2 uv=gl_FragCoord.xy/u_resolution.xy;vec2 p=uv*2.0-1.0;p.x*=u_resolution.x/u_resolution.y;float time=u_time*0.7;float wave=sin(p.y*2.5+time)*0.4+cos(p.y*6.0-time*0.8)*0.2+sin(p.y*12.0+time*1.2)*0.1;vec2 wp=p;wp.x-=wave;float dist=length(wp*vec2(0.9,1.2));vec3 cb=vec3(0.0,0.63,1.0),cp=vec3(1.0,0.0,0.45),cpurp=vec3(0.75,0.0,1.0);float blob=smoothstep(1.1,0.2,dist),edge=smoothstep(1.3,0.6,dist)-smoothstep(0.7,0.2,dist);vec3 fc=mix(cb,cp,blob);fc=mix(fc,cpurp,edge*0.7);float ds=sin(gl_FragCoord.x/1.5)*sin(gl_FragCoord.y/1.5);ds=ds*0.5+0.5;fc=mix(fc,fc*ds,0.18);float vig=1.0-smoothstep(0.6,1.8,length(p*vec2(0.5,1.0)));fc*=vig;gl_FragColor=vec4(fc,1.0);}';
+
+    function compileShader(type, source) {
+      const sh = gl.createShader(type);
+      gl.shaderSource(sh, source);
+      gl.compileShader(sh);
+      return sh;
+    }
+
+    const vShader = compileShader(gl.VERTEX_SHADER, vs);
+    const fShader = compileShader(gl.FRAGMENT_SHADER, fs);
+    const prog = gl.createProgram();
+    gl.attachShader(prog, vShader);
+    gl.attachShader(prog, fShader);
+    gl.linkProgram(prog);
+    gl.useProgram(prog);
+
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]), gl.STATIC_DRAW);
+    const posLoc = gl.getAttribLocation(prog, "a_position");
+    gl.enableVertexAttribArray(posLoc);
+    gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+    const resLoc = gl.getUniformLocation(prog, "u_resolution");
+    const timeLoc = gl.getUniformLocation(prog, "u_time");
+
+    function anim(ts) {
+      if (!document.hidden) {
+        gl.uniform2f(resLoc, canvas.width, canvas.height);
+        gl.uniform1f(timeLoc, ts * 0.001);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+      }
+      App.bgAnimId = requestAnimationFrame(anim);
+    }
+    anim(performance.now());
   }
-  animate(performance.now());
-})();
 
-// ---------- Auth ----------
-let isLoginMode = true;
+  // ============ Auth Logic ============
+  let isLoginMode = true;
 
-function toggleAuthMode() {
-  isLoginMode = !isLoginMode;
-  document.getElementById('loginFields').style.display = isLoginMode ? 'flex' : 'none';
-  document.getElementById('registerFields').style.display = isLoginMode ? 'none' : 'flex';
-  const tabLogin = document.getElementById('tabLogin');
-  const tabReg = document.getElementById('tabRegister');
-  tabLogin.style.background = isLoginMode ? '#7c3aed' : 'transparent';
-  tabLogin.style.color = isLoginMode ? '#fff' : '#6a7a94';
-  tabReg.style.background = isLoginMode ? 'transparent' : '#7c3aed';
-  tabReg.style.color = isLoginMode ? '#6a7a94' : '#fff';
-  document.getElementById('authError').style.display = 'none';
-}
-
-document.getElementById('tabLogin').addEventListener('click', toggleAuthMode);
-document.getElementById('tabRegister').addEventListener('click', toggleAuthMode);
-
-// Load punkts for registration
-DB.ref('punkts').once('value').then(snap => {
-  const sel = document.getElementById('regPunkt');
-  sel.innerHTML = '<option value="">Выберите пункт</option>';
-  snap.forEach(child => {
-    const data = child.val();
-    sel.innerHTML += `<option value="${child.key}">Пункт ${child.key} (${data.rate || 0}₽/ч)</option>`;
-  });
-});
-
-async function login() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const pass = document.getElementById('loginPass').value.trim();
-  const err = document.getElementById('authError');
-  if (!email || !pass) {
-    err.textContent = 'Заполните все поля';
-    err.style.display = 'block';
-    return;
+  function toggleAuth() {
+    isLoginMode = !isLoginMode;
+    $('#loginFields').style.display = isLoginMode ? 'flex' : 'none';
+    $('#registerFields').style.display = isLoginMode ? 'none' : 'flex';
+    $('#tabLogin').style.background = isLoginMode ? '#7c3aed' : 'transparent';
+    $('#tabLogin').style.color = isLoginMode ? '#fff' : '#6a7a94';
+    $('#tabRegister').style.background = isLoginMode ? 'transparent' : '#7c3aed';
+    $('#tabRegister').style.color = isLoginMode ? '#6a7a94' : '#fff';
+    $('#authError').style.display = 'none';
   }
-  try {
-    const cred = await AUTH.signInWithEmailAndPassword(email, pass);
-    const snap = await DB.ref('users/' + cred.user.uid).once('value');
-    if (!snap.exists()) {
-      err.textContent = 'Пользователь не найден';
-      err.style.display = 'block';
+
+  function loadPunktsForRegister() {
+    DB.ref('punkts').once('value').then(snap => {
+      const sel = $('#regPunkt');
+      sel.innerHTML = '<option value="">Выберите пункт</option>';
+      snap.forEach(child => {
+        const d = child.val();
+        sel.innerHTML += `<option value="${esc(child.key)}">Пункт ${esc(child.key)} (${d.rate || 0}₽/ч)</option>`;
+      });
+    });
+  }
+
+  async function login() {
+    const email = $('#loginEmail').value.trim();
+    const pass = $('#loginPass').value.trim();
+    const errEl = $('#authError');
+
+    if (!email || !pass) {
+      errEl.textContent = 'Заполните все поля';
+      errEl.style.display = 'block';
       return;
     }
-    App.user = snap.val();
-    App.user.uid = cred.user.uid;
-    finishLogin();
-  } catch (ex) {
-    err.textContent = ex.message;
-    err.style.display = 'block';
-  }
-}
 
-document.getElementById('loginBtn').addEventListener('click', login);
-document.getElementById('loginPass').addEventListener('keydown', e => {
-  if (e.key === 'Enter') login();
-});
-
-document.getElementById('resetPassBtn').addEventListener('click', async () => {
-  const email = document.getElementById('loginEmail').value.trim();
-  if (!email) {
-    toast('Введите email', true);
-    return;
-  }
-  try {
-    await AUTH.sendPasswordResetEmail(email);
-    toast('Ссылка для сброса отправлена на ' + email);
-  } catch (ex) {
-    toast(ex.message, true);
-  }
-});
-
-async function register() {
-  const name = document.getElementById('regName').value.trim();
-  const email = document.getElementById('regEmail').value.trim();
-  const pass = document.getElementById('regPass').value.trim();
-  const punkt = document.getElementById('regPunkt').value;
-  const err = document.getElementById('authError');
-
-  if (!name || !email || !pass || !punkt) {
-    err.textContent = 'Заполните все поля';
-    err.style.display = 'block';
-    return;
-  }
-  if (pass.length < 6) {
-    err.textContent = 'Пароль минимум 6 символов';
-    err.style.display = 'block';
-    return;
-  }
-  if (!email.includes('@') || !email.includes('.')) {
-    err.textContent = 'Введите корректный email';
-    err.style.display = 'block';
-    return;
-  }
-
-  try {
-    const cred = await AUTH.createUserWithEmailAndPassword(email, pass);
-    const role = 'manager';
-    await DB.ref('users/' + cred.user.uid).set({
-      name: name,
-      email: email,
-      role: role,
-      punkt: punkt,
-      avatar: '',
-      bonus: 0
-    });
-    App.user = { name, email, role, punkt, avatar: '', bonus: 0, uid: cred.user.uid };
-    finishLogin();
-  } catch (ex) {
-    err.textContent = ex.message;
-    err.style.display = 'block';
-  }
-}
-
-document.getElementById('registerBtn').addEventListener('click', register);
-document.getElementById('regPass').addEventListener('keydown', e => {
-  if (e.key === 'Enter') register();
-});
-
-function logout() {
-  if (!confirm('Выйти?')) return;
-  clearAllListeners();
-  if (App.shiftTimer) clearInterval(App.shiftTimer);
-  if (App.avatarAnimId) cancelAnimationFrame(App.avatarAnimId);
-  AUTH.signOut().then(() => {
-    localStorage.removeItem('ozon_user');
-    App.user = null;
-    App.chatOpened = false;
-    document.getElementById('app').style.display = 'none';
-    document.getElementById('loginScreen').style.display = 'flex';
-    document.body.className = '';
-  });
-}
-
-function finishLogin() {
-  App.isCreator = App.user.role === 'creator';
-  App.isGod = App.user.role === 'god';
-  localStorage.setItem('ozon_user', JSON.stringify({
-    uid: App.user.uid,
-    name: App.user.name,
-    role: App.user.role
-  }));
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('app').style.display = 'flex';
-  document.body.className = 'theme-' + App.user.role;
-  App.chatOpened = true;
-  App.lastChatTimestamp = Date.now();
-  updateUI();
-  renderTabs();
-  loadChat();
-  loadPinned();
-  loadAnnounce();
-  loadThought();
-  setupDatabaseListeners();
-  loadAvatarSettings();
-  buildCarousel();
-  renderStickerUI();
-  DB.ref('activeShifts/' + App.user.uid).once('value').then(snap => {
-    if (snap.exists() && snap.val().active) App.onShift = true;
-  });
-  DB.ref('presence/' + App.user.uid).set({ online: true, ts: Date.now() });
-}
-
-AUTH.onAuthStateChanged(async user => {
-  if (user && !App.user) {
-    const snap = await DB.ref('users/' + user.uid).once('value');
-    if (snap.exists()) {
+    try {
+      const cred = await AUTH.signInWithEmailAndPassword(email, pass);
+      const snap = await DB.ref('users/' + cred.user.uid).once('value');
+      if (!snap.exists()) {
+        errEl.textContent = 'Пользователь не найден';
+        errEl.style.display = 'block';
+        return;
+      }
       App.user = snap.val();
-      App.user.uid = user.uid;
+      App.user.uid = cred.user.uid;
       finishLogin();
+    } catch (ex) {
+      errEl.textContent = ex.message;
+      errEl.style.display = 'block';
     }
   }
-});
 
-// ---------- UI Updates ----------
-function updateUI() {
-  document.getElementById('uname').textContent = App.user.name;
-  document.getElementById('upunkt').textContent = App.user.punkt || '—';
-  const badge = document.getElementById('roleBadge');
-  const nameWrapper = document.getElementById('creatorNameWrapper');
-  if (App.user.role === 'god') {
-    badge.className = 'badge badge-god';
-    badge.textContent = 'Начальник';
-    nameWrapper.className = 'name-god';
-  } else if (App.user.role === 'creator') {
-    badge.className = 'badge badge-creator';
-    badge.textContent = 'Создатель';
-    nameWrapper.className = 'name-creator';
-  } else {
-    badge.className = 'badge badge-manager';
-    badge.textContent = 'Сотрудник';
-    nameWrapper.className = 'name-manager';
-  }
-}
+  async function register() {
+    const name = $('#regName').value.trim();
+    const email = $('#regEmail').value.trim();
+    const pass = $('#regPass').value.trim();
+    const punkt = $('#regPunkt').value;
+    const errEl = $('#authError');
 
-// ---------- Tabs ----------
-function renderTabs() {
-  let config;
-  if (App.isCreator) {
-    config = [
-      { id: 'shift', icon: '🔵', label: 'Смена' },
-      { id: 'stats', icon: '📊', label: 'Стат' },
-      { id: 'history', icon: '💳', label: 'Выплаты' },
-      { id: 'board', icon: '🏆', label: 'Доска' },
-      { id: 'power', icon: '⚡', label: 'Сила' }
-    ];
-  } else if (App.isGod) {
-    config = [
-      { id: 'shift', icon: '🔵', label: 'Смена' },
-      { id: 'stats', icon: '📊', label: 'Стат' },
-      { id: 'workers', icon: '👥', label: 'Сотрудники' },
-      { id: 'salary', icon: '💰', label: 'Расчёт ЗП' },
-      { id: 'announce', icon: '📢', label: 'Объявления' },
-      { id: 'board', icon: '🏆', label: 'Доска' }
-    ];
-  } else {
-    config = [
-      { id: 'shift', icon: '🔵', label: 'Смена' },
-      { id: 'stats', icon: '📊', label: 'Стат' },
-      { id: 'history', icon: '💳', label: 'Выплаты' },
-      { id: 'board', icon: '🏆', label: 'Доска' }
-    ];
+    if (!name || !email || !pass || !punkt) {
+      errEl.textContent = 'Заполните все поля';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    if (pass.length < 4) {
+      errEl.textContent = 'Пароль минимум 4 символа';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      errEl.textContent = 'Некорректный email';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    try {
+      const cred = await AUTH.createUserWithEmailAndPassword(email, pass);
+      const role = 'manager';
+      await DB.ref('users/' + cred.user.uid).set({
+        name, email, role, punkt, avatar: '', vkId: '', bonus: 0
+      });
+      App.user = { name, email, role, punkt, avatar: '', vkId: '', bonus: 0, uid: cred.user.uid };
+      finishLogin();
+    } catch (ex) {
+      errEl.textContent = ex.message;
+      errEl.style.display = 'block';
+    }
   }
 
-  const tabsContainer = document.getElementById('tabsContainer');
-  tabsContainer.innerHTML = config.map((t, i) =>
-    `<button id="tab_${t.id}" class="${i === 0 ? 'active' : ''}" data-tab="${t.id}">${t.icon} <span class="tab-label">${t.label}</span></button>`
-  ).join('');
+  async function resetPassword() {
+    const email = $('#loginEmail').value.trim();
+    if (!email) {
+      toast('Введите email', true);
+      return;
+    }
+    try {
+      await AUTH.sendPasswordResetEmail(email);
+      toast('📧 Ссылка для сброса отправлена на ' + email);
+    } catch (ex) {
+      toast(ex.message, true);
+    }
+  }
 
-  const contentContainer = document.getElementById('tabContentContainer');
-  contentContainer.innerHTML = config.map((t, i) =>
-    `<div id="panel_${t.id}" class="tab-content${i === 0 ? ' active-tab' : ''}"></div>`
-  ).join('');
+  function logout() {
+    if (!confirm('Выйти?')) return;
+    clearAllListeners();
+    if (App.shiftTimer) clearInterval(App.shiftTimer);
+    if (App.avatarAnimId) cancelAnimationFrame(App.avatarAnimId);
+    if (App.bgAnimId) cancelAnimationFrame(App.bgAnimId);
 
-  if (config.length) renderTab(config[0].id);
+    DB.ref('presence/' + App.user.uid).remove();
 
-  tabsContainer.querySelectorAll('button').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const id = this.dataset.tab;
-      document.querySelectorAll('#tabsContainer button').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('#tabContentContainer .tab-content').forEach(p => p.classList.remove('active-tab'));
-      this.classList.add('active');
-      document.getElementById('panel_' + id).classList.add('active-tab');
-      renderTab(id);
+    AUTH.signOut().then(() => {
+      localStorage.removeItem('ozon_user');
+      App.user = null;
+      App.chatOpened = false;
+      $('#app').style.display = 'none';
+      $('#loginScreen').style.display = 'flex';
+      document.body.className = '';
     });
-  });
-}
-
-function renderTab(id) {
-  const panel = document.getElementById('panel_' + id);
-  if (!panel) return;
-  panel.innerHTML = '';
-  switch (id) {
-    case 'shift': renderShift(panel); break;
-    case 'stats': renderStats(panel); break;
-    case 'history': renderHistory(panel); break;
-    case 'board': renderBoard(panel); break;
-    case 'power': renderPower(panel); break;
-    case 'workers': renderWorkers(panel); break;
-    case 'salary': renderSalary(panel); break;
-    case 'announce': renderAnnounce(panel); break;
   }
-}
 
-// ---------- Shift ----------
-function renderShift(panel) {
-  panel.innerHTML = `
-    <div class="card"><div id="shiftContent">Загрузка...</div></div>
-    <button class="btn-gray" id="shiftLogoutBtn" style="margin-top:8px;width:100%;">Выйти</button>
-  `;
-  document.getElementById('shiftLogoutBtn').addEventListener('click', () => {
-    if (confirm('Выйти?')) logout();
-  });
-  loadShift();
-}
+  function finishLogin() {
+    App.isCreator = App.user.role === 'creator';
+    App.isGod = App.user.role === 'god';
 
-function loadShift() {
-  const el = document.getElementById('shiftContent');
-  if (!el) return;
-  DB.ref('activeShifts/' + App.user.uid).once('value').then(snap => {
-    if (snap.exists() && snap.val().active) {
-      const st = snap.val().startTime;
-      el.innerHTML = `
-        <div style="text-align:center;">
-          <div>На смене с <b>${new Date(st).toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' })}</b></div>
-          <div style="font-size:28px;font-weight:800;color:var(--green);margin:4px 0;" id="shiftTimerDisplay">00:00:00</div>
-        </div>
-        <div style="display:flex;gap:8px;margin-top:10px;">
-          <input type="number" id="tovarCount" placeholder="Кол-во товаров" min="0" style="flex:1;">
-        </div>
-        <button class="btn-red" id="endShiftBtn" style="padding:16px;width:100%;margin-top:10px;">СО СМЕНЫ</button>
-      `;
-      document.getElementById('endShiftBtn').addEventListener('click', endShift);
-      startTimer(st);
+    localStorage.setItem('ozon_user', JSON.stringify({
+      uid: App.user.uid,
+      name: App.user.name,
+      role: App.user.role
+    }));
+
+    $('#loginScreen').style.display = 'none';
+    $('#app').style.display = 'flex';
+    document.body.className = 'theme-' + App.user.role;
+
+    App.chatOpened = true;
+    App.lastChatTimestamp = Date.now();
+
+    updateUI();
+    renderTabs();
+    loadChat();
+    loadPinned();
+    loadAnnounce();
+    setupDatabaseListeners();
+    loadAvatarSettings();
+    buildCarousel();
+    renderStickerUI();
+
+    DB.ref('activeShifts/' + App.user.uid).once('value').then(snap => {
+      if (snap.exists() && snap.val().active) {
+        App.onShift = true;
+      }
+    });
+
+    DB.ref('presence/' + App.user.uid).set({
+      online: true,
+      ts: Date.now()
+    });
+  }
+
+  // ============ UI Updates ============
+  function updateUI() {
+    $('#uname').textContent = App.user.name;
+    $('#upunkt').textContent = App.user.punkt || '—';
+
+    const badge = $('#roleBadge');
+    const nameWrapper = $('#creatorNameWrapper');
+
+    if (App.user.role === 'god') {
+      badge.className = 'badge badge-god';
+      badge.textContent = 'Начальник';
+      nameWrapper.className = 'name-god';
+    } else if (App.user.role === 'creator') {
+      badge.className = 'badge badge-creator';
+      badge.textContent = 'Создатель';
+      nameWrapper.className = 'name-creator';
     } else {
-      el.innerHTML = `
-        <p style="color:var(--muted);margin-bottom:12px;">Вы не на смене</p>
-        <button class="btn-green" id="startShiftBtn" style="padding:16px;width:100%;">НА СМЕНУ</button>
-      `;
-      document.getElementById('startShiftBtn').addEventListener('click', startShift);
+      badge.className = 'badge badge-manager';
+      badge.textContent = 'Сотрудник';
+      nameWrapper.className = 'name-manager';
     }
-  });
-}
+  }
 
-function startTimer(startTime) {
-  if (App.shiftTimer) clearInterval(App.shiftTimer);
-  const display = document.getElementById('shiftTimerDisplay');
-  App.shiftTimer = setInterval(() => {
-    const elapsed = Math.floor((Date.now() - startTime) / 1000);
-    if (display) display.textContent = secToHMS(elapsed);
-  }, 1000);
-}
+  // ============ Tabs ============
+  function getTabConfig() {
+    if (App.isCreator) {
+      return [
+        { id: 'shift', icon: '🔵', label: 'Смена' },
+        { id: 'stats', icon: '📊', label: 'Стат' },
+        { id: 'history', icon: '💳', label: 'Выплаты' },
+        { id: 'board', icon: '🏆', label: 'Доска' },
+        { id: 'power', icon: '⚡', label: 'Сила' },
+        { id: 'stickers', icon: '🎨', label: 'Стикеры' }
+      ];
+    } else if (App.isGod) {
+      return [
+        { id: 'shift', icon: '🔵', label: 'Смена' },
+        { id: 'stats', icon: '📊', label: 'Стат' },
+        { id: 'workers', icon: '👥', label: 'Сотрудники' },
+        { id: 'salary', icon: '💰', label: 'Расчёт ЗП' },
+        { id: 'announce', icon: '📢', label: 'Объявления' },
+        { id: 'board', icon: '🏆', label: 'Доска' }
+      ];
+    } else {
+      return [
+        { id: 'shift', icon: '🔵', label: 'Смена' },
+        { id: 'stats', icon: '📊', label: 'Стат' },
+        { id: 'history', icon: '💳', label: 'Выплаты' },
+        { id: 'board', icon: '🏆', label: 'Доска' }
+      ];
+    }
+  }
 
-function startShift() {
-  DB.ref('activeShifts/' + App.user.uid).set({
-    active: true,
-    startTime: Date.now(),
-    punkt: App.user.punkt
-  }).then(() => {
-    const prefix = App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '');
-    DB.ref('chat').push({
-      user: prefix + App.user.name,
-      text: '🔵 Пункт ' + App.user.punkt + ' на смене!',
-      timestamp: Date.now()
+  function renderTabs() {
+    const cfg = getTabConfig();
+    const tabsContainer = $('#tabsContainer');
+    const contentContainer = $('#tabContentContainer');
+
+    tabsContainer.innerHTML = cfg.map((t, i) =>
+      `<button id="tab_${t.id}" class="${i === 0 ? 'active' : ''}" data-tab="${t.id}">${t.icon} <span class="tab-label">${esc(t.label)}</span></button>`
+    ).join('');
+
+    contentContainer.innerHTML = cfg.map((t, i) =>
+      `<div id="panel_${t.id}" class="tab-content${i === 0 ? ' active-tab' : ''}"></div>`
+    ).join('');
+
+    if (cfg.length) renderTab(cfg[0].id);
+
+    tabsContainer.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const id = this.dataset.tab;
+        $$('#tabsContainer button').forEach(b => b.classList.remove('active'));
+        $$('#tabContentContainer .tab-content').forEach(p => p.classList.remove('active-tab'));
+        this.classList.add('active');
+        const panel = document.getElementById('panel_' + id);
+        if (panel) panel.classList.add('active-tab');
+        renderTab(id);
+      });
+    });
+  }
+
+  function renderTab(id) {
+    const panel = document.getElementById('panel_' + id);
+    if (!panel) return;
+    panel.innerHTML = '';
+
+    switch (id) {
+      case 'shift': renderShift(panel); break;
+      case 'stats': renderStats(panel); break;
+      case 'history': renderHistory(panel); break;
+      case 'board': renderBoard(panel); break;
+      case 'power': renderPower(panel); break;
+      case 'stickers': renderStickerManager(panel); break;
+      case 'workers': renderWorkers(panel); break;
+      case 'salary': renderSalary(panel); break;
+      case 'announce': renderAnnounce(panel); break;
+    }
+  }
+
+  // ============ Shift ============
+  function renderShift(panel) {
+    panel.innerHTML = `
+      <div class="card">
+        <div id="shiftContent">Загрузка...</div>
+      </div>
+      <button class="btn-gray" id="shiftLogoutBtn" style="margin-top:8px;width:100%;">Выйти</button>
+    `;
+    $('#shiftLogoutBtn').addEventListener('click', () => {
+      if (confirm('Выйти?')) logout();
     });
     loadShift();
-    toast('Смена начата!');
-  });
-}
+  }
 
-function endShift() {
-  const tovar = parseInt(document.getElementById('tovarCount')?.value) || 0;
-  DB.ref('activeShifts/' + App.user.uid).once('value').then(snap => {
-    if (!snap.exists()) return;
-    const startTime = snap.val().startTime;
-    const hours = Math.round((Date.now() - startTime) / 3600000 * 100) / 100;
-    const id = App.user.uid + '_' + Date.now();
-    DB.ref('shifts/' + id).set({
-      user: App.user.uid,
-      user_name: App.user.name,
-      punkt: App.user.punkt || 'Не указан',
-      date: new Date().toLocaleDateString('ru-RU'),
-      timeFrom: new Date(startTime).toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' }),
-      timeTo: new Date().toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' }),
-      hours: hours,
-      tovar: tovar,
-      paid: false,
-      timestamp: Date.now()
+  function loadShift() {
+    const el = $('#shiftContent');
+    if (!el) return;
+
+    DB.ref('activeShifts/' + App.user.uid).once('value').then(snap => {
+      if (snap.exists() && snap.val().active) {
+        const st = snap.val().startTime;
+        el.innerHTML = `
+          <div style="text-align:center;">
+            <div>На смене с <b>${new Date(st).toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' })}</b></div>
+            <div style="font-size:28px;font-weight:800;color:var(--green);margin:4px 0;" id="shiftTimerDisplay">00:00:00</div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px;">
+            <input type="number" id="tovarCount" placeholder="Кол-во товаров" min="0" style="flex:1;">
+          </div>
+          <button class="btn-red" id="endShiftBtn" style="padding:16px;width:100%;margin-top:10px;">ЗАВЕРШИТЬ СМЕНУ</button>
+        `;
+        $('#endShiftBtn').addEventListener('click', endShift);
+        startTimer(st);
+      } else {
+        el.innerHTML = `
+          <p style="color:var(--muted);margin-bottom:12px;">Вы не на смене</p>
+          <button class="btn-green" id="startShiftBtn" style="padding:16px;width:100%;">НА СМЕНУ</button>
+        `;
+        $('#startShiftBtn').addEventListener('click', startShift);
+      }
+    });
+  }
+
+  function startTimer(st) {
+    if (App.shiftTimer) clearInterval(App.shiftTimer);
+    const display = $('#shiftTimerDisplay');
+    App.shiftTimer = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - st) / 1000);
+      if (display) display.textContent = secToHMS(elapsed);
+    }, 1000);
+  }
+
+  function startShift() {
+    DB.ref('activeShifts/' + App.user.uid).set({
+      active: true,
+      startTime: Date.now(),
+      punct: App.user.punkt
     }).then(() => {
       const prefix = App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '');
       DB.ref('chat').push({
         user: prefix + App.user.name,
-        text: '🔴 Пункт ' + App.user.punkt + ' закончил, товаров: ' + tovar,
+        text: `🔵 Пункт ${App.user.punkt} на смене!`,
         timestamp: Date.now()
       });
-      DB.ref('activeShifts/' + App.user.uid).remove();
-      if (App.shiftTimer) clearInterval(App.shiftTimer);
       loadShift();
-      toast('Смена закрыта! ' + hours + 'ч, ' + tovar + ' товаров');
+      toast('Смена начата!');
     });
-  });
-}
+  }
 
-// ---------- Stats ----------
-function renderStats(panel) {
-  const now = new Date();
-  App.calYear = now.getFullYear();
-  App.calMonth = now.getMonth();
-  panel.innerHTML = `
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <button class="btn-gray" id="calPrev" style="width:auto;padding:6px 12px;">◀</button>
-        <div id="calTitle" style="font-size:14px;font-weight:700;"></div>
-        <button class="btn-gray" id="calNext" style="width:auto;padding:6px 12px;">▶</button>
+  function endShift() {
+    const tovarCount = parseInt($('#tovarCount')?.value) || 0;
+
+    DB.ref('activeShifts/' + App.user.uid).once('value').then(snap => {
+      if (!snap.exists()) return;
+      const st = snap.val().startTime;
+      const hours = Math.round((Date.now() - st) / 3600000 * 100) / 100;
+      const shiftId = App.user.uid + '_' + Date.now();
+
+      DB.ref('shifts/' + shiftId).set({
+        user: App.user.uid,
+        user_name: App.user.name,
+        punkt: App.user.punkt || 'Не указан',
+        date: new Date().toLocaleDateString('ru-RU'),
+        timeFrom: new Date(st).toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' }),
+        timeTo: new Date().toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' }),
+        hours,
+        tovar: tovarCount,
+        paid: false,
+        timestamp: Date.now()
+      }).then(() => {
+        const prefix = App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '');
+        DB.ref('chat').push({
+          user: prefix + App.user.name,
+          text: `🔴 Пункт ${App.user.punkt} закончил, товаров: ${tovarCount}`,
+          timestamp: Date.now()
+        });
+        DB.ref('activeShifts/' + App.user.uid).remove();
+        if (App.shiftTimer) clearInterval(App.shiftTimer);
+        App.onShift = false;
+        loadShift();
+        toast(`Смена завершена! ${hours}ч, ${tovarCount} товаров`);
+      });
+    });
+  }
+
+  // ============ Stats (Calendar) ============
+  function renderStats(panel) {
+    const now = new Date();
+    App.calYear = now.getFullYear();
+    App.calMonth = now.getMonth();
+
+    panel.innerHTML = `
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <button class="btn-gray" id="calPrev" style="width:auto;padding:6px 12px;">◀</button>
+          <div id="calTitle" style="font-size:14px;font-weight:700;"></div>
+          <button class="btn-gray" id="calNext" style="width:auto;padding:6px 12px;">▶</button>
+        </div>
+        <div id="calGrid" class="calendar"></div>
       </div>
-      <div id="calGrid" class="calendar"></div>
-    </div>
-    <div class="card">
-      <div>Смен: <b id="statShifts">0</b></div>
-      <div>Часов: <b id="statHours">0</b></div>
-      <div>Товаров: <b id="statTovar">0</b></div>
-    </div>
-    <button class="btn-red" id="clearShiftsBtn" style="width:100%;padding:12px;margin-top:10px;">Очистить мои смены</button>
-  `;
-  document.getElementById('calPrev').addEventListener('click', () => changeCal(-1));
-  document.getElementById('calNext').addEventListener('click', () => changeCal(1));
-  document.getElementById('clearShiftsBtn').addEventListener('click', clearShifts);
-  renderCal();
-}
-
-function renderCal() {
-  const months = ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
-  document.getElementById('calTitle').textContent = months[App.calMonth] + ' ' + App.calYear;
-  const userName = App.user.name;
-
-  DB.ref('shifts').once('value').then(snap => {
-    const shifts = {};
-    let totalShifts = 0, totalHours = 0, totalTovar = 0;
-
-    snap.forEach(child => {
-      const data = child.val();
-      if (data.user === App.user.uid || data.user_name === userName) {
-        const d = new Date(data.date || data.timestamp);
-        if (d.getFullYear() === App.calYear && d.getMonth() === App.calMonth) {
-          const day = d.getDate();
-          if (!shifts[day]) shifts[day] = { count: 0, hours: 0, tovar: 0 };
-          shifts[day].count++;
-          shifts[day].hours += data.hours || 0;
-          shifts[day].tovar += data.tovar || 0;
-        }
-      }
-    });
-
-    for (const k in shifts) {
-      totalShifts += shifts[k].count;
-      totalHours += shifts[k].hours;
-      totalTovar += shifts[k].tovar;
-    }
-
-    document.getElementById('statShifts').textContent = totalShifts;
-    document.getElementById('statHours').textContent = totalHours.toFixed(1);
-    document.getElementById('statTovar').textContent = totalTovar;
-
-    const firstDay = new Date(App.calYear, App.calMonth, 1).getDay();
-    const offset = (firstDay + 6) % 7;
-    const daysInMonth = new Date(App.calYear, App.calMonth + 1, 0).getDate();
-    const today = new Date();
-    const grid = document.getElementById('calGrid');
-
-    grid.innerHTML = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс']
-      .map(d => `<div class="header">${d}</div>`).join('');
-
-    for (let i = 0; i < offset; i++) grid.innerHTML += '<div></div>';
-
-    for (let d = 1; d <= daysInMonth; d++) {
-      const isToday = today.getDate() === d && today.getMonth() === App.calMonth && today.getFullYear() === App.calYear;
-      const hasShift = !!shifts[d];
-      grid.innerHTML += `<div class="${isToday ? 'today ' : ''}${hasShift ? 'shift-day' : ''}">${d}</div>`;
-    }
-  });
-}
-
-function changeCal(dir) {
-  App.calMonth += dir;
-  if (App.calMonth < 0) { App.calMonth = 11; App.calYear--; }
-  if (App.calMonth > 11) { App.calMonth = 0; App.calYear++; }
-  renderCal();
-}
-
-function clearShifts() {
-  if (!confirm('Очистить все смены?')) return;
-  DB.ref('shifts').orderByChild('user').equalTo(App.user.uid).once('value').then(snap => {
-    const promises = [];
-    snap.forEach(child => promises.push(DB.ref('shifts/' + child.key).remove()));
-    return Promise.all(promises);
-  }).then(() => {
-    toast('Очищено');
-    renderCal();
-  });
-}
-
-// ---------- History ----------
-function renderHistory(panel) {
-  panel.innerHTML = '<div class="card"><h4>💳 Выплаты</h4><div id="historyContent">Загрузка...</div></div>';
-  DB.ref('payments').orderByChild('user').equalTo(App.user.uid).once('value').then(snap => {
-    const items = [];
-    snap.forEach(child => items.push(child.val()));
-    items.sort((a, b) => b.timestamp - a.timestamp);
-    const el = document.getElementById('historyContent');
-    if (items.length) {
-      el.innerHTML = items.map(x =>
-        `<div style="padding:10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;">
-          <span>${formatDate(x.timestamp)}</span>
-          <span style="color:var(--green);font-weight:bold;">${x.total}₽</span>
-        </div>`
-      ).join('');
-    } else {
-      el.innerHTML = '<p style="color:var(--muted);">Нет выплат</p>';
-    }
-  });
-}
-
-// ---------- Board ----------
-function renderBoard(panel) {
-  panel.innerHTML = '<div class="card"><h4>🏆 Доска почёта</h4><div id="boardContent">Загрузка...</div></div>';
-  DB.ref('shifts').once('value').then(snap => {
-    const stats = {};
-    snap.forEach(child => {
-      const data = child.val();
-      if (!data.user) return;
-      const uid = data.user;
-      if (!stats[uid]) stats[uid] = { hours: 0, tovar: 0 };
-      stats[uid].hours += data.hours || 0;
-      stats[uid].tovar += data.tovar || 0;
-    });
-
-    const arr = [];
-    for (const uid in stats) {
-      const name = App.allUserData[uid]?.name || uid;
-      arr.push({ name, hours: stats[uid].hours, tovar: stats[uid].tovar });
-    }
-
-    // Top by hours
-    const byHours = [...arr].sort((a, b) => b.hours - a.hours);
-    let hoursHtml = '';
-    for (let i = 0; i < Math.min(byHours.length, 5); i++) {
-      const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '📌';
-      hoursHtml += `<div style="padding:6px;border-bottom:1px solid var(--border);">${medal} ${escapeHtml(byHours[i].name)} — <b>${byHours[i].hours.toFixed(1)}ч</b></div>`;
-    }
-
-    // Top by tovar
-    const byTovar = [...arr].sort((a, b) => b.tovar - a.tovar);
-    let tovarHtml = '';
-    for (let i = 0; i < Math.min(byTovar.length, 5); i++) {
-      const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '📌';
-      tovarHtml += `<div style="padding:6px;border-bottom:1px solid var(--border);">${medal} ${escapeHtml(byTovar[i].name)} — <b>${byTovar[i].tovar} шт</b></div>`;
-    }
-
-    const best = arr.length ?
-      `<div style="padding:6px;">🌟 ${escapeHtml(byHours[0]?.name || '')} — ${(byHours[0]?.hours || 0).toFixed(1)}ч / ${(byTovar[0]?.tovar || 0)} шт</div>` :
-      '<p style="color:var(--muted);">Нет данных</p>';
-
-    document.getElementById('boardContent').innerHTML = `
-      <div><b>⏱ Топ по часам</b>${hoursHtml}</div>
-      <div style="margin-top:12px;"><b>📦 Топ по товарам</b>${tovarHtml}</div>
-      <div style="margin-top:12px;"><b>🌟 Работник месяца</b>${best}</div>
+      <div class="card">
+        <div>Смен: <b id="statShifts">0</b></div>
+        <div>Часов: <b id="statHours">0</b></div>
+        <div>Товаров: <b id="statTovar">0</b></div>
+      </div>
+      <button class="btn-red" id="clearShiftsBtn" style="width:100%;padding:12px;margin-top:10px;">Очистить мои смены</button>
     `;
-  });
-}
 
-// ---------- Power (Creator only) ----------
-function renderPower(panel) {
-  if (!App.isCreator) return;
-  panel.innerHTML = `
-    <div class="card">
-      <h4>⚡ Управление ролями</h4>
-      <div id="powerList">Загрузка...</div>
-    </div>
-  `;
-  loadPower();
-}
+    $('#calPrev').addEventListener('click', () => changeCal(-1));
+    $('#calNext').addEventListener('click', () => changeCal(1));
+    $('#clearShiftsBtn').addEventListener('click', clearShifts);
+    renderCalendar();
+  }
 
-function loadPower() {
-  const el = document.getElementById('powerList');
-  if (!el) return;
-  DB.ref('users').once('value').then(snap => {
-    let html = '';
-    snap.forEach(child => {
-      const user = child.val();
-      const uid = child.key;
-      if (uid === App.user.uid) return;
-      html += `
-        <div class="worker-row">
-          <span>
-            <b>${escapeHtml(user.name)}</b>
-            <span style="font-size:11px;color:var(--muted);"> — ${user.role === 'god' ? '👑 Начальник' : user.role === 'creator' ? '🌌 Создатель' : '👤 Сотрудник'}</span>
-          </span>
-          ${user.role !== 'god' ? `<button class="btn-gold btn-sm power-promote" data-uid="${uid}" data-name="${escapeHtml(user.name)}">⬆ Повысить до начальника</button>` : ''}
-        </div>
+  function renderCalendar() {
+    const months = ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
+    $('#calTitle').textContent = months[App.calMonth] + ' ' + App.calYear;
+
+    DB.ref('shifts').once('value').then(snap => {
+      const shifts = {};
+      let totalShifts = 0, totalHours = 0, totalTovar = 0;
+
+      snap.forEach(child => {
+        const x = child.val();
+        if (x.user === App.user.uid || x.user_name === App.user.name) {
+          const d = new Date(x.date || x.timestamp);
+          if (d.getFullYear() === App.calYear && d.getMonth() === App.calMonth) {
+            const day = d.getDate();
+            if (!shifts[day]) shifts[day] = { count: 0, hours: 0, tovar: 0 };
+            shifts[day].count++;
+            shifts[day].hours += x.hours || 0;
+            shifts[day].tovar += x.tovar || 0;
+          }
+        }
+      });
+
+      for (const k in shifts) {
+        totalShifts += shifts[k].count;
+        totalHours += shifts[k].hours;
+        totalTovar += shifts[k].tovar;
+      }
+
+      $('#statShifts').textContent = totalShifts;
+      $('#statHours').textContent = totalHours.toFixed(1);
+      $('#statTovar').textContent = totalTovar;
+
+      const firstDay = new Date(App.calYear, App.calMonth, 1).getDay();
+      const offset = (firstDay + 6) % 7;
+      const daysInMonth = new Date(App.calYear, App.calMonth + 1, 0).getDate();
+      const today = new Date();
+      const grid = $('#calGrid');
+
+      let html = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(d => `<div class="header">${d}</div>`).join('');
+      for (let i = 0; i < offset; i++) html += '<div></div>';
+      for (let d = 1; d <= daysInMonth; d++) {
+        const isToday = today.getDate() === d && today.getMonth() === App.calMonth && today.getFullYear() === App.calYear;
+        const hasShift = !!shifts[d];
+        html += `<div class="${isToday ? 'today ' : ''}${hasShift ? 'shift-day' : ''}">${d}</div>`;
+      }
+      grid.innerHTML = html;
+    });
+  }
+
+  function changeCal(dir) {
+    App.calMonth += dir;
+    if (App.calMonth < 0) {
+      App.calMonth = 11;
+      App.calYear--;
+    }
+    if (App.calMonth > 11) {
+      App.calMonth = 0;
+      App.calYear++;
+    }
+    renderCalendar();
+  }
+
+  function clearShifts() {
+    if (!confirm('Очистить все смены?')) return;
+    DB.ref('shifts').orderByChild('user').equalTo(App.user.uid).once('value').then(snap => {
+      const promises = [];
+      snap.forEach(child => promises.push(DB.ref('shifts/' + child.key).remove()));
+      return Promise.all(promises);
+    }).then(() => {
+      toast('Смены очищены');
+      renderCalendar();
+    });
+  }
+
+  // ============ History ============
+  function renderHistory(panel) {
+    panel.innerHTML = '<div class="card"><h4>💳 Выплаты</h4><div id="historyContent">Загрузка...</div></div>';
+
+    DB.ref('payments').orderByChild('user').equalTo(App.user.uid).once('value').then(snap => {
+      const items = [];
+      snap.forEach(child => items.push(child.val()));
+      items.sort((a, b) => b.timestamp - a.timestamp);
+
+      const content = $('#historyContent');
+      content.innerHTML = items.length
+        ? items.map(x => `
+          <div style="padding:10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;">
+            <span>${fmtDate(x.timestamp)}</span>
+            <span style="color:var(--green);font-weight:bold;">${x.total}₽</span>
+          </div>
+        `).join('')
+        : '<p style="color:var(--muted);">Нет выплат</p>';
+    });
+  }
+
+  // ============ Board ============
+  function renderBoard(panel) {
+    panel.innerHTML = '<div class="card"><h4>🏆 Доска почёта</h4><div id="boardContent">Загрузка...</div></div>';
+
+    DB.ref('shifts').once('value').then(snap => {
+      const stats = {};
+      snap.forEach(child => {
+        const x = child.val();
+        if (!x.user) return;
+        const uid = x.user;
+        if (!stats[uid]) stats[uid] = { hours: 0, tovar: 0 };
+        stats[uid].hours += x.hours || 0;
+        stats[uid].tovar += x.tovar || 0;
+      });
+
+      const arr = [];
+      for (const uid in stats) {
+        const userName = App.allUserData[uid]?.name || uid;
+        arr.push({ name: userName, hours: stats[uid].hours, tovar: stats[uid].tovar });
+      }
+
+      arr.sort((a, b) => b.hours - a.hours);
+      let topHours = '';
+      for (let i = 0; i < Math.min(arr.length, 5); i++) {
+        const medal = ['🥇','🥈','🥉','📌','📌'][i];
+        topHours += `<div style="padding:6px;border-bottom:1px solid var(--border);">${medal} ${esc(arr[i].name)} — <b>${arr[i].hours.toFixed(1)}ч</b></div>`;
+      }
+
+      arr.sort((a, b) => b.tovar - a.tovar);
+      let topTovar = '';
+      for (let i = 0; i < Math.min(arr.length, 5); i++) {
+        const medal = ['🥇','🥈','🥉','📌','📌'][i];
+        topTovar += `<div style="padding:6px;border-bottom:1px solid var(--border);">${medal} ${esc(arr[i].name)} — <b>${arr[i].tovar} шт</b></div>`;
+      }
+
+      const best = arr.length
+        ? `<div style="padding:6px;">🌟 ${esc(arr[0].name)} — ${arr[0].hours.toFixed(1)}ч / ${arr[0].tovar} шт</div>`
+        : '<p style="color:var(--muted);">Нет данных</p>';
+
+      $('#boardContent').innerHTML = `
+        <div><b>⏱ Топ по часам</b>${topHours}</div>
+        <div style="margin-top:12px;"><b>📦 Топ по товарам</b>${topTovar}</div>
+        <div style="margin-top:12px;"><b>🌟 Работник месяца</b>${best}</div>
       `;
     });
-    el.innerHTML = html || '<p style="color:var(--muted);">Нет сотрудников</p>';
+  }
 
-    el.querySelectorAll('.power-promote').forEach(btn => {
-      btn.addEventListener('click', function() {
-        if (!confirm('Повысить ' + this.dataset.name + ' до начальника?')) return;
-        DB.ref('users/' + this.dataset.uid + '/role').set('god').then(() => {
-          toast('✅ ' + this.dataset.name + ' теперь начальник!');
-          loadPower();
+  // ============ Power (Creator only) ============
+  function renderPower(panel) {
+    panel.innerHTML = `
+      <div class="card">
+        <h4>⚡ Управление ролями</h4>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:12px;">Повышение сотрудников до начальников</p>
+        <div id="powerList">Загрузка...</div>
+      </div>
+    `;
+    loadPowerList();
+  }
+
+  function loadPowerList() {
+    DB.ref('users').once('value').then(snap => {
+      const list = $('#powerList');
+      let html = '';
+
+      snap.forEach(child => {
+        const u = child.val();
+        if (u.uid === App.user.uid) return;
+
+        const roleLabel = u.role === 'god'
+          ? '<span style="color:#FFD700;font-weight:bold;">Начальник</span>'
+          : u.role === 'creator'
+            ? '<span style="color:var(--gold);font-weight:bold;">Создатель</span>'
+            : '<span style="color:var(--muted);">Сотрудник</span>';
+
+        html += `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid var(--border);">
+            <div>
+              <b>${esc(u.name)}</b><br>
+              <span style="font-size:11px;color:var(--muted);">${roleLabel} | Пункт ${esc(u.punkt || '?')}</span>
+            </div>
+            ${u.role === 'manager'
+              ? `<button class="btn-gold btn-sm promote-btn" data-uid="${child.key}" data-name="${esc(u.name)}" style="width:auto;">Повысить до начальника</button>`
+              : u.role === 'god'
+                ? `<button class="btn-red btn-sm demote-btn" data-uid="${child.key}" data-name="${esc(u.name)}" style="width:auto;">Понизить</button>`
+                : `<span style="font-size:12px;color:var(--gold);">Создатель</span>`
+            }
+          </div>
+        `;
+      });
+
+      list.innerHTML = html || '<p style="color:var(--muted);">Нет сотрудников</p>';
+
+      list.querySelectorAll('.promote-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          if (confirm(`Повысить ${this.dataset.name} до начальника?`)) {
+            DB.ref('users/' + this.dataset.uid + '/role').set('god').then(() => {
+              DB.ref('notifications').push({
+                user: this.dataset.uid,
+                text: '🎉 Вас повысили до начальника!',
+                timestamp: Date.now()
+              });
+              toast('✅ Роль изменена');
+              loadPowerList();
+              buildCarousel();
+            });
+          }
+        });
+      });
+
+      list.querySelectorAll('.demote-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          if (confirm(`Понизить ${this.dataset.name} до сотрудника?`)) {
+            DB.ref('users/' + this.dataset.uid + '/role').set('manager').then(() => {
+              toast('✅ Роль изменена');
+              loadPowerList();
+              buildCarousel();
+            });
+          }
         });
       });
     });
-  });
-}
+  }
 
-// ---------- Workers (God only) ----------
-function renderWorkers(panel) {
-  if (!App.isGod) return;
-  panel.innerHTML = `
-    <div class="card">
-      <h4>👥 Сотрудники</h4>
-      <div id="workersList">Загрузка...</div>
-    </div>
-  `;
-  loadWorkers();
-}
+  // ============ Sticker Manager (Creator only) ============
+  function renderStickerManager(panel) {
+    panel.innerHTML = `
+      <div class="card">
+        <h4>🎨 Управление стикерпаками</h4>
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+          <input id="packName" placeholder="Название стикерпака" style="flex:1;">
+          <button class="btn-gold" id="createPackBtn" style="width:auto;padding:8px 16px;">Создать</button>
+        </div>
+        <div id="packsList">Загрузка...</div>
+      </div>
+    `;
 
-function loadWorkers() {
-  const el = document.getElementById('workersList');
-  if (!el) return;
-  DB.ref('users').once('value').then(snap => {
-    let html = '';
-    snap.forEach(child => {
-      const user = child.val();
-      const uid = child.key;
-      if (uid === App.user.uid) return;
-      const isCreator = user.role === 'creator';
-      html += `
-        <div class="worker-row${isCreator ? ' creator-row' : ''}">
-          <span>
-            <b>${escapeHtml(user.name)}</b>
-            ${isCreator ? ' <span style="font-size:10px;background:var(--gold);color:#000;padding:2px 6px;border-radius:8px;">Создатель</span>' : ''}
-            <br>
-            <span style="font-size:11px;color:var(--muted);">Пункт ${user.punkt || '?'} | Надбавка: ${user.bonus || 0}₽</span>
-          </span>
-          <span>
-            <button class="btn-gold btn-sm worker-bonus" data-uid="${uid}" data-name="${escapeHtml(user.name)}">🎁</button>
-            <button class="btn-purple btn-sm worker-penalty" data-uid="${uid}" data-name="${escapeHtml(user.name)}">⚠️</button>
-            ${!isCreator ? `<button class="btn-red btn-sm worker-delete" data-uid="${uid}" data-name="${escapeHtml(user.name)}">✕</button>` : ''}
-          </span>
+    $('#createPackBtn').addEventListener('click', () => {
+      const name = $('#packName').value.trim();
+      if (!name) {
+        toast('Введите название', true);
+        return;
+      }
+      DB.ref('sticker_packs').push({
+        name,
+        creator: App.user.uid,
+        icon: '',
+        stickers: {},
+        allowed_users: { [App.user.uid]: true }
+      }).then(() => {
+        $('#packName').value = '';
+        loadPacksList();
+        toast('Стикерпак создан');
+      });
+    });
+
+    loadPacksList();
+  }
+
+  function loadPacksList() {
+    DB.ref('sticker_packs').once('value').then(snap => {
+      const list = $('#packsList');
+      let html = '';
+
+      snap.forEach(child => {
+        const pack = child.val();
+        const stickerCount = pack.stickers ? Object.keys(pack.stickers).length : 0;
+
+        html += `
+          <div style="padding:10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <b>${esc(pack.name)}</b> (${stickerCount} стикеров)
+            </div>
+            <div>
+              <button class="btn-blue btn-sm manage-pack-btn" data-pack-id="${child.key}" data-pack-name="${esc(pack.name)}" style="width:auto;">Управлять</button>
+              <button class="btn-red btn-sm delete-pack-btn" data-pack-id="${child.key}" style="width:auto;">✕</button>
+            </div>
+          </div>
+        `;
+      });
+
+      list.innerHTML = html || '<p style="color:var(--muted);">Нет стикерпаков</p>';
+
+      list.querySelectorAll('.manage-pack-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          openStickerPackManager(this.dataset.packId, this.dataset.packName);
+        });
+      });
+
+      list.querySelectorAll('.delete-pack-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          if (confirm('Удалить стикерпак?')) {
+            DB.ref('sticker_packs/' + this.dataset.packId).remove();
+            loadPacksList();
+          }
+        });
+      });
+    });
+  }
+
+  function openStickerPackManager(packId, packName) {
+    const panel = document.getElementById('stickerManagerPanel');
+    const content = document.getElementById('stickerManagerContent');
+
+    panel.style.display = 'flex';
+
+    DB.ref('sticker_packs/' + packId).once('value').then(snap => {
+      const pack = snap.val();
+      const stickers = pack.stickers || {};
+      const allowedUsers = pack.allowed_users || {};
+
+      let stickersHtml = '';
+      for (const stickerId in stickers) {
+        const st = stickers[stickerId];
+        stickersHtml += `
+          <div style="display:inline-block;margin:4px;position:relative;">
+            <img src="${esc(st.img)}" style="width:50px;height:50px;object-fit:contain;border-radius:8px;border:1px solid var(--border);">
+            <button class="btn-red btn-sm remove-sticker-btn" data-pack-id="${packId}" data-sticker-id="${stickerId}" style="position:absolute;top:-8px;right:-8px;width:20px;height:20px;padding:0;font-size:10px;border-radius:50%;">✕</button>
+          </div>
+        `;
+      }
+
+      content.innerHTML = `
+        <h4>${esc(packName)}</h4>
+        <div style="margin:12px 0;">
+          <label style="font-size:12px;color:var(--muted);">Добавить стикер (URL)</label>
+          <div style="display:flex;gap:8px;">
+            <input id="addStickerUrl" placeholder="https://..." style="flex:1;">
+            <button class="btn-gold" id="addStickerBtn" style="width:auto;padding:8px 16px;">+</button>
+          </div>
+        </div>
+        <div style="margin:12px 0;">
+          <label style="font-size:12px;color:var(--muted);">Стикеры</label>
+          <div id="packStickers">${stickersHtml || '<p style="color:var(--muted);">Нет стикеров</p>'}</div>
+        </div>
+        <div style="margin:12px 0;">
+          <label style="font-size:12px;color:var(--muted);">Доступ для пользователей</label>
+          <div id="allowedUsersList">Загрузка...</div>
         </div>
       `;
-    });
-    el.innerHTML = html || '<p style="color:var(--muted);">Нет сотрудников</p>';
 
-    el.querySelectorAll('.worker-bonus').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const amount = prompt('Сумма премии:');
-        if (!amount) return;
-        const num = parseInt(amount);
-        if (isNaN(num) || num <= 0) { toast('Введите корректную сумму', true); return; }
-        DB.ref('premiums').push({
-          user: this.dataset.uid,
-          amount: num,
-          timestamp: Date.now()
+      $('#addStickerBtn').addEventListener('click', () => {
+        const url = $('#addStickerUrl').value.trim();
+        if (!url) {
+          toast('Введите URL', true);
+          return;
+        }
+        DB.ref('sticker_packs/' + packId + '/stickers').push({
+          img: url,
+          emoji: ''
+        }).then(() => {
+          $('#addStickerUrl').value = '';
+          openStickerPackManager(packId, packName);
         });
-        DB.ref('notifications').push({
-          user: this.dataset.uid,
-          text: '💰 Премия ' + num + '₽ от начальника!',
-          timestamp: Date.now()
+      });
+
+      content.querySelectorAll('.remove-sticker-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          DB.ref('sticker_packs/' + this.dataset.packId + '/stickers/' + this.dataset.stickerId).remove();
+          openStickerPackManager(packId, packName);
         });
-        toast('✅ Премия ' + num + '₽');
+      });
+
+      // Load allowed users
+      DB.ref('users').once('value').then(usersSnap => {
+        const usersList = $('#allowedUsersList');
+        let usersHtml = '';
+
+        usersSnap.forEach(child => {
+          const u = child.val();
+          if (u.uid === App.user.uid) return;
+          const isAllowed = !!allowedUsers[child.key];
+
+          usersHtml += `
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px;border-bottom:1px solid var(--border);">
+              <span>${esc(u.name)}</span>
+              <button class="btn-sm ${isAllowed ? 'btn-red' : 'btn-green'} toggle-access-btn"
+                data-pack-id="${packId}" data-user-id="${child.key}" style="width:auto;">
+                ${isAllowed ? 'Запретить' : 'Разрешить'}
+              </button>
+            </div>
+          `;
+        });
+
+        usersList.innerHTML = usersHtml || '<p style="color:var(--muted);">Нет пользователей</p>';
+
+        usersList.querySelectorAll('.toggle-access-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const ref = DB.ref('sticker_packs/' + this.dataset.packId + '/allowed_users/' + this.dataset.userId);
+            const currentlyAllowed = !!allowedUsers[this.dataset.userId];
+            if (currentlyAllowed) {
+              ref.remove();
+            } else {
+              ref.set(true);
+            }
+            openStickerPackManager(packId, packName);
+          });
+        });
       });
     });
+  }
 
-    el.querySelectorAll('.worker-penalty').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const amount = prompt('Сумма штрафа:');
-        if (!amount) return;
-        const num = parseInt(amount);
-        if (isNaN(num) || num <= 0) { toast('Введите корректную сумму', true); return; }
-        const reason = prompt('Причина:') || 'Нарушение';
-        DB.ref('punishes').push({
-          user: this.dataset.uid,
-          amount: num,
-          reason: reason,
-          timestamp: Date.now()
+  // ============ Workers (God only) ============
+  function renderWorkers(panel) {
+    panel.innerHTML = '<div class="card"><h4>👥 Сотрудники</h4><div id="workersList">Загрузка...</div></div>';
+    loadWorkers();
+  }
+
+  function loadWorkers() {
+    DB.ref('users').once('value').then(snap => {
+      const list = $('#workersList');
+      let html = '';
+
+      snap.forEach(child => {
+        const u = child.val();
+        if (u.uid === App.user.uid) return;
+
+        const roleLabel = u.role === 'creator'
+          ? '<span style="font-size:10px;background:var(--gold);color:#000;padding:2px 6px;border-radius:8px;">Создатель</span>'
+          : u.role === 'god'
+            ? '<span style="font-size:10px;background:#FFD700;color:#000;padding:2px 6px;border-radius:8px;">Начальник</span>'
+            : '';
+
+        html += `
+          <div class="worker-row">
+            <span>
+              <b>${esc(u.name)}</b> ${roleLabel}
+              <br><span style="font-size:11px;color:var(--muted);">Пункт ${esc(u.punkt || '?')} | Надбавка: ${u.bonus || 0}₽</span>
+            </span>
+            <span>
+              <button class="btn-gold btn-sm worker-bonus" data-name="${esc(u.name)}" data-uid="${child.key}">🎁</button>
+              <button class="btn-purple btn-sm worker-penalty" data-name="${esc(u.name)}" data-uid="${child.key}">⚠️</button>
+              <button class="btn-blue btn-sm worker-edit" data-name="${esc(u.name)}" data-uid="${child.key}" data-punkt="${esc(u.punkt || '')}">✏️</button>
+            </span>
+          </div>
+        `;
+      });
+
+      list.innerHTML = html || '<p style="color:var(--muted);">Нет сотрудников</p>';
+
+      list.querySelectorAll('.worker-bonus').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const amount = prompt('Сумма премии:');
+          if (!amount) return;
+          DB.ref('premiums').push({
+            user: this.dataset.uid,
+            amount: parseInt(amount),
+            timestamp: Date.now()
+          });
+          DB.ref('notifications').push({
+            user: this.dataset.uid,
+            text: `💰 Премия ${amount}₽ от начальника!`,
+            timestamp: Date.now()
+          });
+          toast(`✅ Премия ${amount}₽`);
         });
-        DB.ref('notifications').push({
-          user: this.dataset.uid,
-          text: '💀 Штраф ' + num + '₽ за: ' + reason,
-          timestamp: Date.now()
+      });
+
+      list.querySelectorAll('.worker-penalty').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const amount = prompt('Сумма штрафа:');
+          if (!amount) return;
+          const reason = prompt('Причина:') || 'Нарушение';
+          DB.ref('punishes').push({
+            user: this.dataset.uid,
+            amount: parseInt(amount),
+            reason,
+            timestamp: Date.now()
+          });
+          DB.ref('notifications').push({
+            user: this.dataset.uid,
+            text: `💀 Штраф ${amount}₽ за: ${reason}`,
+            timestamp: Date.now()
+          });
+          toast(`💀 Штраф ${amount}₽`);
         });
-        toast('💀 Штраф ' + num + '₽');
+      });
+
+      list.querySelectorAll('.worker-edit').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const newPunkt = prompt('Новый пункт:', this.dataset.punkt);
+          if (newPunkt !== null) {
+            DB.ref('users/' + this.dataset.uid + '/punkt').set(newPunkt).then(() => {
+              loadWorkers();
+              toast('Пункт обновлён');
+            });
+          }
+        });
       });
     });
+  }
 
-    el.querySelectorAll('.worker-delete').forEach(btn => {
-      btn.addEventListener('click', function() {
-        if (confirm('Удалить ' + this.dataset.name + '?')) {
-          DB.ref('users/' + this.dataset.uid).remove();
-          loadWorkers();
+  // ============ Salary (God only) ============
+  function renderSalary(panel) {
+    panel.innerHTML = `
+      <div class="card">
+        <h4>💰 Расчёт ЗП</h4>
+        <select id="salUser" style="margin-bottom:12px;"><option value="">— Выберите сотрудника —</option></select>
+        <div style="display:flex;gap:8px;">
+          <input type="date" id="salFrom" style="flex:1;">
+          <input type="date" id="salTo" style="flex:1;">
+        </div>
+        <button class="btn-green" id="salCalcBtn" style="margin-top:8px;">🧮 Посчитать</button>
+        <button class="btn-blue" id="salPayBtn" style="margin-top:4px;">✅ Оплатить</button>
+        <div id="salResult" style="margin-top:12px;"></div>
+      </div>
+    `;
+
+    let lastCalc = null;
+
+    DB.ref('users').once('value').then(snap => {
+      const sel = $('#salUser');
+      snap.forEach(child => {
+        const u = child.val();
+        if (u.uid !== App.user.uid) {
+          sel.innerHTML += `<option value="${child.key}">${esc(u.name)}</option>`;
         }
       });
     });
-  });
-}
 
-// ---------- Salary ----------
-function renderSalary(panel) {
-  if (!App.isGod) return;
-  panel.innerHTML = `
-    <div class="card">
-      <h4>💰 Расчёт ЗП</h4>
-      <select id="salUser" style="margin-bottom:12px;"><option value="">— Выберите сотрудника —</option></select>
-      <div style="display:flex;gap:8px;">
-        <input type="date" id="salFrom" style="flex:1;">
-        <input type="date" id="salTo" style="flex:1;">
-      </div>
-      <button class="btn-green" id="salCalcBtn" style="margin-top:8px;">🧮 Посчитать</button>
-      <button class="btn-blue" id="salPayBtn" style="margin-top:4px;">✅ Оплатить</button>
-      <div id="salResult" style="margin-top:12px;"></div>
-    </div>
-  `;
-
-  DB.ref('users').once('value').then(snap => {
-    const sel = document.getElementById('salUser');
-    snap.forEach(child => {
-      const user = child.val();
-      if (user.uid !== App.user.uid) {
-        sel.innerHTML += `<option value="${child.key}">${escapeHtml(user.name)}</option>`;
+    $('#salCalcBtn').addEventListener('click', calculateSalary);
+    $('#salPayBtn').addEventListener('click', function() {
+      if (!lastCalc) {
+        toast('Сначала посчитайте!', true);
+        return;
       }
+      if (!confirm(`Оплатить ${lastCalc.total}₽?`)) return;
+
+      DB.ref('payments').push({
+        user: lastCalc.uid,
+        total: lastCalc.total,
+        dateFrom: lastCalc.from,
+        dateTo: lastCalc.to,
+        timestamp: Date.now()
+      });
+
+      const shiftPromises = lastCalc.shiftIds.map(id =>
+        DB.ref('shifts/' + id + '/paid').set(true)
+      );
+      Promise.all(shiftPromises).then(() => {
+        toast(`✅ Оплачено ${lastCalc.total}₽`);
+        lastCalc = null;
+        $('#salResult').innerHTML = '';
+      });
     });
-  });
 
-  let lastCalc = null;
+    async function calculateSalary() {
+      const uid = $('#salUser').value;
+      const from = $('#salFrom').value;
+      const to = $('#salTo').value;
 
-  document.getElementById('salCalcBtn').addEventListener('click', function() {
-    const uid = document.getElementById('salUser').value;
-    const from = document.getElementById('salFrom').value;
-    const to = document.getElementById('salTo').value;
-    if (!uid || !from || !to) {
-      toast('Заполните все поля', true);
-      return;
-    }
+      if (!uid || !from || !to) {
+        toast('Заполните все поля', true);
+        return;
+      }
 
-    DB.ref('users/' + uid).once('value').then(userSnap => {
-      const userData = userSnap.val();
-      if (!userData) { toast('Пользователь не найден', true); return; }
-      const punktId = userData.punkt || '';
-      let rate = 0;
+      try {
+        const userSnap = await DB.ref('users/' + uid).once('value');
+        const userData = userSnap.val();
+        const punktId = userData.punkt || '';
 
-      DB.ref('punkts').once('value').then(punktsSnap => {
-        punktsSnap.forEach(child => {
+        let rate = 0;
+        const punktSnap = await DB.ref('punkts').once('value');
+        punktSnap.forEach(child => {
           if (child.key === punktId) {
             rate = child.val().rate || 0;
           }
         });
         if (rate === 0) rate = 150;
 
-        let totalHours = 0, totalTovar = 0, shiftIds = [];
-        const userName = userData.name || '';
+        let totalHours = 0, totalTovar = 0;
+        const shiftIds = [];
 
-        // Get shifts by uid
-        DB.ref('shifts').orderByChild('user').equalTo(uid).once('value').then(snap1 => {
-          snap1.forEach(child => {
-            const shift = child.val();
-            if (shift.date >= from && shift.date <= to) {
-              totalHours += shift.hours || 0;
-              totalTovar += shift.tovar || 0;
-              shiftIds.push(child.key);
-            }
-          });
-
-          // Also get shifts by user_name (fallback)
-          DB.ref('shifts').orderByChild('user_name').equalTo(userName).once('value').then(snap2 => {
-            snap2.forEach(child => {
-              const shift = child.val();
-              if (shift.date >= from && shift.date <= to && shift.user !== uid) {
-                totalHours += shift.hours || 0;
-                totalTovar += shift.tovar || 0;
-                shiftIds.push(child.key);
-              }
-            });
-
-            const fromTs = new Date(from).getTime();
-            const toTs = new Date(to + 'T23:59:59').getTime();
-            let premium = 0, punish = 0;
-
-            // Premiums
-            DB.ref('premiums').orderByChild('user').equalTo(uid).once('value').then(premSnap => {
-              premSnap.forEach(child => {
-                const p = child.val();
-                if (p.timestamp >= fromTs && p.timestamp <= toTs) {
-                  premium += p.amount || 0;
-                }
-              });
-
-              // Punishes
-              DB.ref('punishes').orderByChild('user').equalTo(uid).once('value').then(punSnap => {
-                punSnap.forEach(child => {
-                  const p = child.val();
-                  if (p.timestamp >= fromTs && p.timestamp <= toTs) {
-                    punish += p.amount || 0;
-                  }
-                });
-
-                const base = Math.round(totalHours * rate);
-                const total = Math.max(0, base + premium - punish);
-                const el = document.getElementById('salResult');
-                el.innerHTML = `
-                  <div class="zp-result">
-                    Смен: ${shiftIds.length}, часов: ${totalHours.toFixed(1)}, товаров: ${totalTovar}
-                    <br>База: ${base}₽, премии: +${premium}₽, штрафы: -${punish}₽
-                    <br><b>Итого: ${total}₽</b>
-                  </div>
-                `;
-                lastCalc = { uid, from, to, total, shiftIds };
-              });
-            });
-          });
+        const shiftsSnap = await DB.ref('shifts').orderByChild('user').equalTo(uid).once('value');
+        shiftsSnap.forEach(child => {
+          const s = child.val();
+          if (s.date >= from && s.date <= to) {
+            totalHours += s.hours || 0;
+            totalTovar += s.tovar || 0;
+            shiftIds.push(child.key);
+          }
         });
-      });
-    });
-  });
 
-  document.getElementById('salPayBtn').addEventListener('click', function() {
-    if (!lastCalc) {
-      toast('Сначала посчитайте!', true);
-      return;
+        let prem = 0, pun = 0;
+        const fromTs = new Date(from).getTime();
+        const toTs = new Date(to).getTime();
+
+        const premSnap = await DB.ref('premiums').orderByChild('user').equalTo(uid).once('value');
+        premSnap.forEach(child => {
+          const p = child.val();
+          if (p.timestamp >= fromTs && p.timestamp <= toTs) {
+            prem += p.amount || 0;
+          }
+        });
+
+        const punSnap = await DB.ref('punishes').orderByChild('user').equalTo(uid).once('value');
+        punSnap.forEach(child => {
+          const p = child.val();
+          if (p.timestamp >= fromTs && p.timestamp <= toTs) {
+            pun += p.amount || 0;
+          }
+        });
+
+        const base = Math.round(totalHours * rate);
+        const total = Math.max(0, base + prem - pun);
+
+        $('#salResult').innerHTML = `
+          <div class="zp-result">
+            Смен: ${shiftIds.length}, часов: ${totalHours.toFixed(1)}, товаров: ${totalTovar}
+            <br>База: ${base}₽, премии: +${prem}₽, штрафы: -${pun}₽
+            <br><b>Итого: ${total}₽</b>
+          </div>
+        `;
+
+        lastCalc = { uid, from, to, total, shiftIds };
+      } catch (ex) {
+        toast('Ошибка расчёта: ' + ex.message, true);
+      }
     }
-    if (!confirm('Оплатить ' + lastCalc.total + '₽?')) return;
-    DB.ref('payments').push({
-      user: lastCalc.uid,
-      total: lastCalc.total,
-      dateFrom: lastCalc.from,
-      dateTo: lastCalc.to,
-      timestamp: Date.now()
-    });
-    lastCalc.shiftIds.forEach(id => DB.ref('shifts/' + id + '/paid').set(true));
-    toast('✅ Оплачено ' + lastCalc.total + '₽');
-    lastCalc = null;
-    document.getElementById('salResult').innerHTML = '';
-  });
-}
+  }
 
-// ---------- Announce ----------
-function renderAnnounce(panel) {
-  if (!App.isGod) return;
-  panel.innerHTML = `
-    <div class="card">
-      <h4>📜 Новое объявление</h4>
-      <textarea id="announceText" placeholder="Текст..." rows="3" style="resize:vertical;margin-bottom:8px;"></textarea>
-      <div style="display:flex;gap:8px;margin-bottom:8px;">
-        <select id="announceExpiry" style="flex:1;">
+  // ============ Announce (God only) ============
+  function renderAnnounce(panel) {
+    panel.innerHTML = `
+      <div class="card">
+        <h4>📜 Новое объявление</h4>
+        <textarea id="announceText" placeholder="Текст..." rows="3" style="resize:vertical;margin-bottom:8px;"></textarea>
+        <select id="announceExpiry" style="margin-bottom:8px;">
           <option value="0">Навсегда</option>
           <option value="1">1 час</option>
           <option value="24" selected>24 часа</option>
           <option value="72">3 дня</option>
           <option value="168">7 дней</option>
         </select>
+        <button class="btn-gold" id="addAnnounceBtn">Опубликовать</button>
       </div>
-      <button class="btn-gold" id="addAnnounceBtn">Опубликовать</button>
-    </div>
-    <div id="announceList" style="margin-top:12px;">Загрузка...</div>
-  `;
+      <div id="announceList" style="margin-top:12px;">Загрузка...</div>
+    `;
 
-  document.getElementById('addAnnounceBtn').addEventListener('click', () => {
-    const text = document.getElementById('announceText').value.trim();
-    if (!text) { toast('Введите текст', true); return; }
-    const hours = parseInt(document.getElementById('announceExpiry').value);
-    const expiry = hours > 0 ? Date.now() + hours * 3600000 : null;
-    DB.ref('announce').push({
-      text: text,
-      timestamp: Date.now(),
-      expiry: expiry
-    }).then(() => {
-      document.getElementById('announceText').value = '';
-      toast('📜 Объявление опубликовано!');
-      loadAnnounces();
-    });
-  });
+    $('#addAnnounceBtn').addEventListener('click', () => {
+      const text = $('#announceText').value.trim();
+      if (!text) return;
+      const hours = parseInt($('#announceExpiry').value);
+      const expiry = hours > 0 ? Date.now() + hours * 3600000 : null;
 
-  loadAnnounces();
-}
-
-function loadAnnounces() {
-  const el = document.getElementById('announceList');
-  if (!el) return;
-  DB.ref('announce').once('value').then(snap => {
-    if (!snap.exists()) {
-      el.innerHTML = '<p style="color:var(--muted);">Нет объявлений</p>';
-      return;
-    }
-    const items = [];
-    snap.forEach(child => {
-      const data = child.val();
-      if (!data.expiry || Date.now() < data.expiry) {
-        items.push({ id: child.key, data: data });
-      }
-    });
-    items.sort((a, b) => b.data.timestamp - a.data.timestamp);
-    el.innerHTML = items.length ?
-      items.map(item =>
-        `<div style="padding:10px;border-bottom:1px solid var(--border);">
-          ${escapeHtml(item.data.text)}
-          <br><small style="color:var(--muted);">${new Date(item.data.timestamp).toLocaleString('ru-RU')}</small>
-          ${App.isGod ? `<button class="btn-red" style="width:auto;padding:4px 10px;font-size:11px;margin-top:4px;" data-id="${item.id}">✕</button>` : ''}
-        </div>`
-      ).join('') :
-      '<p style="color:var(--muted);">Нет объявлений</p>';
-
-    el.querySelectorAll('button').forEach(btn => {
-      btn.addEventListener('click', function() {
-        DB.ref('announce/' + this.dataset.id).remove();
-        loadAnnounces();
+      DB.ref('announce').push({
+        text,
+        timestamp: Date.now(),
+        expiry
+      }).then(() => {
+        $('#announceText').value = '';
+        loadAnnouncesList();
+        toast('📜 Объявление опубликовано');
       });
     });
-  });
-}
 
-// ---------- Chat ----------
-function loadChat() {
-  if (App.chatListener) {
-    App.chatListener.off();
-    App.chatListener = null;
+    loadAnnouncesList();
   }
 
-  const ref = App.privateChatWith ? getPrivateChatRef() : DB.ref('chat');
-  App.chatListener = ref.limitToLast(50);
+  function loadAnnouncesList() {
+    const el = $('#announceList');
+    if (!el) return;
 
-  App.chatListener.on('value', snap => {
-    const messages = [];
-    snap.forEach(child => {
-      if (child.val()) messages.push({ key: child.key, msg: child.val() });
-    });
-    messages.sort((a, b) => a.msg.timestamp - b.msg.timestamp);
-
-    let html = '';
-    let group = [];
-
-    const renderMessageContent = (msg) => {
-      let content = '';
-      if (msg.text) content += escapeHtml(msg.text);
-      if (msg.photo) {
-        content += `<br><img class="chat-img" src="${escapeHtml(msg.thumb || msg.photo)}" onclick="event.stopPropagation(); window.open('${escapeHtml(msg.photo)}', '_blank')">`;
+    DB.ref('announce').once('value').then(snap => {
+      if (!snap.exists()) {
+        el.innerHTML = '<p style="color:var(--muted);">Нет объявлений</p>';
+        return;
       }
-      if (msg.sticker) {
-        content += `<img class="chat-sticker" src="${escapeHtml(msg.sticker)}">`;
-      }
-      if (msg.photos && msg.photos.length) {
-        content += '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;">';
-        msg.photos.forEach(p => {
-          const thumb = typeof p === 'object' ? escapeHtml(p.thumb) : escapeHtml(p);
-          const full = typeof p === 'object' ? escapeHtml(p.full) : escapeHtml(p);
-          content += `<img class="chat-img" src="${thumb}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;cursor:pointer;" onclick="event.stopPropagation(); window.open('${full}', '_blank')">`;
-        });
-        content += '</div>';
-      }
-      return content;
-    };
 
-    const renderGroup = (group) => {
-      const first = group[0];
-      const userName = first.userName;
-      const isMine = first.isMine;
-      const isCreator = first.msg.user && first.msg.user.indexOf('🌌') === 0;
-      const isGod = first.msg.user && first.msg.user.indexOf('👑') === 0;
-
-      let avatar = '';
-      for (const uid in App.allUserData) {
-        if (App.allUserData[uid].name === userName) {
-          avatar = App.allUserData[uid].avatar || '';
-          break;
+      const items = [];
+      snap.forEach(child => {
+        const d = child.val();
+        if (!d.expiry || Date.now() < d.expiry) {
+          items.push({ id: child.key, data: d });
         }
-      }
-
-      let groupHtml = `<div class="chat-bubble-group ${isMine ? 'mine' : 'other'}">`;
-      if (!isMine) {
-        groupHtml += '<div class="msg-author">';
-        if (avatar) {
-          groupHtml += `<img class="auth-avatar" src="${escapeHtml(avatar)}" onerror="this.style.display='none'">`;
-        } else {
-          groupHtml += `<div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#444,#555);display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:#ccc;">${escapeHtml(userName.charAt(0))}</div>`;
-        }
-        const style = (isCreator || isGod) ?
-          'background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;' :
-          '';
-        groupHtml += `<span style="${style}">${escapeHtml(userName)}</span></div>`;
-      }
-
-      group.forEach(g => {
-        let cls = 'chat-bubble';
-        if (isMine) cls += ' mine';
-        else if (isCreator) cls += ' creator';
-        else if (isGod) cls += ' god';
-        groupHtml += `<div class="${cls}">${renderMessageContent(g.msg)}</div>`;
       });
 
-      groupHtml += '</div>';
-      return groupHtml;
-    };
+      items.sort((a, b) => b.data.timestamp - a.data.timestamp);
 
-    for (let i = 0; i < messages.length; i++) {
-      const item = messages[i];
-      const msg = item.msg;
-      const userName = (msg.user || '?').replace(/^[🌌👑📢]\s/, '');
-      const isMine = App.user && (msg.user === '🌌 ' + App.user.name || msg.user === '👑 ' + App.user.name || msg.user === App.user.name);
+      el.innerHTML = items.length
+        ? items.map(i => `
+          <div style="padding:10px;border-bottom:1px solid var(--border);position:relative;">
+            ${esc(i.data.text)}
+            <br><small style="color:var(--muted);">${new Date(i.data.timestamp).toLocaleString('ru-RU')}</small>
+            <button class="btn-red btn-sm delete-announce" data-id="${i.id}" style="position:absolute;right:8px;top:8px;width:auto;">✕</button>
+          </div>
+        `).join('')
+        : '<p style="color:var(--muted);">Нет объявлений</p>';
 
-      if (group.length === 0 || group[0].userName !== userName || group[0].isMine !== isMine) {
-        if (group.length > 0) html += renderGroup(group);
-        group = [{ userName, isMine, msg }];
-      } else {
-        group.push({ userName, isMine, msg });
+      el.querySelectorAll('.delete-announce').forEach(btn => {
+        btn.addEventListener('click', function() {
+          DB.ref('announce/' + this.dataset.id).remove();
+          loadAnnouncesList();
+        });
+      });
+    });
+  }
+
+  // ============ Chat ============
+  function loadChat() {
+    if (App.chatListener) {
+      App.chatListener.off();
+      App.chatListener = null;
+    }
+
+    const ref = App.privateChatWith ? getPrivateChatRef() : DB.ref('chat');
+    App.chatListener = ref.limitToLast(50);
+
+    App.chatListener.on('value', snap => {
+      const messages = [];
+      snap.forEach(child => {
+        if (child.val()) messages.push({ key: child.key, msg: child.val() });
+      });
+
+      messages.sort((a, b) => a.msg.timestamp - b.msg.timestamp);
+
+      let html = '';
+      let group = [];
+
+      function renderMsgContent(m) {
+        let content = '';
+        if (m.text) content += esc(m.text);
+        if (m.photo) {
+          content += `<br><img class="chat-img" src="${esc(m.thumb || m.photo)}" onclick="event.stopPropagation();window.open('${esc(m.photo)}','_blank')">`;
+        }
+        if (m.sticker) {
+          content += `<img class="chat-sticker" src="${esc(m.sticker)}">`;
+        }
+        if (m.photos && m.photos.length) {
+          content += '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;">';
+          m.photos.forEach(p => {
+            const thumb = typeof p === 'object' ? esc(p.thumb) : esc(p);
+            const full = typeof p === 'object' ? esc(p.full) : esc(p);
+            content += `<img class="chat-img" src="${thumb}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;cursor:pointer;" onclick="event.stopPropagation();window.open('${full}','_blank')">`;
+          });
+          content += '</div>';
+        }
+        return content;
       }
-    }
-    if (group.length > 0) html += renderGroup(group);
 
-    const chatEl = document.getElementById('chat');
-    const wasNearBottom = chatEl.scrollHeight - chatEl.scrollTop - chatEl.clientHeight < 60;
-    chatEl.innerHTML = html;
-    if (wasNearBottom || document.activeElement === document.getElementById('chatMsgInput')) {
-      chatEl.scrollTop = chatEl.scrollHeight;
-    }
+      function renderGroup(g) {
+        const first = g[0];
+        const userName = first.userName;
+        const isMine = first.isMine;
+        const isCreatorMsg = first.m.user && first.m.user.startsWith('🌌');
+        const isGodMsg = first.m.user && first.m.user.startsWith('👑');
 
-    // Author click -> show mini profile
-    chatEl.querySelectorAll('.msg-author').forEach(el => {
-      el.addEventListener('click', function() {
-        const name = this.querySelector('span').textContent.trim();
+        let avatarHtml = '';
         for (const uid in App.allUserData) {
-          if (App.allUserData[uid].name === name) {
-            App.selectedProfile = uid;
-            showMiniProfile(uid);
+          if (App.allUserData[uid].name === userName) {
+            const av = App.allUserData[uid].avatar;
+            if (av) {
+              avatarHtml = `<img class="auth-avatar" src="${esc(av)}" onerror="this.style.display='none'">`;
+            }
             break;
           }
         }
+        if (!avatarHtml) {
+          avatarHtml = `<div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#444,#555);display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:#ccc;">${esc(userName.charAt(0))}</div>`;
+        }
+
+        let html = `<div class="chat-bubble-group ${isMine ? 'mine' : 'other'}">`;
+        if (!isMine) {
+          html += `<div class="msg-author">${avatarHtml}<span style="${(isCreatorMsg || isGodMsg) ? 'background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;' : ''}">${esc(userName)}</span></div>`;
+        }
+
+        g.forEach(g2 => {
+          const m = g2.m;
+          let cls = 'chat-bubble';
+          if (isMine) cls += ' mine';
+          else if (isCreatorMsg) cls += ' creator';
+          else if (isGodMsg) cls += ' god';
+          html += `<div class="${cls}">${renderMsgContent(m)}</div>`;
+        });
+
+        html += '</div>';
+        return html;
+      }
+
+      for (let i = 0; i < messages.length; i++) {
+        const item = messages[i];
+        const m = item.msg;
+        const rawUser = m.user || '?';
+        const userName = rawUser.replace(/^[🌌👑]\s/, '');
+        const isMine = App.user && (rawUser === '🌌 ' + App.user.name || rawUser === '👑 ' + App.user.name || rawUser === App.user.name);
+
+        if (group.length === 0 || group[0].userName !== userName || group[0].isMine !== isMine) {
+          if (group.length > 0) html += renderGroup(group);
+          group = [{ item, userName, isMine, m }];
+        } else {
+          group.push({ item, userName, isMine, m });
+        }
+      }
+      if (group.length > 0) html += renderGroup(group);
+
+      const chatEl = $('#chat');
+      const wasAtBottom = chatEl.scrollHeight - chatEl.scrollTop - chatEl.clientHeight < 60;
+      chatEl.innerHTML = html;
+
+      if (wasAtBottom || document.activeElement === $('#chatMsgInput')) {
+        chatEl.scrollTop = chatEl.scrollHeight;
+      }
+
+      chatEl.querySelectorAll('.msg-author').forEach(author => {
+        author.addEventListener('click', function() {
+          const name = this.querySelector('span').textContent.trim();
+          for (const uid in App.allUserData) {
+            if (App.allUserData[uid].name === name) {
+              App.selectedProfile = uid;
+              showMiniProfile(uid);
+              break;
+            }
+          }
+        });
       });
     });
-  });
-}
-
-function toggleChat() {
-  const chatEl = document.getElementById('chat');
-  const inputBar = document.getElementById('chatInputBar');
-  if (chatEl.classList.contains('hidden')) {
-    chatEl.classList.remove('hidden');
-    App.chatOpened = true;
-    inputBar.style.display = 'flex';
-    App.lastChatTimestamp = Date.now();
-    App.unreadCount = 0;
-    updateBadge();
-    setTimeout(() => chatEl.scrollTop = chatEl.scrollHeight, 100);
-  } else {
-    chatEl.classList.add('hidden');
-    App.chatOpened = false;
-    inputBar.style.display = 'none';
-  }
-}
-
-function updateBadge() {
-  const badge = document.getElementById('chatBadge');
-  if (App.unreadCount > 0) {
-    badge.style.display = 'inline';
-    badge.textContent = App.unreadCount;
-  } else {
-    badge.style.display = 'none';
-  }
-}
-
-function sendMessage() {
-  const input = document.getElementById('chatMsgInput');
-  const text = input.value.trim();
-  if (!text || !App.user) return;
-
-  const ref = App.privateChatWith ? getPrivateChatRef() : DB.ref('chat');
-  const prefix = App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '');
-
-  // Check mentions (just log for now)
-  const mentions = text.match(/@(\S+)/g);
-  if (mentions) {
-    console.log('Упоминания:', mentions);
   }
 
-  ref.push({
-    user: prefix + App.user.name,
-    text: text,
-    timestamp: Date.now(),
-    role: App.user.role,
-    likes: {}
-  }).then(() => input.value = '');
-}
+  function getPrivateChatRef() {
+    if (!App.privateChatWith) return DB.ref('chat');
+    const users = [App.user.uid, App.privateChatWith].sort();
+    return DB.ref('privateChats/' + users[0] + '_' + users[1]);
+  }
 
-function sendPhoto() {
-  const input = document.getElementById('chatPhotoInput');
-  const files = input.files;
-  if (!files.length || !App.user) return;
+  function sendMessage() {
+    const input = $('#chatMsgInput');
+    const text = input.value.trim();
+    if (!text || !App.user) return;
 
-  const photos = [];
-  const count = Math.min(files.length, 5);
+    const ref = App.privateChatWith ? getPrivateChatRef() : DB.ref('chat');
+    const prefix = App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '');
 
-  for (let i = 0; i < count; i++) {
-    (function(file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          const maxWidth = 300;
-          const scale = maxWidth / img.width;
-          canvas.width = maxWidth;
-          canvas.height = img.height * scale;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          photos.push({
-            full: e.target.result,
-            thumb: canvas.toDataURL('image/jpeg', 0.6)
-          });
-          if (photos.length === count) {
-            const ref = App.privateChatWith ? getPrivateChatRef() : DB.ref('chat');
-            const prefix = App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '');
-            ref.push({
-              user: prefix + App.user.name,
-              text: '📷 ' + count + ' фото',
-              photos: photos,
-              timestamp: Date.now(),
-              role: App.user.role,
-              likes: {}
+    ref.push({
+      user: prefix + App.user.name,
+      text,
+      timestamp: Date.now(),
+      role: App.user.role,
+      likes: {}
+    }).then(() => {
+      input.value = '';
+      input.focus();
+    });
+  }
+
+  function sendPhoto() {
+    const input = $('#chatPhotoInput');
+    const files = input.files;
+    if (!files.length || !App.user) return;
+
+    const photos = [];
+    const count = Math.min(files.length, 5);
+
+    for (let i = 0; i < count; i++) {
+      (function(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const maxWidth = 300;
+            const scale = maxWidth / img.width;
+            canvas.width = maxWidth;
+            canvas.height = img.height * scale;
+            canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            photos.push({
+              full: e.target.result,
+              thumb: canvas.toDataURL('image/jpeg', 0.6)
+            });
+
+            if (photos.length === count) {
+              const ref = App.privateChatWith ? getPrivateChatRef() : DB.ref('chat');
+              const prefix = App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '');
+              ref.push({
+                user: prefix + App.user.name,
+                text: `📷 ${count} фото`,
+                photos,
+                timestamp: Date.now(),
+                role: App.user.role,
+                likes: {}
+              });
+            }
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      })(files[i]);
+    }
+
+    input.value = '';
+  }
+
+  function toggleChat() {
+    const chatEl = $('#chat');
+    const bar = $('#chatInputBar');
+
+    if (chatEl.classList.contains('hidden')) {
+      chatEl.classList.remove('hidden');
+      App.chatOpened = true;
+      bar.style.display = 'flex';
+      App.lastChatTimestamp = Date.now();
+      App.unreadCount = 0;
+      updateBadge();
+      setTimeout(() => chatEl.scrollTop = chatEl.scrollHeight, 100);
+    } else {
+      chatEl.classList.add('hidden');
+      App.chatOpened = false;
+      bar.style.display = 'none';
+    }
+  }
+
+  function updateBadge() {
+    const badge = $('#chatBadge');
+    if (App.unreadCount > 0) {
+      badge.style.display = 'inline';
+      badge.textContent = App.unreadCount;
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  function openPrivateChat() {
+    if (!App.selectedProfile || App.selectedProfile === App.user.uid) return;
+
+    App.privateChatWith = App.selectedProfile;
+    const data = App.allUserData[App.selectedProfile];
+    $('#chatLabel').textContent = data ? data.name : '...';
+    $('#chatBackBtn').style.display = 'inline-block';
+    closeMiniProfile();
+    $('#avatarCarousel').classList.remove('open');
+    loadChat();
+  }
+
+  function switchToGlobalChat() {
+    App.privateChatWith = null;
+    $('#chatLabel').textContent = 'Общий чат';
+    $('#chatBackBtn').style.display = 'none';
+    loadChat();
+  }
+
+  // ============ Stickers Panel ============
+  function renderStickerUI() {
+    const content = $('#stickerContent');
+    const tabs = $('#stickerTabs');
+
+    content.innerHTML = BASE_EMOJIS.map(e => `
+      <div class="emoji-item" data-emoji="${e}">${e}</div>
+    `).join('');
+
+    content.querySelectorAll('.emoji-item').forEach(el => {
+      el.addEventListener('click', function(ev) {
+        ev.stopPropagation();
+        $('#chatMsgInput').value += this.dataset.emoji;
+        $('#chatMsgInput').focus();
+      });
+    });
+
+    tabs.innerHTML = '<button class="st-tab active" data-tab="emoji">😀</button>';
+
+    DB.ref('sticker_packs').once('value').then(snap => {
+      if (snap.exists()) {
+        snap.forEach(child => {
+          const pack = child.val();
+          const allowedUsers = pack.allowed_users || {};
+          if (pack.creator === App.user.uid || App.isCreator || App.isGod || allowedUsers[App.user.uid]) {
+            tabs.innerHTML += `<button class="st-tab" data-tab="${child.key}">📦</button>`;
+          }
+        });
+      }
+
+      tabs.querySelectorAll('.st-tab').forEach(btn => {
+        btn.addEventListener('click', function(ev) {
+          ev.stopPropagation();
+          const tabId = this.dataset.tab;
+
+          tabs.querySelectorAll('.st-tab').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+
+          if (tabId === 'emoji') {
+            content.innerHTML = BASE_EMOJIS.map(e => `
+              <div class="emoji-item" data-emoji="${e}">${e}</div>
+            `).join('');
+            content.querySelectorAll('.emoji-item').forEach(el => {
+              el.addEventListener('click', function(ev2) {
+                ev2.stopPropagation();
+                $('#chatMsgInput').value += this.dataset.emoji;
+                $('#chatMsgInput').focus();
+              });
+            });
+          } else {
+            DB.ref('sticker_packs/' + tabId).once('value').then(packSnap => {
+              const pack = packSnap.val();
+              if (pack && pack.stickers) {
+                const stickers = pack.stickers;
+                content.innerHTML = '';
+
+                for (const stickerId in stickers) {
+                  const st = stickers[stickerId];
+                  content.innerHTML += `
+                    <div class="st-item" onclick="event.stopPropagation(); sendSticker('${esc(st.img)}')">
+                      <img src="${esc(st.img)}">
+                    </div>
+                  `;
+                }
+              } else {
+                content.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:12px;">Нет стикеров</p>';
+              }
             });
           }
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    })(files[i]);
-  }
-  input.value = '';
-}
-
-function getPrivateChatRef() {
-  if (!App.privateChatWith) return DB.ref('chat');
-  const users = [App.user.uid, App.privateChatWith].sort();
-  return DB.ref('privateChats/' + users[0] + '_' + users[1]);
-}
-
-function openPrivateChat() {
-  if (!App.selectedProfile || App.selectedProfile === App.user.uid) return;
-  App.privateChatWith = App.selectedProfile;
-  const userData = App.allUserData[App.selectedProfile];
-  document.getElementById('chatLabel').textContent = userData ? userData.name : '...';
-  document.getElementById('chatBackBtn').style.display = 'inline-block';
-  closeMiniProfile();
-  document.getElementById('avatarCarousel').classList.remove('open');
-  loadChat();
-}
-
-function switchToGlobalChat() {
-  App.privateChatWith = null;
-  document.getElementById('chatLabel').textContent = 'Общий чат';
-  document.getElementById('chatBackBtn').style.display = 'none';
-  loadChat();
-}
-
-// ---------- Stickers ----------
-function renderStickerUI() {
-  const content = document.getElementById('stickerContent');
-  const tabs = document.getElementById('stickerTabs');
-
-  content.innerHTML = BASE_EMOJIS.map(e => `<div class="emoji-item" data-emoji="${e}">${e}</div>`).join('');
-  content.querySelectorAll('.emoji-item').forEach(el => {
-    el.addEventListener('click', function(ev) {
-      ev.stopPropagation();
-      document.getElementById('chatMsgInput').value += this.dataset.emoji;
-      document.getElementById('chatMsgInput').focus();
-    });
-  });
-
-  tabs.innerHTML = '<button class="st-tab active" data-tab="emoji">😀</button>';
-
-  DB.ref('sticker_packs').once('value').then(snap => {
-    if (snap.exists()) {
-      snap.forEach(child => {
-        const pack = child.val();
-        const packId = child.key;
-        // Check access: creator, god, or allowed user
-        if (pack.creator === App.user.uid || App.isCreator || App.isGod ||
-            (pack.allowed_users && pack.allowed_users[App.user.uid])) {
-          tabs.innerHTML += `<button class="st-tab" data-tab="${packId}">📦</button>`;
-        }
+        });
       });
-    }
-  });
-
-  tabs.querySelectorAll('.st-tab').forEach(btn => {
-    btn.addEventListener('click', function(ev) {
-      ev.stopPropagation();
-      const tab = this.dataset.tab;
-      tabs.querySelectorAll('.st-tab').forEach(b => b.classList.toggle('active', b === this));
-
-      if (tab === 'emoji') {
-        content.innerHTML = BASE_EMOJIS.map(e => `<div class="emoji-item" data-emoji="${e}">${e}</div>`).join('');
-        content.querySelectorAll('.emoji-item').forEach(el => {
-          el.addEventListener('click', function(ev2) {
-            ev2.stopPropagation();
-            document.getElementById('chatMsgInput').value += this.dataset.emoji;
-            document.getElementById('chatMsgInput').focus();
-          });
-        });
-      } else {
-        DB.ref('sticker_packs/' + tab).once('value').then(packSnap => {
-          const pack = packSnap.val();
-          if (pack && pack.stickers) {
-            // stickers is an object: { id: { img, emoji } }
-            let html = '';
-            for (const id in pack.stickers) {
-              const st = pack.stickers[id];
-              if (st.img) {
-                html += `<div class="st-item" onclick="event.stopPropagation();sendSticker('${escapeHtml(st.img)}')"><img src="${escapeHtml(st.img)}"></div>`;
-              } else if (st.emoji) {
-                html += `<div class="emoji-item" onclick="event.stopPropagation();document.getElementById('chatMsgInput').value += '${escapeHtml(st.emoji)}';document.getElementById('chatMsgInput').focus();">${escapeHtml(st.emoji)}</div>`;
-              }
-            }
-            content.innerHTML = html || '<p style="color:var(--muted);font-size:13px;padding:12px;">Нет стикеров</p>';
-          } else {
-            content.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:12px;">Нет стикеров</p>';
-          }
-        });
-      }
-    });
-  });
-}
-
-window.sendSticker = function(img) {
-  if (!App.user) return;
-  const ref = App.privateChatWith ? getPrivateChatRef() : DB.ref('chat');
-  const prefix = App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '');
-  ref.push({
-    user: prefix + App.user.name,
-    text: '',
-    sticker: img,
-    timestamp: Date.now(),
-    role: App.user.role,
-    likes: {}
-  });
-  document.getElementById('stickerPanel').classList.remove('open');
-};
-
-// ---------- Avatar ----------
-function loadAvatarSettings() {
-  DB.ref('users/' + App.user.uid + '/avatarSettings').once('value').then(snap => {
-    if (snap.exists()) {
-      const data = snap.val();
-      Object.assign(App.avatarSettings, data);
-      if (data.photo) {
-        const img = new Image();
-        img.onload = () => { App.avatarImageData = img; drawProfileAvatar(); };
-        img.src = data.photo;
-      }
-    }
-    if (App.user.avatar && !App.avatarImageData) {
-      const img = new Image();
-      img.onload = () => { App.avatarImageData = img; drawProfileAvatar(); };
-      img.src = App.user.avatar;
-    }
-    drawProfileAvatar();
-    if (!App.avatarAnimId) updateAllFrames();
-  });
-}
-
-function drawProfileAvatar() {
-  const canvas = document.getElementById('profileAvatarCanvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, 76, 76);
-
-  if (App.avatarImageData) {
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(38, 38, 36, 0, Math.PI * 2);
-    ctx.clip();
-    const ratio = Math.max(76 / App.avatarImageData.width, 76 / App.avatarImageData.height);
-    const dw = App.avatarImageData.width * ratio;
-    const dh = App.avatarImageData.height * ratio;
-    ctx.drawImage(App.avatarImageData, (76 - dw) / 2, (76 - dh) / 2, dw, dh);
-    ctx.restore();
-  } else {
-    ctx.fillStyle = '#1e1b4b';
-    ctx.beginPath();
-    ctx.arc(38, 38, 36, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#6366f1';
-    ctx.font = 'bold 28px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(App.user.name.charAt(0).toUpperCase(), 38, 40);
-  }
-}
-
-function updateAllFrames() {
-  if (document.hidden) {
-    App.avatarAnimId = requestAnimationFrame(updateAllFrames);
-    return;
-  }
-
-  const frameCanvas = document.getElementById('profileFrameCanvas');
-  if (frameCanvas) {
-    const ctx = frameCanvas.getContext('2d');
-    ctx.save();
-    ctx.translate(38, 38);
-    drawFrame(ctx, 76, 76, App.avatarSettings);
-    ctx.restore();
-  }
-
-  // Update mini profile avatar if shown
-  if (document.getElementById('miniProfile').classList.contains('show') && App.selectedProfile) {
-    const userData = App.allUserData[App.selectedProfile];
-    if (userData && userData.avatar) {
-      const container = document.getElementById('mpAvatarContainer');
-      if (container) {
-        container.innerHTML = `<div style="position:relative;width:64px;height:64px;"><img src="${escapeHtml(userData.avatar)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--accent);"></div>`;
-      }
-    }
-  }
-
-  // Update carousel avatars
-  document.querySelectorAll('.avatar-item').forEach(item => {
-    const uid = item.dataset.uid;
-    if (uid && App.allUserData[uid] && App.allUserData[uid].avatar) {
-      const img = item.querySelector('img');
-      if (img) img.src = App.allUserData[uid].avatar;
-    }
-  });
-
-  App.avatarAnimId = requestAnimationFrame(updateAllFrames);
-}
-
-function drawFrame(ctx, w, h, settings) {
-  const cx = w / 2, cy = h / 2;
-  const time = Date.now() / 1000 * settings.speed;
-  ctx.clearRect(0, 0, w, h);
-  ctx.shadowBlur = settings.glow || 20;
-  ctx.shadowColor = settings.color1 || '#7c3aed';
-
-  // For managers, only draw simple ring
-  if (!App.isCreator && !App.isGod) {
-    const thickness = settings.ringThickness === 'thin' ? 2 : settings.ringThickness === 'thick' ? 6 : 4;
-    ctx.strokeStyle = settings.ringColor || '#7c3aed';
-    ctx.lineWidth = thickness;
-    ctx.beginPath();
-    ctx.arc(cx, cy, w/2 - thickness/2, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.shadowBlur = 0;
-    return;
-  }
-
-  // Advanced frames for creator/god
-  if (settings.style === 'neutron') {
-    for (let i = 0; i < 3; i++) {
-      ctx.save();
-      ctx.rotate(i * Math.PI * 2 / 3 + time);
-      ctx.strokeStyle = i === 0 ? settings.color1 : settings.color2;
-      ctx.lineWidth = 2.5;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, Math.max(0, w/2 - 5), Math.max(0, h/4), 0, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.restore();
-    }
-  } else if (settings.style === 'blackhole') {
-    const grad = ctx.createRadialGradient(cx, cy, 80, cx, cy, 160);
-    grad.addColorStop(0, 'transparent');
-    grad.addColorStop(0.3, 'rgba(0,0,0,0.5)');
-    grad.addColorStop(0.6, settings.color1);
-    grad.addColorStop(1, 'transparent');
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.arc(cx, cy, 160, 0, Math.PI * 2);
-    ctx.fill();
-  } else if (settings.style === 'divine') {
-    ctx.strokeStyle = settings.color1;
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.arc(cx, cy, 115, 0, Math.PI * 2);
-    ctx.stroke();
-    for (let i = 0; i < 30; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const dist = 115 + Math.sin(time * 5 + i) * 10;
-      ctx.fillStyle = settings.color2;
-      ctx.beginPath();
-      ctx.arc(cx + dist * Math.cos(angle), cy + dist * Math.sin(angle), 2, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  } else if (settings.style === 'kitsune') {
-    for (let i = 0; i < 6; i++) {
-      ctx.fillStyle = 'rgba(255,69,0,0.3)';
-      ctx.beginPath();
-      ctx.arc(cx + Math.cos(time * 2 + i) * 30, cy + Math.sin(time * 2 + i) * 30, 20 + Math.sin(time * 3 + i) * 10, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  } else if (settings.style === 'wasteland') {
-    ctx.fillStyle = settings.color1 + '40';
-    ctx.beginPath();
-    ctx.arc(cx, cy, 115 * (1 + Math.sin(time * 5) * 0.05), 0, Math.PI * 2);
-    ctx.fill();
-  } else if (settings.style === 'enigma') {
-    ctx.strokeStyle = settings.color1;
-    ctx.lineWidth = 15;
-    ctx.beginPath();
-    ctx.arc(cx, cy, 115, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.strokeStyle = settings.color2;
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.arc(cx, cy, 115, 0, Math.PI * 2);
-    ctx.stroke();
-  }
-
-  ctx.shadowBlur = 0;
-}
-
-// ---------- Sidebar ----------
-function toggleSidebar() {
-  document.getElementById('avatarCarousel').classList.toggle('open');
-}
-
-function buildCarousel() {
-  const el = document.getElementById('carouselInner');
-  if (!el) return;
-  el.innerHTML = '';
-  const added = new Set();
-
-  for (const uid in App.allUserData) {
-    if (uid === App.user.uid) continue;
-    const data = App.allUserData[uid];
-    if (added.has(data.name)) continue;
-    added.add(data.name);
-
-    const online = !!App.activeShifts[uid];
-    el.innerHTML += `
-      <div class="avatar-item${App.selectedProfile === uid ? ' active' : ''}" data-uid="${uid}">
-        ${data.avatar ? `<img src="${escapeHtml(data.avatar)}" onerror="this.style.display='none'">` : `<div style="width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#222,#444);display:flex;align-items:center;justify-content:center;font-size:18px;color:#ccc;">${escapeHtml(data.name.charAt(0))}</div>`}
-        ${online ? '<div class="online-dot"></div>' : ''}
-      </div>
-    `;
-  }
-
-  el.querySelectorAll('.avatar-item').forEach(item => {
-    item.addEventListener('click', function() {
-      const uid = this.dataset.uid;
-      App.selectedProfile = uid;
-      el.querySelectorAll('.avatar-item').forEach(x => x.classList.toggle('active', x.dataset.uid === uid));
-      showMiniProfile(uid);
-    });
-  });
-}
-
-// ---------- Mini Profile ----------
-function showMiniProfile(uid) {
-  const data = App.allUserData[uid];
-  if (!data) return;
-  document.getElementById('mpName').textContent = data.name;
-  const container = document.getElementById('mpAvatarContainer');
-  container.innerHTML = `<div style="position:relative;width:64px;height:64px;">${data.avatar ? `<img src="${escapeHtml(data.avatar)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--accent);">` : `<div style="width:100%;height:100%;border-radius:50%;background:#444;display:flex;align-items:center;justify-content:center;font-size:24px;color:#ccc;">${escapeHtml(data.name.charAt(0))}</div>`}</div>`;
-  document.getElementById('mpStatus').textContent = data.role === 'god' ? 'Начальник' : (data.role === 'creator' ? 'Создатель' : 'Сотрудник');
-  document.getElementById('mpPunkt').textContent = App.activeShifts[uid] ? '🟢 На смене' : '🔴 Выходной';
-  document.getElementById('miniProfile').classList.add('show');
-}
-
-function closeMiniProfile() {
-  document.getElementById('miniProfile').classList.remove('show');
-  App.selectedProfile = null;
-}
-
-// ---------- Settings ----------
-function openSettings() {
-  document.getElementById('mainContent').style.display = 'none';
-  document.getElementById('avatarCarousel').style.display = 'none';
-  document.getElementById('settingsPanel').style.display = 'flex';
-  document.getElementById('setName').value = '';
-  loadPunktsForSettings();
-  updateSettingsUI();
-}
-
-function closeSettings() {
-  document.getElementById('settingsPanel').style.display = 'none';
-  document.getElementById('mainContent').style.display = 'flex';
-  document.getElementById('avatarCarousel').style.display = 'flex';
-}
-
-function loadPunktsForSettings() {
-  DB.ref('punkts').once('value').then(snap => {
-    const sel = document.getElementById('setPunkt');
-    sel.innerHTML = '<option value="">Не менять</option>';
-    snap.forEach(child => {
-      sel.innerHTML += `<option value="${child.key}">${child.key}</option>`;
-    });
-  });
-}
-
-function saveSettings() {
-  const newName = document.getElementById('setName').value.trim();
-  const newPunkt = document.getElementById('setPunkt').value;
-  const updates = {};
-
-  if (newName) updates.name = newName;
-  if (newPunkt) updates.punkt = newPunkt;
-
-  if (Object.keys(updates).length) {
-    DB.ref('users/' + App.user.uid).update(updates).then(() => {
-      if (newName) App.user.name = newName;
-      if (newPunkt) App.user.punkt = newPunkt;
-      updateUI();
-      toast('Сохранено');
     });
   }
-  closeSettings();
-}
 
-function saveAvatar() {
-  const data = {
-    style: App.avatarSettings.style,
-    speed: App.avatarSettings.speed,
-    glow: App.avatarSettings.glow,
-    color1: App.avatarSettings.color1,
-    color2: App.avatarSettings.color2,
-    ringColor: App.avatarSettings.ringColor,
-    ringThickness: App.avatarSettings.ringThickness
+  window.sendSticker = function(img) {
+    if (!App.user) return;
+    const ref = App.privateChatWith ? getPrivateChatRef() : DB.ref('chat');
+    const prefix = App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '');
+
+    ref.push({
+      user: prefix + App.user.name,
+      text: '',
+      sticker: img,
+      timestamp: Date.now(),
+      role: App.user.role,
+      likes: {}
+    });
+
+    $('#stickerPanel').classList.remove('open');
   };
 
-  if (App.avatarImageData) {
-    const canvas = document.createElement('canvas');
-    canvas.width = 200;
-    canvas.height = 200;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(App.avatarImageData, 0, 0, 200, 200);
-    data.photo = canvas.toDataURL('image/jpeg', 0.8);
+  // ============ Sidebar & Mini Profile ============
+  function toggleSidebar() {
+    $('#avatarCarousel').classList.toggle('open');
   }
 
-  const updates = { avatarSettings: data };
-  if (data.photo) updates.avatar = data.photo;
+  function buildCarousel() {
+    const el = $('#carouselInner');
+    if (!el) return;
 
-  DB.ref('users/' + App.user.uid).update(updates).then(() => {
-    if (data.photo) App.user.avatar = data.photo;
-    toast('Аватар сохранён');
-    closeSettings();
-  });
-}
+    el.innerHTML = '';
+    const added = new Set();
 
-function updateSettingsUI() {
-  const advanced = App.isCreator || App.isGod;
-  document.getElementById('avatarAdvanced').style.display = advanced ? 'block' : 'none';
-  document.getElementById('avatarSimple').style.display = advanced ? 'none' : 'block';
+    for (const uid in App.allUserData) {
+      if (uid === App.user.uid) continue;
+      const d = App.allUserData[uid];
+      if (added.has(d.name)) continue;
+      added.add(d.name);
 
-  document.querySelectorAll('.style-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.style === App.avatarSettings.style);
-  });
-  document.getElementById('setSpeed').value = App.avatarSettings.speed;
-  document.getElementById('setSpeedVal').textContent = App.avatarSettings.speed + 'x';
-  document.getElementById('setGlow').value = App.avatarSettings.glow;
-  document.getElementById('setGlowVal').textContent = App.avatarSettings.glow + 'px';
-  document.getElementById('setColor1').value = App.avatarSettings.color1;
-  document.getElementById('setColor2').value = App.avatarSettings.color2;
-  document.getElementById('setRingColor').value = App.avatarSettings.ringColor;
-  document.getElementById('setRingThickness').value = App.avatarSettings.ringThickness;
-}
+      const online = !!App.activeShifts[uid];
+      const isActive = App.selectedProfile === uid;
 
-// ---------- External Data ----------
-function loadPinned() {
-  DB.ref('pinned').on('value', snap => {
-    const el = document.getElementById('pinnedMessage');
-    if (!snap.exists()) {
-      el.style.display = 'none';
-      return;
+      el.innerHTML += `
+        <div class="avatar-item${isActive ? ' active' : ''}" data-uid="${uid}">
+          ${d.avatar
+            ? `<img src="${esc(d.avatar)}" onerror="this.style.display='none'">`
+            : `<div style="width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#222,#444);display:flex;align-items:center;justify-content:center;font-size:18px;color:#ccc;">${esc(d.name.charAt(0))}</div>`
+          }
+          ${online ? '<div class="online-dot"></div>' : ''}
+        </div>
+      `;
     }
-    const data = snap.val();
-    el.style.display = 'block';
-    el.innerHTML = `📌 <b>${escapeHtml(data.user || '?')}:</b> ${escapeHtml(data.text)}`;
-  });
-}
 
-function loadAnnounce() {
-  DB.ref('announce').limitToLast(1).on('value', snap => {
-    const el = document.getElementById('announceBlock');
-    if (!snap.exists()) {
-      el.style.display = 'none';
-      return;
-    }
-    let last = null;
-    snap.forEach(child => { last = child.val(); last._key = child.key; });
-    if (last.expiry && Date.now() > last.expiry) {
-      DB.ref('announce/' + last._key).remove();
-      el.style.display = 'none';
-      return;
-    }
-    el.style.display = 'block';
-    el.innerHTML = `${escapeHtml(last.text)}<br><small style="color:var(--muted);">${new Date(last.timestamp).toLocaleString('ru-RU')}</small>`;
-    if (App.isCreator || App.isGod) {
-      const delBtn = document.createElement('button');
-      delBtn.textContent = '✕';
-      delBtn.style.cssText = 'position:absolute;right:8px;top:8px;background:none;border:none;color:var(--red);cursor:pointer;font-size:14px;';
-      delBtn.addEventListener('click', () => DB.ref('announce/' + last._key).remove());
-      el.appendChild(delBtn);
-    }
-  });
-}
-
-function loadThought() {
-  DB.ref('creatorThought').on('value', snap => {
-    const el = document.getElementById('thoughtBlock');
-    if (!snap.exists()) {
-      el.style.display = 'none';
-      return;
-    }
-    const data = snap.val();
-    if (data.expiry && Date.now() > data.expiry) {
-      DB.ref('creatorThought').remove();
-      el.style.display = 'none';
-      return;
-    }
-    el.style.display = 'block';
-    el.innerHTML = `💭 ${escapeHtml(data.text)}<br><small style="color:var(--muted);">${data.expiry ? 'До: ' + new Date(data.expiry).toLocaleString('ru-RU') : 'Навсегда'}</small>`;
-    if (App.isCreator) {
-      const delBtn = document.createElement('button');
-      delBtn.textContent = '✕';
-      delBtn.style.cssText = 'position:absolute;right:8px;top:8px;background:none;border:none;color:var(--red);cursor:pointer;font-size:14px;';
-      delBtn.addEventListener('click', () => DB.ref('creatorThought').remove());
-      el.appendChild(delBtn);
-    }
-  });
-}
-
-// ---------- Database Listeners ----------
-function setupDatabaseListeners() {
-  attachDbListener(DB.ref('users'), 'value', snap => {
-    App.allUsers = {};
-    App.allUserData = {};
-    snap.forEach(child => {
-      App.allUsers[child.key] = child.val().avatar || '';
-      App.allUserData[child.key] = child.val();
-    });
-    buildCarousel();
-  });
-
-  attachDbListener(DB.ref('activeShifts'), 'value', snap => {
-    App.activeShifts = {};
-    snap.forEach(child => {
-      if (child.val() && child.val().active) App.activeShifts[child.key] = true;
-    });
-    buildCarousel();
-  });
-
-  attachDbListener(DB.ref('chat').limitToLast(1), 'child_added', snap => {
-    if (App.chatOpened) return;
-    const msg = snap.val();
-    if (!msg || !App.user) return;
-    if (msg.timestamp <= App.lastChatTimestamp) return;
-    const isMine = msg.user === '🌌 ' + App.user.name || msg.user === '👑 ' + App.user.name || msg.user === App.user.name;
-    if (isMine) return;
-    if (App.notifiedKeys[snap.key]) return;
-    App.notifiedKeys[snap.key] = true;
-    App.lastChatTimestamp = Math.max(App.lastChatTimestamp, msg.timestamp || 0);
-    App.unreadCount++;
-    updateBadge();
-  });
-}
-
-// ---------- Event Listeners ----------
-document.addEventListener('DOMContentLoaded', function() {
-  // Chat events
-  document.getElementById('chatHeader').addEventListener('click', toggleChat);
-  document.getElementById('chatBackBtn').addEventListener('click', switchToGlobalChat);
-  document.getElementById('chatMsgInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      sendMessage();
-    }
-  });
-  document.getElementById('sendMsgBtn').addEventListener('click', sendMessage);
-  document.getElementById('chatPhotoBtn').addEventListener('click', () => document.getElementById('chatPhotoInput').click());
-  document.getElementById('chatPhotoInput').addEventListener('change', sendPhoto);
-
-  // Sticker panel
-  document.getElementById('stickerToggleBtn').addEventListener('click', function(e) {
-    e.stopPropagation();
-    const panel = document.getElementById('stickerPanel');
-    panel.classList.toggle('open');
-    if (panel.classList.contains('open')) renderStickerUI();
-  });
-  document.addEventListener('click', e => {
-    const panel = document.getElementById('stickerPanel');
-    if (panel && panel.classList.contains('open') && !e.target.closest('#stickerPanel') && !e.target.closest('.sticker-toggle')) {
-      panel.classList.remove('open');
-    }
-  });
-
-  // Sidebar
-  document.getElementById('sidebarToggleBtn').addEventListener('click', toggleSidebar);
-  document.getElementById('sidebarCloseBtn').addEventListener('click', () => document.getElementById('avatarCarousel').classList.remove('open'));
-
-  // Mini profile
-  document.getElementById('mpCloseBtn').addEventListener('click', closeMiniProfile);
-  document.getElementById('mpChatBtn').addEventListener('click', openPrivateChat);
-  document.addEventListener('click', e => {
-    const mp = document.getElementById('miniProfile');
-    if (mp && mp.classList.contains('show') && !e.target.closest('#miniProfile') &&
-        !e.target.closest('.avatar-item') && !e.target.closest('#sidebarToggleBtn') &&
-        !e.target.closest('.msg-author')) {
-      closeMiniProfile();
-    }
-  });
-
-  // Settings
-  document.getElementById('settingsBtn').addEventListener('click', openSettings);
-  document.getElementById('settingsCloseBtn').addEventListener('click', closeSettings);
-  document.getElementById('settingsSaveBtn').addEventListener('click', saveSettings);
-  document.getElementById('settingsLogoutBtn').addEventListener('click', () => {
-    closeSettings();
-    logout();
-  });
-  document.getElementById('avatarCloseBtn').addEventListener('click', closeSettings);
-  document.getElementById('avatarSaveBtn').addEventListener('click', saveAvatar);
-
-  document.getElementById('setAvatarFile').addEventListener('change', e => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = ev => {
-      const img = new Image();
-      img.onload = () => {
-        App.avatarImageData = img;
-        drawProfileAvatar();
-        toast('Фото загружено');
-      };
-      img.src = ev.target.result;
-    };
-    reader.readAsDataURL(file);
-  });
-
-  // Settings tabs
-  document.querySelectorAll('.settings-tab').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const tab = this.dataset.tab;
-      document.querySelectorAll('.settings-tab').forEach(b => {
-        b.classList.remove('active');
-        b.style.background = 'transparent';
-        b.style.color = 'var(--muted)';
+    el.querySelectorAll('.avatar-item').forEach(item => {
+      item.addEventListener('click', function() {
+        const uid = this.dataset.uid;
+        App.selectedProfile = uid;
+        el.querySelectorAll('.avatar-item').forEach(x => x.classList.toggle('active', x.dataset.uid === uid));
+        showMiniProfile(uid);
       });
-      this.classList.add('active');
-      this.style.background = 'var(--accent)';
-      this.style.color = '#fff';
-      document.getElementById('stab-main').style.display = tab === 'main' ? 'flex' : 'none';
-      document.getElementById('stab-avatar').style.display = tab === 'avatar' ? 'flex' : 'none';
     });
-  });
+  }
 
-  // Style buttons
-  document.querySelectorAll('.style-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      App.avatarSettings.style = this.dataset.style;
-      document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
-      this.classList.add('active');
+  function showMiniProfile(uid) {
+    const d = App.allUserData[uid];
+    if (!d) return;
+
+    $('#mpName').textContent = d.name;
+    $('#mpAvatarContainer').innerHTML = `
+      <div style="position:relative;width:64px;height:64px;">
+        ${d.avatar
+          ? `<img src="${esc(d.avatar)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--accent);">`
+          : `<div style="width:100%;height:100%;border-radius:50%;background:#444;display:flex;align-items:center;justify-content:center;font-size:24px;color:#ccc;">${esc(d.name.charAt(0))}</div>`
+        }
+      </div>
+    `;
+
+    const roleMap = { god: 'Начальник', creator: 'Создатель', manager: 'Сотрудник' };
+    $('#mpStatus').textContent = roleMap[d.role] || 'Сотрудник';
+    $('#mpPunkt').textContent = App.activeShifts[uid] ? '🟢 На смене' : '🔴 Выходной';
+    $('#miniProfile').classList.add('show');
+  }
+
+  function closeMiniProfile() {
+    $('#miniProfile').classList.remove('show');
+    App.selectedProfile = null;
+  }
+
+  // ============ Avatar ============
+  function loadAvatarSettings() {
+    DB.ref('users/' + App.user.uid + '/avatarSettings').once('value').then(snap => {
+      if (snap.exists()) {
+        const d = snap.val();
+        Object.assign(App.avatarSettings, d);
+        if (d.photo) {
+          const img = new Image();
+          img.onload = () => {
+            App.avatarImageData = img;
+            drawProfileAvatar();
+          };
+          img.src = d.photo;
+        }
+      }
+
+      if (App.user.avatar && !App.avatarImageData) {
+        const img = new Image();
+        img.onload = () => {
+          App.avatarImageData = img;
+          drawProfileAvatar();
+        };
+        img.src = App.user.avatar;
+      }
+
+      drawProfileAvatar();
+      if (!App.avatarAnimId) updateAllFrames();
+    });
+  }
+
+  function drawProfileAvatar() {
+    const canvas = document.getElementById('profileAvatarCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, 76, 76);
+
+    if (App.avatarImageData) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(38, 38, 36, 0, Math.PI * 2);
+      ctx.clip();
+      const ratio = Math.max(76 / App.avatarImageData.width, 76 / App.avatarImageData.height);
+      const dw = App.avatarImageData.width * ratio;
+      const dh = App.avatarImageData.height * ratio;
+      ctx.drawImage(App.avatarImageData, (76 - dw) / 2, (76 - dh) / 2, dw, dh);
+      ctx.restore();
+    } else {
+      ctx.fillStyle = '#1e1b4b';
+      ctx.beginPath();
+      ctx.arc(38, 38, 36, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#6366f1';
+      ctx.font = 'bold 28px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(App.user.name.charAt(0).toUpperCase(), 38, 40);
+    }
+  }
+
+  function updateAllFrames() {
+    if (document.hidden) {
+      App.avatarAnimId = requestAnimationFrame(updateAllFrames);
+      return;
+    }
+
+    const frameCanvas = $('#profileFrameCanvas');
+    if (frameCanvas) {
+      const ctx = frameCanvas.getContext('2d');
+      ctx.save();
+      ctx.translate(38, 38);
+      drawFrame(ctx, 76, 76, App.avatarSettings);
+      ctx.restore();
+    }
+
+    App.avatarAnimId = requestAnimationFrame(updateAllFrames);
+  }
+
+  function drawFrame(ctx, w, h, settings) {
+    const cx = w / 2;
+    const cy = h / 2;
+    const time = Date.now() / 1000 * settings.speed;
+
+    ctx.clearRect(0, 0, w, h);
+    ctx.shadowBlur = settings.glow || 20;
+    ctx.shadowColor = settings.color1 || '#7c3aed';
+
+    const hasAdvancedFrame = App.isCreator || App.isGod;
+
+    if (!hasAdvancedFrame) {
+      // Simple ring for managers
+      const thickness = settings.ringThickness === 'thin' ? 2 : settings.ringThickness === 'thick' ? 6 : 4;
+      ctx.strokeStyle = settings.ringColor || '#7c3aed';
+      ctx.lineWidth = thickness;
+      ctx.beginPath();
+      ctx.arc(cx, cy, w / 2 - 4, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+      return;
+    }
+
+    // Advanced frames for creator/god
+    if (settings.style === 'neutron') {
+      for (let i = 0; i < 3; i++) {
+        ctx.save();
+        ctx.rotate(i * Math.PI * 2 / 3 + time);
+        ctx.strokeStyle = i === 0 ? settings.color1 : settings.color2;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, Math.max(0, w / 2 - 5), Math.max(0, h / 4), 0, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+    } else if (settings.style === 'blackhole') {
+      const grad = ctx.createRadialGradient(cx, cy, w * 0.5, cx, cy, w);
+      grad.addColorStop(0, 'transparent');
+      grad.addColorStop(0.3, 'rgba(0,0,0,0.5)');
+      grad.addColorStop(0.6, settings.color1);
+      grad.addColorStop(1, 'transparent');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(cx, cy, w, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (settings.style === 'divine') {
+      ctx.strokeStyle = settings.color1;
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.arc(cx, cy, w * 0.75, 0, Math.PI * 2);
+      ctx.stroke();
+      for (let i = 0; i < 30; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const dist = w * 0.75 + Math.sin(time * 5 + i) * 10;
+        ctx.fillStyle = settings.color2;
+        ctx.beginPath();
+        ctx.arc(cx + dist * Math.cos(angle), cy + dist * Math.sin(angle), 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    } else if (settings.style === 'kitsune') {
+      for (let i = 0; i < 6; i++) {
+        ctx.fillStyle = 'rgba(255,69,0,0.3)';
+        ctx.beginPath();
+        ctx.arc(cx + Math.cos(time * 2 + i) * 30, cy + Math.sin(time * 2 + i) * 30, 20 + Math.sin(time * 3 + i) * 10, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    } else if (settings.style === 'wasteland') {
+      ctx.fillStyle = settings.color1 + '40';
+      ctx.beginPath();
+      ctx.arc(cx, cy, w * 0.75 * (1 + Math.sin(time * 5) * 0.05), 0, Math.PI * 2);
+      ctx.fill();
+    } else if (settings.style === 'enigma') {
+      ctx.strokeStyle = settings.color1;
+      ctx.lineWidth = 15;
+      ctx.beginPath();
+      ctx.arc(cx, cy, w * 0.75, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.strokeStyle = settings.color2;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(cx, cy, w * 0.75, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    ctx.shadowBlur = 0;
+  }
+
+  // ============ Settings ============
+  function openSettings() {
+    $('#mainContent').style.display = 'none';
+    $('#avatarCarousel').style.display = 'none';
+    $('#settingsPanel').style.display = 'flex';
+    $('#setName').value = '';
+    loadPunktsForSettings();
+    updateSettingsUI();
+  }
+
+  function closeSettings() {
+    $('#settingsPanel').style.display = 'none';
+    $('#mainContent').style.display = 'flex';
+    $('#avatarCarousel').style.display = 'flex';
+  }
+
+  function loadPunktsForSettings() {
+    DB.ref('punkts').once('value').then(snap => {
+      const sel = $('#setPunkt');
+      sel.innerHTML = '<option value="">Не менять</option>';
+      snap.forEach(child => {
+        sel.innerHTML += `<option value="${esc(child.key)}">${esc(child.key)}</option>`;
+      });
+    });
+  }
+
+  function updateSettingsUI() {
+    const hasAdvanced = App.isCreator || App.isGod;
+    document.getElementById('avatarAdvanced').style.display = hasAdvanced ? 'block' : 'none';
+    document.getElementById('avatarSimple').style.display = hasAdvanced ? 'none' : 'block';
+
+    document.querySelectorAll('.style-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.style === App.avatarSettings.style);
+    });
+
+    $('#setSpeed').value = App.avatarSettings.speed;
+    $('#setSpeedVal').textContent = App.avatarSettings.speed + 'x';
+    $('#setGlow').value = App.avatarSettings.glow;
+    $('#setGlowVal').textContent = App.avatarSettings.glow + 'px';
+    $('#setColor1').value = App.avatarSettings.color1;
+    $('#setColor2').value = App.avatarSettings.color2;
+    $('#setRingColor').value = App.avatarSettings.ringColor;
+    $('#setRingThickness').value = App.avatarSettings.ringThickness;
+  }
+
+  function saveSettings() {
+    const newName = $('#setName').value.trim();
+    const newPunkt = $('#setPunkt').value;
+    const update = {};
+
+    if (newName) update.name = newName;
+    if (newPunkt) update.punkt = newPunkt;
+
+    if (Object.keys(update).length) {
+      DB.ref('users/' + App.user.uid).update(update).then(() => {
+        if (newName) App.user.name = newName;
+        if (newPunkt) App.user.punkt = newPunkt;
+        updateUI();
+        toast('Настройки сохранены');
+      });
+    }
+
+    closeSettings();
+  }
+
+  function saveAvatar() {
+    const settings = {
+      style: App.avatarSettings.style,
+      speed: App.avatarSettings.speed,
+      glow: App.avatarSettings.glow,
+      color1: App.avatarSettings.color1,
+      color2: App.avatarSettings.color2,
+      ringColor: App.avatarSettings.ringColor,
+      ringThickness: App.avatarSettings.ringThickness
+    };
+
+    if (App.avatarImageData) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 200;
+      canvas.height = 200;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(App.avatarImageData, 0, 0, 200, 200);
+      settings.photo = canvas.toDataURL('image/jpeg', 0.8);
+    }
+
+    const update = { avatarSettings: settings };
+    if (settings.photo) update.avatar = settings.photo;
+
+    DB.ref('users/' + App.user.uid).update(update).then(() => {
+      if (settings.photo) App.user.avatar = settings.photo;
+      toast('Аватар сохранён');
+      closeSettings();
+    });
+  }
+
+  // ============ Pinned & Announce ============
+  function loadPinned() {
+    DB.ref('pinned').on('value', snap => {
+      const el = $('#pinnedMessage');
+      if (!snap.exists()) {
+        el.style.display = 'none';
+        return;
+      }
+      const d = snap.val();
+      el.style.display = 'block';
+      el.innerHTML = `📌 <b>${esc(d.user || '?')}:</b> ${esc(d.text)}`;
+    });
+  }
+
+  function loadAnnounce() {
+    DB.ref('announce').limitToLast(1).on('value', snap => {
+      const el = $('#announceBlock');
+      if (!snap.exists()) {
+        el.style.display = 'none';
+        return;
+      }
+
+      let last = null;
+      snap.forEach(child => {
+        last = child.val();
+        last._key = child.key;
+      });
+
+      if (last.expiry && Date.now() > last.expiry) {
+        DB.ref('announce/' + last._key).remove();
+        el.style.display = 'none';
+        return;
+      }
+
+      el.style.display = 'block';
+      el.innerHTML = `${esc(last.text)}<br><small style="color:var(--muted);">${new Date(last.timestamp).toLocaleString('ru-RU')}</small>`;
+
+      if (App.isCreator || App.isGod) {
+        const delBtn = document.createElement('button');
+        delBtn.textContent = '✕';
+        delBtn.style.cssText = 'position:absolute;right:8px;top:8px;background:none;border:none;color:var(--red);cursor:pointer;font-size:14px;';
+        delBtn.addEventListener('click', () => DB.ref('announce/' + last._key).remove());
+        el.appendChild(delBtn);
+      }
+    });
+  }
+
+  // ============ Database Listeners ============
+  function setupDatabaseListeners() {
+    attachDbListener(DB.ref('users'), 'value', snap => {
+      App.allUserData = {};
+      snap.forEach(child => {
+        App.allUserData[child.key] = child.val();
+      });
+      buildCarousel();
+    });
+
+    attachDbListener(DB.ref('activeShifts'), 'value', snap => {
+      App.activeShifts = {};
+      snap.forEach(child => {
+        if (child.val() && child.val().active) {
+          App.activeShifts[child.key] = true;
+        }
+      });
+      buildCarousel();
+    });
+
+    attachDbListener(DB.ref('chat').limitToLast(1), 'child_added', snap => {
+      if (App.chatOpened) return;
+      const m = snap.val();
+      if (!m || !App.user) return;
+      if (m.timestamp <= App.lastChatTimestamp) return;
+
+      const isMine = m.user === '🌌 ' + App.user.name ||
+                     m.user === '👑 ' + App.user.name ||
+                     m.user === App.user.name;
+      if (isMine) return;
+      if (App.notifiedKeys[snap.key]) return;
+
+      App.notifiedKeys[snap.key] = true;
+      App.lastChatTimestamp = Math.max(App.lastChatTimestamp, m.timestamp || 0);
+      App.unreadCount++;
+      updateBadge();
+    });
+  }
+
+  // ============ Init ============
+  function init() {
+    initBackground();
+
+    $('#tabLogin').addEventListener('click', toggleAuth);
+    $('#tabRegister').addEventListener('click', toggleAuth);
+    $('#loginBtn').addEventListener('click', login);
+    $('#registerBtn').addEventListener('click', register);
+    $('#resetPassBtn').addEventListener('click', resetPassword);
+    $('#loginPass').addEventListener('keydown', e => {
+      if (e.key === 'Enter') login();
+    });
+    $('#regPass').addEventListener('keydown', e => {
+      if (e.key === 'Enter') register();
+    });
+
+    $('#chatHeader').addEventListener('click', toggleChat);
+    $('#chatBackBtn').addEventListener('click', switchToGlobalChat);
+    $('#chatMsgInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+    $('#sendMsgBtn').addEventListener('click', sendMessage);
+    $('#chatPhotoBtn').addEventListener('click', () => $('#chatPhotoInput').click());
+    $('#chatPhotoInput').addEventListener('change', sendPhoto);
+
+    $('#stickerToggleBtn').addEventListener('click', e => {
+      e.stopPropagation();
+      const panel = $('#stickerPanel');
+      panel.classList.toggle('open');
+      if (panel.classList.contains('open')) renderStickerUI();
+    });
+
+    document.addEventListener('click', e => {
+      const panel = $('#stickerPanel');
+      if (panel && panel.classList.contains('open') &&
+          !e.target.closest('#stickerPanel') &&
+          !e.target.closest('.sticker-toggle')) {
+        panel.classList.remove('open');
+      }
+    });
+
+    $('#sidebarToggleBtn').addEventListener('click', toggleSidebar);
+    $('#sidebarCloseBtn').addEventListener('click', () => $('#avatarCarousel').classList.remove('open'));
+    $('#mpCloseBtn').addEventListener('click', closeMiniProfile);
+    $('#mpChatBtn').addEventListener('click', openPrivateChat);
+
+    document.addEventListener('click', e => {
+      const mp = $('#miniProfile');
+      if (mp && mp.classList.contains('show') &&
+          !e.target.closest('#miniProfile') &&
+          !e.target.closest('.avatar-item') &&
+          !e.target.closest('#sidebarToggleBtn') &&
+          !e.target.closest('.msg-author')) {
+        closeMiniProfile();
+      }
+    });
+
+    $('#settingsBtn').addEventListener('click', openSettings);
+    $('#settingsCloseBtn').addEventListener('click', closeSettings);
+    $('#settingsSaveBtn').addEventListener('click', saveSettings);
+    $('#settingsLogoutBtn').addEventListener('click', () => { closeSettings(); logout(); });
+    $('#avatarCloseBtn').addEventListener('click', closeSettings);
+    $('#avatarSaveBtn').addEventListener('click', saveAvatar);
+
+    $('#setAvatarFile').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = new Image();
+        img.onload = () => {
+          App.avatarImageData = img;
+          drawProfileAvatar();
+          toast('Фото загружено');
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.querySelectorAll('.settings-tab').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const tab = this.dataset.tab;
+        document.querySelectorAll('.settings-tab').forEach(b => {
+          b.classList.remove('active');
+          b.style.background = 'transparent';
+          b.style.color = 'var(--muted)';
+        });
+        this.classList.add('active');
+        this.style.background = 'var(--accent)';
+        this.style.color = '#fff';
+        $('#stab-main').style.display = tab === 'main' ? 'flex' : 'none';
+        $('#stab-avatar').style.display = tab === 'avatar' ? 'flex' : 'none';
+      });
+    });
+
+    document.querySelectorAll('.style-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        App.avatarSettings.style = this.dataset.style;
+        document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        updateAllFrames();
+      });
+    });
+
+    $('#setSpeed').addEventListener('input', function() {
+      App.avatarSettings.speed = parseFloat(this.value);
+      $('#setSpeedVal').textContent = App.avatarSettings.speed + 'x';
       updateAllFrames();
     });
-  });
 
-  // Avatar settings sliders
-  document.getElementById('setSpeed').addEventListener('input', function() {
-    App.avatarSettings.speed = parseFloat(this.value);
-    document.getElementById('setSpeedVal').textContent = App.avatarSettings.speed + 'x';
-    updateAllFrames();
-  });
-  document.getElementById('setGlow').addEventListener('input', function() {
-    App.avatarSettings.glow = parseInt(this.value);
-    document.getElementById('setGlowVal').textContent = App.avatarSettings.glow + 'px';
-    updateAllFrames();
-  });
-  document.getElementById('setColor1').addEventListener('input', function() {
-    App.avatarSettings.color1 = this.value;
-    updateAllFrames();
-  });
-  document.getElementById('setColor2').addEventListener('input', function() {
-    App.avatarSettings.color2 = this.value;
-    updateAllFrames();
-  });
-  document.getElementById('setRingColor').addEventListener('input', function() {
-    App.avatarSettings.ringColor = this.value;
-  });
-  document.getElementById('setRingThickness').addEventListener('change', function() {
-    App.avatarSettings.ringThickness = this.value;
-  });
-});
+    $('#setGlow').addEventListener('input', function() {
+      App.avatarSettings.glow = parseInt(this.value);
+      $('#setGlowVal').textContent = App.avatarSettings.glow + 'px';
+      updateAllFrames();
+    });
 
+    $('#setColor1').addEventListener('input', function() {
+      App.avatarSettings.color1 = this.value;
+      updateAllFrames();
+    });
+
+    $('#setColor2').addEventListener('input', function() {
+      App.avatarSettings.color2 = this.value;
+      updateAllFrames();
+    });
+
+    $('#setRingColor').addEventListener('input', function() {
+      App.avatarSettings.ringColor = this.value;
+    });
+
+    $('#setRingThickness').addEventListener('change', function() {
+      App.avatarSettings.ringThickness = this.value;
+    });
+
+    loadPunktsForRegister();
+
+    // Auto-login
+    AUTH.onAuthStateChanged(async user => {
+      if (user && !App.user) {
+        const snap = await DB.ref('users/' + user.uid).once('value');
+        if (snap.exists()) {
+          App.user = snap.val();
+          App.user.uid = user.uid;
+          finishLogin();
+        }
+      }
+    });
+
+    // Cleanup on window close
+    window.addEventListener('beforeunload', () => {
+      if (App.user) {
+        DB.ref('presence/' + App.user.uid).set({
+          online: false,
+          ts: Date.now()
+        });
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
 })();
 </script>
 </body>
