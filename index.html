@@ -25,8 +25,8 @@ button:active{transform:scale(0.95)}
 .btn-blue{background:linear-gradient(135deg,#2196F3,#1565C0);color:#fff;width:100%}
 .btn-purple{background:#9C27B0;color:#fff}
 .btn-sm{padding:6px 12px;font-size:12px;width:auto}
-.app-container{display:flex;width:100%;height:100vh;position:relative;z-index:1;justify-content:center;overflow:hidden}
-.main-content{width:100%;max-width:720px;padding:12px 16px;display:flex;flex-direction:column;padding-bottom:80px;height:100%;gap:6px}
+.app-container{display:flex;width:100%;height:100vh;position:relative;z-index:1;overflow:hidden}
+.main-content{width:100%;max-width:100%;padding:12px 16px;display:flex;flex-direction:column;height:100%;gap:6px}
 .profile-card{display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(12px);flex-shrink:0}
 .badge{font-size:12px;font-weight:bold;padding:4px 12px;border-radius:20px;display:inline-block}
 .badge-creator{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff}
@@ -45,6 +45,7 @@ button:active{transform:scale(0.95)}
 .tab-content.active-tab{display:block}
 .chat-section{background:var(--bg2);border:1px solid var(--border);border-radius:16px;display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;margin:0}
 .chat-header-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.2);cursor:pointer;flex-shrink:0}
+.chat-header-bar:hover{background:rgba(0,0,0,0.3)}
 #chat{flex:1;overflow-y:auto;padding:10px 14px;scrollbar-width:thin;scrollbar-color:var(--accent) transparent;background:transparent;display:flex;flex-direction:column;gap:2px}
 #chat.hidden{display:none}
 .chat-bubble-group{display:flex;flex-direction:column;max-width:85%;position:relative;margin:1px 0}
@@ -58,7 +59,8 @@ button:active{transform:scale(0.95)}
 .chat-bubble.god{border-left:2px solid #FFD700;background:rgba(255,215,0,0.06)}
 .chat-img{max-width:200px;max-height:150px;border-radius:8px;margin-top:4px;cursor:pointer;object-fit:cover}
 .chat-sticker{max-width:120px;max-height:120px;object-fit:contain;margin:2px 0}
-.chat-input-bar{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:720px;background:var(--bg2);backdrop-filter:blur(16px);padding:8px 12px;display:flex;gap:8px;align-items:center;z-index:100;border-top:1px solid var(--border);border-radius:16px 16px 0 0}
+.chat-input-wrapper{position:relative;width:100%;margin-top:auto;flex-shrink:0}
+.chat-input-bar{width:100%;background:var(--bg2);backdrop-filter:blur(16px);padding:8px 12px;display:flex;gap:8px;align-items:center;z-index:100;border-top:1px solid var(--border);border-radius:16px}
 .input-wrapper{position:relative;flex:1;display:flex;align-items:center;background:rgba(0,0,0,0.3);border-radius:20px;border:1px solid rgba(255,255,255,0.05)}
 .input-wrapper input{background:transparent;border:none;padding:10px 40px 10px 16px;font-size:15px;width:100%}
 .sticker-toggle{position:absolute;right:8px;background:transparent;border:none;font-size:20px;cursor:pointer;color:#aaa;padding:0}
@@ -81,7 +83,7 @@ button:active{transform:scale(0.95)}
 @keyframes slideIn{from{opacity:0;transform:translateY(-50%) translateX(20px)}to{opacity:1;transform:translateY(-50%) translateX(0)}}
 .mini-profile .mp-close{position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.05);border:none;color:#aaa;width:28px;height:28px;border-radius:50%;font-size:12px;cursor:pointer}
 .mini-profile .mp-close:hover{background:#e94560;color:#fff}
-#stickerPanel{position:absolute;bottom:70px;right:0;width:300px;height:340px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;display:none;flex-direction:column;z-index:1000;box-shadow:0 10px 40px rgba(0,0,0,0.6);backdrop-filter:blur(20px);overflow:hidden}
+#stickerPanel{position:absolute;bottom:calc(100% + 8px);right:0;width:300px;height:340px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;display:none;flex-direction:column;z-index:1000;box-shadow:0 10px 40px rgba(0,0,0,0.6);backdrop-filter:blur(20px);overflow:hidden}
 #stickerPanel.open{display:flex}
 #stickerContent{flex:1;overflow-y:auto;padding:12px;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start}
 .emoji-item{width:40px;height:40px;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:10px;transition:0.15s}
@@ -111,12 +113,32 @@ button:active{transform:scale(0.95)}
 .settings-tab.active{background:var(--accent);color:#fff}
 .style-btn{padding:8px 6px;border-radius:10px;border:2px solid #444;background:rgba(0,0,0,0.3);color:#ccc;font-size:11px;cursor:pointer;transition:0.2s;width:100%}
 .style-btn.active{border-color:var(--accent);background:rgba(124,58,237,0.2);color:#fff}
+.style-btn.premium{border-color:#FFD700;background:rgba(255,215,0,0.05)}
 .avatar-wrap{position:relative;width:76px;height:76px;flex-shrink:0}
 .avatar-wrap canvas{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:50%}
 .avatar-wrap .avatar-base{z-index:1}
 .avatar-wrap .avatar-frame{z-index:2;pointer-events:none}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@media(max-width:600px){.main-content{padding:8px;padding-bottom:70px}.chat-input-bar{border-radius:12px 12px 0 0;padding:6px 8px}.mini-profile{right:10px;width:190px}.avatar-carousel{width:90px}.avatar-item{width:44px;height:44px}}
+
+/* Desktop layout: two columns */
+@media(min-width:1024px){
+  .app-container{flex-direction:row;align-items:stretch;justify-content:center;gap:16px;padding:12px}
+  .left-column{width:380px;display:flex;flex-direction:column;gap:6px;flex-shrink:0;overflow-y:auto;height:100%}
+  .right-column{flex:1;display:flex;flex-direction:column;gap:6px;height:100%;min-width:0}
+  .right-column .chat-section{flex:1}
+  .right-column .chat-input-wrapper{flex-shrink:0}
+  .main-content{flex-direction:row;padding:0;gap:16px;max-width:100%}
+  #tabContentContainer{flex:1;overflow-y:auto}
+}
+
+@media(max-width:1023px){
+  .main-content{padding:8px 8px 70px}
+  .chat-input-wrapper{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:100%;z-index:100}
+  .chat-input-bar{border-radius:12px 12px 0 0;padding:6px 8px}
+  .mini-profile{right:10px;width:190px}
+  .avatar-carousel{width:90px}
+  .avatar-item{width:44px;height:44px}
+}
 </style>
 </head>
 <body>
@@ -153,50 +175,57 @@ button:active{transform:scale(0.95)}
   <button class="btn-sidebar-toggle" id="sidebarToggleBtn">👥</button>
   
   <div class="main-content" id="mainContent">
-    <div id="announceBlock" style="display:none;background:rgba(200,150,0,0.1);border:1px solid rgba(200,150,0,0.3);padding:12px 16px;border-radius:16px;text-align:center;font-size:14px;color:#ffd700;margin-bottom:4px;"></div>
-    
-    <div class="profile-card">
-      <div class="avatar-wrap">
-        <canvas id="profileAvatarCanvas" class="avatar-base" width="76" height="76"></canvas>
-        <canvas id="profileFrameCanvas" class="avatar-frame" width="76" height="76"></canvas>
+    <!-- Left Column (Desktop) -->
+    <div class="left-column" id="leftColumn">
+      <div id="announceBlock" style="display:none;background:rgba(200,150,0,0.1);border:1px solid rgba(200,150,0,0.3);padding:12px 16px;border-radius:16px;text-align:center;font-size:14px;color:#ffd700;margin-bottom:4px;"></div>
+      
+      <div class="profile-card">
+        <div class="avatar-wrap">
+          <canvas id="profileAvatarCanvas" class="avatar-base" width="76" height="76"></canvas>
+          <canvas id="profileFrameCanvas" class="avatar-frame" width="76" height="76"></canvas>
+        </div>
+        <div style="flex:1">
+          <b id="creatorNameWrapper" class="name-creator" style="font-size:18px;"><span id="uname"></span></b>
+          <span id="roleBadge" class="badge badge-creator">Создатель</span><br>
+          <span style="font-size:12px;color:#aaa;">Пункт <span id="upunkt"></span></span>
+        </div>
+        <button class="btn-gray" id="settingsBtn" style="width:auto;padding:8px 14px;font-size:13px;">⚙️</button>
       </div>
-      <div style="flex:1">
-        <b id="creatorNameWrapper" class="name-creator" style="font-size:18px;"><span id="uname"></span></b>
-        <span id="roleBadge" class="badge badge-creator">Создатель</span><br>
-        <span style="font-size:12px;color:#aaa;">Пункт <span id="upunkt"></span></span>
-      </div>
-      <button class="btn-gray" id="settingsBtn" style="width:auto;padding:8px 14px;font-size:13px;">⚙️</button>
+      
+      <div class="tabs" id="tabsContainer"></div>
+      <div id="tabContentContainer" style="flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;padding-bottom:6px;"></div>
     </div>
     
-    <div class="tabs" id="tabsContainer"></div>
-    <div id="tabContentContainer" style="flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;padding-bottom:6px;"></div>
-    
-    <div id="pinnedMessage" style="display:none;padding:10px 16px;margin-bottom:4px;border-radius:16px;background:rgba(245,197,24,0.05);border:1px solid rgba(245,197,24,0.2);font-size:13px;"></div>
-    
-    <div class="chat-section">
-      <div class="chat-header-bar" id="chatHeader">
-        <span style="font-size:18px;">💬</span>
-        <span id="chatLabel" style="flex:1;font-weight:bold;background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Общий чат</span>
-        <span id="chatBadge" style="display:none;background:var(--red);color:#fff;border-radius:10px;font-size:11px;padding:2px 6px;font-weight:bold;">0</span>
-        <button class="btn-gray" id="chatBackBtn" style="display:none;width:auto;padding:4px 12px;font-size:12px;">Назад</button>
+    <!-- Right Column (Desktop) - Chat -->
+    <div class="right-column" id="rightColumn">
+      <div id="pinnedMessage" style="display:none;padding:10px 16px;margin-bottom:4px;border-radius:16px;background:rgba(245,197,24,0.05);border:1px solid rgba(245,197,24,0.2);font-size:13px;"></div>
+      
+      <div class="chat-section">
+        <div class="chat-header-bar" id="chatHeader">
+          <span style="font-size:18px;">💬</span>
+          <span id="chatLabel" style="flex:1;font-weight:bold;background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Общий чат</span>
+          <span id="chatBadge" style="display:none;background:var(--red);color:#fff;border-radius:10px;font-size:11px;padding:2px 6px;font-weight:bold;">0</span>
+          <button class="btn-gray" id="chatBackBtn" style="display:none;width:auto;padding:4px 12px;font-size:12px;">Назад</button>
+        </div>
+        <div id="chat"></div>
       </div>
-      <div id="chat"></div>
+      
+      <div class="chat-input-wrapper" id="chatInputWrapper">
+        <div class="chat-input-bar" id="chatInputBar">
+          <div class="input-wrapper">
+            <input id="chatMsgInput" placeholder="Сообщение...">
+            <button class="sticker-toggle" id="stickerToggleBtn">😀</button>
+          </div>
+          <button id="chatPhotoBtn">📎</button>
+          <input id="chatPhotoInput" type="file" accept="image/*" multiple style="display:none;">
+          <button id="sendMsgBtn">➤</button>
+        </div>
+        <div id="stickerPanel">
+          <div id="stickerContent"></div>
+          <div class="sticker-tabs" id="stickerTabs"></div>
+        </div>
+      </div>
     </div>
-  </div>
-  
-  <div class="chat-input-bar" id="chatInputBar">
-    <div class="input-wrapper">
-      <input id="chatMsgInput" placeholder="Сообщение...">
-      <button class="sticker-toggle" id="stickerToggleBtn">😀</button>
-    </div>
-    <button id="chatPhotoBtn">📎</button>
-    <input id="chatPhotoInput" type="file" accept="image/*" multiple style="display:none;">
-    <button id="sendMsgBtn">➤</button>
-  </div>
-  
-  <div id="stickerPanel">
-    <div id="stickerContent"></div>
-    <div class="sticker-tabs" id="stickerTabs"></div>
   </div>
   
   <div class="avatar-carousel" id="avatarCarousel">
@@ -233,14 +262,7 @@ button:active{transform:scale(0.95)}
       <div><label style="font-size:12px;color:var(--muted);">Загрузить фото</label><input type="file" id="setAvatarFile" accept="image/*"></div>
       <div id="avatarAdvanced">
         <label style="font-size:12px;color:var(--muted);">Стиль рамки</label>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:4px;">
-          <button class="style-btn active" data-style="neutron">🌀 Нейтрон</button>
-          <button class="style-btn" data-style="blackhole">🕳️ Дыра</button>
-          <button class="style-btn" data-style="divine">👑 Нимб</button>
-          <button class="style-btn" data-style="kitsune">🦊 Кицунэ</button>
-          <button class="style-btn" data-style="wasteland">☢️ Пустошь</button>
-          <button class="style-btn" data-style="enigma">🌀 Энигма</button>
-        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:4px;" id="animationGrid"></div>
         <div style="margin-top:8px;"><label style="font-size:12px;color:var(--muted);">Скорость <span id="setSpeedVal">1x</span></label><input type="range" id="setSpeed" min="0.1" max="3" step="0.1" value="1"></div>
         <div><label style="font-size:12px;color:var(--muted);">Свечение <span id="setGlowVal">20px</span></label><input type="range" id="setGlow" min="0" max="50" step="1" value="20"></div>
         <div><label style="font-size:12px;color:var(--muted);">Цвет 1</label><input type="color" id="setColor1" value="#6366f1"></div>
@@ -288,6 +310,20 @@ button:active{transform:scale(0.95)}
   const DB = firebase.database();
   const AUTH = firebase.auth();
 
+  // ============ Animations Config ============
+  const ANIMATIONS = [
+    { id: 'rgb-ring', label: 'Кольцо', premium: false },
+    { id: 'rgb-rainbow', label: 'Радуга 🌈', premium: false },
+    { id: 'neon-pulse', label: 'Пульс 💓', premium: false },
+    { id: 'running-gradient', label: 'Градиент 💫', premium: false },
+    { id: 'comet', label: 'Комета ⭐', premium: true },
+    { id: 'double-orbit', label: 'Орбита 🪐', premium: true },
+    { id: 'matrix', label: 'Матрица 🧪', premium: true },
+    { id: 'fire', label: 'Огонь 🔥', premium: true },
+    { id: 'sparks', label: 'Искры ⚡', premium: true },
+    { id: 'god-rays', label: 'Сияние ☀️', premium: true }
+  ];
+
   // ============ Globals ============
   const App = {
     user: null,
@@ -303,7 +339,7 @@ button:active{transform:scale(0.95)}
     calYear: null,
     calMonth: null,
     avatarSettings: {
-      style: 'neutron',
+      style: 'rgb-ring',
       speed: 1,
       glow: 20,
       color1: '#6366f1',
@@ -323,6 +359,7 @@ button:active{transform:scale(0.95)}
     activeListeners: []
   };
 
+  const avatarTimers = new Map();
   const BASE_EMOJIS = ['😊','😉','😘','❤️','🤘','😓','💀','💪','🫠','😂','🤣','😆','😎','🗿','🤷','🤔','😏','🙏','😭','☕️','😴','🤬','👍','👎'];
 
   // ============ Utility Functions ============
@@ -377,6 +414,222 @@ button:active{transform:scale(0.95)}
 
   function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  // ============ Avatar Rendering Engine ============
+  function renderPremiumAvatar(canvas, baseCanvas, settings) {
+    if (!canvas || !baseCanvas) return;
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width;
+    const h = canvas.height;
+    const cx = w / 2;
+    const cy = h / 2;
+    const radius = w / 2 - 6;
+
+    if (!avatarTimers.has(canvas)) {
+      avatarTimers.set(canvas, { tick: 0, pulse: 1, dir: 1, particles: [] });
+    }
+    const state = avatarTimers.get(canvas);
+    const speed = parseFloat(settings.speed) || 1;
+
+    state.tick += 0.04 * speed;
+    state.pulse += 0.02 * state.dir * speed;
+    if (state.pulse >= 1.2) state.dir = -1;
+    if (state.pulse <= 0.8) state.dir = 1;
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+
+    const color1 = settings.color1 || '#6366f1';
+    const color2 = settings.color2 || '#a855f7';
+    const glow = settings.glow || 20;
+
+    ctx.shadowBlur = glow;
+    ctx.shadowColor = color1;
+
+    const style = settings.style || 'rgb-ring';
+
+    switch (style) {
+      case 'rgb-ring':
+        // Simple rotating ring
+        ctx.strokeStyle = color1;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, state.tick % (Math.PI * 2), (state.tick % (Math.PI * 2)) + Math.PI * 1.5);
+        ctx.stroke();
+        ctx.strokeStyle = color2;
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, (state.tick % (Math.PI * 2)) + Math.PI, (state.tick % (Math.PI * 2)) + Math.PI * 2);
+        ctx.stroke();
+        break;
+
+      case 'rgb-rainbow':
+        // Rainbow gradient ring
+        for (let i = 0; i < 6; i++) {
+          const hue = ((state.tick * 50 + i * 60) % 360);
+          ctx.strokeStyle = `hsl(${hue}, 100%, 60%)`;
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.arc(cx, cy, radius, i * Math.PI / 3, (i + 1) * Math.PI / 3);
+          ctx.stroke();
+        }
+        break;
+
+      case 'neon-pulse':
+        // Pulsing ring
+        const pulseRadius = radius + Math.sin(state.tick * 3) * 3;
+        ctx.strokeStyle = color1;
+        ctx.lineWidth = 4 * state.pulse;
+        ctx.beginPath();
+        ctx.arc(cx, cy, pulseRadius, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.strokeStyle = color2;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(cx, cy, pulseRadius + 2, 0, Math.PI * 2);
+        ctx.stroke();
+        break;
+
+      case 'running-gradient':
+        // Gradient that runs around
+        const grad = ctx.createConicGradient(state.tick % (Math.PI * 2), cx, cy);
+        grad.addColorStop(0, color1);
+        grad.addColorStop(0.5, color2);
+        grad.addColorStop(1, color1);
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+        ctx.stroke();
+        break;
+
+      case 'comet':
+        // Comet tail effect
+        ctx.strokeStyle = color1;
+        ctx.lineWidth = 2;
+        for (let i = 0; i < 3; i++) {
+          const angle = state.tick + i * Math.PI * 2 / 3;
+          const tailLen = 30;
+          ctx.beginPath();
+          ctx.arc(cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius, 4, 0, Math.PI * 2);
+          ctx.fillStyle = color2;
+          ctx.fill();
+          ctx.beginPath();
+          ctx.moveTo(cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius);
+          ctx.lineTo(cx + Math.cos(angle - 0.3) * (radius - tailLen), cy + Math.sin(angle - 0.3) * (radius - tailLen));
+          ctx.strokeStyle = color2;
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
+        break;
+
+      case 'double-orbit':
+        // Two orbiting dots
+        for (let i = 0; i < 2; i++) {
+          const angle = state.tick * (i === 0 ? 1 : -1.5);
+          const orbitR = radius * 0.7;
+          const x = cx + Math.cos(angle) * orbitR;
+          const y = cy + Math.sin(angle) * orbitR;
+          ctx.fillStyle = i === 0 ? color1 : color2;
+          ctx.beginPath();
+          ctx.arc(x, y, 5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(cx, cy, orbitR, 0, Math.PI * 2);
+          ctx.strokeStyle = i === 0 ? color1 : color2;
+          ctx.lineWidth = 1;
+          ctx.setLineDash([4, 4]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+        break;
+
+      case 'matrix':
+        // Matrix-like falling lines
+        ctx.strokeStyle = '#00ff41';
+        ctx.lineWidth = 2;
+        for (let i = 0; i < 8; i++) {
+          const x = cx + Math.cos(i * Math.PI / 4) * radius;
+          const y = cy + Math.sin(i * Math.PI / 4) * radius;
+          const len = 15 + Math.sin(state.tick * 5 + i) * 10;
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(x, y - len);
+          ctx.strokeStyle = `rgba(0, 255, 65, ${0.3 + Math.sin(state.tick * 3 + i) * 0.5})`;
+          ctx.stroke();
+        }
+        break;
+
+      case 'fire':
+        // Fire effect
+        for (let i = 0; i < 12; i++) {
+          const angle = i * Math.PI / 6;
+          const h = 8 + Math.sin(state.tick * 8 + i) * 6;
+          const x1 = cx + Math.cos(angle) * radius;
+          const y1 = cy + Math.sin(angle) * radius;
+          const x2 = cx + Math.cos(angle) * (radius - h);
+          const y2 = cy + Math.sin(angle) * (radius - h);
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          ctx.strokeStyle = `hsl(${20 + Math.sin(state.tick * 4 + i) * 20}, 100%, ${50 + Math.sin(state.tick * 6 + i) * 20}%)`;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+        break;
+
+      case 'sparks':
+        // Spark particles
+        if (state.particles.length < 20) {
+          const angle = Math.random() * Math.PI * 2;
+          state.particles.push({
+            angle,
+            speed: 0.5 + Math.random() * 2,
+            life: 1,
+            size: 1 + Math.random() * 3
+          });
+        }
+        state.particles = state.particles.filter(p => p.life > 0);
+        state.particles.forEach(p => {
+          p.angle += p.speed * 0.02;
+          p.life -= 0.01;
+          const x = cx + Math.cos(p.angle) * radius;
+          const y = cy + Math.sin(p.angle) * radius;
+          ctx.fillStyle = p.life > 0.5 ? color1 : color2;
+          ctx.globalAlpha = p.life;
+          ctx.beginPath();
+          ctx.arc(x, y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+        break;
+
+      case 'god-rays':
+        // Radiating rays
+        for (let i = 0; i < 8; i++) {
+          const angle = i * Math.PI / 4 + state.tick * 0.5;
+          const len = radius * 1.2;
+          ctx.beginPath();
+          ctx.moveTo(cx + Math.cos(angle) * radius * 0.5, cy + Math.sin(angle) * radius * 0.5);
+          ctx.lineTo(cx + Math.cos(angle) * len, cy + Math.sin(angle) * len);
+          ctx.strokeStyle = i % 2 === 0 ? color1 : color2;
+          ctx.lineWidth = 2;
+          ctx.globalAlpha = 0.4 + Math.sin(state.tick * 2 + i) * 0.3;
+          ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+        break;
+
+      default:
+        // Fallback to ring
+        ctx.strokeStyle = color1;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+        ctx.stroke();
+    }
+
+    ctx.shadowBlur = 0;
   }
 
   // ============ Background Animation ============
@@ -582,6 +835,7 @@ button:active{transform:scale(0.95)}
     loadAvatarSettings();
     buildCarousel();
     renderStickerUI();
+    buildAnimationGrid();
 
     DB.ref('activeShifts/' + App.user.uid).once('value').then(snap => {
       if (snap.exists() && snap.val().active) {
@@ -879,14 +1133,8 @@ button:active{transform:scale(0.95)}
 
   function changeCal(dir) {
     App.calMonth += dir;
-    if (App.calMonth < 0) {
-      App.calMonth = 11;
-      App.calYear--;
-    }
-    if (App.calMonth > 11) {
-      App.calMonth = 0;
-      App.calYear++;
-    }
+    if (App.calMonth < 0) { App.calMonth = 11; App.calYear--; }
+    if (App.calMonth > 11) { App.calMonth = 0; App.calYear++; }
     renderCalendar();
   }
 
@@ -1061,16 +1309,9 @@ button:active{transform:scale(0.95)}
 
     $('#createPackBtn').addEventListener('click', () => {
       const name = $('#packName').value.trim();
-      if (!name) {
-        toast('Введите название', true);
-        return;
-      }
+      if (!name) { toast('Введите название', true); return; }
       DB.ref('sticker_packs').push({
-        name,
-        creator: App.user.uid,
-        icon: '',
-        stickers: {},
-        allowed_users: { [App.user.uid]: true }
+        name, creator: App.user.uid, icon: '', stickers: {}, allowed_users: { [App.user.uid]: true }
       }).then(() => {
         $('#packName').value = '';
         loadPacksList();
@@ -1085,16 +1326,12 @@ button:active{transform:scale(0.95)}
     DB.ref('sticker_packs').once('value').then(snap => {
       const list = $('#packsList');
       let html = '';
-
       snap.forEach(child => {
         const pack = child.val();
         const stickerCount = pack.stickers ? Object.keys(pack.stickers).length : 0;
-
         html += `
           <div style="padding:10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-            <div>
-              <b>${esc(pack.name)}</b> (${stickerCount} стикеров)
-            </div>
+            <div><b>${esc(pack.name)}</b> (${stickerCount} стикеров)</div>
             <div>
               <button class="btn-blue btn-sm manage-pack-btn" data-pack-id="${child.key}" data-pack-name="${esc(pack.name)}" style="width:auto;">Управлять</button>
               <button class="btn-red btn-sm delete-pack-btn" data-pack-id="${child.key}" style="width:auto;">✕</button>
@@ -1102,7 +1339,6 @@ button:active{transform:scale(0.95)}
           </div>
         `;
       });
-
       list.innerHTML = html || '<p style="color:var(--muted);">Нет стикерпаков</p>';
 
       list.querySelectorAll('.manage-pack-btn').forEach(btn => {
@@ -1125,7 +1361,6 @@ button:active{transform:scale(0.95)}
   function openStickerPackManager(packId, packName) {
     const panel = document.getElementById('stickerManagerPanel');
     const content = document.getElementById('stickerManagerContent');
-
     panel.style.display = 'flex';
 
     DB.ref('sticker_packs/' + packId).once('value').then(snap => {
@@ -1165,14 +1400,8 @@ button:active{transform:scale(0.95)}
 
       $('#addStickerBtn').addEventListener('click', () => {
         const url = $('#addStickerUrl').value.trim();
-        if (!url) {
-          toast('Введите URL', true);
-          return;
-        }
-        DB.ref('sticker_packs/' + packId + '/stickers').push({
-          img: url,
-          emoji: ''
-        }).then(() => {
+        if (!url) { toast('Введите URL', true); return; }
+        DB.ref('sticker_packs/' + packId + '/stickers').push({ img: url, emoji: '' }).then(() => {
           $('#addStickerUrl').value = '';
           openStickerPackManager(packId, packName);
         });
@@ -1185,38 +1414,29 @@ button:active{transform:scale(0.95)}
         });
       });
 
-      // Load allowed users
       DB.ref('users').once('value').then(usersSnap => {
         const usersList = $('#allowedUsersList');
         let usersHtml = '';
-
         usersSnap.forEach(child => {
           const u = child.val();
           if (u.uid === App.user.uid) return;
           const isAllowed = !!allowedUsers[child.key];
-
           usersHtml += `
             <div style="display:flex;justify-content:space-between;align-items:center;padding:6px;border-bottom:1px solid var(--border);">
               <span>${esc(u.name)}</span>
-              <button class="btn-sm ${isAllowed ? 'btn-red' : 'btn-green'} toggle-access-btn"
-                data-pack-id="${packId}" data-user-id="${child.key}" style="width:auto;">
+              <button class="btn-sm ${isAllowed ? 'btn-red' : 'btn-green'} toggle-access-btn" data-pack-id="${packId}" data-user-id="${child.key}" style="width:auto;">
                 ${isAllowed ? 'Запретить' : 'Разрешить'}
               </button>
             </div>
           `;
         });
-
         usersList.innerHTML = usersHtml || '<p style="color:var(--muted);">Нет пользователей</p>';
 
         usersList.querySelectorAll('.toggle-access-btn').forEach(btn => {
           btn.addEventListener('click', function() {
             const ref = DB.ref('sticker_packs/' + this.dataset.packId + '/allowed_users/' + this.dataset.userId);
-            const currentlyAllowed = !!allowedUsers[this.dataset.userId];
-            if (currentlyAllowed) {
-              ref.remove();
-            } else {
-              ref.set(true);
-            }
+            if (allowedUsers[this.dataset.userId]) { ref.remove(); }
+            else { ref.set(true); }
             openStickerPackManager(packId, packName);
           });
         });
@@ -1234,23 +1454,17 @@ button:active{transform:scale(0.95)}
     DB.ref('users').once('value').then(snap => {
       const list = $('#workersList');
       let html = '';
-
       snap.forEach(child => {
         const u = child.val();
         if (u.uid === App.user.uid) return;
-
         const roleLabel = u.role === 'creator'
           ? '<span style="font-size:10px;background:var(--gold);color:#000;padding:2px 6px;border-radius:8px;">Создатель</span>'
           : u.role === 'god'
             ? '<span style="font-size:10px;background:#FFD700;color:#000;padding:2px 6px;border-radius:8px;">Начальник</span>'
             : '';
-
         html += `
           <div class="worker-row">
-            <span>
-              <b>${esc(u.name)}</b> ${roleLabel}
-              <br><span style="font-size:11px;color:var(--muted);">Пункт ${esc(u.punkt || '?')} | Надбавка: ${u.bonus || 0}₽</span>
-            </span>
+            <span><b>${esc(u.name)}</b> ${roleLabel}<br><span style="font-size:11px;color:var(--muted);">Пункт ${esc(u.punkt || '?')} | Надбавка: ${u.bonus || 0}₽</span></span>
             <span>
               <button class="btn-gold btn-sm worker-bonus" data-name="${esc(u.name)}" data-uid="${child.key}">🎁</button>
               <button class="btn-purple btn-sm worker-penalty" data-name="${esc(u.name)}" data-uid="${child.key}">⚠️</button>
@@ -1259,23 +1473,14 @@ button:active{transform:scale(0.95)}
           </div>
         `;
       });
-
       list.innerHTML = html || '<p style="color:var(--muted);">Нет сотрудников</p>';
 
       list.querySelectorAll('.worker-bonus').forEach(btn => {
         btn.addEventListener('click', function() {
           const amount = prompt('Сумма премии:');
           if (!amount) return;
-          DB.ref('premiums').push({
-            user: this.dataset.uid,
-            amount: parseInt(amount),
-            timestamp: Date.now()
-          });
-          DB.ref('notifications').push({
-            user: this.dataset.uid,
-            text: `💰 Премия ${amount}₽ от начальника!`,
-            timestamp: Date.now()
-          });
+          DB.ref('premiums').push({ user: this.dataset.uid, amount: parseInt(amount), timestamp: Date.now() });
+          DB.ref('notifications').push({ user: this.dataset.uid, text: `💰 Премия ${amount}₽ от начальника!`, timestamp: Date.now() });
           toast(`✅ Премия ${amount}₽`);
         });
       });
@@ -1285,17 +1490,8 @@ button:active{transform:scale(0.95)}
           const amount = prompt('Сумма штрафа:');
           if (!amount) return;
           const reason = prompt('Причина:') || 'Нарушение';
-          DB.ref('punishes').push({
-            user: this.dataset.uid,
-            amount: parseInt(amount),
-            reason,
-            timestamp: Date.now()
-          });
-          DB.ref('notifications').push({
-            user: this.dataset.uid,
-            text: `💀 Штраф ${amount}₽ за: ${reason}`,
-            timestamp: Date.now()
-          });
+          DB.ref('punishes').push({ user: this.dataset.uid, amount: parseInt(amount), reason, timestamp: Date.now() });
+          DB.ref('notifications').push({ user: this.dataset.uid, text: `💀 Штраф ${amount}₽ за: ${reason}`, timestamp: Date.now() });
           toast(`💀 Штраф ${amount}₽`);
         });
       });
@@ -1344,12 +1540,8 @@ button:active{transform:scale(0.95)}
 
     $('#salCalcBtn').addEventListener('click', calculateSalary);
     $('#salPayBtn').addEventListener('click', function() {
-      if (!lastCalc) {
-        toast('Сначала посчитайте!', true);
-        return;
-      }
+      if (!lastCalc) { toast('Сначала посчитайте!', true); return; }
       if (!confirm(`Оплатить ${lastCalc.total}₽?`)) return;
-
       DB.ref('payments').push({
         user: lastCalc.uid,
         total: lastCalc.total,
@@ -1357,10 +1549,7 @@ button:active{transform:scale(0.95)}
         dateTo: lastCalc.to,
         timestamp: Date.now()
       });
-
-      const shiftPromises = lastCalc.shiftIds.map(id =>
-        DB.ref('shifts/' + id + '/paid').set(true)
-      );
+      const shiftPromises = lastCalc.shiftIds.map(id => DB.ref('shifts/' + id + '/paid').set(true));
       Promise.all(shiftPromises).then(() => {
         toast(`✅ Оплачено ${lastCalc.total}₽`);
         lastCalc = null;
@@ -1372,29 +1561,19 @@ button:active{transform:scale(0.95)}
       const uid = $('#salUser').value;
       const from = $('#salFrom').value;
       const to = $('#salTo').value;
-
-      if (!uid || !from || !to) {
-        toast('Заполните все поля', true);
-        return;
-      }
+      if (!uid || !from || !to) { toast('Заполните все поля', true); return; }
 
       try {
         const userSnap = await DB.ref('users/' + uid).once('value');
         const userData = userSnap.val();
         const punktId = userData.punkt || '';
-
         let rate = 0;
         const punktSnap = await DB.ref('punkts').once('value');
-        punktSnap.forEach(child => {
-          if (child.key === punktId) {
-            rate = child.val().rate || 0;
-          }
-        });
+        punktSnap.forEach(child => { if (child.key === punktId) rate = child.val().rate || 0; });
         if (rate === 0) rate = 150;
 
         let totalHours = 0, totalTovar = 0;
         const shiftIds = [];
-
         const shiftsSnap = await DB.ref('shifts').orderByChild('user').equalTo(uid).once('value');
         shiftsSnap.forEach(child => {
           const s = child.val();
@@ -1412,17 +1591,13 @@ button:active{transform:scale(0.95)}
         const premSnap = await DB.ref('premiums').orderByChild('user').equalTo(uid).once('value');
         premSnap.forEach(child => {
           const p = child.val();
-          if (p.timestamp >= fromTs && p.timestamp <= toTs) {
-            prem += p.amount || 0;
-          }
+          if (p.timestamp >= fromTs && p.timestamp <= toTs) prem += p.amount || 0;
         });
 
         const punSnap = await DB.ref('punishes').orderByChild('user').equalTo(uid).once('value');
         punSnap.forEach(child => {
           const p = child.val();
-          if (p.timestamp >= fromTs && p.timestamp <= toTs) {
-            pun += p.amount || 0;
-          }
+          if (p.timestamp >= fromTs && p.timestamp <= toTs) pun += p.amount || 0;
         });
 
         const base = Math.round(totalHours * rate);
@@ -1435,7 +1610,6 @@ button:active{transform:scale(0.95)}
             <br><b>Итого: ${total}₽</b>
           </div>
         `;
-
         lastCalc = { uid, from, to, total, shiftIds };
       } catch (ex) {
         toast('Ошибка расчёта: ' + ex.message, true);
@@ -1460,47 +1634,31 @@ button:active{transform:scale(0.95)}
       </div>
       <div id="announceList" style="margin-top:12px;">Загрузка...</div>
     `;
-
     $('#addAnnounceBtn').addEventListener('click', () => {
       const text = $('#announceText').value.trim();
       if (!text) return;
       const hours = parseInt($('#announceExpiry').value);
       const expiry = hours > 0 ? Date.now() + hours * 3600000 : null;
-
-      DB.ref('announce').push({
-        text,
-        timestamp: Date.now(),
-        expiry
-      }).then(() => {
+      DB.ref('announce').push({ text, timestamp: Date.now(), expiry }).then(() => {
         $('#announceText').value = '';
         loadAnnouncesList();
         toast('📜 Объявление опубликовано');
       });
     });
-
     loadAnnouncesList();
   }
 
   function loadAnnouncesList() {
     const el = $('#announceList');
     if (!el) return;
-
     DB.ref('announce').once('value').then(snap => {
-      if (!snap.exists()) {
-        el.innerHTML = '<p style="color:var(--muted);">Нет объявлений</p>';
-        return;
-      }
-
+      if (!snap.exists()) { el.innerHTML = '<p style="color:var(--muted);">Нет объявлений</p>'; return; }
       const items = [];
       snap.forEach(child => {
         const d = child.val();
-        if (!d.expiry || Date.now() < d.expiry) {
-          items.push({ id: child.key, data: d });
-        }
+        if (!d.expiry || Date.now() < d.expiry) items.push({ id: child.key, data: d });
       });
-
       items.sort((a, b) => b.data.timestamp - a.data.timestamp);
-
       el.innerHTML = items.length
         ? items.map(i => `
           <div style="padding:10px;border-bottom:1px solid var(--border);position:relative;">
@@ -1510,32 +1668,20 @@ button:active{transform:scale(0.95)}
           </div>
         `).join('')
         : '<p style="color:var(--muted);">Нет объявлений</p>';
-
       el.querySelectorAll('.delete-announce').forEach(btn => {
-        btn.addEventListener('click', function() {
-          DB.ref('announce/' + this.dataset.id).remove();
-          loadAnnouncesList();
-        });
+        btn.addEventListener('click', function() { DB.ref('announce/' + this.dataset.id).remove(); loadAnnouncesList(); });
       });
     });
   }
 
   // ============ Chat ============
   function loadChat() {
-    if (App.chatListener) {
-      App.chatListener.off();
-      App.chatListener = null;
-    }
-
+    if (App.chatListener) { App.chatListener.off(); App.chatListener = null; }
     const ref = App.privateChatWith ? getPrivateChatRef() : DB.ref('chat');
     App.chatListener = ref.limitToLast(50);
-
     App.chatListener.on('value', snap => {
       const messages = [];
-      snap.forEach(child => {
-        if (child.val()) messages.push({ key: child.key, msg: child.val() });
-      });
-
+      snap.forEach(child => { if (child.val()) messages.push({ key: child.key, msg: child.val() }); });
       messages.sort((a, b) => a.msg.timestamp - b.msg.timestamp);
 
       let html = '';
@@ -1544,12 +1690,8 @@ button:active{transform:scale(0.95)}
       function renderMsgContent(m) {
         let content = '';
         if (m.text) content += esc(m.text);
-        if (m.photo) {
-          content += `<br><img class="chat-img" src="${esc(m.thumb || m.photo)}" onclick="event.stopPropagation();window.open('${esc(m.photo)}','_blank')">`;
-        }
-        if (m.sticker) {
-          content += `<img class="chat-sticker" src="${esc(m.sticker)}">`;
-        }
+        if (m.photo) content += `<br><img class="chat-img" src="${esc(m.thumb || m.photo)}" onclick="event.stopPropagation();window.open('${esc(m.photo)}','_blank')">`;
+        if (m.sticker) content += `<img class="chat-sticker" src="${esc(m.sticker)}">`;
         if (m.photos && m.photos.length) {
           content += '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;">';
           m.photos.forEach(p => {
@@ -1568,26 +1710,17 @@ button:active{transform:scale(0.95)}
         const isMine = first.isMine;
         const isCreatorMsg = first.m.user && first.m.user.startsWith('🌌');
         const isGodMsg = first.m.user && first.m.user.startsWith('👑');
-
         let avatarHtml = '';
         for (const uid in App.allUserData) {
           if (App.allUserData[uid].name === userName) {
             const av = App.allUserData[uid].avatar;
-            if (av) {
-              avatarHtml = `<img class="auth-avatar" src="${esc(av)}" onerror="this.style.display='none'">`;
-            }
+            if (av) avatarHtml = `<img class="auth-avatar" src="${esc(av)}" onerror="this.style.display='none'">`;
             break;
           }
         }
-        if (!avatarHtml) {
-          avatarHtml = `<div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#444,#555);display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:#ccc;">${esc(userName.charAt(0))}</div>`;
-        }
-
+        if (!avatarHtml) avatarHtml = `<div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#444,#555);display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:#ccc;">${esc(userName.charAt(0))}</div>`;
         let html = `<div class="chat-bubble-group ${isMine ? 'mine' : 'other'}">`;
-        if (!isMine) {
-          html += `<div class="msg-author">${avatarHtml}<span style="${(isCreatorMsg || isGodMsg) ? 'background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;' : ''}">${esc(userName)}</span></div>`;
-        }
-
+        if (!isMine) html += `<div class="msg-author">${avatarHtml}<span style="${(isCreatorMsg || isGodMsg) ? 'background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;' : ''}">${esc(userName)}</span></div>`;
         g.forEach(g2 => {
           const m = g2.m;
           let cls = 'chat-bubble';
@@ -1596,7 +1729,6 @@ button:active{transform:scale(0.95)}
           else if (isGodMsg) cls += ' god';
           html += `<div class="${cls}">${renderMsgContent(m)}</div>`;
         });
-
         html += '</div>';
         return html;
       }
@@ -1607,7 +1739,6 @@ button:active{transform:scale(0.95)}
         const rawUser = m.user || '?';
         const userName = rawUser.replace(/^[🌌👑]\s/, '');
         const isMine = App.user && (rawUser === '🌌 ' + App.user.name || rawUser === '👑 ' + App.user.name || rawUser === App.user.name);
-
         if (group.length === 0 || group[0].userName !== userName || group[0].isMine !== isMine) {
           if (group.length > 0) html += renderGroup(group);
           group = [{ item, userName, isMine, m }];
@@ -1620,10 +1751,7 @@ button:active{transform:scale(0.95)}
       const chatEl = $('#chat');
       const wasAtBottom = chatEl.scrollHeight - chatEl.scrollTop - chatEl.clientHeight < 60;
       chatEl.innerHTML = html;
-
-      if (wasAtBottom || document.activeElement === $('#chatMsgInput')) {
-        chatEl.scrollTop = chatEl.scrollHeight;
-      }
+      if (wasAtBottom || document.activeElement === $('#chatMsgInput')) chatEl.scrollTop = chatEl.scrollHeight;
 
       chatEl.querySelectorAll('.msg-author').forEach(author => {
         author.addEventListener('click', function() {
@@ -1650,17 +1778,9 @@ button:active{transform:scale(0.95)}
     const input = $('#chatMsgInput');
     const text = input.value.trim();
     if (!text || !App.user) return;
-
     const ref = App.privateChatWith ? getPrivateChatRef() : DB.ref('chat');
     const prefix = App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '');
-
-    ref.push({
-      user: prefix + App.user.name,
-      text,
-      timestamp: Date.now(),
-      role: App.user.role,
-      likes: {}
-    }).then(() => {
+    ref.push({ user: prefix + App.user.name, text, timestamp: Date.now(), role: App.user.role, likes: {} }).then(() => {
       input.value = '';
       input.focus();
     });
@@ -1670,10 +1790,8 @@ button:active{transform:scale(0.95)}
     const input = $('#chatPhotoInput');
     const files = input.files;
     if (!files.length || !App.user) return;
-
     const photos = [];
     const count = Math.min(files.length, 5);
-
     for (let i = 0; i < count; i++) {
       (function(file) {
         const reader = new FileReader();
@@ -1686,23 +1804,11 @@ button:active{transform:scale(0.95)}
             canvas.width = maxWidth;
             canvas.height = img.height * scale;
             canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-
-            photos.push({
-              full: e.target.result,
-              thumb: canvas.toDataURL('image/jpeg', 0.6)
-            });
-
+            photos.push({ full: e.target.result, thumb: canvas.toDataURL('image/jpeg', 0.6) });
             if (photos.length === count) {
               const ref = App.privateChatWith ? getPrivateChatRef() : DB.ref('chat');
               const prefix = App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '');
-              ref.push({
-                user: prefix + App.user.name,
-                text: `📷 ${count} фото`,
-                photos,
-                timestamp: Date.now(),
-                role: App.user.role,
-                likes: {}
-              });
+              ref.push({ user: prefix + App.user.name, text: `📷 ${count} фото`, photos, timestamp: Date.now(), role: App.user.role, likes: {} });
             }
           };
           img.src = e.target.result;
@@ -1710,14 +1816,12 @@ button:active{transform:scale(0.95)}
         reader.readAsDataURL(file);
       })(files[i]);
     }
-
     input.value = '';
   }
 
   function toggleChat() {
     const chatEl = $('#chat');
     const bar = $('#chatInputBar');
-
     if (chatEl.classList.contains('hidden')) {
       chatEl.classList.remove('hidden');
       App.chatOpened = true;
@@ -1745,7 +1849,6 @@ button:active{transform:scale(0.95)}
 
   function openPrivateChat() {
     if (!App.selectedProfile || App.selectedProfile === App.user.uid) return;
-
     App.privateChatWith = App.selectedProfile;
     const data = App.allUserData[App.selectedProfile];
     $('#chatLabel').textContent = data ? data.name : '...';
@@ -1766,11 +1869,7 @@ button:active{transform:scale(0.95)}
   function renderStickerUI() {
     const content = $('#stickerContent');
     const tabs = $('#stickerTabs');
-
-    content.innerHTML = BASE_EMOJIS.map(e => `
-      <div class="emoji-item" data-emoji="${e}">${e}</div>
-    `).join('');
-
+    content.innerHTML = BASE_EMOJIS.map(e => `<div class="emoji-item" data-emoji="${e}">${e}</div>`).join('');
     content.querySelectorAll('.emoji-item').forEach(el => {
       el.addEventListener('click', function(ev) {
         ev.stopPropagation();
@@ -1778,9 +1877,7 @@ button:active{transform:scale(0.95)}
         $('#chatMsgInput').focus();
       });
     });
-
     tabs.innerHTML = '<button class="st-tab active" data-tab="emoji">😀</button>';
-
     DB.ref('sticker_packs').once('value').then(snap => {
       if (snap.exists()) {
         snap.forEach(child => {
@@ -1791,19 +1888,14 @@ button:active{transform:scale(0.95)}
           }
         });
       }
-
       tabs.querySelectorAll('.st-tab').forEach(btn => {
         btn.addEventListener('click', function(ev) {
           ev.stopPropagation();
           const tabId = this.dataset.tab;
-
           tabs.querySelectorAll('.st-tab').forEach(b => b.classList.remove('active'));
           this.classList.add('active');
-
           if (tabId === 'emoji') {
-            content.innerHTML = BASE_EMOJIS.map(e => `
-              <div class="emoji-item" data-emoji="${e}">${e}</div>
-            `).join('');
+            content.innerHTML = BASE_EMOJIS.map(e => `<div class="emoji-item" data-emoji="${e}">${e}</div>`).join('');
             content.querySelectorAll('.emoji-item').forEach(el => {
               el.addEventListener('click', function(ev2) {
                 ev2.stopPropagation();
@@ -1817,14 +1909,9 @@ button:active{transform:scale(0.95)}
               if (pack && pack.stickers) {
                 const stickers = pack.stickers;
                 content.innerHTML = '';
-
                 for (const stickerId in stickers) {
                   const st = stickers[stickerId];
-                  content.innerHTML += `
-                    <div class="st-item" onclick="event.stopPropagation(); sendSticker('${esc(st.img)}')">
-                      <img src="${esc(st.img)}">
-                    </div>
-                  `;
+                  content.innerHTML += `<div class="st-item" onclick="event.stopPropagation(); sendSticker('${esc(st.img)}')"><img src="${esc(st.img)}"></div>`;
                 }
               } else {
                 content.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:12px;">Нет стикеров</p>';
@@ -1840,51 +1927,31 @@ button:active{transform:scale(0.95)}
     if (!App.user) return;
     const ref = App.privateChatWith ? getPrivateChatRef() : DB.ref('chat');
     const prefix = App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '');
-
-    ref.push({
-      user: prefix + App.user.name,
-      text: '',
-      sticker: img,
-      timestamp: Date.now(),
-      role: App.user.role,
-      likes: {}
-    });
-
+    ref.push({ user: prefix + App.user.name, text: '', sticker: img, timestamp: Date.now(), role: App.user.role, likes: {} });
     $('#stickerPanel').classList.remove('open');
   };
 
   // ============ Sidebar & Mini Profile ============
-  function toggleSidebar() {
-    $('#avatarCarousel').classList.toggle('open');
-  }
+  function toggleSidebar() { $('#avatarCarousel').classList.toggle('open'); }
 
   function buildCarousel() {
     const el = $('#carouselInner');
     if (!el) return;
-
     el.innerHTML = '';
     const added = new Set();
-
     for (const uid in App.allUserData) {
       if (uid === App.user.uid) continue;
       const d = App.allUserData[uid];
       if (added.has(d.name)) continue;
       added.add(d.name);
-
       const online = !!App.activeShifts[uid];
       const isActive = App.selectedProfile === uid;
-
       el.innerHTML += `
         <div class="avatar-item${isActive ? ' active' : ''}" data-uid="${uid}">
-          ${d.avatar
-            ? `<img src="${esc(d.avatar)}" onerror="this.style.display='none'">`
-            : `<div style="width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#222,#444);display:flex;align-items:center;justify-content:center;font-size:18px;color:#ccc;">${esc(d.name.charAt(0))}</div>`
-          }
+          ${d.avatar ? `<img src="${esc(d.avatar)}" onerror="this.style.display='none'">` : `<div style="width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#222,#444);display:flex;align-items:center;justify-content:center;font-size:18px;color:#ccc;">${esc(d.name.charAt(0))}</div>`}
           ${online ? '<div class="online-dot"></div>' : ''}
-        </div>
-      `;
+        </div>`;
     }
-
     el.querySelectorAll('.avatar-item').forEach(item => {
       item.addEventListener('click', function() {
         const uid = this.dataset.uid;
@@ -1898,27 +1965,18 @@ button:active{transform:scale(0.95)}
   function showMiniProfile(uid) {
     const d = App.allUserData[uid];
     if (!d) return;
-
     $('#mpName').textContent = d.name;
     $('#mpAvatarContainer').innerHTML = `
       <div style="position:relative;width:64px;height:64px;">
-        ${d.avatar
-          ? `<img src="${esc(d.avatar)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--accent);">`
-          : `<div style="width:100%;height:100%;border-radius:50%;background:#444;display:flex;align-items:center;justify-content:center;font-size:24px;color:#ccc;">${esc(d.name.charAt(0))}</div>`
-        }
-      </div>
-    `;
-
+        ${d.avatar ? `<img src="${esc(d.avatar)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--accent);">` : `<div style="width:100%;height:100%;border-radius:50%;background:#444;display:flex;align-items:center;justify-content:center;font-size:24px;color:#ccc;">${esc(d.name.charAt(0))}</div>`}
+      </div>`;
     const roleMap = { god: 'Начальник', creator: 'Создатель', manager: 'Сотрудник' };
     $('#mpStatus').textContent = roleMap[d.role] || 'Сотрудник';
     $('#mpPunkt').textContent = App.activeShifts[uid] ? '🟢 На смене' : '🔴 Выходной';
     $('#miniProfile').classList.add('show');
   }
 
-  function closeMiniProfile() {
-    $('#miniProfile').classList.remove('show');
-    App.selectedProfile = null;
-  }
+  function closeMiniProfile() { $('#miniProfile').classList.remove('show'); App.selectedProfile = null; }
 
   // ============ Avatar ============
   function loadAvatarSettings() {
@@ -1928,23 +1986,15 @@ button:active{transform:scale(0.95)}
         Object.assign(App.avatarSettings, d);
         if (d.photo) {
           const img = new Image();
-          img.onload = () => {
-            App.avatarImageData = img;
-            drawProfileAvatar();
-          };
+          img.onload = () => { App.avatarImageData = img; drawProfileAvatar(); };
           img.src = d.photo;
         }
       }
-
       if (App.user.avatar && !App.avatarImageData) {
         const img = new Image();
-        img.onload = () => {
-          App.avatarImageData = img;
-          drawProfileAvatar();
-        };
+        img.onload = () => { App.avatarImageData = img; drawProfileAvatar(); };
         img.src = App.user.avatar;
       }
-
       drawProfileAvatar();
       if (!App.avatarAnimId) updateAllFrames();
     });
@@ -1955,7 +2005,6 @@ button:active{transform:scale(0.95)}
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, 76, 76);
-
     if (App.avatarImageData) {
       ctx.save();
       ctx.beginPath();
@@ -1980,108 +2029,36 @@ button:active{transform:scale(0.95)}
   }
 
   function updateAllFrames() {
-    if (document.hidden) {
-      App.avatarAnimId = requestAnimationFrame(updateAllFrames);
-      return;
-    }
-
+    if (document.hidden) { App.avatarAnimId = requestAnimationFrame(updateAllFrames); return; }
     const frameCanvas = $('#profileFrameCanvas');
     if (frameCanvas) {
-      const ctx = frameCanvas.getContext('2d');
-      ctx.save();
-      ctx.translate(38, 38);
-      drawFrame(ctx, 76, 76, App.avatarSettings);
-      ctx.restore();
+      const baseCanvas = $('#profileAvatarCanvas');
+      renderPremiumAvatar(frameCanvas, baseCanvas, App.avatarSettings);
     }
-
     App.avatarAnimId = requestAnimationFrame(updateAllFrames);
   }
 
-  function drawFrame(ctx, w, h, settings) {
-    const cx = w / 2;
-    const cy = h / 2;
-    const time = Date.now() / 1000 * settings.speed;
+  // ============ Animation Grid Builder ============
+  function buildAnimationGrid() {
+    const grid = $('#animationGrid');
+    if (!grid) return;
+    let html = '';
+    ANIMATIONS.forEach(anim => {
+      const isActive = App.avatarSettings.style === anim.id;
+      const canUse = !anim.premium || App.isCreator || App.isGod;
+      html += `<button class="style-btn ${isActive ? 'active' : ''} ${anim.premium ? 'premium' : ''}" data-style="${anim.id}" ${!canUse ? 'disabled' : ''}>${anim.label}${anim.premium ? ' 👑' : ''}</button>`;
+    });
+    grid.innerHTML = html;
 
-    ctx.clearRect(0, 0, w, h);
-    ctx.shadowBlur = settings.glow || 20;
-    ctx.shadowColor = settings.color1 || '#7c3aed';
-
-    const hasAdvancedFrame = App.isCreator || App.isGod;
-
-    if (!hasAdvancedFrame) {
-      // Simple ring for managers
-      const thickness = settings.ringThickness === 'thin' ? 2 : settings.ringThickness === 'thick' ? 6 : 4;
-      ctx.strokeStyle = settings.ringColor || '#7c3aed';
-      ctx.lineWidth = thickness;
-      ctx.beginPath();
-      ctx.arc(cx, cy, w / 2 - 4, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.shadowBlur = 0;
-      return;
-    }
-
-    // Advanced frames for creator/god
-    if (settings.style === 'neutron') {
-      for (let i = 0; i < 3; i++) {
-        ctx.save();
-        ctx.rotate(i * Math.PI * 2 / 3 + time);
-        ctx.strokeStyle = i === 0 ? settings.color1 : settings.color2;
-        ctx.lineWidth = 2.5;
-        ctx.beginPath();
-        ctx.ellipse(0, 0, Math.max(0, w / 2 - 5), Math.max(0, h / 4), 0, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.restore();
-      }
-    } else if (settings.style === 'blackhole') {
-      const grad = ctx.createRadialGradient(cx, cy, w * 0.5, cx, cy, w);
-      grad.addColorStop(0, 'transparent');
-      grad.addColorStop(0.3, 'rgba(0,0,0,0.5)');
-      grad.addColorStop(0.6, settings.color1);
-      grad.addColorStop(1, 'transparent');
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.arc(cx, cy, w, 0, Math.PI * 2);
-      ctx.fill();
-    } else if (settings.style === 'divine') {
-      ctx.strokeStyle = settings.color1;
-      ctx.lineWidth = 4;
-      ctx.beginPath();
-      ctx.arc(cx, cy, w * 0.75, 0, Math.PI * 2);
-      ctx.stroke();
-      for (let i = 0; i < 30; i++) {
-        const angle = Math.random() * Math.PI * 2;
-        const dist = w * 0.75 + Math.sin(time * 5 + i) * 10;
-        ctx.fillStyle = settings.color2;
-        ctx.beginPath();
-        ctx.arc(cx + dist * Math.cos(angle), cy + dist * Math.sin(angle), 2, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    } else if (settings.style === 'kitsune') {
-      for (let i = 0; i < 6; i++) {
-        ctx.fillStyle = 'rgba(255,69,0,0.3)';
-        ctx.beginPath();
-        ctx.arc(cx + Math.cos(time * 2 + i) * 30, cy + Math.sin(time * 2 + i) * 30, 20 + Math.sin(time * 3 + i) * 10, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    } else if (settings.style === 'wasteland') {
-      ctx.fillStyle = settings.color1 + '40';
-      ctx.beginPath();
-      ctx.arc(cx, cy, w * 0.75 * (1 + Math.sin(time * 5) * 0.05), 0, Math.PI * 2);
-      ctx.fill();
-    } else if (settings.style === 'enigma') {
-      ctx.strokeStyle = settings.color1;
-      ctx.lineWidth = 15;
-      ctx.beginPath();
-      ctx.arc(cx, cy, w * 0.75, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.strokeStyle = settings.color2;
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.arc(cx, cy, w * 0.75, 0, Math.PI * 2);
-      ctx.stroke();
-    }
-
-    ctx.shadowBlur = 0;
+    grid.querySelectorAll('.style-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        if (this.disabled) return;
+        App.avatarSettings.style = this.dataset.style;
+        grid.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        updateAllFrames();
+      });
+    });
   }
 
   // ============ Settings ============
@@ -2092,6 +2069,7 @@ button:active{transform:scale(0.95)}
     $('#setName').value = '';
     loadPunktsForSettings();
     updateSettingsUI();
+    buildAnimationGrid();
   }
 
   function closeSettings() {
@@ -2114,11 +2092,6 @@ button:active{transform:scale(0.95)}
     const hasAdvanced = App.isCreator || App.isGod;
     document.getElementById('avatarAdvanced').style.display = hasAdvanced ? 'block' : 'none';
     document.getElementById('avatarSimple').style.display = hasAdvanced ? 'none' : 'block';
-
-    document.querySelectorAll('.style-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.style === App.avatarSettings.style);
-    });
-
     $('#setSpeed').value = App.avatarSettings.speed;
     $('#setSpeedVal').textContent = App.avatarSettings.speed + 'x';
     $('#setGlow').value = App.avatarSettings.glow;
@@ -2133,10 +2106,8 @@ button:active{transform:scale(0.95)}
     const newName = $('#setName').value.trim();
     const newPunkt = $('#setPunkt').value;
     const update = {};
-
     if (newName) update.name = newName;
     if (newPunkt) update.punkt = newPunkt;
-
     if (Object.keys(update).length) {
       DB.ref('users/' + App.user.uid).update(update).then(() => {
         if (newName) App.user.name = newName;
@@ -2145,7 +2116,6 @@ button:active{transform:scale(0.95)}
         toast('Настройки сохранены');
       });
     }
-
     closeSettings();
   }
 
@@ -2159,7 +2129,6 @@ button:active{transform:scale(0.95)}
       ringColor: App.avatarSettings.ringColor,
       ringThickness: App.avatarSettings.ringThickness
     };
-
     if (App.avatarImageData) {
       const canvas = document.createElement('canvas');
       canvas.width = 200;
@@ -2168,10 +2137,8 @@ button:active{transform:scale(0.95)}
       ctx.drawImage(App.avatarImageData, 0, 0, 200, 200);
       settings.photo = canvas.toDataURL('image/jpeg', 0.8);
     }
-
     const update = { avatarSettings: settings };
     if (settings.photo) update.avatar = settings.photo;
-
     DB.ref('users/' + App.user.uid).update(update).then(() => {
       if (settings.photo) App.user.avatar = settings.photo;
       toast('Аватар сохранён');
@@ -2183,10 +2150,7 @@ button:active{transform:scale(0.95)}
   function loadPinned() {
     DB.ref('pinned').on('value', snap => {
       const el = $('#pinnedMessage');
-      if (!snap.exists()) {
-        el.style.display = 'none';
-        return;
-      }
+      if (!snap.exists()) { el.style.display = 'none'; return; }
       const d = snap.val();
       el.style.display = 'block';
       el.innerHTML = `📌 <b>${esc(d.user || '?')}:</b> ${esc(d.text)}`;
@@ -2196,26 +2160,16 @@ button:active{transform:scale(0.95)}
   function loadAnnounce() {
     DB.ref('announce').limitToLast(1).on('value', snap => {
       const el = $('#announceBlock');
-      if (!snap.exists()) {
-        el.style.display = 'none';
-        return;
-      }
-
+      if (!snap.exists()) { el.style.display = 'none'; return; }
       let last = null;
-      snap.forEach(child => {
-        last = child.val();
-        last._key = child.key;
-      });
-
+      snap.forEach(child => { last = child.val(); last._key = child.key; });
       if (last.expiry && Date.now() > last.expiry) {
         DB.ref('announce/' + last._key).remove();
         el.style.display = 'none';
         return;
       }
-
       el.style.display = 'block';
       el.innerHTML = `${esc(last.text)}<br><small style="color:var(--muted);">${new Date(last.timestamp).toLocaleString('ru-RU')}</small>`;
-
       if (App.isCreator || App.isGod) {
         const delBtn = document.createElement('button');
         delBtn.textContent = '✕';
@@ -2230,34 +2184,22 @@ button:active{transform:scale(0.95)}
   function setupDatabaseListeners() {
     attachDbListener(DB.ref('users'), 'value', snap => {
       App.allUserData = {};
-      snap.forEach(child => {
-        App.allUserData[child.key] = child.val();
-      });
+      snap.forEach(child => { App.allUserData[child.key] = child.val(); });
       buildCarousel();
     });
-
     attachDbListener(DB.ref('activeShifts'), 'value', snap => {
       App.activeShifts = {};
-      snap.forEach(child => {
-        if (child.val() && child.val().active) {
-          App.activeShifts[child.key] = true;
-        }
-      });
+      snap.forEach(child => { if (child.val() && child.val().active) App.activeShifts[child.key] = true; });
       buildCarousel();
     });
-
     attachDbListener(DB.ref('chat').limitToLast(1), 'child_added', snap => {
       if (App.chatOpened) return;
       const m = snap.val();
       if (!m || !App.user) return;
       if (m.timestamp <= App.lastChatTimestamp) return;
-
-      const isMine = m.user === '🌌 ' + App.user.name ||
-                     m.user === '👑 ' + App.user.name ||
-                     m.user === App.user.name;
+      const isMine = m.user === '🌌 ' + App.user.name || m.user === '👑 ' + App.user.name || m.user === App.user.name;
       if (isMine) return;
       if (App.notifiedKeys[snap.key]) return;
-
       App.notifiedKeys[snap.key] = true;
       App.lastChatTimestamp = Math.max(App.lastChatTimestamp, m.timestamp || 0);
       App.unreadCount++;
@@ -2274,21 +2216,12 @@ button:active{transform:scale(0.95)}
     $('#loginBtn').addEventListener('click', login);
     $('#registerBtn').addEventListener('click', register);
     $('#resetPassBtn').addEventListener('click', resetPassword);
-    $('#loginPass').addEventListener('keydown', e => {
-      if (e.key === 'Enter') login();
-    });
-    $('#regPass').addEventListener('keydown', e => {
-      if (e.key === 'Enter') register();
-    });
+    $('#loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+    $('#regPass').addEventListener('keydown', e => { if (e.key === 'Enter') register(); });
 
     $('#chatHeader').addEventListener('click', toggleChat);
     $('#chatBackBtn').addEventListener('click', switchToGlobalChat);
-    $('#chatMsgInput').addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        sendMessage();
-      }
-    });
+    $('#chatMsgInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }});
     $('#sendMsgBtn').addEventListener('click', sendMessage);
     $('#chatPhotoBtn').addEventListener('click', () => $('#chatPhotoInput').click());
     $('#chatPhotoInput').addEventListener('change', sendPhoto);
@@ -2302,9 +2235,7 @@ button:active{transform:scale(0.95)}
 
     document.addEventListener('click', e => {
       const panel = $('#stickerPanel');
-      if (panel && panel.classList.contains('open') &&
-          !e.target.closest('#stickerPanel') &&
-          !e.target.closest('.sticker-toggle')) {
+      if (panel && panel.classList.contains('open') && !e.target.closest('#stickerPanel') && !e.target.closest('.sticker-toggle')) {
         panel.classList.remove('open');
       }
     });
@@ -2316,11 +2247,7 @@ button:active{transform:scale(0.95)}
 
     document.addEventListener('click', e => {
       const mp = $('#miniProfile');
-      if (mp && mp.classList.contains('show') &&
-          !e.target.closest('#miniProfile') &&
-          !e.target.closest('.avatar-item') &&
-          !e.target.closest('#sidebarToggleBtn') &&
-          !e.target.closest('.msg-author')) {
+      if (mp && mp.classList.contains('show') && !e.target.closest('#miniProfile') && !e.target.closest('.avatar-item') && !e.target.closest('#sidebarToggleBtn') && !e.target.closest('.msg-author')) {
         closeMiniProfile();
       }
     });
@@ -2338,11 +2265,7 @@ button:active{transform:scale(0.95)}
       const reader = new FileReader();
       reader.onload = ev => {
         const img = new Image();
-        img.onload = () => {
-          App.avatarImageData = img;
-          drawProfileAvatar();
-          toast('Фото загружено');
-        };
+        img.onload = () => { App.avatarImageData = img; drawProfileAvatar(); toast('Фото загружено'); };
         img.src = ev.target.result;
       };
       reader.readAsDataURL(file);
@@ -2351,11 +2274,7 @@ button:active{transform:scale(0.95)}
     document.querySelectorAll('.settings-tab').forEach(btn => {
       btn.addEventListener('click', function() {
         const tab = this.dataset.tab;
-        document.querySelectorAll('.settings-tab').forEach(b => {
-          b.classList.remove('active');
-          b.style.background = 'transparent';
-          b.style.color = 'var(--muted)';
-        });
+        document.querySelectorAll('.settings-tab').forEach(b => { b.classList.remove('active'); b.style.background = 'transparent'; b.style.color = 'var(--muted)'; });
         this.classList.add('active');
         this.style.background = 'var(--accent)';
         this.style.color = '#fff';
@@ -2364,48 +2283,23 @@ button:active{transform:scale(0.95)}
       });
     });
 
-    document.querySelectorAll('.style-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        App.avatarSettings.style = this.dataset.style;
-        document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-        updateAllFrames();
-      });
-    });
-
     $('#setSpeed').addEventListener('input', function() {
       App.avatarSettings.speed = parseFloat(this.value);
       $('#setSpeedVal').textContent = App.avatarSettings.speed + 'x';
-      updateAllFrames();
     });
 
     $('#setGlow').addEventListener('input', function() {
       App.avatarSettings.glow = parseInt(this.value);
       $('#setGlowVal').textContent = App.avatarSettings.glow + 'px';
-      updateAllFrames();
     });
 
-    $('#setColor1').addEventListener('input', function() {
-      App.avatarSettings.color1 = this.value;
-      updateAllFrames();
-    });
-
-    $('#setColor2').addEventListener('input', function() {
-      App.avatarSettings.color2 = this.value;
-      updateAllFrames();
-    });
-
-    $('#setRingColor').addEventListener('input', function() {
-      App.avatarSettings.ringColor = this.value;
-    });
-
-    $('#setRingThickness').addEventListener('change', function() {
-      App.avatarSettings.ringThickness = this.value;
-    });
+    $('#setColor1').addEventListener('input', function() { App.avatarSettings.color1 = this.value; });
+    $('#setColor2').addEventListener('input', function() { App.avatarSettings.color2 = this.value; });
+    $('#setRingColor').addEventListener('input', function() { App.avatarSettings.ringColor = this.value; });
+    $('#setRingThickness').addEventListener('change', function() { App.avatarSettings.ringThickness = this.value; });
 
     loadPunktsForRegister();
 
-    // Auto-login
     AUTH.onAuthStateChanged(async user => {
       if (user && !App.user) {
         const snap = await DB.ref('users/' + user.uid).once('value');
@@ -2417,13 +2311,9 @@ button:active{transform:scale(0.95)}
       }
     });
 
-    // Cleanup on window close
     window.addEventListener('beforeunload', () => {
       if (App.user) {
-        DB.ref('presence/' + App.user.uid).set({
-          online: false,
-          ts: Date.now()
-        });
+        DB.ref('presence/' + App.user.uid).set({ online: false, ts: Date.now() });
       }
     });
   }
