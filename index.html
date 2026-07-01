@@ -321,7 +321,98 @@ function renderPunkts(p){p.innerHTML=`<div class="card"><h4>📍 Пункты</h
 function loadPunkts(){DB.ref('punkts').once('value').then(s=>{const el=$('#punktsList');if(!s.exists()){el.innerHTML='<p style="color:var(--muted);">Нет пунктов</p>';return}let h='';s.forEach(c=>{const d=c.val();h+=`<div style="display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid var(--border);"><span><b>${esc(c.key)}</b> (${d.rate}₽/ч)</span><span><button class="btn-orange btn-sm edit-punkt" data-id="${c.key}" data-rate="${d.rate}" style="width:auto;padding:4px 10px;">✏️</button><button class="btn-red btn-sm delete-punkt" data-id="${c.key}" style="width:auto;padding:4px 10px;">✕</button></span></div>`});el.innerHTML=h;el.querySelectorAll('.delete-punkt').forEach(b=>b.addEventListener('click',function(){if(confirm('Удалить пункт?')){DB.ref('punkts/'+this.dataset.id).remove();loadPunkts()}}));el.querySelectorAll('.edit-punkt').forEach(b=>b.addEventListener('click',function(){const r=prompt('Новая ставка:',this.dataset.rate);if(r!==null){DB.ref('punkts/'+this.dataset.id+'/rate').set(parseInt(r)||0).then(loadPunkts)}}))})}
 function renderWorkers(p){p.innerHTML='<div class="card"><h4>👥 Сотрудники</h4><div id="workersList">Загрузка...</div></div>';loadWorkers()}
 function loadWorkers(){DB.ref('users').once('value').then(s=>{const el=$('#workersList');let h='';s.forEach(c=>{const u=c.val();if(u.uid===App.user.uid)return;const isC=u.role==='creator';h+=`<div class="worker-row${isC?' creator-row':''}"><span><b>${esc(u.name)}</b>${isC?' <span style="font-size:10px;background:var(--gold);color:#000;padding:2px 6px;border-radius:8px;">Создатель</span>':''}<br><span style="font-size:11px;color:var(--muted);">Пункт ${u.punkt||'?'} | Надбавка: ${u.bonus||0}₽</span></span><span><button class="btn-gold btn-sm worker-bonus" data-name="${esc(u.name)}" data-uid="${c.key}" data-role="${u.role}">🎁</button><button class="btn-purple btn-sm worker-penalty" data-name="${esc(u.name)}" data-uid="${c.key}" data-role="${u.role}">⚠️</button><button class="btn-red btn-sm worker-delete" data-name="${esc(u.name)}" data-uid="${c.key}" data-role="${u.role}">✕</button></span></div>`});el.innerHTML=h||'<p style="color:var(--muted);">Нет сотрудников</p>';el.querySelectorAll('.worker-bonus').forEach(b=>b.addEventListener('click',function(){if(this.dataset.role==='creator'){toast('👑 Вы не можете выдать премию Создателю!');return}const amt=prompt('Сумма премии:');if(!amt)return;DB.ref('premiums').push({user:this.dataset.uid,amount:parseInt(amt),timestamp:Date.now()});DB.ref('notifications').push({user:this.dataset.uid,text:`💰 Премия ${amt}₽ от начальника!`,timestamp:Date.now()});toast(`✅ Премия ${amt}₽`)}));el.querySelectorAll('.worker-penalty').forEach(b=>b.addEventListener('click',function(){if(this.dataset.role==='creator'){toast('🌌 Создатель — вне наказаний!');return}const amt=prompt('Сумма штрафа:');if(!amt)return;const reason=prompt('Причина:')||'Нарушение';DB.ref('punishes').push({user:this.dataset.uid,amount:parseInt(amt),reason,timestamp:Date.now()});DB.ref('notifications').push({user:this.dataset.uid,text:`💀 Штраф ${amt}₽ за: ${reason}`,timestamp:Date.now()});toast(`💀 Штраф ${amt}₽`)}));el.querySelectorAll('.worker-delete').forEach(b=>b.addEventListener('click',function(){if(this.dataset.role==='creator'){toast('🌌 Создатель — вне иерархии!');return}if(confirm(`Удалить ${this.dataset.name}?`)){DB.ref('users/'+this.dataset.uid).remove();loadWorkers()}}))})}
-function renderSalary(p){p.innerHTML=`<div class="card"><h4>💰 Расчёт ЗП</h4><select id="salUser" style="margin-bottom:12px;"><option value="">— Выберите сотрудника —</option></select><div style="display:flex;gap:8px;"><input type="date" id="salFrom" style="flex:1;"><input type="date" id="salTo" style="flex:1;"></div><button class="btn-green" id="salCalcBtn" style="margin-top:8px;">🧮 Посчитать</button><button class="btn-blue" id="salPayBtn" style="margin-top:4px;">✅ Оплатить</button><div id="salResult" style="margin-top:12px;"></div></div>`;DB.ref('users').once('value').then(s=>{const sel=$('#salUser');s.forEach(c=>{const u=c.val();if(u.name!=='Костя'&&u.uid!==App.user.uid){sel.innerHTML+=`<option value="${c.key}">${esc(u.name)}</option>`}})});let lastCalc=null;$('#salCalcBtn').addEventListener('click',()=>{const uid=$('#salUser').value,from=$('#salFrom').value,to=$('#salTo').value;if(!uid||!from||!to){toast('Заполните все поля',true);return}DB.ref('shifts').orderByChild('user').equalTo(uid).once('value').then(ss=>{let totalH=0,totalT=0,shifts=[];ss.forEach(c=>{const x=c.val();if(x.date>=from&&x.date<=to){totalH+=x.hours||0;totalT+=x.tovar||0;shifts.push(c.key)}});DB.ref('punkts').once('value').then(ps=>{let rate=0;ps.forEach(c=>{if(c.key===App.user.punkt)rate=c.val().rate||0});rate=rate||150;const base=Math.round(totalH*rate);DB.ref('premiums').orderByChild('user').equalTo(uid).once('value').then(pr=>{let prem=0;pr.forEach(c=>{const p=c.val();if(p.timestamp>=Date.parse(from)&&p.timestamp<=Date.parse(to))prem+=p.amount||0});DB.ref('punishes').orderByChild('user').equalTo(uid).once('value').then(pu=>{let pun=0;pu.forEach(c=>{const p=c.val();if(p.timestamp>=Date.parse(from)&&p.timestamp<=Date.parse(to))pun+=p.amount||0});const total=Math.max(0,base+prem-pun);const el=$('#salResult');el.innerHTML=`<div class="zp-result">Смен: ${shifts.length}, часов: ${totalH.toFixed(1)}, товаров: ${totalT}<br>База: ${base}₽, премии: +${prem}₽, штрафы: -${pun}₽<br><b>Итого: ${total}₽</b></div>`;lastCalc={uid,from,to,total,shifts}})})})})});$('#salPayBtn').addEventListener('click',()=>{if(!lastCalc){toast('Сначала посчитайте!',true);return}if(!confirm(`Оплатить ${lastCalc.total}₽?`))return;DB.ref('payments').push({user:lastCalc.uid,total:lastCalc.total,dateFrom:lastCalc.from,dateTo:lastCalc.to,timestamp:Date.now()});lastCalc.shifts.forEach(id=>DB.ref('shifts/'+id+'/paid').set(true));toast(`✅ Оплачено ${lastCalc.total}₽`);lastCalc=null})}
+function renderSalary(p){
+  p.innerHTML=`
+    <div class="card">
+      <h4>💰 Расчёт ЗП</h4>
+      <select id="salUser" style="margin-bottom:12px;"><option value="">— Выберите сотрудника —</option></select>
+      <div style="display:flex;gap:8px;">
+        <input type="date" id="salFrom" style="flex:1;">
+        <input type="date" id="salTo" style="flex:1;">
+      </div>
+      <button class="btn-green" id="salCalcBtn" style="margin-top:8px;">🧮 Посчитать</button>
+      <button class="btn-blue" id="salPayBtn" style="margin-top:4px;">✅ Оплатить</button>
+      <div id="salResult" style="margin-top:12px;"></div>
+    </div>
+  `;
+  DB.ref('users').once('value').then(snap=>{
+    const sel=document.getElementById('salUser');
+    snap.forEach(child=>{
+      const u=child.val();
+      if(u.name!=='Костя'&&u.uid!==App.user.uid){
+        sel.innerHTML+=`<option value="${child.key}">${esc(u.name)}</option>`;
+      }
+    });
+  });
+  let lastCalc=null;
+  document.getElementById('salCalcBtn').addEventListener('click',function(){
+    const uid=document.getElementById('salUser').value;
+    const from=document.getElementById('salFrom').value;
+    const to=document.getElementById('salTo').value;
+    if(!uid||!from||!to){
+      toast('Заполните все поля',true);
+      return;
+    }
+    DB.ref('shifts').orderByChild('user').equalTo(uid).once('value').then(ss=>{
+      let totalH=0,totalT=0,shifts=[];
+      ss.forEach(child=>{
+        const s=child.val();
+        if(s.date>=from&&s.date<=to){
+          totalH+=s.hours||0;
+          totalT+=s.tovar||0;
+          shifts.push(child.key);
+        }
+      });
+      DB.ref('punkts').once('value').then(ps=>{
+        let rate=0;
+        ps.forEach(child=>{if(child.key===App.user.punkt)rate=child.val().rate||0});
+        rate=rate||150;
+        const base=Math.round(totalH*rate);
+        DB.ref('premiums').orderByChild('user').equalTo(uid).once('value').then(pr=>{
+          let prem=0;
+          pr.forEach(child=>{
+            const p=child.val();
+            if(p.timestamp>=Date.parse(from)&&p.timestamp<=Date.parse(to))prem+=p.amount||0;
+          });
+          DB.ref('punishes').orderByChild('user').equalTo(uid).once('value').then(pu=>{
+            let pun=0;
+            pu.forEach(child=>{
+              const p=child.val();
+              if(p.timestamp>=Date.parse(from)&&p.timestamp<=Date.parse(to))pun+=p.amount||0;
+            });
+            const total=Math.max(0,base+prem-pun);
+            const el=document.getElementById('salResult');
+            el.innerHTML=`
+              <div class="zp-result">
+                Смен: ${shifts.length}, часов: ${totalH.toFixed(1)}, товаров: ${totalT}
+                <br>База: ${base}₽, премии: +${prem}₽, штрафы: -${pun}₽
+                <br><b>Итого: ${total}₽</b>
+              </div>
+            `;
+            lastCalc={uid,from,to,total,shifts};
+          });
+        });
+      });
+    });
+  });
+  document.getElementById('salPayBtn').addEventListener('click',function(){
+    if(!lastCalc){
+      toast('Сначала посчитайте!',true);
+      return;
+    }
+    if(!confirm(`Оплатить ${lastCalc.total}₽?`))return;
+    DB.ref('payments').push({
+      user:lastCalc.uid,
+      total:lastCalc.total,
+      dateFrom:lastCalc.from,
+      dateTo:lastCalc.to,
+      timestamp:Date.now()
+    });
+    lastCalc.shifts.forEach(id=>DB.ref('shifts/'+id+'/paid').set(true));
+    toast(`✅ Оплачено ${lastCalc.total}₽`);
+    lastCalc=null;
+  });
+}
 function loadChat(){if(App.chatListener){App.chatListener.off();App.chatListener=null}const ref=App.privateChatWith?getPrivRef():DB.ref('chat');App.chatListener=ref.limitToLast(50);App.chatListener.on('value',s=>{const msgs=[];s.forEach(c=>{if(c.val())msgs.push({key:c.key,msg:c.val()})});msgs.sort((a,b)=>a.msg.timestamp-b.msg.timestamp);let h='',group=[];const renderMsg=m=>{let c='';if(m.text)c+=esc(m.text);if(m.photo)c+=`<br><img class="chat-img" src="${esc(m.thumb||m.photo)}" onclick="event.stopPropagation(); window.open('${esc(m.photo)}','_blank')">`;if(m.sticker)c+=`<img class="chat-sticker" src="${esc(m.sticker)}">`;if(m.photos&&m.photos.length){c+='<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;">';m.photos.forEach(p=>{const thumb=typeof p==='object'?esc(p.thumb):esc(p),full=typeof p==='object'?esc(p.full):esc(p);c+=`<img class="chat-img" src="${thumb}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;cursor:pointer;" onclick="event.stopPropagation(); window.open('${full}','_blank')">`});c+='</div>'}return c};for(let i=0;i<msgs.length;i++){const item=msgs[i],m=item.msg,userName=(m.user||'?').replace(/^[🌌👑📢]\s/,''),isMine=App.user&&(m.user==='🌌 '+App.user.name||m.user==='👑 '+App.user.name||m.user===App.user.name);if(group.length===0||group[0].userName!==userName||group[0].isMine!==isMine){if(group.length>0)h+=renderGroup(group,renderMsg);group=[{item,userName,isMine,m}]}else{group.push({item,userName,isMine,m})}}if(group.length>0)h+=renderGroup(group,renderMsg);const el=$('#chat'),was=el.scrollHeight-el.scrollTop-el.clientHeight<60;el.innerHTML=h;if(was||document.activeElement===$('#chatMsgInput'))el.scrollTop=el.scrollHeight;el.querySelectorAll('.msg-author').forEach(a=>a.addEventListener('click',function(){const n=this.querySelector('span').textContent.trim();for(const uid in App.allUserData){if(App.allUserData[uid].name===n){App.selectedProfile=uid;showMini(uid);break}}}))})}
 function renderGroup(g,renderMsg){const first=g[0],userName=first.userName,isMine=first.isMine,isCreator=first.m.user&&first.m.user.indexOf('🌌')===0,isGod=first.m.user&&first.m.user.indexOf('👑')===0;let av='';for(const uid in App.allUserData){if(App.allUserData[uid].name===userName){av=App.allUserData[uid].avatar||'';break}}let h=`<div class="chat-bubble-group ${isMine?'mine':'other'}">`;if(!isMine){h+='<div class="msg-author">';if(av){h+=`<img class="auth-avatar" src="${esc(av)}" onerror="this.style.display='none'">`}else{h+=`<div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#444,#555);display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:#ccc;">${esc(userName.charAt(0))}</div>`}const style=(isCreator||isGod)?'background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;':'';h+=`<span style="${style}">${esc(userName)}</span></div>`}g.forEach(g2=>{const m=g2.m;let cls='chat-bubble';if(isMine)cls+=' mine';else if(isCreator)cls+=' creator';else if(isGod)cls+=' god';h+=`<div class="${cls}">${renderMsg(m)}</div>`});h+='</div>';return h}
 function toggleChat(){const el=$('#chat'),bar=$('#chatInputBar');if(el.classList.contains('hidden')){el.classList.remove('hidden');App.chatOpened=true;bar.style.display='flex';App.lastChatTimestamp=Date.now();App.unreadCount=0;updateBadge();setTimeout(()=>el.scrollTop=el.scrollHeight,100)}else{el.classList.add('hidden');App.chatOpened=false;bar.style.display='none'}}
