@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+<title>Ozon Hub</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow:hidden;height:100vh;width:100vw;background:#0a0a1a}
+body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;color:#eee;font-size:16px;display:flex;flex-direction:column}
+#bgCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1000;display:block}
+:root{--accent:#7c3aed;--accent2:#a855f7;--gold:#f5c518;--bg2:rgba(20,20,50,0.85);--bg3:rgba(30,30,60,0.7);--border:rgba(100,80,220,0.25);--text:#e8e8ff;--muted:#888;--green:#22c55e;--red:#ef4444}
+body.theme-creator{--accent:#7c3aed;--accent2:#00d4ff;--gold:#f5c518}
+body.theme-god{--accent:#b8860b;--accent2:#ffd700;--gold:#ffd700}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(12px);padding:16px;margin:6px 0}
+input,select,textarea{width:100%;padding:12px 14px;font-size:15px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);background:rgba(10,10,25,0.6);color:#fff;outline:none;transition:0.2s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,58,237,0.15)}
+button{border:none;font-weight:bold;cursor:pointer;border-radius:12px;transition:all .2s;padding:12px 16px;font-size:15px}
+button:hover{transform:scale(1.02);filter:brightness(1.1)}
+button:active{transform:scale(0.95)}
+.btn-green{background:linear-gradient(135deg,#43a047,#2e7d32);color:#fff;width:100%}
+.btn-red{background:linear-gradient(135deg,#e94560,#c62828);color:#fff;width:100%}
+.btn-gray{background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.1);width:100%}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff;width:100%}
+.btn-blue{background:linear-gradient(135deg,#2196F3,#1565C0);color:#fff;width:100%}
+.btn-purple{background:#9C27B0;color:#fff}
+.btn-orange{background:#FF9800;color:#fff}
+.btn-sm{padding:6px 12px;font-size:12px;width:auto}
+.app-container{display:flex;width:100%;height:100vh;position:relative;z-index:1;justify-content:center;overflow:hidden}
+.main-content{width:100%;max-width:720px;padding:12px 16px;display:flex;flex-direction:column;padding-bottom:80px;height:100%;gap:6px}
+.profile-card{display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(12px);flex-shrink:0}
+.badge{font-size:12px;font-weight:bold;padding:4px 12px;border-radius:20px;display:inline-block}
+.badge-creator{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff}
+.badge-god{background:linear-gradient(135deg,#FFD700,#FF4500);color:#fff}
+.badge-manager{background:#2d6a4f;color:#95d5b2}
+.name-creator{background:linear-gradient(135deg,var(--gold),var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold}
+.name-god{background:linear-gradient(135deg,#FFD700,#FF8C00,#FF4500);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold}
+.name-manager{color:#eee;font-weight:bold}
+.tabs{display:flex;gap:6px;margin:0;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{height:44px;display:flex;align-items:center;gap:8px;border-radius:99px;background:rgba(255,255,255,0.06);color:#aaa;border:1px solid transparent;padding:0 16px;font-size:13px;white-space:nowrap;flex-shrink:0;transition:0.3s;min-width:44px;overflow:hidden}
+.tabs button .tab-label{opacity:0;max-width:0;transition:all 0.3s}
+.tabs button:hover .tab-label,.tabs button.active .tab-label{opacity:1;max-width:80px}
+.tabs button.active{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff;box-shadow:0 4px 15px rgba(138,43,226,0.3)}
+.tab-content{display:none;width:100%;flex-shrink:0;animation:fadeIn 0.3s ease}
+.tab-content.active-tab{display:block}
+.chat-section{background:var(--bg2);border:1px solid var(--border);border-radius:16px;display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;margin:0}
+.chat-header-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.2);cursor:pointer;flex-shrink:0}
+.chat-header-bar:hover{background:rgba(0,0,0,0.3)}
+#chat{flex:1;overflow-y:auto;padding:10px 14px;scrollbar-width:thin;scrollbar-color:var(--accent) transparent;background:transparent;display:flex;flex-direction:column;gap:2px}
+#chat.hidden{display:none}
+.chat-bubble-group{display:flex;flex-direction:column;max-width:85%;position:relative;margin:1px 0}
+.chat-bubble-group.mine{align-self:flex-end;align-items:flex-end}
+.chat-bubble-group.other{align-self:flex-start;align-items:flex-start}
+.chat-bubble-group .msg-author{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:1px;display:flex;align-items:center;gap:6px;cursor:pointer}
+.chat-bubble-group .msg-author .auth-avatar{width:20px;height:20px;border-radius:50%;object-fit:cover;border:1px solid rgba(255,255,255,0.2)}
+.chat-bubble{background:rgba(255,255,255,0.04);padding:8px 14px;word-break:break-word;line-height:1.4;font-size:14px;border:1px solid rgba(255,255,255,0.03);position:relative;border-radius:12px}
+.chat-bubble.mine{background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.1)}
+.chat-bubble.creator{border-left:2px solid var(--gold);background:rgba(245,197,24,0.06)}
+.chat-bubble.god{border-left:2px solid #FFD700;background:rgba(255,215,0,0.06)}
+.chat-img{max-width:200px;max-height:150px;border-radius:8px;margin-top:4px;cursor:pointer;object-fit:cover}
+.chat-sticker{max-width:120px;max-height:120px;object-fit:contain;margin:2px 0}
+.chat-input-bar{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:720px;background:var(--bg2);backdrop-filter:blur(16px);padding:8px 12px;display:flex;gap:8px;align-items:center;z-index:100;border-top:1px solid var(--border);border-radius:16px 16px 0 0}
+.input-wrapper{position:relative;flex:1;display:flex;align-items:center;background:rgba(0,0,0,0.3);border-radius:20px;border:1px solid rgba(255,255,255,0.05)}
+.input-wrapper input{background:transparent;border:none;padding:10px 40px 10px 16px;font-size:15px;width:100%}
+.sticker-toggle{position:absolute;right:8px;background:transparent;border:none;font-size:20px;cursor:pointer;color:#aaa;padding:0}
+#sendMsgBtn,#chatPhotoBtn{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;padding:0;flex-shrink:0;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.05);color:#aaa}
+#sendMsgBtn{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff;border:none}
+.avatar-carousel{width:110px;background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;right:-130px;height:100vh;padding:50px 0 20px;z-index:1000;backdrop-filter:blur(20px);transition:right 0.3s cubic-bezier(0.16,1,0.3,1);box-shadow:-10px 0 30px rgba(0,0,0,0.5)}
+.avatar-carousel.open{right:0}
+.avatar-carousel-inner{display:flex;flex-direction:column;align-items:center;width:100%;gap:12px;overflow-y:auto;height:100%;padding:10px 0;scrollbar-width:none;padding-bottom:30px}
+.avatar-carousel-inner::-webkit-scrollbar{display:none}
+.avatar-item{width:56px;height:56px;border-radius:50%;cursor:pointer;position:relative;transition:0.2s;flex-shrink:0}
+.avatar-item:hover{transform:scale(1.05)}
+.avatar-item img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid transparent}
+.avatar-item.active img{border-color:var(--gold);box-shadow:0 0 15px rgba(245,197,24,0.3)}
+.avatar-item .online-dot{position:absolute;bottom:2px;right:2px;width:10px;height:10px;background:#4CAF50;border-radius:50%;border:2px solid #111}
+.btn-sidebar-toggle{position:fixed;right:0;top:50%;transform:translateY(-50%);width:36px;height:50px;background:var(--bg2);border:1px solid var(--border);border-right:none;border-radius:14px 0 0 14px;color:#fff;font-size:14px;cursor:pointer;z-index:999;backdrop-filter:blur(8px)}
+.sidebar-close-btn{position:absolute;top:12px;left:12px;background:rgba(255,255,255,0.05);border:none;color:#aaa;width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer}
+.sidebar-close-btn:hover{background:#e94560;color:#fff}
+.mini-profile{position:fixed;right:130px;top:50%;transform:translateY(-50%);background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px;width:220px;z-index:1100;display:none;backdrop-filter:blur(20px);box-shadow:0 10px 40px rgba(0,0,0,0.6)}
+.mini-profile.show{display:block;animation:slideIn 0.2s ease-out}
+@keyframes slideIn{from{opacity:0;transform:translateY(-50%) translateX(20px)}to{opacity:1;transform:translateY(-50%) translateX(0)}}
+.mini-profile .mp-close{position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.05);border:none;color:#aaa;width:28px;height:28px;border-radius:50%;font-size:12px;cursor:pointer}
+.mini-profile .mp-close:hover{background:#e94560;color:#fff}
+#stickerPanel{position:absolute;bottom:70px;right:0;width:300px;height:340px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;display:none;flex-direction:column;z-index:1000;box-shadow:0 10px 40px rgba(0,0,0,0.6);backdrop-filter:blur(20px);overflow:hidden}
+#stickerPanel.open{display:flex}
+#stickerContent{flex:1;overflow-y:auto;padding:12px;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start}
+.emoji-item{width:40px;height:40px;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:10px;transition:0.15s}
+.emoji-item:hover{background:rgba(255,255,255,0.1);transform:scale(1.1)}
+.st-item{width:60px;height:60px;cursor:pointer;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.02);transition:0.15s}
+.st-item:hover{background:rgba(255,255,255,0.08);transform:scale(1.05)}
+.st-item img{max-width:100%;max-height:100%;object-fit:contain}
+.sticker-tabs{display:flex;background:rgba(0,0,0,0.3);padding:6px;gap:4px;overflow-x:auto;border-top:1px solid var(--border);scrollbar-width:none}
+.sticker-tabs::-webkit-scrollbar{display:none}
+.st-tab{width:32px;height:32px;border-radius:8px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;opacity:0.6;transition:0.2s;flex-shrink:0}
+.st-tab.active,.st-tab:hover{opacity:1;background:rgba(124,58,237,0.2)}
+.toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:10000;pointer-events:none;display:flex;flex-direction:column;gap:8px}
+.toast-msg{padding:12px 20px;border-radius:16px;background:var(--bg2);border:1px solid var(--accent);color:#fff;font-size:14px;box-shadow:0 5px 20px rgba(0,0,0,0.6);transform:translateY(-20px);opacity:0;transition:all 0.3s;text-align:center;backdrop-filter:blur(10px)}
+.toast-msg.error{border-color:var(--red)}
+.toast-msg.show{transform:translateY(0);opacity:1}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;font-size:12px;background:rgba(22,33,62,0.4);border-radius:10px;padding:6px;border:1px solid var(--border)}
+.calendar div{padding:6px;border-radius:4px}
+.calendar .shift-day{background:#4CAF50;color:#fff;font-weight:bold;cursor:pointer}
+.calendar .today{border:2px solid #2196F3}
+.calendar .header{font-weight:bold;background:rgba(51,51,51,0.7)}
+.worker-row{display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid var(--border);gap:6px;flex-wrap:wrap}
+.worker-row button{width:auto;padding:4px 10px;font-size:11px}
+.creator-row{background:rgba(245,197,24,0.1);border-left:3px solid var(--gold)}
+.shift-edit-row{display:flex;gap:4px;align-items:center;margin:4px 0;flex-wrap:wrap}
+.shift-edit-row input{flex:1;padding:6px 8px;font-size:12px;min-width:40px}
+.shift-edit-row button{width:auto;padding:4px 10px;font-size:11px}
+.punish-row{display:flex;justify-content:space-between;align-items:center;padding:6px;font-size:13px;border-bottom:1px solid var(--border)}
+.punish-row button{width:auto;padding:4px 8px;font-size:10px}
+.zp-result{background:rgba(34,197,94,0.1);padding:12px;border-radius:8px;margin-top:8px;font-size:14px;border:1px solid rgba(34,197,94,0.3);white-space:pre-line}
+.status-badge{font-size:14px;font-weight:bold;padding:4px 12px;border-radius:12px;display:inline-block;margin:4px 0}
+.progress-bar{height:6px;background:#333;border-radius:3px;margin-top:4px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;transition:width 0.5s}
+.progress-text{font-size:11px;color:var(--muted)}
+.settings-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:20px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;backdrop-filter:blur(20px)}
+#settingsPanel{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px}
+.settings-tab{flex:1;padding:8px;border-radius:10px;font-size:13px;background:transparent;color:var(--muted);border:none;cursor:pointer;transition:0.2s}
+.settings-tab.active{background:var(--accent);color:#fff}
+.style-btn{padding:8px 6px;border-radius:10px;border:2px solid #444;background:rgba(0,0,0,0.3);color:#ccc;font-size:11px;cursor:pointer;transition:0.2s;width:100%}
+.style-btn.active{border-color:var(--accent);background:rgba(124,58,237,0.2);color:#fff}
+#avatarAdvanced{display:block}
+#avatarSimple{display:none}
+.avatar-wrap{position:relative;width:76px;height:76px;flex-shrink:0}
+.avatar-wrap canvas{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:50%}
+.avatar-wrap .avatar-base{z-index:1}
+.avatar-wrap .avatar-frame{z-index:2;pointer-events:none}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@media(max-width:600px){.main-content{padding:8px;padding-bottom:70px}.chat-input-bar{border-radius:12px 12px 0 0;padding:6px 8px}.mini-profile{right:10px;width:190px}.avatar-carousel{width:90px}.avatar-item{width:44px;height:44px}}
+</style>
+</head>
+<body>
+<canvas id="bgCanvas"></canvas>
+<div id="toastContainer" class="toast-container"></div>
+<div id="loginScreen" style="display:flex;align-items:center;justify-content:center;height:100vh;padding:20px;">
+  <div style="max-width:380px;width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:32px;backdrop-filter:blur(20px);display:flex;flex-direction:column;gap:14px;">
+    <div style="text-align:center;font-size:24px;font-weight:800;background:linear-gradient(135deg,#f5c518,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Ozon Hub</div>
+    <div style="display:flex;background:rgba(0,0,0,0.3);border-radius:12px;padding:4px;">
+      <button id="tabLogin" style="flex:1;padding:10px;border:none;border-radius:10px;background:#7c3aed;font-size:15px;font-weight:600;color:#fff;">Вход</button>
+      <button id="tabRegister" style="flex:1;padding:10px;border:none;border-radius:10px;background:transparent;font-size:15px;font-weight:600;color:#6a7a94;">Регистрация</button>
+    </div>
+    <div id="loginFields" style="display:flex;flex-direction:column;gap:12px;">
+      <input id="loginEmail" type="email" placeholder="Email">
+      <input id="loginPass" type="password" placeholder="Пароль">
+      <button class="btn-gold" id="loginBtn">Войти</button>
+      <button class="btn-gray" id="resetPassBtn" style="width:100%;padding:10px;font-size:13px;background:transparent;border:1px solid var(--border);">Забыли пароль?</button>
+    </div>
+    <div id="registerFields" style="display:none;flex-direction:column;gap:12px;">
+      <input id="regName" placeholder="Имя">
+      <input id="regEmail" type="email" placeholder="Email">
+      <input id="regPass" type="password" placeholder="Пароль (мин. 4 символа)">
+      <select id="regPunkt"><option value="">Выберите пункт</option></select>
+      <button class="btn-gold" id="registerBtn">Зарегистрироваться</button>
+    </div>
+    <div id="authError" style="color:var(--red);font-size:13px;text-align:center;display:none;"></div>
+  </div>
+</div>
+<div id="app" class="app-container" style="display:none">
+  <button class="btn-sidebar-toggle" id="sidebarToggleBtn">👥</button>
+  <div class="main-content" id="mainContent">
+    <div id="announceBlock" style="display:none;background:rgba(200,150,0,0.1);border:1px solid rgba(200,150,0,0.3);padding:12px 16px;border-radius:16px;text-align:center;font-size:14px;color:#ffd700;margin-bottom:4px;"></div>
+    <div id="thoughtBlock" style="display:none;background:linear-gradient(135deg,rgba(124,58,237,0.1),rgba(0,212,255,0.05));border:1px solid rgba(124,58,237,0.3);padding:14px 16px;border-radius:16px;text-align:center;font-size:14px;color:#e0e0ff;margin-bottom:4px;position:relative;"></div>
+    <div class="profile-card">
+      <div class="avatar-wrap">
+        <canvas id="profileAvatarCanvas" class="avatar-base" width="76" height="76"></canvas>
+        <canvas id="profileFrameCanvas" class="avatar-frame" width="76" height="76"></canvas>
+      </div>
+      <div style="flex:1">
+        <b id="creatorNameWrapper" class="name-creator" style="font-size:18px;"><span id="uname"></span></b> 
+        <span id="roleBadge" class="badge badge-creator">Создатель</span><br>
+        <span style="font-size:12px;color:#aaa;">Пункт <span id="upunkt"></span></span>
+      </div>
+      <button class="btn-gray" id="settingsBtn" style="width:auto;padding:8px 14px;font-size:13px;">⚙️</button>
+    </div>
+    <div class="tabs" id="tabsContainer"></div>
+    <div id="tabContentContainer" style="flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;padding-bottom:6px;"></div>
+    <div id="pinnedMessage" style="display:none;padding:10px 16px;margin-bottom:4px;border-radius:16px;background:rgba(245,197,24,0.05);border:1px solid rgba(245,197,24,0.2);font-size:13px;"></div>
+    <div class="chat-section">
+      <div class="chat-header-bar" id="chatHeader">
+        <span style="font-size:18px;">💬</span>
+        <span id="chatLabel" style="flex:1;font-weight:bold;background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Общий чат</span>
+        <span id="chatBadge" style="display:none;background:var(--red);color:#fff;border-radius:10px;font-size:11px;padding:2px 6px;font-weight:bold;">0</span>
+        <button class="btn-gray" id="chatBackBtn" style="display:none;width:auto;padding:4px 12px;font-size:12px;">Назад</button>
+      </div>
+      <div id="chat"></div>
+    </div>
+  </div>
+  <div class="chat-input-bar" id="chatInputBar">
+    <div class="input-wrapper">
+      <input id="chatMsgInput" placeholder="Сообщение...">
+      <button class="sticker-toggle" id="stickerToggleBtn">😀</button>
+    </div>
+    <button id="chatPhotoBtn">📎</button>
+    <input id="chatPhotoInput" type="file" accept="image/*" multiple style="display:none;">
+    <button id="sendMsgBtn">➤</button>
+  </div>
+  <div id="stickerPanel">
+    <div id="stickerContent"></div>
+    <div class="sticker-tabs" id="stickerTabs"></div>
+  </div>
+  <div class="avatar-carousel" id="avatarCarousel">
+    <button class="sidebar-close-btn" id="sidebarCloseBtn">✕</button>
+    <div class="avatar-carousel-inner" id="carouselInner"></div>
+  </div>
+  <div class="mini-profile" id="miniProfile">
+    <button class="mp-close" id="mpCloseBtn">✕</button>
+    <div id="mpAvatarContainer" style="position:relative;width:64px;height:64px;margin:0 auto;"></div>
+    <div id="mpName" style="text-align:center;font-weight:bold;font-size:16px;margin-top:8px;"></div>
+    <div id="mpStatus" style="text-align:center;font-size:12px;margin:4px 0;"></div>
+    <div id="mpPunkt" style="text-align:center;font-size:12px;color:var(--muted);"></div>
+    <button class="btn-gold" id="mpChatBtn" style="width:100%;padding:10px;margin-top:12px;font-size:13px;">Личный чат</button>
+  </div>
+</div>
+<div id="settingsPanel">
+  <div class="settings-card">
+    <h3 style="text-align:center;margin-bottom:16px;">⚙️ Настройки</h3>
+    <div style="display:flex;gap:4px;margin-bottom:16px;">
+      <button class="settings-tab active" data-tab="main" style="flex:1;padding:8px;border-radius:10px;background:var(--accent);color:#fff;font-size:13px;">Основное</button>
+      <button class="settings-tab" data-tab="avatar" style="flex:1;padding:8px;border-radius:10px;background:transparent;color:var(--muted);font-size:13px;">Аватар</button>
+    </div>
+    <div id="stab-main" style="display:flex;flex-direction:column;gap:12px;">
+      <div><label style="font-size:12px;color:var(--muted);">Новое имя</label><input id="setName" placeholder="Оставьте пустым"></div>
+      <div><label style="font-size:12px;color:var(--muted);">Пункт</label><select id="setPunkt"><option value="">Не менять</option></select></div>
+      <div><label style="font-size:12px;color:var(--muted);">ВК ID</label><input id="setVk" placeholder="265035511"></div>
+      <button class="btn-green" id="settingsSaveBtn">Сохранить</button>
+      <button class="btn-red" id="settingsLogoutBtn">Выйти</button>
+      <button class="btn-gray" id="settingsCloseBtn">Отмена</button>
+    </div>
+    <div id="stab-avatar" style="display:none;flex-direction:column;gap:12px;">
+      <div><label style="font-size:12px;color:var(--muted);">Загрузить фото</label><input type="file" id="setAvatarFile" accept="image/*"></div>
+      <div id="avatarAdvanced">
+        <label style="font-size:12px;color:var(--muted);">Стиль рамки</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:4px;">
+          <button class="style-btn active" data-style="neutron">🌀 Нейтрон</button>
+          <button class="style-btn" data-style="blackhole">🕳️ Дыра</button>
+          <button class="style-btn" data-style="divine">👑 Нимб</button>
+          <button class="style-btn" data-style="kitsune">🦊 Кицунэ</button>
+          <button class="style-btn" data-style="wasteland">☢️ Пустошь</button>
+          <button class="style-btn" data-style="enigma">🌀 Энигма</button>
+        </div>
+        <div style="margin-top:8px;"><label style="font-size:12px;color:var(--muted);">Скорость <span id="setSpeedVal">1x</span></label><input type="range" id="setSpeed" min="0.1" max="3" step="0.1" value="1"></div>
+        <div><label style="font-size:12px;color:var(--muted);">Свечение <span id="setGlowVal">20px</span></label><input type="range" id="setGlow" min="0" max="50" step="1" value="20"></div>
+        <div><label style="font-size:12px;color:var(--muted);">Цвет 1</label><input type="color" id="setColor1" value="#6366f1"></div>
+        <div><label style="font-size:12px;color:var(--muted);">Цвет 2</label><input type="color" id="setColor2" value="#a855f7"></div>
+      </div>
+      <div id="avatarSimple">
+        <div><label style="font-size:12px;color:var(--muted);">Цвет кольца</label><input type="color" id="setRingColor" value="#7c3aed"></div>
+        <div><label style="font-size:12px;color:var(--muted);">Толщина</label><select id="setRingThickness"><option value="thin">Тонкая</option><option value="medium" selected>Средняя</option><option value="thick">Толстая</option></select></div>
+      </div>
+      <button class="btn-green" id="avatarSaveBtn">Сохранить аватар</button>
+      <button class="btn-gray" id="avatarCloseBtn">Отмена</button>
+    </div>
+  </div>
+</div>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script>
+(function(){
+'use strict';
+firebase.initializeApp({
+  apiKey:"AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",
+  authDomain:"ozon-grafik-4ad9f.firebaseapp.com",
+  databaseURL:"https://ozon-grafik-4ad9f-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:"ozon-grafik-4ad9f",
+  storageBucket:"ozon-grafik-4ad9f.firebasestorage.app",
+  messagingSenderId:"798009068634",
+  appId:"1:798009068634:web:4b70eea3cce6c96f4f5c63"
+});
+const DB=firebase.database(),AUTH=firebase.auth();
+const App={user:null,onShift:false,shiftTimer:null,allShifts:[],allUsers:{},allUserData:{},activeShifts:{},unreadCount:0,chatOpened:true,lastChatTimestamp:0,selectedProfile:null,privateChatWith:null,calYear:null,calMonth:null,avatarSettings:{style:'neutron',speed:1,glow:20,color1:'#6366f1',color2:'#a855f7',ringColor:'#7c3aed',ringThickness:'medium'},avatarImageData:null,chatListener:null,notifiedKeys:{},bgAnimId:null,avatarAnimId:null,isCreator:false,isGod:false,stickerPacks:{},currentStickerTab:'emoji'};
+const BASE_EMOJIS=['😊','😉','😘','❤️','🤘','😓','💀','💪','🫠','😂','🤣','😆','😎','🗿','🤷','🤔','😏','🙏','😭','☕️','😴','🤬','👍','👎'];
+const GOD_STATUSES=[{name:'🐣 Мини-босс',color:'#8B4513',min:0},{name:'💰 Эконом',color:'#4169E1',min:2},{name:'👔 Руководитель',color:'#808080',min:5},{name:'💼 Мистер Бизнес',color:'#000080',min:8},{name:'🗿 Сигма',color:'#2F4F4F',min:15},{name:'🌌 Господь',color:'#FFD700',min:21}];
+const activeListeners=[];
+function $(s){return document.querySelector(s)}
+function $$(s){return document.querySelectorAll(s)}
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+function toast(t,e){const c=$('#toastContainer'),m=document.createElement('div');m.className='toast-msg'+(e?' error':'');m.innerHTML=t;c.appendChild(m);setTimeout(()=>m.classList.add('show'),10);setTimeout(()=>{m.classList.remove('show');setTimeout(()=>m.remove(),300)},3000)}
+function sendVk(v,i){if(!v)return;console.warn("VK отправка на сервере")}
+function fmtDate(t){const d=new Date(t);return d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear()}
+function secToHMS(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0')}
+function getGodStatus(n){for(let i=GOD_STATUSES.length-1;i>=0;i--)if(n>=GOD_STATUSES[i].min)return GOD_STATUSES[i];return GOD_STATUSES[0]}
+function attachDbListener(r,e,c){r.on(e,c);activeListeners.push({ref:r,event:e,callback:c})}
+function clearAllListeners(){activeListeners.forEach(l=>l.ref.off(l.event,l.callback));activeListeners.length=0;if(App.chatListener){App.chatListener.off();App.chatListener=null}}
+(function(){const c=$('#bgCanvas'),g=c.getContext('webgl');if(!g)return;function r(){c.width=window.innerWidth;c.height=window.innerHeight;g.viewport(0,0,c.width,c.height)}window.addEventListener('resize',r);r();const vs='attribute vec2 a_position;void main(){gl_Position=vec4(a_position,0.0,1.0);}',fs='precision highp float;uniform vec2 u_resolution;uniform float u_time;void main(){vec2 uv=gl_FragCoord.xy/u_resolution.xy;vec2 p=uv*2.0-1.0;p.x*=u_resolution.x/u_resolution.y;float time=u_time*0.7;float wave=sin(p.y*2.5+time)*0.4+cos(p.y*6.0-time*0.8)*0.2+sin(p.y*12.0+time*1.2)*0.1;vec2 wp=p;wp.x-=wave;float dist=length(wp*vec2(0.9,1.2));vec3 cb=vec3(0.0,0.63,1.0),cp=vec3(1.0,0.0,0.45),cpurp=vec3(0.75,0.0,1.0);float blob=smoothstep(1.1,0.2,dist),edge=smoothstep(1.3,0.6,dist)-smoothstep(0.7,0.2,dist);vec3 fc=mix(cb,cp,blob);fc=mix(fc,cpurp,edge*0.7);float ds=sin(gl_FragCoord.x/1.5)*sin(gl_FragCoord.y/1.5);ds=ds*0.5+0.5;fc=mix(fc,fc*ds,0.18);float vig=1.0-smoothstep(0.6,1.8,length(p*vec2(0.5,1.0)));fc*=vig;gl_FragColor=vec4(fc,1.0);}';function cs(t,s){const sh=g.createShader(t);g.shaderSource(sh,s);g.compileShader(sh);return sh}const v=cs(g.VERTEX_SHADER,vs),f=cs(g.FRAGMENT_SHADER,fs),prog=g.createProgram();g.attachShader(prog,v);g.attachShader(prog,f);g.linkProgram(prog);g.useProgram(prog);const buf=g.createBuffer();g.bindBuffer(g.ARRAY_BUFFER,buf);g.bufferData(g.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),g.STATIC_DRAW);const pl=g.getAttribLocation(prog,"a_position");g.enableVertexAttribArray(pl);g.vertexAttribPointer(pl,2,g.FLOAT,false,0,0);const rl=g.getUniformLocation(prog,"u_resolution"),tl=g.getUniformLocation(prog,"u_time");function anim(t){if(!document.hidden){g.uniform2f(rl,c.width,c.height);g.uniform1f(tl,t*0.001);g.drawArrays(g.TRIANGLES,0,6)}App.bgAnimId=requestAnimationFrame(anim)}anim(performance.now())})();
+let isLoginMode=true;
+function toggleAuth(){isLoginMode=!isLoginMode;$('#loginFields').style.display=isLoginMode?'flex':'none';$('#registerFields').style.display=isLoginMode?'none':'flex';$('#tabLogin').style.background=isLoginMode?'#7c3aed':'transparent';$('#tabLogin').style.color=isLoginMode?'#fff':'#6a7a94';$('#tabRegister').style.background=isLoginMode?'transparent':'#7c3aed';$('#tabRegister').style.color=isLoginMode?'#6a7a94':'#fff';$('#authError').style.display='none'}
+$('#tabLogin').addEventListener('click',toggleAuth);$('#tabRegister').addEventListener('click',toggleAuth);
+DB.ref('punkts').once('value').then(s=>{const sel=$('#regPunkt');sel.innerHTML='<option value="">Выберите пункт</option>';s.forEach(c=>{sel.innerHTML+=`<option value="${c.key}">Пункт ${c.key} (${c.val().rate||0}₽/ч)</option>`})});
+async function login(){const e=$('#loginEmail').value.trim(),p=$('#loginPass').value.trim(),err=$('#authError');if(!e||!p){err.textContent='Заполните все поля';err.style.display='block';return}try{const cred=await AUTH.signInWithEmailAndPassword(e,p);const snap=await DB.ref('users/'+cred.user.uid).once('value');if(!snap.exists()){err.textContent='Пользователь не найден';err.style.display='block';return}App.user=snap.val();App.user.uid=cred.user.uid;finishLogin()}catch(ex){err.textContent=ex.message;err.style.display='block'}}
+$('#loginBtn').addEventListener('click',login);$('#loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
+$('#resetPassBtn').addEventListener('click',async()=>{const e=$('#loginEmail').value.trim();if(!e){toast('Введите email',true);return}try{await AUTH.sendPasswordResetEmail(e);toast(`📧 Ссылка для сброса отправлена на ${e}`)}catch(ex){toast(ex.message,true)}});
+async function register(){const n=$('#regName').value.trim(),e=$('#regEmail').value.trim(),p=$('#regPass').value.trim(),punkt=$('#regPunkt').value,err=$('#authError');if(!n||!e||!p||!punkt){err.textContent='Заполните все поля';err.style.display='block';return}if(p.length<4){err.textContent='Пароль минимум 4 символа';err.style.display='block';return}try{const cred=await AUTH.createUserWithEmailAndPassword(e,p);const role='manager';await DB.ref('users/'+cred.user.uid).set({name:n,email:e,role,punkt,avatar:'',vkId:'',bonus:0});App.user={name:n,email:e,role,punkt,avatar:'',vkId:'',bonus:0,uid:cred.user.uid};finishLogin()}catch(ex){err.textContent=ex.message;err.style.display='block'}}
+$('#registerBtn').addEventListener('click',register);$('#regPass').addEventListener('keydown',e=>{if(e.key==='Enter')register()});
+function logout(){if(!confirm('Выйти?'))return;clearAllListeners();if(App.shiftTimer)clearInterval(App.shiftTimer);if(App.avatarAnimId)cancelAnimationFrame(App.avatarAnimId);AUTH.signOut().then(()=>{localStorage.removeItem('ozon_user');App.user=null;App.chatOpened=false;$('#app').style.display='none';$('#loginScreen').style.display='flex';document.body.className=''})}
+function finishLogin(){App.isCreator=App.user.role==='creator';App.isGod=App.user.role==='god';localStorage.setItem('ozon_user',JSON.stringify({uid:App.user.uid,name:App.user.name,role:App.user.role}));$('#loginScreen').style.display='none';$('#app').style.display='flex';document.body.className='theme-'+App.user.role;App.chatOpened=true;App.lastChatTimestamp=Date.now();updateUI();renderTabs();loadChat();loadPinned();loadAnnounce();loadThought();setupDatabaseListeners();loadAvatarSettings();buildCarousel();renderStickerUI();DB.ref('activeShifts/'+App.user.uid).once('value').then(s=>{if(s.exists()&&s.val().active)App.onShift=true});if(App.isGod)recountRating();DB.ref('presence/'+App.user.uid).set({online:true,ts:Date.now()})}
+AUTH.onAuthStateChanged(async user=>{if(user&&!App.user){const snap=await DB.ref('users/'+user.uid).once('value');if(snap.exists()){App.user=snap.val();App.user.uid=user.uid;finishLogin()}}});
+function updateUI(){$('#uname').textContent=App.user.name;$('#upunkt').textContent=App.user.punkt||'—';const b=$('#roleBadge'),nw=$('#creatorNameWrapper');if(App.user.role==='god'){b.className='badge badge-god';b.textContent='Начальник';nw.className='name-god'}else if(App.user.role==='creator'){b.className='badge badge-creator';b.textContent='Создатель';nw.className='name-creator'}else{b.className='badge badge-manager';b.textContent='Сотрудник';nw.className='name-manager'}}
+function renderTabs(){let cfg=[{id:'shift',icon:'🔵',label:'Смена'},{id:'stats',icon:'📊',label:'Стат'},{id:'history',icon:'💳',label:'Выплаты'},{id:'notify',icon:'🔔',label:'Увед'},{id:'board',icon:'🏆',label:'Доска'}];if(App.isGod){cfg=[{id:'punkts',icon:'📍',label:'Пункты'},{id:'workers',icon:'👥',label:'Сотрудники'},{id:'salary',icon:'💰',label:'Расчёт ЗП'},{id:'announce',icon:'📢',label:'Объявления'},{id:'board',icon:'🏆',label:'Доска'}]}const tc=$('#tabsContainer');tc.innerHTML=cfg.map((t,i)=>`<button id="tab_${t.id}" class="${i===0?'active':''}" data-tab="${t.id}">${t.icon} <span class="tab-label">${t.label}</span></button>`).join('');const cc=$('#tabContentContainer');cc.innerHTML=cfg.map((t,i)=>`<div id="panel_${t.id}" class="tab-content${i===0?' active-tab':''}"></div>`).join('');if(cfg.length)renderTab(cfg[0].id);tc.querySelectorAll('button').forEach(b=>b.addEventListener('click',function(){const id=this.dataset.tab;$$('#tabsContainer button').forEach(x=>x.classList.remove('active'));$$('#tabContentContainer .tab-content').forEach(x=>x.classList.remove('active-tab'));this.classList.add('active');document.getElementById('panel_'+id).classList.add('active-tab');renderTab(id)}))}
+function renderTab(id){const p=document.getElementById('panel_'+id);if(!p)return;p.innerHTML='';switch(id){case'shift':renderShift(p);break;case'stats':renderStats(p);break;case'history':renderHistory(p);break;case'notify':renderNotify(p);break;case'board':renderBoard(p);break;case'announce':renderAnnounce(p);break;case'punkts':renderPunkts(p);break;case'workers':renderWorkers(p);break;case'salary':renderSalary(p);break}}
+function renderShift(p){p.innerHTML=`<div class="card"><div id="shiftContent">Загрузка...</div></div><button class="btn-gray" id="shiftLogoutBtn" style="margin-top:8px;width:100%;">Выйти</button>`;$('#shiftLogoutBtn').addEventListener('click',()=>{if(confirm('Выйти?'))logout()});loadShift()}
+function loadShift(){const el=$('#shiftContent');if(!el)return;DB.ref('activeShifts/'+App.user.uid).once('value').then(s=>{if(s.exists()&&s.val().active){const st=s.val().startTime;el.innerHTML=`<div style="text-align:center;"><div>На смене с <b>${new Date(st).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'})}</b></div><div style="font-size:28px;font-weight:800;color:var(--green);margin:4px 0;" id="shiftTimerDisplay">00:00:00</div></div><div style="display:flex;gap:8px;margin-top:10px;"><input type="number" id="tovarCount" placeholder="Кол-во товаров" min="0" style="flex:1;"></div><button class="btn-red" id="endShiftBtn" style="padding:16px;width:100%;margin-top:10px;">СО СМЕНЫ</button>`;$('#endShiftBtn').addEventListener('click',endShift);startTimer(st)}else{el.innerHTML=`<p style="color:var(--muted);margin-bottom:12px;">Вы не на смене</p><button class="btn-green" id="startShiftBtn" style="padding:16px;width:100%;">НА СМЕНУ</button>`;$('#startShiftBtn').addEventListener('click',startShift)}})}
+function startTimer(st){if(App.shiftTimer)clearInterval(App.shiftTimer);const d=$('#shiftTimerDisplay');App.shiftTimer=setInterval(()=>{const e=Math.floor((Date.now()-st)/1000);if(d)d.textContent=secToHMS(e)},1000)}
+function startShift(){DB.ref('activeShifts/'+App.user.uid).set({active:true,startTime:Date.now(),punct:App.user.punkt}).then(()=>{const p=App.isGod?'👑 ':(App.isCreator?'🌌 ':'');DB.ref('chat').push({user:p+App.user.name,text:`🔵 Пункт ${App.user.punkt} на смене!`,timestamp:Date.now()});loadShift();toast('Смена начата!')})}
+function endShift(){const tv=parseInt($('#tovarCount')?.value)||0;DB.ref('activeShifts/'+App.user.uid).once('value').then(s=>{if(!s.exists())return;const st=s.val().startTime,hr=Math.round((Date.now()-st)/3600000*100)/100,id=App.user.uid+'_'+Date.now();DB.ref('shifts/'+id).set({user:App.user.uid,user_name:App.user.name,punkt:App.user.punkt||'Не указан',date:new Date().toLocaleDateString('ru-RU'),timeFrom:new Date(st).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'}),timeTo:new Date().toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'}),hours:hr,tovar:tv,paid:false,timestamp:Date.now()}).then(()=>{const p=App.isGod?'👑 ':(App.isCreator?'🌌 ':'');DB.ref('chat').push({user:p+App.user.name,text:`🔴 Пункт ${App.user.punkt} закончил, товаров: ${tv}`,timestamp:Date.now()});DB.ref('activeShifts/'+App.user.uid).remove();if(App.shiftTimer)clearInterval(App.shiftTimer);loadShift();toast(`Смена закрыта! ${hr}ч, ${tv} товаров`)})})}
+function renderStats(p){const n=new Date();App.calYear=n.getFullYear();App.calMonth=n.getMonth();p.innerHTML=`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><button class="btn-gray" id="calPrev" style="width:auto;padding:6px 12px;">◀</button><div id="calTitle" style="font-size:14px;font-weight:700;"></div><button class="btn-gray" id="calNext" style="width:auto;padding:6px 12px;">▶</button></div><div id="calGrid" class="calendar"></div></div><div class="card"><div>Смен: <b id="statShifts">0</b></div><div>Часов: <b id="statHours">0</b></div><div>Товаров: <b id="statTovar">0</b></div></div><button class="btn-red" id="clearShiftsBtn" style="width:100%;padding:12px;margin-top:10px;">Очистить мои смены</button>`;$('#calPrev').addEventListener('click',()=>changeCal(-1));$('#calNext').addEventListener('click',()=>changeCal(1));$('#clearShiftsBtn').addEventListener('click',clearShifts);renderCal()}
+function renderCal(){const months=['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];$('#calTitle').textContent=months[App.calMonth]+' '+App.calYear;const userName=App.user.name;DB.ref('shifts').once('value').then(s=>{const shifts={};let ts=0,th=0,tt=0;s.forEach(c=>{const x=c.val();if(x.user===App.user.uid||x.user_name===userName){const d=new Date(x.date||x.timestamp);if(d.getFullYear()===App.calYear&&d.getMonth()===App.calMonth){const day=d.getDate();if(!shifts[day])shifts[day]={count:0,hours:0,tovar:0};shifts[day].count++;shifts[day].hours+=x.hours||0;shifts[day].tovar+=x.tovar||0}}});for(const k in shifts){ts+=shifts[k].count;th+=shifts[k].hours;tt+=shifts[k].tovar}$('#statShifts').textContent=ts;$('#statHours').textContent=th.toFixed(1);$('#statTovar').textContent=tt;const fd=new Date(App.calYear,App.calMonth,1).getDay(),off=(fd+6)%7,dim=new Date(App.calYear,App.calMonth+1,0).getDate(),today=new Date(),grid=$('#calGrid');grid.innerHTML=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(d=>`<div class="header">${d}</div>`).join('');for(let i=0;i<off;i++)grid.innerHTML+='<div></div>';for(let d=1;d<=dim;d++){const isToday=today.getDate()===d&&today.getMonth()===App.calMonth&&today.getFullYear()===App.calYear,has=!!shifts[d];grid.innerHTML+=`<div class="${isToday?'today ':''}${has?'shift-day':''}">${d}</div>`}})}
+function changeCal(dir){App.calMonth+=dir;if(App.calMonth<0){App.calMonth=11;App.calYear--}if(App.calMonth>11){App.calMonth=0;App.calYear++}renderCal()}
+function clearShifts(){if(!confirm('Очистить все смены?'))return;DB.ref('shifts').orderByChild('user').equalTo(App.user.uid).once('value').then(s=>{const p=[];s.forEach(c=>p.push(DB.ref('shifts/'+c.key).remove()));return Promise.all(p)}).then(()=>{toast('Очищено');renderCal()})}
+function renderHistory(p){p.innerHTML='<div class="card"><h4>💳 Выплаты</h4><div id="historyContent">Загрузка...</div></div>';DB.ref('payments').orderByChild('user').equalTo(App.user.uid).once('value').then(s=>{const items=[];s.forEach(c=>items.push(c.val()));items.sort((a,b)=>b.timestamp-a.timestamp);$('#historyContent').innerHTML=items.length?items.map(x=>`<div style="padding:10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;"><span>${fmtDate(x.timestamp)}</span><span style="color:var(--green);font-weight:bold;">${x.total}₽</span></div>`).join(''):'<p style="color:var(--muted);">Нет выплат</p>'})}
+function renderNotify(p){p.innerHTML='<div class="card"><h4>🔔 Уведомления</h4><div id="notifyContent">Загрузка...</div><button class="btn-red" id="clearNotifsBtn" style="margin-top:12px;">Очистить</button></div>';loadNotifs();$('#clearNotifsBtn').addEventListener('click',()=>{DB.ref('notifications').orderByChild('user').equalTo(App.user.uid).once('value').then(s=>{const p=[];s.forEach(c=>p.push(DB.ref('notifications/'+c.key).remove()));return Promise.all(p)}).then(()=>{toast('Очищено');loadNotifs()})})}
+function loadNotifs(){DB.ref('notifications').orderByChild('user').equalTo(App.user.uid).once('value').then(s=>{const items=[];s.forEach(c=>items.push(c.val()));items.sort((a,b)=>b.timestamp-a.timestamp);$('#notifyContent').innerHTML=items.length?items.map(x=>`<div style="padding:10px;border-bottom:1px solid var(--border);">${esc(x.text)}<br><small style="color:var(--muted);">${new Date(x.timestamp).toLocaleString('ru-RU')}</small></div>`).join(''):'<p style="color:var(--muted);">Нет уведомлений</p>'})}
+function renderBoard(p){p.innerHTML='<div class="card"><h4>🏆 Доска почёта</h4><div id="boardContent">Загрузка...</div></div>';DB.ref('shifts').once('value').then(s=>{const stats={};s.forEach(c=>{const x=c.val();if(!x.user)return;const uid=x.user;if(!stats[uid])stats[uid]={hours:0,tovar:0};stats[uid].hours+=x.hours||0;stats[uid].tovar+=x.tovar||0});const arr=[];for(const n in stats){const un=App.allUserData[n]?.name||n;arr.push({name:un,hours:stats[n].hours,tovar:stats[n].tovar})}arr.sort((a,b)=>b.hours-a.hours);let hh='';for(let i=0;i<Math.min(arr.length,5);i++){const m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'📌';hh+=`<div style="padding:6px;border-bottom:1px solid var(--border);">${m} ${esc(arr[i].name)} — <b>${arr[i].hours.toFixed(1)}ч</b></div>`}arr.sort((a,b)=>b.tovar-a.tovar);let ht='';for(let i=0;i<Math.min(arr.length,5);i++){const m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'📌';ht+=`<div style="padding:6px;border-bottom:1px solid var(--border);">${m} ${esc(arr[i].name)} — <b>${arr[i].tovar} шт</b></div>`}const best=arr.length?`<div style="padding:6px;">🌟 ${esc(arr[0].name)} — ${arr[0].hours.toFixed(1)}ч / ${arr[0].tovar} шт</div>`:'<p style="color:var(--muted);">Нет данных</p>';$('#boardContent').innerHTML=`<div><b>⏱ Топ по часам</b>${hh}</div><div style="margin-top:12px;"><b>📦 Топ по товарам</b>${ht}</div><div style="margin-top:12px;"><b>🌟 Работник месяца</b>${best}</div>`})}
+function renderAnnounce(p){p.innerHTML=`<div class="card"><h4>📜 Новое объявление</h4><textarea id="announceText" placeholder="Текст..." rows="3" style="resize:vertical;margin-bottom:8px;"></textarea><div style="display:flex;gap:8px;margin-bottom:8px;"><select id="announceExpiry" style="flex:1;"><option value="0">Навсегда</option><option value="1">1 час</option><option value="24" selected>24 часа</option><option value="72">3 дня</option><option value="168">7 дней</option></select></div><button class="btn-gold" id="addAnnounceBtn">Опубликовать</button></div><div id="announceList" style="margin-top:12px;">Загрузка...</div>`;$('#addAnnounceBtn').addEventListener('click',()=>{const t=$('#announceText').value.trim();if(!t)return;const h=parseInt($('#announceExpiry').value),exp=h>0?Date.now()+h*3600000:null;DB.ref('announce').push({text:t,timestamp:Date.now(),expiry:exp}).then(()=>{$('#announceText').value='';toast('📜 Послание свыше!');loadAnnounces()})});loadAnnounces()}
+function loadAnnounces(){const el=$('#announceList');if(!el)return;DB.ref('announce').once('value').then(s=>{if(!s.exists()){el.innerHTML='<p style="color:var(--muted);">Нет объявлений</p>';return}const items=[];s.forEach(c=>{const d=c.val();if(!d.expiry||Date.now()<d.expiry)items.push({id:c.key,data:d})});items.sort((a,b)=>b.data.timestamp-a.data.timestamp);el.innerHTML=items.length?items.map(i=>`<div style="padding:10px;border-bottom:1px solid var(--border);">${esc(i.data.text)}<br><small style="color:var(--muted);">${new Date(i.data.timestamp).toLocaleString('ru-RU')}</small>${App.isGod?`<button class="btn-red" style="width:auto;padding:4px 10px;font-size:11px;margin-top:4px;" data-id="${i.id}">✕</button>`:''}</div>`).join(''):'<p style="color:var(--muted);">Нет объявлений</p>';el.querySelectorAll('button').forEach(b=>b.addEventListener('click',function(){DB.ref('announce/'+this.dataset.id).remove();loadAnnounces()}))})}
+function renderPunkts(p){p.innerHTML=`<div class="card"><h4>📍 Пункты</h4><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;"><input id="pAddId" placeholder="ID" style="flex:1;min-width:80px;"><input id="pAddRate" placeholder="Ставка" style="flex:1;min-width:80px;"><button class="btn-green" id="pAddBtn" style="width:auto;padding:8px 16px;">+</button></div><div id="punktsList">Загрузка...</div></div>`;$('#pAddBtn').addEventListener('click',()=>{const id=$('#pAddId').value.trim(),rate=parseInt($('#pAddRate').value)||0;if(!id){toast('Введите ID',true);return}DB.ref('punkts/'+id).set({name:'ПВЗ '+id,rate}).then(()=>{$('#pAddId').value='';$('#pAddRate').value='';loadPunkts();toast('Пункт добавлен')})});loadPunkts()}
+function loadPunkts(){DB.ref('punkts').once('value').then(s=>{const el=$('#punktsList');if(!s.exists()){el.innerHTML='<p style="color:var(--muted);">Нет пунктов</p>';return}let h='';s.forEach(c=>{const d=c.val();h+=`<div style="display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid var(--border);"><span><b>${esc(c.key)}</b> (${d.rate}₽/ч)</span><span><button class="btn-orange btn-sm edit-punkt" data-id="${c.key}" data-rate="${d.rate}" style="width:auto;padding:4px 10px;">✏️</button><button class="btn-red btn-sm delete-punkt" data-id="${c.key}" style="width:auto;padding:4px 10px;">✕</button></span></div>`});el.innerHTML=h;el.querySelectorAll('.delete-punkt').forEach(b=>b.addEventListener('click',function(){if(confirm('Удалить пункт?')){DB.ref('punkts/'+this.dataset.id).remove();loadPunkts()}}));el.querySelectorAll('.edit-punkt').forEach(b=>b.addEventListener('click',function(){const r=prompt('Новая ставка:',this.dataset.rate);if(r!==null){DB.ref('punkts/'+this.dataset.id+'/rate').set(parseInt(r)||0).then(loadPunkts)}}))})}
+function renderWorkers(p){p.innerHTML='<div class="card"><h4>👥 Сотрудники</h4><div id="workersList">Загрузка...</div></div>';loadWorkers()}
+function loadWorkers(){DB.ref('users').once('value').then(s=>{const el=$('#workersList');let h='';s.forEach(c=>{const u=c.val();if(u.uid===App.user.uid)return;const isC=u.role==='creator';h+=`<div class="worker-row${isC?' creator-row':''}"><span><b>${esc(u.name)}</b>${isC?' <span style="font-size:10px;background:var(--gold);color:#000;padding:2px 6px;border-radius:8px;">Создатель</span>':''}<br><span style="font-size:11px;color:var(--muted);">Пункт ${u.punkt||'?'} | Надбавка: ${u.bonus||0}₽</span></span><span><button class="btn-gold btn-sm worker-bonus" data-name="${esc(u.name)}" data-uid="${c.key}" data-role="${u.role}">🎁</button><button class="btn-purple btn-sm worker-penalty" data-name="${esc(u.name)}" data-uid="${c.key}" data-role="${u.role}">⚠️</button><button class="btn-red btn-sm worker-delete" data-name="${esc(u.name)}" data-uid="${c.key}" data-role="${u.role}">✕</button></span></div>`});el.innerHTML=h||'<p style="color:var(--muted);">Нет сотрудников</p>';el.querySelectorAll('.worker-bonus').forEach(b=>b.addEventListener('click',function(){if(this.dataset.role==='creator'){toast('👑 Вы не можете выдать премию Создателю!');return}const amt=prompt('Сумма премии:');if(!amt)return;DB.ref('premiums').push({user:this.dataset.uid,amount:parseInt(amt),timestamp:Date.now()});DB.ref('notifications').push({user:this.dataset.uid,text:`💰 Премия ${amt}₽ от начальника!`,timestamp:Date.now()});toast(`✅ Премия ${amt}₽`)}));el.querySelectorAll('.worker-penalty').forEach(b=>b.addEventListener('click',function(){if(this.dataset.role==='creator'){toast('🌌 Создатель — вне наказаний!');return}const amt=prompt('Сумма штрафа:');if(!amt)return;const reason=prompt('Причина:')||'Нарушение';DB.ref('punishes').push({user:this.dataset.uid,amount:parseInt(amt),reason,timestamp:Date.now()});DB.ref('notifications').push({user:this.dataset.uid,text:`💀 Штраф ${amt}₽ за: ${reason}`,timestamp:Date.now()});toast(`💀 Штраф ${amt}₽`)}));el.querySelectorAll('.worker-delete').forEach(b=>b.addEventListener('click',function(){if(this.dataset.role==='creator'){toast('🌌 Создатель — вне иерархии!');return}if(confirm(`Удалить ${this.dataset.name}?`)){DB.ref('users/'+this.dataset.uid).remove();loadWorkers()}}))})}
+function renderSalary(p){
+  p.innerHTML=`
+    <div class="card">
+      <h4>💰 Расчёт ЗП</h4>
+      <select id="salUser" style="margin-bottom:12px;"><option value="">— Выберите сотрудника —</option></select>
+      <div style="display:flex;gap:8px;">
+        <input type="date" id="salFrom" style="flex:1;">
+        <input type="date" id="salTo" style="flex:1;">
+      </div>
+      <button class="btn-green" id="salCalcBtn" style="margin-top:8px;">🧮 Посчитать</button>
+      <button class="btn-blue" id="salPayBtn" style="margin-top:4px;">✅ Оплатить</button>
+      <div id="salResult" style="margin-top:12px;"></div>
+    </div>
+  `;
+
+  DB.ref('users').once('value').then(snap => {
+    const sel = document.getElementById('salUser');
+    snap.forEach(child => {
+      const u = child.val();
+      if (u.name !== 'Костя' && u.uid !== App.user.uid) {
+        sel.innerHTML += `<option value="${child.key}">${esc(u.name)}</option>`;
+      }
+    });
+  });
+
+  let lastCalc = null;
+
+  document.getElementById('salCalcBtn').addEventListener('click', function() {
+    const uid = document.getElementById('salUser').value;
+    const from = document.getElementById('salFrom').value;
+    const to = document.getElementById('salTo').value;
+    if (!uid || !from || !to) {
+      toast('Заполните все поля', true);
+      return;
+    }
+
+    DB.ref('users/' + uid).once('value').then(userSnap => {
+      const userData = userSnap.val();
+      const punktId = userData.punkt || '';
+      let rate = 0;
+
+      DB.ref('punkts').once('value').then(ps => {
+        ps.forEach(child => {
+          if (child.key === punktId) {
+            rate = child.val().rate || 0;
+          }
+        });
+        if (rate === 0) rate = 150;
+
+        const userName = userData.name || '';
+        let totalH = 0, totalT = 0, shifts = [];
+
+        DB.ref('shifts').orderByChild('user').equalTo(uid).once('value').then(ss1 => {
+          ss1.forEach(child => {
+            const s = child.val();
+            if (s.date >= from && s.date <= to) {
+              totalH += s.hours || 0;
+              totalT += s.tovar || 0;
+              shifts.push(child.key);
+            }
+          });
+
+          if (userName) {
+            DB.ref('shifts').orderByChild('user_name').equalTo(userName).once('value').then(ss2 => {
+              ss2.forEach(child => {
+                const s = child.val();
+                if (s.date >= from && s.date <= to) {
+                  totalH += s.hours || 0;
+                  totalT += s.tovar || 0;
+                  shifts.push(child.key);
+                }
+              });
+
+              let prem = 0, pun = 0;
+              const fromTs = new Date(from).getTime();
+              const toTs = new Date(to).getTime();
+
+              DB.ref('premiums').orderByChild('user').equalTo(uid).once('value').then(pr => {
+                pr.forEach(child => {
+                  const p = child.val();
+                  if (p.timestamp >= fromTs && p.timestamp <= toTs) {
+                    prem += p.amount || 0;
+                  }
+                });
+
+                DB.ref('punishes').orderByChild('user').equalTo(uid).once('value').then(pu => {
+                  pu.forEach(child => {
+                    const p = child.val();
+                    if (p.timestamp >= fromTs && p.timestamp <= toTs) {
+                      pun += p.amount || 0;
+                    }
+                  });
+
+                  const base = Math.round(totalH * rate);
+                  const total = Math.max(0, base + prem - pun);
+                  const el = document.getElementById('salResult');
+                  el.innerHTML = `
+                    <div class="zp-result">
+                      Смен: ${shifts.length}, часов: ${totalH.toFixed(1)}, товаров: ${totalT}
+                      <br>База: ${base}₽, премии: +${prem}₽, штрафы: -${pun}₽
+                      <br><b>Итого: ${total}₽</b>
+                    </div>
+                  `;
+                  lastCalc = { uid, from, to, total, shifts };
+                });
+              });
+            });
+          } else {
+            let prem = 0, pun = 0;
+            const fromTs = new Date(from).getTime();
+            const toTs = new Date(to).getTime();
+
+            DB.ref('premiums').orderByChild('user').equalTo(uid).once('value').then(pr => {
+              pr.forEach(child => {
+                const p = child.val();
+                if (p.timestamp >= fromTs && p.timestamp <= toTs) {
+                  prem += p.amount || 0;
+                }
+              });
+
+              DB.ref('punishes').orderByChild('user').equalTo(uid).once('value').then(pu => {
+                pu.forEach(child => {
+                  const p = child.val();
+                  if (p.timestamp >= fromTs && p.timestamp <= toTs) {
+                    pun += p.amount || 0;
+                  }
+                });
+
+                const base = Math.round(totalH * rate);
+                const total = Math.max(0, base + prem - pun);
+                const el = document.getElementById('salResult');
+                el.innerHTML = `
+                  <div class="zp-result">
+                    Смен: ${shifts.length}, часов: ${totalH.toFixed(1)}, товаров: ${totalT}
+                    <br>База: ${base}₽, премии: +${prem}₽, штрафы: -${pun}₽
+                    <br><b>Итого: ${total}₽</b>
+                  </div>
+                `;
+                lastCalc = { uid, from, to, total, shifts };
+              });
+            });
+          }
+        });
+      });
+    });
+  });
+
+  document.getElementById('salPayBtn').addEventListener('click', function() {
+    if (!lastCalc) {
+      toast('Сначала посчитайте!', true);
+      return;
+    }
+    if (!confirm(`Оплатить ${lastCalc.total}₽?`)) return;
+    DB.ref('payments').push({
+      user: lastCalc.uid,
+      total: lastCalc.total,
+      dateFrom: lastCalc.from,
+      dateTo: lastCalc.to,
+      timestamp: Date.now()
+    });
+    lastCalc.shifts.forEach(id => DB.ref('shifts/' + id + '/paid').set(true));
+    toast(`✅ Оплачено ${lastCalc.total}₽`);
+    lastCalc = null;
+  });
+}
+function loadChat(){if(App.chatListener){App.chatListener.off();App.chatListener=null}const ref=App.privateChatWith?getPrivRef():DB.ref('chat');App.chatListener=ref.limitToLast(50);App.chatListener.on('value',s=>{const msgs=[];s.forEach(c=>{if(c.val())msgs.push({key:c.key,msg:c.val()})});msgs.sort((a,b)=>a.msg.timestamp-b.msg.timestamp);let h='',group=[];const renderMsg=m=>{let c='';if(m.text)c+=esc(m.text);if(m.photo)c+=`<br><img class="chat-img" src="${esc(m.thumb||m.photo)}" onclick="event.stopPropagation(); window.open('${esc(m.photo)}','_blank')">`;if(m.sticker)c+=`<img class="chat-sticker" src="${esc(m.sticker)}">`;if(m.photos&&m.photos.length){c+='<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;">';m.photos.forEach(p=>{const thumb=typeof p==='object'?esc(p.thumb):esc(p),full=typeof p==='object'?esc(p.full):esc(p);c+=`<img class="chat-img" src="${thumb}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;cursor:pointer;" onclick="event.stopPropagation(); window.open('${full}','_blank')">`});c+='</div>'}return c};for(let i=0;i<msgs.length;i++){const item=msgs[i],m=item.msg,userName=(m.user||'?').replace(/^[🌌👑📢]\s/,''),isMine=App.user&&(m.user==='🌌 '+App.user.name||m.user==='👑 '+App.user.name||m.user===App.user.name);if(group.length===0||group[0].userName!==userName||group[0].isMine!==isMine){if(group.length>0)h+=renderGroup(group,renderMsg);group=[{item,userName,isMine,m}]}else{group.push({item,userName,isMine,m})}}if(group.length>0)h+=renderGroup(group,renderMsg);const el=$('#chat'),was=el.scrollHeight-el.scrollTop-el.clientHeight<60;el.innerHTML=h;if(was||document.activeElement===$('#chatMsgInput'))el.scrollTop=el.scrollHeight;el.querySelectorAll('.msg-author').forEach(a=>a.addEventListener('click',function(){const n=this.querySelector('span').textContent.trim();for(const uid in App.allUserData){if(App.allUserData[uid].name===n){App.selectedProfile=uid;showMini(uid);break}}}))})}
+function renderGroup(g,renderMsg){const first=g[0],userName=first.userName,isMine=first.isMine,isCreator=first.m.user&&first.m.user.indexOf('🌌')===0,isGod=first.m.user&&first.m.user.indexOf('👑')===0;let av='';for(const uid in App.allUserData){if(App.allUserData[uid].name===userName){av=App.allUserData[uid].avatar||'';break}}let h=`<div class="chat-bubble-group ${isMine?'mine':'other'}">`;if(!isMine){h+='<div class="msg-author">';if(av){h+=`<img class="auth-avatar" src="${esc(av)}" onerror="this.style.display='none'">`}else{h+=`<div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#444,#555);display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:#ccc;">${esc(userName.charAt(0))}</div>`}const style=(isCreator||isGod)?'background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;':'';h+=`<span style="${style}">${esc(userName)}</span></div>`}g.forEach(g2=>{const m=g2.m;let cls='chat-bubble';if(isMine)cls+=' mine';else if(isCreator)cls+=' creator';else if(isGod)cls+=' god';h+=`<div class="${cls}">${renderMsg(m)}</div>`});h+='</div>';return h}
+function toggleChat(){const el=$('#chat'),bar=$('#chatInputBar');if(el.classList.contains('hidden')){el.classList.remove('hidden');App.chatOpened=true;bar.style.display='flex';App.lastChatTimestamp=Date.now();App.unreadCount=0;updateBadge();setTimeout(()=>el.scrollTop=el.scrollHeight,100)}else{el.classList.add('hidden');App.chatOpened=false;bar.style.display='none'}}
+function updateBadge(){const b=$('#chatBadge');if(App.unreadCount>0){b.style.display='inline';b.textContent=App.unreadCount}else{b.style.display='none'}}
+function sendMsg(){const input=$('#chatMsgInput'),t=input.value.trim();if(!t||!App.user)return;const ref=App.privateChatWith?getPrivRef():DB.ref('chat');const mentions=t.match(/@(\S+)/g);if(mentions){console.log("Упоминания:",mentions)}ref.push({user:(App.isGod?'👑 ':(App.isCreator?'🌌 ':''))+App.user.name,text:t,timestamp:Date.now(),role:App.user.role,likes:{}}).then(()=>input.value='')}
+function sendPhoto(){const input=$('#chatPhotoInput'),files=input.files;if(!files.length||!App.user)return;const photos=[],count=Math.min(files.length,5);for(let i=0;i<count;i++){(function(f){const r=new FileReader();r.onload=function(e){const img=new Image();img.onload=function(){const c=document.createElement('canvas'),mw=300,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);photos.push({full:e.target.result,thumb:c.toDataURL('image/jpeg',0.6)});if(photos.length===count){const ref=App.privateChatWith?getPrivRef():DB.ref('chat');ref.push({user:(App.isGod?'👑 ':(App.isCreator?'🌌 ':''))+App.user.name,text:`📷 ${count} фото`,photos,timestamp:Date.now(),role:App.user.role,likes:{}})}};img.src=e.target.result};r.readAsDataURL(f)})(files[i])}input.value=''}
+function getPrivRef(){if(!App.privateChatWith)return DB.ref('chat');const users=[App.user.uid,App.privateChatWith].sort();return DB.ref('privateChats/'+users[0]+'_'+users[1])}
+function openPriv(){if(!App.selectedProfile||App.selectedProfile===App.user.uid)return;App.privateChatWith=App.selectedProfile;const d=App.allUserData[App.selectedProfile];$('#chatLabel').textContent=d?d.name:'...';$('#chatBackBtn').style.display='inline-block';closeMini();$('#avatarCarousel').classList.remove('open');loadChat()}
+function switchGlobal(){App.privateChatWith=null;$('#chatLabel').textContent='Общий чат';$('#chatBackBtn').style.display='none';loadChat()}
+function renderStickerUI(){const content=$('#stickerContent'),tabs=$('#stickerTabs');content.innerHTML=BASE_EMOJIS.map(e=>`<div class="emoji-item" data-emoji="${e}">${e}</div>`).join('');content.querySelectorAll('.emoji-item').forEach(el=>el.addEventListener('click',function(ev){ev.stopPropagation();$('#chatMsgInput').value+=this.dataset.emoji;$('#chatMsgInput').focus()}));tabs.innerHTML='<button class="st-tab active" data-tab="emoji">😀</button>';DB.ref('sticker_packs').once('value').then(s=>{if(s.exists()){s.forEach(c=>{const p=c.val();if(p.creator===App.user.uid||App.isCreator||App.isGod||(p.allowed_users&&p.allowed_users[App.user.uid])){tabs.innerHTML+=`<button class="st-tab" data-tab="${c.key}">📦</button>`}}})});tabs.querySelectorAll('.st-tab').forEach(b=>b.addEventListener('click',function(ev){ev.stopPropagation();const tab=this.dataset.tab;tabs.querySelectorAll('.st-tab').forEach(x=>x.classList.toggle('active',x===this));if(tab==='emoji'){content.innerHTML=BASE_EMOJIS.map(e=>`<div class="emoji-item" data-emoji="${e}">${e}</div>`).join('');content.querySelectorAll('.emoji-item').forEach(el=>el.addEventListener('click',function(ev2){ev2.stopPropagation();$('#chatMsgInput').value+=this.dataset.emoji;$('#chatMsgInput').focus()}))}else{DB.ref('sticker_packs/'+tab).once('value').then(sp=>{const pack=sp.val();if(pack&&pack.stickers){content.innerHTML=pack.stickers.map(st=>`<div class="st-item" onclick="event.stopPropagation();sendSticker('${esc(st)}')"><img src="${esc(st)}"></div>`).join('')}else{content.innerHTML='<p style="color:var(--muted);font-size:13px;padding:12px;">Нет стикеров</p>'}})}}))}
+function sendSticker(img){if(!App.user)return;const ref=App.privateChatWith?getPrivRef():DB.ref('chat');ref.push({user:(App.isGod?'👑 ':(App.isCreator?'🌌 ':''))+App.user.name,text:'',sticker:img,timestamp:Date.now(),role:App.user.role,likes:{}});$('#stickerPanel').classList.remove('open')}
+function toggleSidebar(){$('#avatarCarousel').classList.toggle('open')}
+function buildCarousel(){const el=$('#carouselInner');if(!el)return;el.innerHTML='';const added=new Set();for(const uid in App.allUserData){if(uid===App.user.uid)continue;const d=App.allUserData[uid];if(added.has(d.name))continue;added.add(d.name);const online=!!App.activeShifts[uid];el.innerHTML+=`<div class="avatar-item${App.selectedProfile===uid?' active':''}" data-uid="${uid}">${d.avatar?`<img src="${esc(d.avatar)}" onerror="this.style.display='none'">`:`<div style="width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#222,#444);display:flex;align-items:center;justify-content:center;font-size:18px;color:#ccc;">${esc(d.name.charAt(0))}</div>`}${online?'<div class="online-dot"></div>':''}</div>`}el.querySelectorAll('.avatar-item').forEach(el2=>el2.addEventListener('click',function(){const uid=this.dataset.uid;App.selectedProfile=uid;el.querySelectorAll('.avatar-item').forEach(x=>x.classList.toggle('active',x.dataset.uid===uid));showMini(uid)}))}
+function loadAvatarSettings() {
+  DB.ref('users/' + App.user.uid + '/avatarSettings').once('value').then(s => {
+    if (s.exists()) {
+      const d = s.val();
+      Object.assign(App.avatarSettings, d);
+      if (d.photo) {
+        const img = new Image();
+        img.onload = () => { App.avatarImageData = img; drawProfileAvatar(); };
+        img.src = d.photo;
+      }
+    }
+    if (App.user.avatar && !App.avatarImageData) {
+      const img = new Image();
+      img.onload = () => { App.avatarImageData = img; drawProfileAvatar(); };
+      img.src = App.user.avatar;
+    }
+    drawProfileAvatar();
+    if (!App.avatarAnimId) updateAllFrames();
+  });
+}
+function drawProfileAvatar() {
+  const c = document.getElementById('profileAvatarCanvas');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0, 0, 76, 76);
+  if (App.avatarImageData) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(38, 38, 36, 0, Math.PI * 2);
+    ctx.clip();
+    const r = Math.max(76 / App.avatarImageData.width, 76 / App.avatarImageData.height);
+    const dw = App.avatarImageData.width * r;
+    const dh = App.avatarImageData.height * r;
+    ctx.drawImage(App.avatarImageData, (76 - dw) / 2, (76 - dh) / 2, dw, dh);
+    ctx.restore();
+  } else {
+    ctx.fillStyle = '#1e1b4b';
+    ctx.beginPath();
+    ctx.arc(38, 38, 36, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#6366f1';
+    ctx.font = 'bold 28px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(App.user.name.charAt(0).toUpperCase(), 38, 40);
+  }
+}
+function showMini(uid){const d=App.allUserData[uid];if(!d)return;$('#mpName').textContent=d.name;const c=$('#mpAvatarContainer');c.innerHTML=`<div style="position:relative;width:64px;height:64px;">${d.avatar?`<img src="${esc(d.avatar)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--accent);">`:`<div style="width:100%;height:100%;border-radius:50%;background:#444;display:flex;align-items:center;justify-content:center;font-size:24px;color:#ccc;">${esc(d.name.charAt(0))}</div>`}</div>`;$('#mpStatus').textContent=d.role==='god'?'Начальник':(d.role==='creator'?'Создатель':'Сотрудник');$('#mpPunkt').textContent=App.activeShifts[uid]?'🟢 На смене':'🔴 Выходной';$('#miniProfile').classList.add('show')}
+function closeMini(){$('#miniProfile').classList.remove('show');App.selectedProfile=null}
+function updateAllFrames(){if(document.hidden){App.avatarAnimId=requestAnimationFrame(updateAllFrames);return}const pc=$('#profileFrameCanvas');if(pc){const ctx=pc.getContext('2d');ctx.save();ctx.translate(38,38);drawFrame(ctx,76,76,App.avatarSettings);ctx.restore()}if($('#miniProfile').classList.contains('show')&&App.selectedProfile){const d=App.allUserData[App.selectedProfile];if(d&&d.avatar){const c=$('#mpAvatarContainer');if(c){c.innerHTML=`<div style="position:relative;width:64px;height:64px;"><img src="${esc(d.avatar)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--accent);"></div>`}}}document.querySelectorAll('.avatar-item').forEach(item=>{const uid=item.dataset.uid;if(uid&&App.allUserData[uid]&&App.allUserData[uid].avatar){const img=item.querySelector('img');if(img)img.src=App.allUserData[uid].avatar}});App.avatarAnimId=requestAnimationFrame(updateAllFrames)}
+function drawFrame(ctx,w,h,settings){const cx=w/2,cy=h/2,time=Date.now()/1000*settings.speed;ctx.clearRect(0,0,w,h);ctx.shadowBlur=settings.glow||20;ctx.shadowColor=settings.color1||'#7c3aed';if(settings.style==='neutron'){for(let i=0;i<3;i++){ctx.save();ctx.rotate(i*Math.PI*2/3+time);ctx.strokeStyle=i===0?settings.color1:settings.color2;ctx.lineWidth=2.5;ctx.beginPath();ctx.ellipse(0,0,Math.max(0,w/2-5),Math.max(0,h/4),0,0,Math.PI*2);ctx.stroke();ctx.restore()}}else if(settings.style==='blackhole'){const grad=ctx.createRadialGradient(cx,cy,80,cx,cy,160);grad.addColorStop(0,'transparent');grad.addColorStop(0.3,'rgba(0,0,0,0.5)');grad.addColorStop(0.6,settings.color1);grad.addColorStop(1,'transparent');ctx.fillStyle=grad;ctx.beginPath();ctx.arc(cx,cy,160,0,Math.PI*2);ctx.fill()}else if(settings.style==='divine'){ctx.strokeStyle=settings.color1;ctx.lineWidth=4;ctx.beginPath();ctx.arc(cx,cy,115,0,Math.PI*2);ctx.stroke();for(let i=0;i<30;i++){const a=Math.random()*Math.PI*2,d=115+Math.sin(time*5+i)*10;ctx.fillStyle=settings.color2;ctx.beginPath();ctx.arc(cx+d*Math.cos(a),cy+d*Math.sin(a),2,0,Math.PI*2);ctx.fill()}}else if(settings.style==='kitsune'){for(let i=0;i<6;i++){ctx.fillStyle='rgba(255,69,0,0.3)';ctx.beginPath();ctx.arc(cx+Math.cos(time*2+i)*30,cy+Math.sin(time*2+i)*30,20+Math.sin(time*3+i)*10,0,Math.PI*2);ctx.fill()}}else if(settings.style==='wasteland'){ctx.fillStyle=settings.color1+'40';ctx.beginPath();ctx.arc(cx,cy,115*(1+Math.sin(time*5)*0.05),0,Math.PI*2);ctx.fill()}else if(settings.style==='enigma'){ctx.strokeStyle=settings.color1;ctx.lineWidth=15;ctx.beginPath();ctx.arc(cx,cy,115,0,Math.PI*2);ctx.stroke();ctx.strokeStyle=settings.color2;ctx.lineWidth=3;ctx.beginPath();ctx.arc(cx,cy,115,0,Math.PI*2);ctx.stroke()}ctx.shadowBlur=0}
+function updateSettingsUI(){const adv=App.isCreator||App.isGod;document.getElementById('avatarAdvanced').style.display=adv?'block':'none';document.getElementById('avatarSimple').style.display=adv?'none':'block';document.querySelectorAll('.style-btn').forEach(b=>{b.classList.toggle('active',b.dataset.style===App.avatarSettings.style)});document.getElementById('setSpeed').value=App.avatarSettings.speed;document.getElementById('setSpeedVal').textContent=App.avatarSettings.speed+'x';document.getElementById('setGlow').value=App.avatarSettings.glow;document.getElementById('setGlowVal').textContent=App.avatarSettings.glow+'px';document.getElementById('setColor1').value=App.avatarSettings.color1;document.getElementById('setColor2').value=App.avatarSettings.color2;document.getElementById('setRingColor').value=App.avatarSettings.ringColor;document.getElementById('setRingThickness').value=App.avatarSettings.ringThickness}
+function openSettings(){document.getElementById('mainContent').style.display='none';document.getElementById('avatarCarousel').style.display='none';document.getElementById('settingsPanel').style.display='flex';document.getElementById('setVk').value=App.user.vkId||'';document.getElementById('setName').value='';loadPunktsSettings();updateSettingsUI()}
+function closeSettings(){document.getElementById('settingsPanel').style.display='none';document.getElementById('mainContent').style.display='flex';document.getElementById('avatarCarousel').style.display='flex'}
+function loadPunktsSettings(){DB.ref('punkts').once('value').then(s=>{const sel=$('#setPunkt');sel.innerHTML='<option value="">Не менять</option>';s.forEach(c=>{sel.innerHTML+=`<option value="${c.key}">${c.key}</option>`})})}
+function saveSettings(){const nn=$('#setName').value.trim(),npu=$('#setPunkt').value,nvk=$('#setVk').value.trim(),up={};if(nn)up.name=nn;if(npu)up.punkt=npu;if(nvk)up.vkId=nvk;if(Object.keys(up).length){DB.ref('users/'+App.user.uid).update(up).then(()=>{if(nn)App.user.name=nn;if(npu)App.user.punkt=npu;if(nvk)App.user.vkId=nvk;updateUI();toast('Сохранено')})}closeSettings()}
+function saveAvatar(){const d={style:App.avatarSettings.style,speed:App.avatarSettings.speed,glow:App.avatarSettings.glow,color1:App.avatarSettings.color1,color2:App.avatarSettings.color2,ringColor:App.avatarSettings.ringColor,ringThickness:App.avatarSettings.ringThickness};if(App.avatarImageData){const c=document.createElement('canvas');c.width=200;c.height=200;const ctx=c.getContext('2d');ctx.drawImage(App.avatarImageData,0,0,200,200);d.photo=c.toDataURL('image/jpeg',0.8)}const up={avatarSettings:d};if(d.photo)up.avatar=d.photo;DB.ref('users/'+App.user.uid).update(up).then(()=>{if(d.photo)App.user.avatar=d.photo;toast('Аватар сохранён');closeSettings()})}
+function loadPinned(){DB.ref('pinned').on('value',s=>{const el=$('#pinnedMessage');if(!s.exists()){el.style.display='none';return}const d=s.val();el.style.display='block';el.innerHTML=`📌 <b>${esc(d.user||'?')}:</b> ${esc(d.text)}`})}
+function loadAnnounce(){DB.ref('announce').limitToLast(1).on('value',s=>{const el=$('#announceBlock');if(!s.exists()){el.style.display='none';return}let last=null;s.forEach(c=>{last=c.val();last._key=c.key});if(last.expiry&&Date.now()>last.expiry){DB.ref('announce/'+last._key).remove();el.style.display='none';return}el.style.display='block';el.innerHTML=`${esc(last.text)}<br><small style="color:var(--muted);">${new Date(last.timestamp).toLocaleString('ru-RU')}</small>`;if(App.isCreator||App.isGod){const del=document.createElement('button');del.textContent='✕';del.style.cssText='position:absolute;right:8px;top:8px;background:none;border:none;color:var(--red);cursor:pointer;font-size:14px;';del.addEventListener('click',()=>DB.ref('announce/'+last._key).remove());el.appendChild(del)}})}
+function loadThought(){DB.ref('creatorThought').on('value',s=>{const el=$('#thoughtBlock');if(!s.exists()){el.style.display='none';return}const d=s.val();if(d.expiry&&Date.now()>d.expiry){DB.ref('creatorThought').remove();el.style.display='none';return}el.style.display='block';el.innerHTML=`💭 ${esc(d.text)}<br><small style="color:var(--muted);">${d.expiry?'До: '+new Date(d.expiry).toLocaleString('ru-RU'):'Навсегда'}</small>`;if(App.isCreator){const del=document.createElement('button');del.textContent='✕';del.style.cssText='position:absolute;right:8px;top:8px;background:none;border:none;color:var(--red);cursor:pointer;font-size:14px;';del.addEventListener('click',()=>DB.ref('creatorThought').remove());el.appendChild(del)}})}
+function recountRating(){DB.ref('premiums').once('value').then(s=>{let r=s.numChildren()*2;DB.ref('punishes').once('value').then(p=>{r-=p.numChildren();if(r<0)r=0;const st=getGodStatus(r);const b=document.getElementById('godStatusBadge');if(b){b.textContent=st.name;b.style.background=st.color}}})}
+function setupDatabaseListeners(){attachDbListener(DB.ref('users'),'value',s=>{App.allUsers={};App.allUserData={};s.forEach(c=>{App.allUsers[c.key]=c.val().avatar||'';App.allUserData[c.key]=c.val()});buildCarousel()});attachDbListener(DB.ref('activeShifts'),'value',s=>{App.activeShifts={};s.forEach(c=>{if(c.val()&&c.val().active)App.activeShifts[c.key]=true});buildCarousel()});attachDbListener(DB.ref('chat').limitToLast(1),'child_added',s=>{if(App.chatOpened)return;const m=s.val();if(!m||!App.user)return;if(m.timestamp<=App.lastChatTimestamp)return;const isMine=m.user==='🌌 '+App.user.name||m.user==='👑 '+App.user.name||m.user===App.user.name;if(isMine)return;if(App.notifiedKeys[s.key])return;App.notifiedKeys[s.key]=true;App.lastChatTimestamp=Math.max(App.lastChatTimestamp,m.timestamp||0);App.unreadCount++;updateBadge()})}
+document.addEventListener('DOMContentLoaded',()=>{$('#chatHeader').addEventListener('click',toggleChat);$('#chatBackBtn').addEventListener('click',switchGlobal);$('#chatMsgInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();sendMsg()}});$('#sendMsgBtn').addEventListener('click',sendMsg);$('#chatPhotoBtn').addEventListener('click',()=>$('#chatPhotoInput').click());$('#chatPhotoInput').addEventListener('change',sendPhoto);$('#stickerToggleBtn').addEventListener('click',function(e){e.stopPropagation();const p=$('#stickerPanel');p.classList.toggle('open');if(p.classList.contains('open'))renderStickerUI()});document.addEventListener('click',e=>{const p=$('#stickerPanel');if(p&&p.classList.contains('open')&&!e.target.closest('#stickerPanel')&&!e.target.closest('.sticker-toggle')){p.classList.remove('open')}});$('#sidebarToggleBtn').addEventListener('click',toggleSidebar);$('#sidebarCloseBtn').addEventListener('click',()=>$('#avatarCarousel').classList.remove('open'));$('#mpCloseBtn').addEventListener('click',closeMini);$('#mpChatBtn').addEventListener('click',openPriv);document.addEventListener('click',e=>{const mp=$('#miniProfile');if(mp&&mp.classList.contains('show')&&!e.target.closest('#miniProfile')&&!e.target.closest('.avatar-item')&&!e.target.closest('#sidebarToggleBtn')&&!e.target.closest('.msg-author')){closeMini()}});$('#settingsBtn').addEventListener('click',openSettings);$('#settingsCloseBtn').addEventListener('click',closeSettings);$('#settingsSaveBtn').addEventListener('click',saveSettings);$('#settingsLogoutBtn').addEventListener('click',()=>{closeSettings();logout()});$('#avatarCloseBtn').addEventListener('click',closeSettings);$('#avatarSaveBtn').addEventListener('click',saveAvatar);$('#setAvatarFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{const img=new Image();img.onload=()=>{App.avatarImageData=img;drawProfileAvatar();toast('Фото загружено')};img.src=ev.target.result};r.readAsDataURL(f)});document.querySelectorAll('.settings-tab').forEach(b=>b.addEventListener('click',function(){const tab=this.dataset.tab;document.querySelectorAll('.settings-tab').forEach(x=>{x.classList.remove('active');x.style.background='transparent';x.style.color='var(--muted)'});this.classList.add('active');this.style.background='var(--accent)';this.style.color='#fff';document.getElementById('stab-main').style.display=tab==='main'?'flex':'none';document.getElementById('stab-avatar').style.display=tab==='avatar'?'flex':'none'}));document.querySelectorAll('.style-btn').forEach(b=>b.addEventListener('click',function(){App.avatarSettings.style=this.dataset.style;document.querySelectorAll('.style-btn').forEach(x=>x.classList.remove('active'));this.classList.add('active');updateAllFrames()}));document.getElementById('setSpeed').addEventListener('input',function(){App.avatarSettings.speed=parseFloat(this.value);document.getElementById('setSpeedVal').textContent=App.avatarSettings.speed+'x';updateAllFrames()});document.getElementById('setGlow').addEventListener('input',function(){App.avatarSettings.glow=parseInt(this.value);document.getElementById('setGlowVal').textContent=App.avatarSettings.glow+'px';updateAllFrames()});document.getElementById('setColor1').addEventListener('input',function(){App.avatarSettings.color1=this.value;updateAllFrames()});document.getElementById('setColor2').addEventListener('input',function(){App.avatarSettings.color2=this.value;updateAllFrames()});document.getElementById('setRingColor').addEventListener('input',function(){App.avatarSettings.ringColor=this.value});document.getElementById('setRingThickness').addEventListener('change',function(){App.avatarSettings.ringThickness=this.value})});
+})();
+</script>
+</body>
+</html>
