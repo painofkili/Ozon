@@ -1,0 +1,2523 @@
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+<title>Ozon Hub</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow:hidden;height:100vh;width:100vw;background:#0a0a1a}
+body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;color:#eee;font-size:16px;display:flex;flex-direction:column}
+:root{--accent:#7c3aed;--accent2:#a855f7;--gold:#f5c518;--bg2:rgba(20,20,50,0.85);--bg3:rgba(30,30,60,0.7);--border:rgba(100,80,220,0.25);--text:#e8e8ff;--muted:#888;--green:#22c55e;--red:#ef4444}
+body.theme-creator{--accent:#7c3aed;--accent2:#00d4ff;--gold:#f5c518}
+body.theme-god{--accent:#b8860b;--accent2:#ffd700;--gold:#ffd700}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(12px);padding:16px;margin:6px 0}
+input,select,textarea{width:100%;padding:12px 14px;font-size:15px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);background:rgba(10,10,25,0.6);color:#fff;outline:none;transition:0.2s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,58,237,0.15)}
+button{border:none;font-weight:bold;cursor:pointer;border-radius:12px;transition:all .2s;padding:12px 16px;font-size:15px}
+button:hover{transform:scale(1.02);filter:brightness(1.1)}
+button:active{transform:scale(0.95)}
+.btn-green{background:linear-gradient(135deg,#43a047,#2e7d32);color:#fff;width:100%}
+.btn-red{background:linear-gradient(135deg,#e94560,#c62828);color:#fff;width:100%}
+.btn-gray{background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.1);width:100%}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff;width:100%}
+.btn-blue{background:linear-gradient(135deg,#2196F3,#1565C0);color:#fff;width:100%}
+.btn-purple{background:#9C27B0;color:#fff}
+.btn-sm{padding:6px 12px;font-size:12px;width:auto}
+.app-container{display:flex;width:100%;height:100vh;position:relative;z-index:1;overflow:hidden}
+.main-content{width:100%;max-width:100%;padding:12px 16px;display:flex;flex-direction:column;height:100%;gap:6px}
+.profile-card{display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(12px);flex-shrink:0;cursor:pointer;transition:0.2s}
+.profile-card:hover{background:rgba(40,40,70,0.9)}
+.badge{font-size:12px;font-weight:bold;padding:4px 12px;border-radius:20px;display:inline-block}
+.badge-creator{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff}
+.badge-god{background:linear-gradient(135deg,#FFD700,#FF4500);color:#fff}
+.badge-manager{background:#2d6a4f;color:#95d5b2}
+.name-creator{background:linear-gradient(135deg,var(--gold),var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold}
+.name-god{background:linear-gradient(135deg,#FFD700,#FF8C00,#FF4500);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold}
+.name-manager{color:#eee;font-weight:bold}
+.tabs{display:flex;gap:6px;margin:0;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{height:44px;display:flex;align-items:center;gap:8px;border-radius:99px;background:rgba(255,255,255,0.06);color:#aaa;border:1px solid transparent;padding:0 16px;font-size:13px;white-space:nowrap;flex-shrink:0;transition:0.3s;min-width:44px;overflow:hidden}
+.tabs button .tab-label{opacity:0;max-width:0;transition:all 0.3s}
+.tabs button:hover .tab-label,.tabs button.active .tab-label{opacity:1;max-width:80px}
+.tabs button.active{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff;box-shadow:0 4px 15px rgba(138,43,226,0.3)}
+.tab-content{display:none;width:100%;flex-shrink:0;animation:fadeIn 0.3s ease}
+.tab-content.active-tab{display:block}
+.chat-section{background:var(--bg2);border:1px solid var(--border);border-radius:16px;display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;margin:0}
+.chat-header-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.2);cursor:pointer;flex-shrink:0}
+.chat-header-bar:hover{background:rgba(0,0,0,0.3)}
+#chat{flex:1;overflow-y:auto;padding:10px 14px;scrollbar-width:thin;scrollbar-color:var(--accent) transparent;background:transparent;display:flex;flex-direction:column;gap:2px}
+#chat.hidden{display:none !important}
+.chat-bubble-group{display:flex;flex-direction:column;max-width:85%;position:relative;margin:1px 0}
+.chat-bubble-group.mine{align-self:flex-end;align-items:flex-end}
+.chat-bubble-group.other{align-self:flex-start;align-items:flex-start}
+.chat-bubble-group .msg-author{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:1px;display:flex;align-items:center;gap:6px;cursor:pointer}
+.chat-bubble{background:rgba(255,255,255,0.04);padding:8px 14px;word-break:break-word;line-height:1.4;font-size:14px;border:1px solid rgba(255,255,255,0.03);position:relative;border-radius:12px}
+.chat-bubble.mine{background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.1)}
+.chat-bubble.creator{border-left:2px solid var(--gold);background:rgba(245,197,24,0.06)}
+.chat-bubble.god{border-left:2px solid #FFD700;background:rgba(255,215,0,0.06)}
+.chat-img{max-width:200px;max-height:150px;border-radius:8px;margin-top:4px;cursor:pointer;object-fit:cover}
+.chat-sticker{max-width:120px;max-height:120px;object-fit:contain;margin:2px 0}
+.chat-input-wrapper{position:relative;width:100%;margin-top:auto;flex-shrink:0}
+.chat-input-bar{width:100%;background:var(--bg2);backdrop-filter:blur(16px);padding:8px 12px;display:flex;gap:8px;align-items:center;z-index:100;border-top:1px solid var(--border);border-radius:16px}
+.input-wrapper{position:relative;flex:1;display:flex;align-items:center;background:rgba(0,0,0,0.3);border-radius:20px;border:1px solid rgba(255,255,255,0.05)}
+.input-wrapper input{background:transparent;border:none;padding:10px 40px 10px 16px;font-size:15px;width:100%}
+.sticker-toggle{position:absolute;right:8px;background:transparent;border:none;font-size:20px;cursor:pointer;color:#aaa;padding:0}
+#sendMsgBtn,#chatPhotoBtn{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;padding:0;flex-shrink:0;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.05);color:#aaa}
+#sendMsgBtn{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff;border:none}
+
+/* Карусель аватаров */
+.avatar-carousel{width:110px;background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;right:-130px;height:100vh;padding:50px 0 20px;z-index:1000;backdrop-filter:blur(20px);transition:right 0.3s cubic-bezier(0.16,1,0.3,1);box-shadow:-10px 0 30px rgba(0,0,0,0.5)}
+.avatar-carousel.open{right:0}
+.avatar-carousel-inner{display:flex;flex-direction:column;align-items:center;width:100%;gap:12px;overflow-y:auto;height:100%;padding:10px 0;scrollbar-width:none;padding-bottom:30px}
+.avatar-carousel-inner::-webkit-scrollbar{display:none}
+.sidebar-close-btn{position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#aaa;width:32px;height:32px;border-radius:10px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:0.2s;z-index:2;}
+.sidebar-close-btn:hover{background:#e94560;color:#fff;border-color:#e94560;}
+.avatar-item{width:56px;height:56px;border-radius:50%;cursor:pointer;position:relative;transition:0.2s;flex-shrink:0}
+.avatar-item:hover{transform:scale(1.05)}
+.avatar-item img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid transparent}
+.avatar-item.active img{border-color:var(--gold);box-shadow:0 0 15px rgba(245,197,24,0.3)}
+.avatar-item .online-dot{position:absolute;bottom:2px;right:2px;width:10px;height:10px;background:#4CAF50;border-radius:50%;border:2px solid #111}
+.btn-sidebar-toggle{position:fixed;right:0;top:50%;transform:translateY(-50%);width:36px;height:50px;background:var(--bg2);border:1px solid var(--border);border-right:none;border-radius:14px 0 0 14px;color:#fff;font-size:14px;cursor:pointer;z-index:999;backdrop-filter:blur(8px)}
+
+.mini-profile{position:fixed;right:130px;top:50%;transform:translateY(-50%);background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px;width:220px;z-index:1100;display:none;backdrop-filter:blur(20px);box-shadow:0 10px 40px rgba(0,0,0,0.6)}
+.mini-profile.show{display:block;animation:slideIn 0.2s ease-out}
+@keyframes slideIn{from{opacity:0;transform:translateY(-50%) translateX(20px)}to{opacity:1;transform:translateY(-50%) translateX(0)}}
+.mini-profile .mp-close{position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.05);border:none;color:#aaa;width:28px;height:28px;border-radius:50%;font-size:12px;cursor:pointer}
+.mini-profile .mp-close:hover{background:#e94560;color:#fff}
+
+#stickerPanel{position:absolute;bottom:calc(100% + 8px);right:0;width:300px;height:340px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;display:none;flex-direction:column;z-index:1000;box-shadow:0 10px 40px rgba(0,0,0,0.6);backdrop-filter:blur(20px);overflow:hidden}
+#stickerPanel.open{display:flex}
+#stickerContent{flex:1;overflow-y:auto;padding:12px;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start}
+.emoji-item{width:40px;height:40px;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:10px;transition:0.15s}
+.emoji-item:hover{background:rgba(255,255,255,0.1);transform:scale(1.1)}
+.st-item{width:60px;height:60px;cursor:pointer;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.02);transition:0.15s}
+.st-item:hover{background:rgba(255,255,255,0.08);transform:scale(1.05)}
+.st-item img{max-width:100%;max-height:100%;object-fit:contain}
+.sticker-tabs{display:flex;background:rgba(0,0,0,0.3);padding:6px;gap:4px;overflow-x:auto;border-top:1px solid var(--border);scrollbar-width:none}
+.sticker-tabs::-webkit-scrollbar{display:none}
+.st-tab{width:32px;height:32px;border-radius:8px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;opacity:0.6;transition:0.2s;flex-shrink:0}
+.st-tab.active,.st-tab:hover{opacity:1;background:rgba(124,58,237,0.2)}
+.toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:10000;pointer-events:none;display:flex;flex-direction:column;gap:8px}
+.toast-msg{padding:12px 20px;border-radius:16px;background:var(--bg2);border:1px solid var(--accent);color:#fff;font-size:14px;box-shadow:0 5px 20px rgba(0,0,0,0.6);transform:translateY(-20px);opacity:0;transition:all 0.3s;text-align:center;backdrop-filter:blur(10px)}
+.toast-msg.error{border-color:var(--red)}
+.toast-msg.show{transform:translateY(0);opacity:1}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;font-size:12px;background:rgba(22,33,62,0.4);border-radius:10px;padding:6px;border:1px solid var(--border)}
+.calendar div{padding:6px;border-radius:4px}
+.calendar .shift-day{background:#4CAF50;color:#fff;font-weight:bold;cursor:pointer}
+.calendar .today{border:2px solid #2196F3}
+.calendar .header{font-weight:bold;background:rgba(51,51,51,0.7)}
+.worker-row{display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid var(--border);gap:6px;flex-wrap:wrap}
+.worker-row button{width:auto;padding:4px 10px;font-size:11px}
+.zp-result{background:rgba(34,197,94,0.1);padding:12px;border-radius:8px;margin-top:8px;font-size:14px;border:1px solid rgba(34,197,94,0.3);white-space:pre-line}
+.settings-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:20px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;backdrop-filter:blur(20px)}
+#settingsPanel{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px}
+.settings-tab{flex:1;padding:8px;border-radius:10px;font-size:13px;background:transparent;color:var(--muted);border:none;cursor:pointer;transition:0.2s}
+.settings-tab.active{background:var(--accent);color:#fff}
+.style-btn{padding:8px 6px;border-radius:10px;border:2px solid #444;background:rgba(0,0,0,0.3);color:#ccc;font-size:11px;cursor:pointer;transition:0.2s;width:100%}
+.style-btn.active{border-color:var(--accent);background:rgba(124,58,237,0.2);color:#fff}
+.style-btn.premium{border-color:#FFD700;background:rgba(255,215,0,0.05)}
+
+/* УЛУЧШЕННАЯ 3D-ОБЁРТКА АВАТАРА */
+.avatar-wrap {
+  position: relative;
+  width: 76px;    /* Базовый размер для верстки */
+  height: 76px;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+#mainAvatarCanvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 140px;   /* Большой размер для вылета эффектов */
+  height: 140px;
+  pointer-events: none; /* Пропускаем клики сквозь рамку к контейнеру */
+  z-index: 2;
+}
+.chat-auth-avatar {
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* Desktop layout */
+@media(min-width:1024px){
+  .app-container{flex-direction:row;align-items:stretch;justify-content:center;gap:16px;padding:12px}
+  .left-column{width:380px;flex-shrink:0;display:flex;flex-direction:column;gap:6px;overflow-y:auto;height:100%}
+  .right-column{flex:1;display:flex;flex-direction:column;gap:6px;height:100%;min-width:0;overflow:hidden}
+  .right-column .chat-section{flex:1}
+  .right-column .chat-input-wrapper{flex-shrink:0}
+  .main-content{flex-direction:row;padding:0;gap:16px;max-width:100%}
+  #tabContentContainer{flex:1;overflow-y:auto}
+}
+
+@media(max-width:1023px){
+  .main-content{padding:8px 8px 70px}
+  .chat-input-wrapper{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:100%;z-index:100}
+  .chat-input-bar{border-radius:12px 12px 0 0;padding:6px 8px}
+  .mini-profile{right:10px;width:190px}
+  .avatar-carousel{width:90px}
+  .avatar-item{width:44px;height:44px}
+}
+</style>
+</head>
+<body>
+<div id="toastContainer" class="toast-container"></div>
+
+<!-- Окно предпросмотра Аватара -->
+<div id="avatarPreviewModal" style="display:none;position:fixed;inset:0;z-index:11000;background:rgba(0,0,0,0.85);backdrop-filter:blur(15px);align-items:center;justify-content:center;flex-direction:column;">
+  <button id="closeAvatarPreview" style="position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;width:44px;height:44px;border-radius:12px;font-size:18px;cursor:pointer;transition:0.2s;">✕</button>
+  <canvas id="previewAvatarCanvas" width="600" height="600" style="width:100%;max-width:400px;height:auto;"></canvas>
+  <div id="previewAvatarName" style="margin-top:10px;font-size:28px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></div>
+</div>
+
+<!-- Custom Modal UI -->
+<div id="customModal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px;">
+  <div class="card" style="max-width:350px;width:100%;display:flex;flex-direction:column;gap:12px;">
+    <div id="modalMessage" style="font-size:16px;text-align:center;font-weight:bold;"></div>
+    <input id="modalInput" type="text" style="display:none;margin-top:8px;">
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button id="modalCancelBtn" class="btn-gray">Отмена</button>
+      <button id="modalConfirmBtn" class="btn-green">ОК</button>
+    </div>
+  </div>
+</div>
+
+<!-- Login Screen -->
+<div id="loginScreen" style="display:flex;align-items:center;justify-content:center;height:100vh;padding:20px;">
+  <div style="max-width:380px;width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:32px;backdrop-filter:blur(20px);display:flex;flex-direction:column;gap:14px;">
+    <div style="text-align:center;font-size:24px;font-weight:800;background:linear-gradient(135deg,#f5c518,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Ozon Hub</div>
+    <div style="display:flex;background:rgba(0,0,0,0.3);border-radius:12px;padding:4px;">
+      <button id="tabLogin" style="flex:1;padding:10px;border:none;border-radius:10px;background:#7c3aed;font-size:15px;font-weight:600;color:#fff;">Вход</button>
+      <button id="tabRegister" style="flex:1;padding:10px;border:none;border-radius:10px;background:transparent;font-size:15px;font-weight:600;color:#6a7a94;">Регистрация</button>
+    </div>
+    <div id="loginFields" style="display:flex;flex-direction:column;gap:12px;">
+      <input id="loginEmail" type="email" placeholder="Email" autocomplete="email">
+      <input id="loginPass" type="password" placeholder="Пароль" autocomplete="current-password">
+      <button class="btn-gold" id="loginBtn">Войти</button>
+      <button class="btn-gray" id="resetPassBtn" style="width:100%;padding:10px;font-size:13px;background:transparent;border:1px solid var(--border);">Забыли пароль?</button>
+    </div>
+    <div id="registerFields" style="display:none;flex-direction:column;gap:12px;">
+      <input id="regName" placeholder="Имя" autocomplete="name">
+      <input id="regEmail" type="email" placeholder="Email" autocomplete="email">
+      <input id="regPass" type="password" placeholder="Пароль (мин. 4 символа)" autocomplete="new-password">
+      <select id="regPunkt"><option value="">Выберите пункт</option></select>
+      <button class="btn-gold" id="registerBtn">Зарегистрироваться</button>
+    </div>
+    <div id="authError" style="color:var(--red);font-size:13px;text-align:center;display:none;"></div>
+  </div>
+</div>
+
+<!-- Main App -->
+<div id="app" class="app-container" style="display:none">
+  <button class="btn-sidebar-toggle" id="sidebarToggleBtn">👥</button>
+  
+  <div class="main-content" id="mainContent">
+    <!-- Left Column (Desktop) -->
+    <div class="left-column" id="leftColumn">
+      <div id="announceBlock" style="display:none;background:rgba(200,150,0,0.1);border:1px solid rgba(200,150,0,0.3);padding:12px 16px;border-radius:16px;text-align:center;font-size:14px;color:#ffd700;margin-bottom:4px;"></div>
+      
+      <div class="profile-card" id="mainProfileCard">
+        <div class="avatar-wrap">
+          <canvas id="mainAvatarCanvas" width="300" height="300"></canvas>
+        </div>
+        <div style="flex:1">
+          <b id="creatorNameWrapper" class="name-creator" style="font-size:18px;"><span id="uname"></span></b>
+          <span id="roleBadge" class="badge badge-creator">Создатель</span><br>
+          <span style="font-size:12px;color:#aaa;">Пункт <span id="upunkt"></span></span>
+        </div>
+        <button class="btn-gray" id="settingsBtn" style="width:auto;padding:8px 14px;font-size:13px;">⚙️</button>
+      </div>
+      
+      <div class="tabs" id="tabsContainer"></div>
+      <div id="tabContentContainer" style="flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;padding-bottom:6px;"></div>
+    </div>
+    
+    <!-- Right Column (Desktop) - Chat -->
+    <div class="right-column" id="rightColumn">
+      <div id="pinnedMessage" style="display:none;padding:10px 16px;margin-bottom:4px;border-radius:16px;background:rgba(245,197,24,0.05);border:1px solid rgba(245,197,24,0.2);font-size:13px;"></div>
+      
+      <div class="chat-section" id="chatSection">
+        <div class="chat-header-bar" id="chatHeader">
+          <span style="font-size:18px;">💬</span>
+          <span id="chatLabel" style="flex:1;font-weight:bold;background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Общий чат</span>
+          <span id="chatBadge" style="display:none;background:var(--red);color:#fff;border-radius:10px;font-size:11px;padding:2px 6px;font-weight:bold;">0</span>
+          <button class="btn-gray" id="chatBackBtn" style="display:none;width:auto;padding:4px 12px;font-size:12px;">Назад</button>
+        </div>
+        <div id="chat"></div>
+      </div>
+      
+      <div class="chat-input-wrapper" id="chatInputWrapper">
+        <div class="chat-input-bar" id="chatInputBar">
+          <div class="input-wrapper">
+            <input id="chatMsgInput" placeholder="Сообщение...">
+            <button class="sticker-toggle" id="stickerToggleBtn">😀</button>
+          </div>
+          <button id="chatPhotoBtn">📎</button>
+          <input id="chatPhotoInput" type="file" accept="image/*" multiple style="display:none;">
+          <button id="sendMsgBtn">➤</button>
+        </div>
+        <div id="stickerPanel">
+          <div id="stickerContent"></div>
+          <div class="sticker-tabs" id="stickerTabs"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="avatar-carousel" id="avatarCarousel">
+    <button class="sidebar-close-btn" id="sidebarCloseBtn">✕</button>
+    <div class="avatar-carousel-inner" id="carouselInner"></div>
+  </div>
+  
+  <div class="mini-profile" id="miniProfile">
+    <button class="mp-close" id="mpCloseBtn">✕</button>
+    <div id="mpAvatarContainer" style="position:relative;width:64px;height:64px;margin:0 auto;"></div>
+    <div id="mpName" style="text-align:center;font-weight:bold;font-size:16px;margin-top:8px;"></div>
+    <div id="mpStatus" style="text-align:center;font-size:12px;margin:4px 0;"></div>
+    <div id="mpPunkt" style="text-align:center;font-size:12px;color:var(--muted);"></div>
+    <button class="btn-gold" id="mpChatBtn" style="width:100%;padding:10px;margin-top:12px;font-size:13px;">Личный чат</button>
+  </div>
+</div>
+
+<!-- Settings Panel -->
+<div id="settingsPanel">
+  <div class="settings-card">
+    <h3 style="text-align:center;margin-bottom:16px;">⚙️ Настройки</h3>
+    <div style="display:flex;gap:4px;margin-bottom:16px;">
+      <button class="settings-tab active" data-tab="main" style="flex:1;padding:8px;border-radius:10px;background:var(--accent);color:#fff;font-size:13px;">Основное</button>
+      <button class="settings-tab" data-tab="avatar" style="flex:1;padding:8px;border-radius:10px;background:transparent;color:var(--muted);font-size:13px;">Аватар</button>
+    </div>
+    <div id="stab-main" style="display:flex;flex-direction:column;gap:12px;">
+      <div><label style="font-size:12px;color:var(--muted);">Новое имя</label><input id="setName" placeholder="Оставьте пустым"></div>
+      <div><label style="font-size:12px;color:var(--muted);">Пункт</label><select id="setPunkt"><option value="">Не менять</option></select></div>
+      <button class="btn-green" id="settingsSaveBtn">Сохранить</button>
+      <button class="btn-red" id="settingsLogoutBtn">Выйти</button>
+      <button class="btn-gray" id="settingsCloseBtn">Отмена</button>
+    </div>
+    <div id="stab-avatar" style="display:none;flex-direction:column;gap:12px;">
+      <div><label style="font-size:12px;color:var(--muted);">Загрузить фото</label><input type="file" id="setAvatarFile" accept="image/*"></div>
+      <div id="avatarAdvanced">
+        <label style="font-size:12px;color:var(--muted);">Стиль рамки</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:4px;" id="animationGrid"></div>
+        <div style="margin-top:8px;"><label style="font-size:12px;color:var(--muted);">Скорость <span id="setSpeedVal">1x</span></label><input type="range" id="setSpeed" min="0.1" max="3" step="0.1" value="1"></div>
+        <div><label style="font-size:12px;color:var(--muted);">Свечение <span id="setGlowVal">20px</span></label><input type="range" id="setGlow" min="0" max="50" step="1" value="20"></div>
+        <div><label style="font-size:12px;color:var(--muted);">Цвет 1</label><input type="color" id="setColor1" value="#6366f1"></div>
+        <div><label style="font-size:12px;color:var(--muted);">Цвет 2</label><input type="color" id="setColor2" value="#a855f7"></div>
+      </div>
+      <div id="avatarSimple">
+        <div><label style="font-size:12px;color:var(--muted);">Цвет кольца</label><input type="color" id="setRingColor" value="#7c3aed"></div>
+        <div><label style="font-size:12px;color:var(--muted);">Толщина</label><select id="setRingThickness"><option value="thin">Тонкая</option><option value="medium" selected>Средняя</option><option value="thick">Толстая</option></select></div>
+      </div>
+      <button class="btn-green" id="avatarSaveBtn">Сохранить аватар</button>
+      <button class="btn-gray" id="avatarCloseBtn">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<!-- Sticker Manager Panel -->
+<div id="stickerManagerPanel" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px;">
+  <div class="settings-card">
+    <h3 style="text-align:center;margin-bottom:16px;">🎨 Стикер-менеджер</h3>
+    <div id="stickerManagerContent"></div>
+    <button class="btn-gray" onclick="document.getElementById('stickerManagerPanel').style.display='none'" style="margin-top:12px;">Закрыть</button>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+<script>
+(function() {
+  'use strict';
+
+  // ============ Custom Modal UI Engine ============
+  function showCustomModal(message, isPrompt = false, defaultValue = '') {
+    return new Promise((resolve) => {
+      const modal = document.getElementById('customModal');
+      const msgEl = document.getElementById('modalMessage');
+      const inputEl = document.getElementById('modalInput');
+      const cancelBtn = document.getElementById('modalCancelBtn');
+      const confirmBtn = document.getElementById('modalConfirmBtn');
+
+      msgEl.textContent = message;
+      if (isPrompt) {
+        inputEl.style.display = 'block';
+        inputEl.value = defaultValue || '';
+        setTimeout(() => inputEl.focus(), 50);
+      } else {
+        inputEl.style.display = 'none';
+      }
+
+      modal.style.display = 'flex';
+
+      const cleanup = () => {
+        cancelBtn.onclick = null;
+        confirmBtn.onclick = null;
+        modal.style.display = 'none';
+      };
+
+      cancelBtn.onclick = () => {
+        cleanup();
+        resolve(isPrompt ? null : false);
+      };
+
+      confirmBtn.onclick = () => {
+        cleanup();
+        resolve(isPrompt ? inputEl.value : true);
+      };
+    });
+  }
+  
+  const customConfirm = (msg) => showCustomModal(msg, false);
+  const customPrompt = (msg, def) => showCustomModal(msg, true, def);
+
+  // ============ Image Caching ============
+  const imageCache = {};
+  function getCachedImage(url, callback) {
+    if (!url) return null;
+    if (imageCache[url] && imageCache[url] !== 'loading') return imageCache[url];
+    if (imageCache[url] === 'loading') return null;
+    imageCache[url] = 'loading';
+    const img = new Image();
+    img.onload = () => { imageCache[url] = img; if(callback) callback(); };
+    img.src = url;
+    return null;
+  }
+
+  // ============ Firebase Init ============
+  const firebaseConfig = {
+    apiKey: "AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",
+    authDomain: "ozon-grafik-4ad9f.firebaseapp.com",
+    databaseURL: "https://ozon-grafik-4ad9f-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "ozon-grafik-4ad9f",
+    storageBucket: "ozon-grafik-4ad9f.firebasestorage.app",
+    messagingSenderId: "798009068634",
+    appId: "1:798009068634:web:4b70eea3cce6c96f4f5c63"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const DB = firebase.database();
+  const AUTH = firebase.auth();
+
+  // ============ Animations Config ============
+  const ANIMATIONS = [
+    { id: 'rgb-ring', label: 'Кольцо', premium: false },
+    { id: 'rgb-rainbow', label: 'Радуга 🌈', premium: false },
+    { id: 'neon-pulse', label: 'Пульс 💓', premium: false },
+    { id: 'running-gradient', label: 'Градиент 💫', premium: false },
+    { id: 'comet', label: 'Комета ⭐', premium: true },
+    { id: 'double-orbit', label: 'Орбита 🪐', premium: true },
+    { id: 'matrix', label: 'Матрица 🧪', premium: true },
+    { id: 'fire', label: 'Огонь 🔥', premium: true },
+    { id: 'sparks', label: 'Искры ⚡', premium: true },
+    { id: 'god-rays', label: 'Нимб 👼', premium: true }
+  ];
+
+  // ============ Globals ============
+  const App = {
+    user: null,
+    onShift: false,
+    shiftTimer: null,
+    allUserData: {},
+    activeShifts: {},
+    unreadCount: 0,
+    chatOpened: true,
+    lastChatTimestamp: 0,
+    selectedProfile: null,
+    privateChatWith: null,
+    calYear: null,
+    calMonth: null,
+    avatarSettings: {
+      style: 'rgb-ring',
+      speed: 1,
+      glow: 20,
+      color1: '#6366f1',
+      color2: '#a855f7',
+      ringColor: '#7c3aed',
+      ringThickness: 'medium'
+    },
+    chatListener: null,
+    notifiedKeys: {},
+    avatarAnimId: null,
+    isCreator: false,
+    isGod: false,
+    previewData: null,
+    activeListeners: []
+  };
+
+  const avatarTimers = new Map();
+  const BASE_EMOJIS = ['😊','😉','😘','❤️','🤘','😓','💀','💪','🫠','😂','🤣','😆','😎','🗿','🤷','🤔','😏','🙏','😭','☕️','😴','🤬','👍','👎'];
+
+  // ============ Utility Functions ============
+  function $(selector) { return document.querySelector(selector); }
+  function $$(selector) { return document.querySelectorAll(selector); }
+
+  function esc(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function toast(msg, isError) {
+    const container = $('#toastContainer');
+    const el = document.createElement('div');
+    el.className = 'toast-msg' + (isError ? ' error' : '');
+    el.textContent = msg;
+    container.appendChild(el);
+    requestAnimationFrame(() => el.classList.add('show'));
+    setTimeout(() => {
+      el.classList.remove('show');
+      setTimeout(() => el.remove(), 300);
+    }, 3000);
+  }
+
+  function secToHMS(sec) {
+    const h = Math.floor(sec / 3600);
+    const m = Math.floor((sec % 3600) / 60);
+    const s = sec % 60;
+    return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  }
+
+  function fmtDate(t) {
+    const d = new Date(t);
+    return d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear();
+  }
+
+  function attachDbListener(ref, event, callback) {
+    ref.on(event, callback);
+    App.activeListeners.push({ ref, event, callback });
+  }
+
+  function clearAllListeners() {
+    App.activeListeners.forEach(l => l.ref.off(l.event, l.callback));
+    App.activeListeners.length = 0;
+    if (App.chatListener) {
+      App.chatListener.off();
+      App.chatListener = null;
+    }
+  }
+
+  function toggleVisibility(elementId) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+    el.style.display = (el.style.display === 'none' || el.style.display === '') ? 'block' : 'none';
+  }
+
+  // ============ Avatar Rendering Engine (SCALABLE 3D) ============
+  function renderPremiumAvatar(canvas, settings, avatarImg, fallbackName) {
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const trueW = canvas.width;
+    const trueH = canvas.height;
+    
+    // Все расчеты ведутся для условного размера 300x300, а затем масштабируются
+    const baseSize = 300;
+    const w = baseSize;
+    const h = baseSize;
+    const cx = w / 2;
+    const cy = h / 2;
+    
+    // Внутренний радиус самой картинки
+    const avatarRadius = 82; 
+    const fRadius = avatarRadius + 4; // Радиус базового кольца вокруг
+
+    if (!avatarTimers.has(canvas)) {
+      avatarTimers.set(canvas, { tick: 0, pulse: 1, dir: 1, particles: [] });
+    }
+    const state = avatarTimers.get(canvas);
+    const speed = parseFloat(settings?.speed) || 1;
+
+    state.tick += 0.04 * speed;
+    state.pulse += 0.02 * state.dir * speed;
+    if (state.pulse >= 1.2) state.dir = -1;
+    if (state.pulse <= 0.8) state.dir = 1;
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, trueW, trueH);
+    
+    // Применяем масштабирование под реальный размер канваса
+    ctx.save();
+    ctx.scale(trueW / baseSize, trueH / baseSize);
+
+    const color1 = settings?.color1 || '#6366f1';
+    const color2 = settings?.color2 || '#a855f7';
+    const style = settings?.style || 'rgb-ring';
+    const glowStr = parseInt(settings?.glow);
+    const glow = isNaN(glowStr) ? 20 : glowStr;
+
+    // Функция отрисовки эффектов. Позволяет разделять задний (back) и передний (front) планы.
+    const drawEffects = (layer) => {
+      ctx.shadowBlur = layer === 'front' ? glow : 0;
+      ctx.shadowColor = color1;
+
+      if (style === 'double-orbit') {
+        const oRadiusX = avatarRadius + 38; 
+        const oRadiusY = avatarRadius * 0.35;
+        const angle1 = state.tick;
+        const angle2 = -state.tick * 1.3;
+        const angle3 = state.tick * 0.8;
+
+        const drawOrbit = (rotation, color, planetAngle, isFront) => {
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.rotate(rotation);
+            ctx.beginPath();
+            
+            if (isFront) {
+                ctx.ellipse(0, 0, oRadiusX, oRadiusY, 0, 0, Math.PI);
+            } else {
+                ctx.ellipse(0, 0, oRadiusX, oRadiusY, 0, Math.PI, Math.PI*2);
+            }
+            ctx.strokeStyle = color;
+            ctx.globalAlpha = isFront ? 0.9 : 0.2;
+            ctx.lineWidth = isFront ? 3 : 1.5;
+            ctx.stroke();
+
+            const normalizedAngle = ((planetAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+            const planetIsFront = normalizedAngle < Math.PI;
+
+            if ((isFront && planetIsFront) || (!isFront && !planetIsFront)) {
+                let px = Math.cos(normalizedAngle) * oRadiusX;
+                let py = Math.sin(normalizedAngle) * oRadiusY;
+                ctx.fillStyle = color;
+                ctx.shadowColor = color;
+                ctx.shadowBlur = 15;
+                ctx.globalAlpha = 1;
+                ctx.beginPath();
+                ctx.arc(px, py, 6, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#fff';
+                ctx.shadowBlur = 0;
+                ctx.beginPath();
+                ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.restore();
+        };
+
+        if (layer === 'back') {
+            drawOrbit(0, color1, angle1, false);
+            drawOrbit(Math.PI / 3, color2, angle2, false);
+            drawOrbit(-Math.PI / 3, '#00d4ff', angle3, false);
+        } else {
+            drawOrbit(0, color1, angle1, true);
+            drawOrbit(Math.PI / 3, color2, angle2, true);
+            drawOrbit(-Math.PI / 3, '#00d4ff', angle3, true);
+        }
+      }
+      else if (style === 'god-rays') { 
+        if (layer === 'back') {
+            ctx.shadowColor = '#ffd700';
+            ctx.shadowBlur = 15;
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+            
+            // Отрисовка детализированных крыльев (ангела)
+            const drawWing = (isLeft) => {
+                ctx.save();
+                ctx.translate(cx + (isLeft ? -avatarRadius + 5 : avatarRadius - 5), cy);
+                ctx.scale(isLeft ? -1 : 1, 1);
+                ctx.rotate(Math.sin(state.tick * 2) * 0.1 - 0.1); // Взмах
+                
+                ctx.beginPath();
+                ctx.moveTo(0, 10); 
+                ctx.quadraticCurveTo(20, -30, 45, -25); // Верхняя кромка крыла
+                ctx.quadraticCurveTo(35, -5, 55, 0);    // Перо 1
+                ctx.quadraticCurveTo(30, 10, 45, 20);   // Перо 2
+                ctx.quadraticCurveTo(20, 20, 30, 30);   // Перо 3
+                ctx.quadraticCurveTo(10, 20, 0, 10);    // Возврат к основанию
+                ctx.fill();
+                ctx.restore();
+            };
+            drawWing(true);
+            drawWing(false);
+
+            // Нимб сверху
+            ctx.beginPath();
+            const haloY = cy - avatarRadius - 15 + Math.sin(state.tick * 3) * 5;
+            ctx.ellipse(cx, haloY, 32, 9, 0, 0, Math.PI*2);
+            ctx.strokeStyle = '#ffd700';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+        }
+      }
+      else if (style === 'matrix') {
+        if (layer === 'back') {
+            ctx.strokeStyle = '#00ff41';
+            ctx.lineWidth = 4;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = '#00ff41';
+            ctx.beginPath();
+            ctx.arc(cx, cy, fRadius, 0, Math.PI*2);
+            ctx.stroke();
+        } 
+        if (layer === 'front') {
+            // Падающие цифры Матрицы
+            if (!state.matrixRain) {
+                state.matrixRain = [];
+                for(let i=0; i<30; i++) {
+                    state.matrixRain.push({
+                        x: cx - avatarRadius + Math.random() * (avatarRadius * 2),
+                        y: cy - avatarRadius - Math.random() * 200,
+                        speed: 1.5 + Math.random() * 2,
+                        char: Math.floor(Math.random()*10).toString()
+                    });
+                }
+            }
+            ctx.font = 'bold 16px monospace';
+            ctx.textAlign = 'center';
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = '#00ff41';
+            state.matrixRain.forEach(p => {
+                p.y += p.speed * speed;
+                if (Math.random() > 0.9) p.char = Math.floor(Math.random()*10).toString();
+                if (p.y > cy + avatarRadius + 20) {
+                    p.y = cy - avatarRadius - 50 - Math.random() * 100;
+                    p.x = cx - avatarRadius + Math.random() * (avatarRadius * 2);
+                }
+                
+                const dist = Math.sqrt(Math.pow(p.x-cx, 2) + Math.pow(p.y-cy, 2));
+                ctx.fillStyle = dist < avatarRadius ? '#ffffff' : '#00ff41';
+                ctx.globalAlpha = Math.max(0, 1 - (dist - avatarRadius) / 30);
+                if (ctx.globalAlpha > 0) ctx.fillText(p.char, p.x, p.y);
+            });
+            ctx.globalAlpha = 1;
+        }
+      }
+      else if (style === 'fire') {
+        if (layer === 'back') {
+            // "Рваное" и пульсирующее огненное кольцо
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = '#ff4500';
+            ctx.strokeStyle = '#ff4500';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            for (let i = 0; i <= 360; i += 10) {
+                const angle = i * Math.PI / 180;
+                // Небольшие искажения радиуса для эффекта горения
+                const r = fRadius + Math.sin(state.tick * 5 + i * 2) * 3;
+                if (i === 0) ctx.moveTo(cx + Math.cos(angle)*r, cy + Math.sin(angle)*r);
+                else ctx.lineTo(cx + Math.cos(angle)*r, cy + Math.sin(angle)*r);
+            }
+            ctx.closePath();
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+        }
+        
+        if (layer === 'front' || layer === 'back') {
+            if (!state.fireParticles) state.fireParticles = [];
+            if (state.fireParticles.length < 70) {
+                // Частицы спавнятся преимущественно в нижней части
+                const spawnAngle = Math.PI * 0.1 + Math.random() * Math.PI * 0.8;
+                state.fireParticles.push({
+                    x: cx + Math.cos(spawnAngle) * (avatarRadius - 5),
+                    y: cy + Math.sin(spawnAngle) * (avatarRadius - 5),
+                    vx: (Math.random() - 0.5) * 1.5,
+                    vy: -Math.random() * 3 - 2, // Быстро вверх
+                    life: 1,
+                    size: 10 + Math.random() * 12,
+                    color: Math.random() > 0.5 ? '#ff4500' : (Math.random() > 0.5 ? '#ff8c00' : '#ffd700'),
+                    isFront: Math.random() > 0.5
+                });
+            }
+            
+            ctx.globalCompositeOperation = 'screen';
+            state.fireParticles.forEach(p => {
+                if ((layer === 'front' && p.isFront) || (layer === 'back' && !p.isFront)) {
+                    p.x += p.vx + Math.sin(p.life * 10) * 1.5; // Волнистое движение
+                    p.y += p.vy;
+                    p.life -= 0.025 * speed;
+                    p.size *= 0.93; // Затухание размера
+                    
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = Math.max(0, p.life);
+                    ctx.beginPath();
+                    // Рисуем каплевидную форму вместо круга
+                    ctx.moveTo(p.x, p.y - p.size*1.5);
+                    ctx.quadraticCurveTo(p.x + p.size, p.y, p.x, p.y + p.size);
+                    ctx.quadraticCurveTo(p.x - p.size, p.y, p.x, p.y - p.size*1.5);
+                    ctx.fill();
+                }
+            });
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.globalAlpha = 1;
+            
+            if(layer === 'front') state.fireParticles = state.fireParticles.filter(p => p.life > 0);
+        }
+      }
+      else if (style === 'sparks' && layer === 'front') {
+        ctx.shadowColor = color1;
+        if (state.particles.length < 50) {
+          state.particles.push({
+            angle: Math.random() * Math.PI * 2,
+            speed: 0.5 + Math.random() * 2,
+            life: 1,
+            size: 2 + Math.random() * 3,
+            distance: avatarRadius + Math.random() * 10
+          });
+        }
+        state.particles = state.particles.filter(p => p.life > 0);
+        state.particles.forEach(p => {
+          p.angle += p.speed * 0.02;
+          p.distance += p.speed * 0.5;
+          p.life -= 0.015;
+          const x = cx + Math.cos(p.angle) * p.distance;
+          const y = cy + Math.sin(p.angle) * p.distance;
+          ctx.fillStyle = p.life > 0.5 ? color1 : color2;
+          ctx.globalAlpha = p.life;
+          ctx.shadowBlur = 10;
+          ctx.beginPath();
+          ctx.arc(x, y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+      }
+      else if (layer === 'front') {
+        if (style === 'rgb-ring') {
+          ctx.strokeStyle = color1;
+          ctx.lineWidth = 6;
+          ctx.beginPath();
+          ctx.arc(cx, cy, fRadius, state.tick % (Math.PI * 2), (state.tick % (Math.PI * 2)) + Math.PI * 1.5);
+          ctx.stroke();
+          ctx.strokeStyle = color2;
+          ctx.beginPath();
+          ctx.arc(cx, cy, fRadius, (state.tick % (Math.PI * 2)) + Math.PI, (state.tick % (Math.PI * 2)) + Math.PI * 2);
+          ctx.stroke();
+        }
+        else if (style === 'rgb-rainbow') {
+          for (let i = 0; i < 12; i++) {
+            const hue = ((state.tick * 50 + i * 30) % 360);
+            ctx.strokeStyle = `hsl(${hue}, 100%, 60%)`;
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.arc(cx, cy, fRadius + Math.sin(state.tick * 2 + i) * 3, i * Math.PI / 6, (i + 1) * Math.PI / 6);
+            ctx.stroke();
+          }
+        }
+        else if (style === 'neon-pulse') {
+          const pulseRadius = fRadius + Math.sin(state.tick * 3) * 6;
+          ctx.strokeStyle = color1;
+          ctx.lineWidth = 8 * state.pulse;
+          ctx.globalAlpha = 0.6;
+          ctx.beginPath();
+          ctx.arc(cx, cy, pulseRadius, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.strokeStyle = color2;
+          ctx.lineWidth = 4;
+          ctx.globalAlpha = 1;
+          ctx.beginPath();
+          ctx.arc(cx, cy, pulseRadius, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        else if (style === 'running-gradient') {
+          const grad = ctx.createConicGradient(state.tick % (Math.PI * 2), cx, cy);
+          grad.addColorStop(0, color1);
+          grad.addColorStop(0.3, '#ffffff');
+          grad.addColorStop(0.5, color2);
+          grad.addColorStop(0.7, '#ffffff');
+          grad.addColorStop(1, color1);
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = 6;
+          ctx.beginPath();
+          ctx.arc(cx, cy, fRadius, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        else if (style === 'comet') {
+          // Идеальная гладкая комета из затухающих кругов
+          for (let i = 0; i < 3; i++) {
+            const angle = state.tick * 2 + i * Math.PI * 2 / 3;
+            const tailLen = 30; // Длина шлейфа
+            for(let j = tailLen; j >= 0; j--) {
+                const tAngle = angle - j * 0.03;
+                const x = cx + Math.cos(tAngle) * fRadius;
+                const y = cy + Math.sin(tAngle) * fRadius;
+                const size = 6 * (1 - j/tailLen); 
+                
+                ctx.fillStyle = j === 0 ? '#fff' : color1;
+                ctx.globalAlpha = 1 - (j / tailLen);
+                ctx.shadowBlur = j === 0 ? 20 : 0;
+                ctx.shadowColor = color2;
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI*2);
+                ctx.fill();
+            }
+          }
+          ctx.globalAlpha = 1;
+        }
+        else if (!['double-orbit','god-rays','matrix','fire','sparks'].includes(style)) {
+          // Обычное кольцо для рядовых сотрудников
+          ctx.strokeStyle = settings?.ringColor || color1;
+          const t = settings?.ringThickness;
+          ctx.lineWidth = t === 'thick' ? 8 : t === 'thin' ? 2 : 4;
+          ctx.beginPath();
+          ctx.arc(cx, cy, fRadius, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+      }
+    };
+
+    // 1. РИСУЕМ ЗАДНИЙ ПЛАН ЭФФЕКТОВ (За фото)
+    drawEffects('back');
+
+    // 2. РИСУЕМ ФОТО АВАТАРА (Поверх заднего плана)
+    ctx.shadowBlur = 0;
+    ctx.globalAlpha = 1;
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, avatarRadius, 0, Math.PI * 2);
+    ctx.clip(); // Обрезаем фото по кругу
+    if (avatarImg && avatarImg !== 'loading') {
+      const ratio = Math.max((avatarRadius * 2) / avatarImg.width, (avatarRadius * 2) / avatarImg.height);
+      const dw = avatarImg.width * ratio;
+      const dh = avatarImg.height * ratio;
+      ctx.drawImage(avatarImg, cx - dw / 2, cy - dh / 2, dw, dh);
+    } else {
+      ctx.fillStyle = '#1e1b4b';
+      ctx.fill();
+      ctx.fillStyle = '#6366f1';
+      ctx.font = `bold ${avatarRadius}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText((fallbackName || '?').charAt(0).toUpperCase(), cx, cy + Math.floor(avatarRadius/6));
+    }
+    ctx.restore();
+
+    // 3. Рисуем тонкую обводку-тень прямо по краю фото для большего объема
+    ctx.beginPath();
+    ctx.arc(cx, cy, avatarRadius, 0, Math.PI * 2);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+    ctx.stroke();
+
+    // 4. РИСУЕМ ПЕРЕДНИЙ ПЛАН ЭФФЕКТОВ (Поверх фото)
+    drawEffects('front');
+    ctx.restore(); // Сбрасываем глобальный scale
+  }
+
+  function updateAllFrames() {
+    if (document.hidden) { App.avatarAnimId = requestAnimationFrame(updateAllFrames); return; }
+    
+    // Рендер главного аватара в сайдбаре
+    const mainCanvas = $('#mainAvatarCanvas');
+    if (mainCanvas && App.user) {
+      renderPremiumAvatar(mainCanvas, App.avatarSettings, getCachedImage(App.user.avatar), App.user.name);
+    }
+    
+    // Рендер окна предпросмотра, если оно открыто
+    const previewModal = $('#avatarPreviewModal');
+    if (previewModal && previewModal.style.display !== 'none' && App.previewData) {
+      renderPremiumAvatar($('#previewAvatarCanvas'), App.previewData.settings, getCachedImage(App.previewData.imgUrl), App.previewData.name);
+    }
+
+    // Рендер аватаров внутри чата
+    document.querySelectorAll('.chat-auth-avatar').forEach(canvas => {
+      const uid = canvas.dataset.uid;
+      let settings = { style: 'rgb-ring', speed: 1, color1: '#6366f1', color2: '#a855f7' };
+      let imgUrl = null;
+      let name = canvas.dataset.name;
+      if (uid && App.allUserData[uid]) {
+        const u = App.allUserData[uid];
+        if (u.avatarSettings) settings = u.avatarSettings;
+        imgUrl = u.avatar;
+      }
+      renderPremiumAvatar(canvas, settings, getCachedImage(imgUrl), name);
+    });
+    
+    App.avatarAnimId = requestAnimationFrame(updateAllFrames);
+  }
+
+  function openAvatarPreview(uid, defaultName) {
+    let settings = { style: 'rgb-ring', speed: 1, color1: '#6366f1', color2: '#a855f7' };
+    let imgUrl = null;
+    let name = defaultName || 'Аватар';
+
+    if (uid && App.allUserData[uid]) {
+        settings = App.allUserData[uid].avatarSettings || settings;
+        imgUrl = App.allUserData[uid].avatar;
+        name = App.allUserData[uid].name;
+    } else if (!uid && App.user) {
+        settings = App.avatarSettings;
+        imgUrl = App.user.avatar;
+        name = App.user.name;
+    }
+    
+    App.previewData = { settings, imgUrl, name };
+    $('#previewAvatarName').textContent = name;
+    $('#avatarPreviewModal').style.display = 'flex';
+  }
+
+
+  // ============ Auth Logic ============
+  let isLoginMode = true;
+
+  function toggleAuth() {
+    isLoginMode = !isLoginMode;
+    $('#loginFields').style.display = isLoginMode ? 'flex' : 'none';
+    $('#registerFields').style.display = isLoginMode ? 'none' : 'flex';
+    $('#tabLogin').style.background = isLoginMode ? '#7c3aed' : 'transparent';
+    $('#tabLogin').style.color = isLoginMode ? '#fff' : '#6a7a94';
+    $('#tabRegister').style.background = isLoginMode ? 'transparent' : '#7c3aed';
+    $('#tabRegister').style.color = isLoginMode ? '#6a7a94' : '#fff';
+    $('#authError').style.display = 'none';
+  }
+
+  function loadPunktsForRegister() {
+    DB.ref('punkts').once('value').then(snap => {
+      const sel = $('#regPunkt');
+      sel.innerHTML = '<option value="">Выберите пункт</option>';
+      snap.forEach(child => {
+        const d = child.val();
+        sel.innerHTML += `<option value="${esc(child.key)}">Пункт ${esc(child.key)} (${d.rate || 0}₽/ч)</option>`;
+      });
+    });
+  }
+
+  async function login() {
+    const email = $('#loginEmail').value.trim();
+    const pass = $('#loginPass').value.trim();
+    const errEl = $('#authError');
+
+    if (!email || !pass) {
+      errEl.textContent = 'Заполните все поля';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    try {
+      const cred = await AUTH.signInWithEmailAndPassword(email, pass);
+      const snap = await DB.ref('users/' + cred.user.uid).once('value');
+      if (!snap.exists()) {
+        errEl.textContent = 'Пользователь не найден';
+        errEl.style.display = 'block';
+        return;
+      }
+      App.user = snap.val();
+      App.user.uid = cred.user.uid;
+      finishLogin();
+    } catch (ex) {
+      errEl.textContent = ex.message;
+      errEl.style.display = 'block';
+    }
+  }
+
+  async function register() {
+    const name = $('#regName').value.trim();
+    const email = $('#regEmail').value.trim();
+    const pass = $('#regPass').value.trim();
+    const punkt = $('#regPunkt').value;
+    const errEl = $('#authError');
+
+    if (!name || !email || !pass || !punkt) {
+      errEl.textContent = 'Заполните все поля';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    if (pass.length < 4) {
+      errEl.textContent = 'Пароль минимум 4 символа';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      errEl.textContent = 'Некорректный email';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    try {
+      const cred = await AUTH.createUserWithEmailAndPassword(email, pass);
+      const role = 'manager';
+      await DB.ref('users/' + cred.user.uid).set({
+        name, email, role, punkt, avatar: '', vkId: '', bonus: 0
+      });
+      App.user = { name, email, role, punkt, avatar: '', vkId: '', bonus: 0, uid: cred.user.uid };
+      finishLogin();
+    } catch (ex) {
+      errEl.textContent = ex.message;
+      errEl.style.display = 'block';
+    }
+  }
+
+  async function resetPassword() {
+    const email = $('#loginEmail').value.trim();
+    if (!email) {
+      toast('Введите email', true);
+      return;
+    }
+    try {
+      await AUTH.sendPasswordResetEmail(email);
+      toast('📧 Ссылка для сброса отправлена на ' + email);
+    } catch (ex) {
+      toast(ex.message, true);
+    }
+  }
+
+  async function logout() {
+    if (!await customConfirm('Выйти из аккаунта?')) return;
+    
+    clearAllListeners();
+    if (App.shiftTimer) clearInterval(App.shiftTimer);
+    if (App.avatarAnimId) cancelAnimationFrame(App.avatarAnimId);
+
+    DB.ref('presence/' + App.user.uid).remove();
+
+    AUTH.signOut().then(() => {
+      localStorage.removeItem('ozon_user');
+      App.user = null;
+      App.chatOpened = false;
+      $('#app').style.display = 'none';
+      $('#loginScreen').style.display = 'flex';
+      document.body.className = '';
+    });
+  }
+
+  function finishLogin() {
+    App.isCreator = App.user.role === 'creator';
+    App.isGod = App.user.role === 'god';
+
+    localStorage.setItem('ozon_user', JSON.stringify({
+      uid: App.user.uid,
+      name: App.user.name,
+      role: App.user.role
+    }));
+
+    $('#loginScreen').style.display = 'none';
+    $('#app').style.display = 'flex';
+    document.body.className = 'theme-' + App.user.role;
+
+    App.chatOpened = true;
+    App.lastChatTimestamp = Date.now();
+
+    updateUI();
+    renderTabs();
+    loadChat();
+    loadPinned();
+    loadAnnounce();
+    setupDatabaseListeners();
+    loadAvatarSettings();
+    buildCarousel();
+    renderStickerUI();
+    buildAnimationGrid();
+
+    DB.ref('activeShifts/' + App.user.uid).once('value').then(snap => {
+      if (snap.exists() && snap.val().active) {
+        App.onShift = true;
+      }
+    });
+
+    DB.ref('presence/' + App.user.uid).set({
+      online: true,
+      ts: Date.now()
+    });
+  }
+
+  // ============ UI Updates ============
+  function updateUI() {
+    $('#uname').textContent = App.user.name;
+    $('#upunkt').textContent = App.user.punkt || '—';
+
+    const badge = $('#roleBadge');
+    const nameWrapper = $('#creatorNameWrapper');
+
+    if (App.user.role === 'god') {
+      badge.className = 'badge badge-god';
+      badge.textContent = 'Начальник';
+      nameWrapper.className = 'name-god';
+    } else if (App.user.role === 'creator') {
+      badge.className = 'badge badge-creator';
+      badge.textContent = 'Создатель';
+      nameWrapper.className = 'name-creator';
+    } else {
+      badge.className = 'badge badge-manager';
+      badge.textContent = 'Сотрудник';
+      nameWrapper.className = 'name-manager';
+    }
+  }
+
+  // ============ Tabs ============
+  function getTabConfig() {
+    if (App.isCreator) {
+      return [
+        { id: 'shift', icon: '🔵', label: 'Смена' },
+        { id: 'stats', icon: '📊', label: 'Стат' },
+        { id: 'history', icon: '💳', label: 'Выплаты' },
+        { id: 'board', icon: '🏆', label: 'Доска' },
+        { id: 'power', icon: '⚡', label: 'Сила' },
+        { id: 'stickers', icon: '🎨', label: 'Стикеры' }
+      ];
+    } else if (App.isGod) {
+      return [
+        { id: 'shift', icon: '🔵', label: 'Смена' },
+        { id: 'stats', icon: '📊', label: 'Стат' },
+        { id: 'workers', icon: '👥', label: 'Сотрудники' },
+        { id: 'salary', icon: '💰', label: 'Расчёт ЗП' },
+        { id: 'announce', icon: '📢', label: 'Объявления' },
+        { id: 'board', icon: '🏆', label: 'Доска' }
+      ];
+    } else {
+      return [
+        { id: 'shift', icon: '🔵', label: 'Смена' },
+        { id: 'stats', icon: '📊', label: 'Стат' },
+        { id: 'history', icon: '💳', label: 'Выплаты' },
+        { id: 'board', icon: '🏆', label: 'Доска' }
+      ];
+    }
+  }
+
+  function renderTabs() {
+    const cfg = getTabConfig();
+    const tabsContainer = $('#tabsContainer');
+    const contentContainer = $('#tabContentContainer');
+
+    tabsContainer.innerHTML = cfg.map((t, i) =>
+      `<button id="tab_${t.id}" class="${i === 0 ? 'active' : ''}" data-tab="${t.id}">${t.icon} <span class="tab-label">${esc(t.label)}</span></button>`
+    ).join('');
+
+    contentContainer.innerHTML = cfg.map((t, i) =>
+      `<div id="panel_${t.id}" class="tab-content${i === 0 ? ' active-tab' : ''}"></div>`
+    ).join('');
+
+    if (cfg.length) renderTab(cfg[0].id);
+
+    tabsContainer.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const id = this.dataset.tab;
+        const currentActive = tabsContainer.querySelector('.active');
+        
+        if (currentActive && currentActive.dataset.tab === id) {
+          toggleVisibility('tabContentContainer');
+          return;
+        }
+
+        $$('#tabsContainer button').forEach(b => b.classList.remove('active'));
+        $$('#tabContentContainer .tab-content').forEach(p => p.classList.remove('active-tab'));
+        this.classList.add('active');
+        document.getElementById('tabContentContainer').style.display = 'block';
+        const panel = document.getElementById('panel_' + id);
+        if (panel) panel.classList.add('active-tab');
+        renderTab(id);
+      });
+    });
+  }
+
+  function renderTab(id) {
+    const panel = document.getElementById('panel_' + id);
+    if (!panel) return;
+    panel.innerHTML = '';
+
+    switch (id) {
+      case 'shift': renderShift(panel); break;
+      case 'stats': renderStats(panel); break;
+      case 'history': renderHistory(panel); break;
+      case 'board': renderBoard(panel); break;
+      case 'power': renderPower(panel); break;
+      case 'stickers': renderStickerManager(panel); break;
+      case 'workers': renderWorkers(panel); break;
+      case 'salary': renderSalary(panel); break;
+      case 'announce': renderAnnounce(panel); break;
+    }
+  }
+
+  // ============ Shift ============
+  function renderShift(panel) {
+    panel.innerHTML = `
+      <div class="card">
+        <div id="shiftContent">Загрузка...</div>
+      </div>
+      <button class="btn-gray" id="shiftLogoutBtn" style="margin-top:8px;width:100%;">Выйти из аккаунта</button>
+    `;
+    $('#shiftLogoutBtn').addEventListener('click', logout);
+    loadShift();
+  }
+
+  function loadShift() {
+    const el = $('#shiftContent');
+    if (!el) return;
+
+    DB.ref('activeShifts/' + App.user.uid).once('value').then(snap => {
+      if (snap.exists() && snap.val().active) {
+        const st = snap.val().startTime;
+        el.innerHTML = `
+          <div style="text-align:center;">
+            <div>На смене с <b>${new Date(st).toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' })}</b></div>
+            <div style="font-size:28px;font-weight:800;color:var(--green);margin:4px 0;" id="shiftTimerDisplay">00:00:00</div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px;">
+            <input type="number" id="tovarCount" placeholder="Кол-во товаров" min="0" style="flex:1;">
+          </div>
+          <button class="btn-red" id="endShiftBtn" style="padding:16px;width:100%;margin-top:10px;">ЗАВЕРШИТЬ СМЕНУ</button>
+        `;
+        $('#endShiftBtn').addEventListener('click', endShift);
+        startTimer(st);
+      } else {
+        el.innerHTML = `
+          <p style="color:var(--muted);margin-bottom:12px;">Вы не на смене</p>
+          <button class="btn-green" id="startShiftBtn" style="padding:16px;width:100%;">НА СМЕНУ</button>
+        `;
+        $('#startShiftBtn').addEventListener('click', startShift);
+      }
+    });
+  }
+
+  function startTimer(st) {
+    if (App.shiftTimer) clearInterval(App.shiftTimer);
+    const display = $('#shiftTimerDisplay');
+    App.shiftTimer = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - st) / 1000);
+      if (display) display.textContent = secToHMS(elapsed);
+    }, 1000);
+  }
+
+  function startShift() {
+    DB.ref('activeShifts/' + App.user.uid).set({
+      active: true,
+      startTime: Date.now(),
+      punct: App.user.punkt
+    }).then(() => {
+      const prefix = App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '');
+      DB.ref('chat').push({
+        user: prefix + App.user.name,
+        text: `🔵 Пункт ${App.user.punkt} на смене!`,
+        timestamp: Date.now()
+      });
+      loadShift();
+      toast('Смена начата!');
+    });
+  }
+
+  function endShift() {
+    const tovarCount = parseInt($('#tovarCount')?.value) || 0;
+
+    DB.ref('activeShifts/' + App.user.uid).once('value').then(snap => {
+      if (!snap.exists()) return;
+      const st = snap.val().startTime;
+      const hours = Math.round((Date.now() - st) / 3600000 * 100) / 100;
+      const shiftId = App.user.uid + '_' + Date.now();
+
+      DB.ref('shifts/' + shiftId).set({
+        user: App.user.uid,
+        user_name: App.user.name,
+        punkt: App.user.punkt || 'Не указан',
+        date: new Date().toLocaleDateString('ru-RU'),
+        timeFrom: new Date(st).toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' }),
+        timeTo: new Date().toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' }),
+        hours,
+        tovar: tovarCount,
+        paid: false,
+        timestamp: Date.now()
+      }).then(() => {
+        const prefix = App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '');
+        DB.ref('chat').push({
+          user: prefix + App.user.name,
+          text: `🔴 Пункт ${App.user.punkt} закончил, товаров: ${tovarCount}`,
+          timestamp: Date.now()
+        });
+        DB.ref('activeShifts/' + App.user.uid).remove();
+        if (App.shiftTimer) clearInterval(App.shiftTimer);
+        App.onShift = false;
+        loadShift();
+        toast(`Смена завершена! ${hours}ч, ${tovarCount} товаров`);
+      });
+    });
+  }
+
+  // ============ Stats (Calendar) ============
+  function renderStats(panel) {
+    const now = new Date();
+    App.calYear = now.getFullYear();
+    App.calMonth = now.getMonth();
+
+    panel.innerHTML = `
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <button class="btn-gray" id="calPrev" style="width:auto;padding:6px 12px;">◀</button>
+          <div id="calTitle" style="font-size:14px;font-weight:700;"></div>
+          <button class="btn-gray" id="calNext" style="width:auto;padding:6px 12px;">▶</button>
+        </div>
+        <div id="calGrid" class="calendar"></div>
+      </div>
+      <div class="card">
+        <div>Смен: <b id="statShifts">0</b></div>
+        <div>Часов: <b id="statHours">0</b></div>
+        <div>Товаров: <b id="statTovar">0</b></div>
+      </div>
+      <button class="btn-red" id="clearShiftsBtn" style="width:100%;padding:12px;margin-top:10px;">Очистить мои смены</button>
+    `;
+
+    $('#calPrev').addEventListener('click', () => changeCal(-1));
+    $('#calNext').addEventListener('click', () => changeCal(1));
+    $('#clearShiftsBtn').addEventListener('click', clearShifts);
+    renderCalendar();
+  }
+
+  function renderCalendar() {
+    const months = ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
+    $('#calTitle').textContent = months[App.calMonth] + ' ' + App.calYear;
+
+    DB.ref('shifts').once('value').then(snap => {
+      const shifts = {};
+      let totalShifts = 0, totalHours = 0, totalTovar = 0;
+
+      snap.forEach(child => {
+        const x = child.val();
+        if (x.user === App.user.uid || x.user_name === App.user.name) {
+          const d = new Date(x.date || x.timestamp);
+          if (d.getFullYear() === App.calYear && d.getMonth() === App.calMonth) {
+            const day = d.getDate();
+            if (!shifts[day]) shifts[day] = { count: 0, hours: 0, tovar: 0 };
+            shifts[day].count++;
+            shifts[day].hours += x.hours || 0;
+            shifts[day].tovar += x.tovar || 0;
+          }
+        }
+      });
+
+      for (const k in shifts) {
+        totalShifts += shifts[k].count;
+        totalHours += shifts[k].hours;
+        totalTovar += shifts[k].tovar;
+      }
+
+      $('#statShifts').textContent = totalShifts;
+      $('#statHours').textContent = totalHours.toFixed(1);
+      $('#statTovar').textContent = totalTovar;
+
+      const firstDay = new Date(App.calYear, App.calMonth, 1).getDay();
+      const offset = (firstDay + 6) % 7;
+      const daysInMonth = new Date(App.calYear, App.calMonth + 1, 0).getDate();
+      const today = new Date();
+      const grid = $('#calGrid');
+
+      let html = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(d => `<div class="header">${d}</div>`).join('');
+      for (let i = 0; i < offset; i++) html += '<div></div>';
+      for (let d = 1; d <= daysInMonth; d++) {
+        const isToday = today.getDate() === d && today.getMonth() === App.calMonth && today.getFullYear() === App.calYear;
+        const hasShift = !!shifts[d];
+        html += `<div class="${isToday ? 'today ' : ''}${hasShift ? 'shift-day' : ''}">${d}</div>`;
+      }
+      grid.innerHTML = html;
+    });
+  }
+
+  function changeCal(dir) {
+    App.calMonth += dir;
+    if (App.calMonth < 0) { App.calMonth = 11; App.calYear--; }
+    if (App.calMonth > 11) { App.calMonth = 0; App.calYear++; }
+    renderCalendar();
+  }
+
+  async function clearShifts() {
+    if (!await customConfirm('Очистить все ваши смены безвозвратно?')) return;
+    DB.ref('shifts').orderByChild('user').equalTo(App.user.uid).once('value').then(snap => {
+      const promises = [];
+      snap.forEach(child => promises.push(DB.ref('shifts/' + child.key).remove()));
+      return Promise.all(promises);
+    }).then(() => {
+      toast('Смены очищены');
+      renderCalendar();
+    });
+  }
+
+  // ============ History ============
+  function renderHistory(panel) {
+    panel.innerHTML = '<div class="card"><h4>💳 Выплаты</h4><div id="historyContent">Загрузка...</div></div>';
+
+    DB.ref('payments').orderByChild('user').equalTo(App.user.uid).once('value').then(snap => {
+      const items = [];
+      snap.forEach(child => items.push(child.val()));
+      items.sort((a, b) => b.timestamp - a.timestamp);
+
+      const content = $('#historyContent');
+      content.innerHTML = items.length
+        ? items.map(x => `
+          <div style="padding:10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;">
+            <span>${fmtDate(x.timestamp)}</span>
+            <span style="color:var(--green);font-weight:bold;">${x.total}₽</span>
+          </div>
+        `).join('')
+        : '<p style="color:var(--muted);">Нет выплат</p>';
+    });
+  }
+
+  // ============ Board ============
+  function renderBoard(panel) {
+    panel.innerHTML = '<div class="card"><h4>🏆 Доска почёта</h4><div id="boardContent">Загрузка...</div></div>';
+
+    DB.ref('shifts').once('value').then(snap => {
+      const stats = {};
+      snap.forEach(child => {
+        const x = child.val();
+        if (!x.user) return;
+        const uid = x.user;
+        if (!stats[uid]) stats[uid] = { hours: 0, tovar: 0 };
+        stats[uid].hours += x.hours || 0;
+        stats[uid].tovar += x.tovar || 0;
+      });
+
+      const arr = [];
+      for (const uid in stats) {
+        const userName = App.allUserData[uid]?.name || uid;
+        arr.push({ name: userName, hours: stats[uid].hours, tovar: stats[uid].tovar });
+      }
+
+      arr.sort((a, b) => b.hours - a.hours);
+      let topHours = '';
+      for (let i = 0; i < Math.min(arr.length, 5); i++) {
+        const medal = ['🥇','🥈','🥉','📌','📌'][i];
+        topHours += `<div style="padding:6px;border-bottom:1px solid var(--border);">${medal} ${esc(arr[i].name)} — <b>${arr[i].hours.toFixed(1)}ч</b></div>`;
+      }
+
+      arr.sort((a, b) => b.tovar - a.tovar);
+      let topTovar = '';
+      for (let i = 0; i < Math.min(arr.length, 5); i++) {
+        const medal = ['🥇','🥈','🥉','📌','📌'][i];
+        topTovar += `<div style="padding:6px;border-bottom:1px solid var(--border);">${medal} ${esc(arr[i].name)} — <b>${arr[i].tovar} шт</b></div>`;
+      }
+
+      const best = arr.length
+        ? `<div style="padding:6px;">🌟 ${esc(arr[0].name)} — ${arr[0].hours.toFixed(1)}ч / ${arr[0].tovar} шт</div>`
+        : '<p style="color:var(--muted);">Нет данных</p>';
+
+      $('#boardContent').innerHTML = `
+        <div><b>⏱ Топ по часам</b>${topHours}</div>
+        <div style="margin-top:12px;"><b>📦 Топ по товарам</b>${topTovar}</div>
+        <div style="margin-top:12px;"><b>🌟 Работник месяца</b>${best}</div>
+      `;
+    });
+  }
+
+  // ============ Power (Creator only) ============
+  function renderPower(panel) {
+    panel.innerHTML = `
+      <div class="card">
+        <h4>⚡ Управление ролями</h4>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:12px;">Повышение сотрудников до начальников</p>
+        <div id="powerList">Загрузка...</div>
+      </div>
+    `;
+    loadPowerList();
+  }
+
+  function loadPowerList() {
+    DB.ref('users').once('value').then(snap => {
+      const list = $('#powerList');
+      let html = '';
+
+      snap.forEach(child => {
+        const u = child.val();
+        if (u.uid === App.user.uid) return;
+
+        const roleLabel = u.role === 'god'
+          ? '<span style="color:#FFD700;font-weight:bold;">Начальник</span>'
+          : u.role === 'creator'
+            ? '<span style="color:var(--gold);font-weight:bold;">Создатель</span>'
+            : '<span style="color:var(--muted);">Сотрудник</span>';
+
+        html += `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid var(--border);">
+            <div>
+              <b>${esc(u.name)}</b><br>
+              <span style="font-size:11px;color:var(--muted);">${roleLabel} | Пункт ${esc(u.punkt || '?')}</span>
+            </div>
+            ${u.role === 'manager'
+              ? `<button class="btn-gold btn-sm promote-btn" data-uid="${child.key}" data-name="${esc(u.name)}" style="width:auto;">Повысить до начальника</button>`
+              : u.role === 'god'
+                ? `<button class="btn-red btn-sm demote-btn" data-uid="${child.key}" data-name="${esc(u.name)}" style="width:auto;">Понизить</button>`
+                : `<span style="font-size:12px;color:var(--gold);">Создатель</span>`
+            }
+          </div>
+        `;
+      });
+
+      list.innerHTML = html || '<p style="color:var(--muted);">Нет сотрудников</p>';
+
+      list.querySelectorAll('.promote-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+          if (await customConfirm(`Повысить ${this.dataset.name} до начальника?`)) {
+            DB.ref('users/' + this.dataset.uid + '/role').set('god').then(() => {
+              DB.ref('notifications').push({
+                user: this.dataset.uid,
+                text: '🎉 Вас повысили до начальника!',
+                timestamp: Date.now()
+              });
+              toast('✅ Роль изменена');
+              loadPowerList();
+              buildCarousel();
+            });
+          }
+        });
+      });
+
+      list.querySelectorAll('.demote-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+          if (await customConfirm(`Понизить ${this.dataset.name} до сотрудника?`)) {
+            DB.ref('users/' + this.dataset.uid + '/role').set('manager').then(() => {
+              toast('✅ Роль изменена');
+              loadPowerList();
+              buildCarousel();
+            });
+          }
+        });
+      });
+    });
+  }
+
+  // ============ Sticker Manager (Creator only) ============
+  function renderStickerManager(panel) {
+    panel.innerHTML = `
+      <div class="card">
+        <h4>🎨 Управление стикерпаками</h4>
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+          <input id="packName" placeholder="Название стикерпака" style="flex:1;">
+          <button class="btn-gold" id="createPackBtn" style="width:auto;padding:8px 16px;">Создать</button>
+        </div>
+        <div id="packsList">Загрузка...</div>
+      </div>
+    `;
+
+    $('#createPackBtn').addEventListener('click', () => {
+      const name = $('#packName').value.trim();
+      if (!name) { toast('Введите название', true); return; }
+      DB.ref('sticker_packs').push({
+        name, creator: App.user.uid, icon: '', stickers: {}, allowed_users: { [App.user.uid]: true }
+      }).then(() => {
+        $('#packName').value = '';
+        loadPacksList();
+        toast('Стикерпак создан');
+      });
+    });
+
+    loadPacksList();
+  }
+
+  function loadPacksList() {
+    DB.ref('sticker_packs').once('value').then(snap => {
+      const list = $('#packsList');
+      let html = '';
+      snap.forEach(child => {
+        const pack = child.val();
+        const stickerCount = pack.stickers ? Object.keys(pack.stickers).length : 0;
+        html += `
+          <div style="padding:10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+            <div><b>${esc(pack.name)}</b> (${stickerCount} стикеров)</div>
+            <div>
+              <button class="btn-blue btn-sm manage-pack-btn" data-pack-id="${child.key}" data-pack-name="${esc(pack.name)}" style="width:auto;">Управлять</button>
+              <button class="btn-red btn-sm delete-pack-btn" data-pack-id="${child.key}" style="width:auto;">✕</button>
+            </div>
+          </div>
+        `;
+      });
+      list.innerHTML = html || '<p style="color:var(--muted);">Нет стикерпаков</p>';
+
+      list.querySelectorAll('.manage-pack-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          openStickerPackManager(this.dataset.packId, this.dataset.packName);
+        });
+      });
+
+      list.querySelectorAll('.delete-pack-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+          if (await customConfirm('Точно удалить этот стикерпак?')) {
+            DB.ref('sticker_packs/' + this.dataset.packId).remove();
+            loadPacksList();
+          }
+        });
+      });
+    });
+  }
+
+  function openStickerPackManager(packId, packName) {
+    const panel = document.getElementById('stickerManagerPanel');
+    const content = document.getElementById('stickerManagerContent');
+    panel.style.display = 'flex';
+
+    DB.ref('sticker_packs/' + packId).once('value').then(snap => {
+      const pack = snap.val();
+      const stickers = pack.stickers || {};
+      const allowedUsers = pack.allowed_users || {};
+
+      let stickersHtml = '';
+      for (const stickerId in stickers) {
+        const st = stickers[stickerId];
+        stickersHtml += `
+          <div style="display:inline-block;margin:4px;position:relative;">
+            <img src="${esc(st.img)}" style="width:50px;height:50px;object-fit:contain;border-radius:8px;border:1px solid var(--border);">
+            <button class="btn-red btn-sm remove-sticker-btn" data-pack-id="${packId}" data-sticker-id="${stickerId}" style="position:absolute;top:-8px;right:-8px;width:20px;height:20px;padding:0;font-size:10px;border-radius:50%;">✕</button>
+          </div>
+        `;
+      }
+
+      content.innerHTML = `
+        <h4>${esc(packName)}</h4>
+        <div style="margin:12px 0;">
+          <label style="font-size:12px;color:var(--muted);">Добавить стикер (URL)</label>
+          <div style="display:flex;gap:8px;">
+            <input id="addStickerUrl" placeholder="https://..." style="flex:1;">
+            <button class="btn-gold" id="addStickerBtn" style="width:auto;padding:8px 16px;">+</button>
+          </div>
+        </div>
+        <div style="margin:12px 0;">
+          <label style="font-size:12px;color:var(--muted);">Стикеры</label>
+          <div id="packStickers">${stickersHtml || '<p style="color:var(--muted);">Нет стикеров</p>'}</div>
+        </div>
+        <div style="margin:12px 0;">
+          <label style="font-size:12px;color:var(--muted);">Доступ для пользователей</label>
+          <div id="allowedUsersList">Загрузка...</div>
+        </div>
+      `;
+
+      $('#addStickerBtn').addEventListener('click', () => {
+        const url = $('#addStickerUrl').value.trim();
+        if (!url) { toast('Введите URL', true); return; }
+        DB.ref('sticker_packs/' + packId + '/stickers').push({ img: url, emoji: '' }).then(() => {
+          $('#addStickerUrl').value = '';
+          openStickerPackManager(packId, packName);
+        });
+      });
+
+      content.querySelectorAll('.remove-sticker-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          DB.ref('sticker_packs/' + this.dataset.packId + '/stickers/' + this.dataset.stickerId).remove();
+          openStickerPackManager(packId, packName);
+        });
+      });
+
+      DB.ref('users').once('value').then(usersSnap => {
+        const usersList = $('#allowedUsersList');
+        let usersHtml = '';
+        usersSnap.forEach(child => {
+          const u = child.val();
+          if (u.uid === App.user.uid) return;
+          const isAllowed = !!allowedUsers[child.key];
+          usersHtml += `
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px;border-bottom:1px solid var(--border);">
+              <span>${esc(u.name)}</span>
+              <button class="btn-sm ${isAllowed ? 'btn-red' : 'btn-green'} toggle-access-btn" data-pack-id="${packId}" data-user-id="${child.key}" style="width:auto;">
+                ${isAllowed ? 'Запретить' : 'Разрешить'}
+              </button>
+            </div>
+          `;
+        });
+        usersList.innerHTML = usersHtml || '<p style="color:var(--muted);">Нет пользователей</p>';
+
+        usersList.querySelectorAll('.toggle-access-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const ref = DB.ref('sticker_packs/' + this.dataset.packId + '/allowed_users/' + this.dataset.userId);
+            if (allowedUsers[this.dataset.userId]) { ref.remove(); }
+            else { ref.set(true); }
+            openStickerPackManager(packId, packName);
+          });
+        });
+      });
+    });
+  }
+
+  // ============ Workers (God only) ============
+  function renderWorkers(panel) {
+    panel.innerHTML = '<div class="card"><h4>👥 Сотрудники</h4><div id="workersList">Загрузка...</div></div>';
+    loadWorkers();
+  }
+
+  function loadWorkers() {
+    DB.ref('users').once('value').then(snap => {
+      const list = $('#workersList');
+      let html = '';
+      snap.forEach(child => {
+        const u = child.val();
+        if (u.uid === App.user.uid) return;
+        const roleLabel = u.role === 'creator'
+          ? '<span style="font-size:10px;background:var(--gold);color:#000;padding:2px 6px;border-radius:8px;">Создатель</span>'
+          : u.role === 'god'
+            ? '<span style="font-size:10px;background:#FFD700;color:#000;padding:2px 6px;border-radius:8px;">Начальник</span>'
+            : '';
+        html += `
+          <div class="worker-row">
+            <span><b>${esc(u.name)}</b> ${roleLabel}<br><span style="font-size:11px;color:var(--muted);">Пункт ${esc(u.punkt || '?')} | Надбавка: ${u.bonus || 0}₽</span></span>
+            <span>
+              <button class="btn-gold btn-sm worker-bonus" data-name="${esc(u.name)}" data-uid="${child.key}">🎁</button>
+              <button class="btn-purple btn-sm worker-penalty" data-name="${esc(u.name)}" data-uid="${child.key}">⚠️</button>
+              <button class="btn-blue btn-sm worker-edit" data-name="${esc(u.name)}" data-uid="${child.key}" data-punkt="${esc(u.punkt || '')}">✏️</button>
+            </span>
+          </div>
+        `;
+      });
+      list.innerHTML = html || '<p style="color:var(--muted);">Нет сотрудников</p>';
+
+      list.querySelectorAll('.worker-bonus').forEach(btn => {
+        btn.addEventListener('click', async function() {
+          const amount = await customPrompt('Введите сумму премии:');
+          if (!amount) return;
+          DB.ref('premiums').push({ user: this.dataset.uid, amount: parseInt(amount), timestamp: Date.now() });
+          DB.ref('notifications').push({ user: this.dataset.uid, text: `💰 Премия ${amount}₽ от начальника!`, timestamp: Date.now() });
+          toast(`✅ Премия ${amount}₽`);
+        });
+      });
+
+      list.querySelectorAll('.worker-penalty').forEach(btn => {
+        btn.addEventListener('click', async function() {
+          const amount = await customPrompt('Сумма штрафа:');
+          if (!amount) return;
+          const reason = await customPrompt('Причина:') || 'Нарушение';
+          DB.ref('punishes').push({ user: this.dataset.uid, amount: parseInt(amount), reason, timestamp: Date.now() });
+          DB.ref('notifications').push({ user: this.dataset.uid, text: `💀 Штраф ${amount}₽ за: ${reason}`, timestamp: Date.now() });
+          toast(`💀 Штраф ${amount}₽`);
+        });
+      });
+
+      list.querySelectorAll('.worker-edit').forEach(btn => {
+        btn.addEventListener('click', async function() {
+          const newPunkt = await customPrompt('Новый пункт:', this.dataset.punkt);
+          if (newPunkt !== null) {
+            DB.ref('users/' + this.dataset.uid + '/punkt').set(newPunkt).then(() => {
+              loadWorkers();
+              toast('Пункт обновлён');
+            });
+          }
+        });
+      });
+    });
+  }
+
+  // ============ Salary (God only) ============
+  function renderSalary(panel) {
+    panel.innerHTML = `
+      <div class="card">
+        <h4>💰 Расчёт ЗП</h4>
+        <select id="salUser" style="margin-bottom:12px;"><option value="">— Выберите сотрудника —</option></select>
+        <div style="display:flex;gap:8px;">
+          <input type="date" id="salFrom" style="flex:1;">
+          <input type="date" id="salTo" style="flex:1;">
+        </div>
+        <button class="btn-green" id="salCalcBtn" style="margin-top:8px;">🧮 Посчитать</button>
+        <button class="btn-blue" id="salPayBtn" style="margin-top:4px;">✅ Оплатить</button>
+        <div id="salResult" style="margin-top:12px;"></div>
+      </div>
+    `;
+
+    let lastCalc = null;
+
+    DB.ref('users').once('value').then(snap => {
+      const sel = $('#salUser');
+      snap.forEach(child => {
+        const u = child.val();
+        if (u.uid !== App.user.uid) {
+          sel.innerHTML += `<option value="${child.key}">${esc(u.name)}</option>`;
+        }
+      });
+    });
+
+    $('#salCalcBtn').addEventListener('click', calculateSalary);
+    $('#salPayBtn').addEventListener('click', async function() {
+      if (!lastCalc) { toast('Сначала посчитайте!', true); return; }
+      if (!await customConfirm(`Оплатить ${lastCalc.total}₽ сотруднику?`)) return;
+      DB.ref('payments').push({
+        user: lastCalc.uid,
+        total: lastCalc.total,
+        dateFrom: lastCalc.from,
+        dateTo: lastCalc.to,
+        timestamp: Date.now()
+      });
+      const shiftPromises = lastCalc.shiftIds.map(id => DB.ref('shifts/' + id + '/paid').set(true));
+      Promise.all(shiftPromises).then(() => {
+        toast(`✅ Оплачено ${lastCalc.total}₽`);
+        lastCalc = null;
+        $('#salResult').innerHTML = '';
+      });
+    });
+
+    async function calculateSalary() {
+      const uid = $('#salUser').value;
+      const from = $('#salFrom').value;
+      const to = $('#salTo').value;
+      if (!uid || !from || !to) { toast('Заполните все поля', true); return; }
+
+      try {
+        const userSnap = await DB.ref('users/' + uid).once('value');
+        const userData = userSnap.val();
+        const punktId = userData.punkt || '';
+        let rate = 0;
+        const punktSnap = await DB.ref('punkts').once('value');
+        punktSnap.forEach(child => { if (child.key === punktId) rate = child.val().rate || 0; });
+        if (rate === 0) rate = 150;
+
+        let totalHours = 0, totalTovar = 0;
+        const shiftIds = [];
+        const shiftsSnap = await DB.ref('shifts').orderByChild('user').equalTo(uid).once('value');
+        shiftsSnap.forEach(child => {
+          const s = child.val();
+          if (s.date >= from && s.date <= to) {
+            totalHours += s.hours || 0;
+            totalTovar += s.tovar || 0;
+            shiftIds.push(child.key);
+          }
+        });
+
+        let prem = 0, pun = 0;
+        const fromTs = new Date(from).getTime();
+        const toTs = new Date(to).getTime();
+
+        const premSnap = await DB.ref('premiums').orderByChild('user').equalTo(uid).once('value');
+        premSnap.forEach(child => {
+          const p = child.val();
+          if (p.timestamp >= fromTs && p.timestamp <= toTs) prem += p.amount || 0;
+        });
+
+        const punSnap = await DB.ref('punishes').orderByChild('user').equalTo(uid).once('value');
+        punSnap.forEach(child => {
+          const p = child.val();
+          if (p.timestamp >= fromTs && p.timestamp <= toTs) pun += p.amount || 0;
+        });
+
+        const base = Math.round(totalHours * rate);
+        const total = Math.max(0, base + prem - pun);
+
+        $('#salResult').innerHTML = `
+          <div class="zp-result">
+            Смен: ${shiftIds.length}, часов: ${totalHours.toFixed(1)}, товаров: ${totalTovar}
+            <br>База: ${base}₽, премии: +${prem}₽, штрафы: -${pun}₽
+            <br><b>Итого: ${total}₽</b>
+          </div>
+        `;
+        lastCalc = { uid, from, to, total, shiftIds };
+      } catch (ex) {
+        toast('Ошибка расчёта: ' + ex.message, true);
+      }
+    }
+  }
+
+  // ============ Announce (God only) ============
+  function renderAnnounce(panel) {
+    panel.innerHTML = `
+      <div class="card">
+        <h4>📜 Новое объявление</h4>
+        <textarea id="announceText" placeholder="Текст..." rows="3" style="resize:vertical;margin-bottom:8px;"></textarea>
+        <select id="announceExpiry" style="margin-bottom:8px;">
+          <option value="0">Навсегда</option>
+          <option value="1">1 час</option>
+          <option value="24" selected>24 часа</option>
+          <option value="72">3 дня</option>
+          <option value="168">7 дней</option>
+        </select>
+        <button class="btn-gold" id="addAnnounceBtn">Опубликовать</button>
+      </div>
+      <div id="announceList" style="margin-top:12px;">Загрузка...</div>
+    `;
+    $('#addAnnounceBtn').addEventListener('click', () => {
+      const text = $('#announceText').value.trim();
+      if (!text) return;
+      const hours = parseInt($('#announceExpiry').value);
+      const expiry = hours > 0 ? Date.now() + hours * 3600000 : null;
+      DB.ref('announce').push({ text, timestamp: Date.now(), expiry }).then(() => {
+        $('#announceText').value = '';
+        loadAnnouncesList();
+        toast('📜 Объявление опубликовано');
+      });
+    });
+    loadAnnouncesList();
+  }
+
+  function loadAnnouncesList() {
+    const el = $('#announceList');
+    if (!el) return;
+    DB.ref('announce').once('value').then(snap => {
+      if (!snap.exists()) { el.innerHTML = '<p style="color:var(--muted);">Нет объявлений</p>'; return; }
+      const items = [];
+      snap.forEach(child => {
+        const d = child.val();
+        if (!d.expiry || Date.now() < d.expiry) items.push({ id: child.key, data: d });
+      });
+      items.sort((a, b) => b.data.timestamp - a.data.timestamp);
+      el.innerHTML = items.length
+        ? items.map(i => `
+          <div style="padding:10px;border-bottom:1px solid var(--border);position:relative;">
+            ${esc(i.data.text)}
+            <br><small style="color:var(--muted);">${new Date(i.data.timestamp).toLocaleString('ru-RU')}</small>
+            <button class="btn-red btn-sm delete-announce" data-id="${i.id}" style="position:absolute;right:8px;top:8px;width:auto;">✕</button>
+          </div>
+        `).join('')
+        : '<p style="color:var(--muted);">Нет объявлений</p>';
+      el.querySelectorAll('.delete-announce').forEach(btn => {
+        btn.addEventListener('click', function() { DB.ref('announce/' + this.dataset.id).remove(); loadAnnouncesList(); });
+      });
+    });
+  }
+
+  // ============ Chat ============
+  function loadChat() {
+    if (App.chatListener) { App.chatListener.off(); App.chatListener = null; }
+    const ref = App.privateChatWith ? getPrivateChatRef() : DB.ref('chat');
+    App.chatListener = ref.limitToLast(50);
+    App.chatListener.on('value', snap => {
+      const messages = [];
+      snap.forEach(child => { if (child.val()) messages.push({ key: child.key, msg: child.val() }); });
+      messages.sort((a, b) => a.msg.timestamp - b.msg.timestamp);
+
+      let html = '';
+      let group = [];
+
+      function renderMsgContent(m) {
+        let content = '';
+        if (m.text) content += esc(m.text);
+        if (m.photo) content += `<br><img class="chat-img" src="${esc(m.thumb || m.photo)}" onclick="event.stopPropagation();window.open('${esc(m.photo)}','_blank')">`;
+        if (m.sticker) content += `<img class="chat-sticker" src="${esc(m.sticker)}">`;
+        if (m.photos && m.photos.length) {
+          content += '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;">';
+          m.photos.forEach(p => {
+            const thumb = typeof p === 'object' ? esc(p.thumb) : esc(p);
+            const full = typeof p === 'object' ? esc(p.full) : esc(p);
+            content += `<img class="chat-img" src="${thumb}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;cursor:pointer;" onclick="event.stopPropagation();window.open('${full}','_blank')">`;
+          });
+          content += '</div>';
+        }
+        return content;
+      }
+
+      function renderGroup(g) {
+        const first = g[0];
+        const userName = first.userName;
+        const isMine = first.isMine;
+        const isCreatorMsg = first.m.user && first.m.user.startsWith('🌌');
+        const isGodMsg = first.m.user && first.m.user.startsWith('👑');
+        
+        let authorUid = null;
+        for (const uid in App.allUserData) {
+          if (App.allUserData[uid].name === userName) {
+            authorUid = uid;
+            break;
+          }
+        }
+        
+        // Рендерим 3D Аватар в чате
+        let avatarHtml = `<canvas class="chat-auth-avatar" width="100" height="100" data-uid="${authorUid || ''}" data-name="${esc(userName)}" style="width:36px;height:36px;"></canvas>`;
+        
+        let html = `<div class="chat-bubble-group ${isMine ? 'mine' : 'other'}">`;
+        if (!isMine) html += `<div class="msg-author" onclick="openAvatarPreview('${authorUid || ''}', '${esc(userName)}')">${avatarHtml}<span style="${(isCreatorMsg || isGodMsg) ? 'background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;margin-left:4px;' : 'margin-left:4px;'}">${esc(userName)}</span></div>`;
+        g.forEach(g2 => {
+          const m = g2.m;
+          let cls = 'chat-bubble';
+          if (isMine) cls += ' mine';
+          else if (isCreatorMsg) cls += ' creator';
+          else if (isGodMsg) cls += ' god';
+          html += `<div class="${cls}">${renderMsgContent(m)}</div>`;
+        });
+        html += '</div>';
+        return html;
+      }
+
+      for (let i = 0; i < messages.length; i++) {
+        const item = messages[i];
+        const m = item.msg;
+        const rawUser = m.user || '?';
+        const userName = rawUser.replace(/^[🌌👑]\s/, '');
+        const isMine = App.user && (rawUser === '🌌 ' + App.user.name || rawUser === '👑 ' + App.user.name || rawUser === App.user.name);
+        if (group.length === 0 || group[0].userName !== userName || group[0].isMine !== isMine) {
+          if (group.length > 0) html += renderGroup(group);
+          group = [{ item, userName, isMine, m }];
+        } else {
+          group.push({ item, userName, isMine, m });
+        }
+      }
+      if (group.length > 0) html += renderGroup(group);
+
+      const chatEl = $('#chat');
+      const wasAtBottom = chatEl.scrollHeight - chatEl.scrollTop - chatEl.clientHeight < 60;
+      chatEl.innerHTML = html;
+      if (wasAtBottom || document.activeElement === $('#chatMsgInput')) chatEl.scrollTop = chatEl.scrollHeight;
+    });
+  }
+
+  function getPrivateChatRef() {
+    if (!App.privateChatWith) return DB.ref('chat');
+    const users = [App.user.uid, App.privateChatWith].sort();
+    return DB.ref('privateChats/' + users[0] + '_' + users[1]);
+  }
+
+  function sendMessage() {
+    const input = $('#chatMsgInput');
+    const text = input.value.trim();
+    if (!text || !App.user) return;
+    const ref = App.privateChatWith ? getPrivateChatRef() : DB.ref('chat');
+    const prefix = App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '');
+    ref.push({ user: prefix + App.user.name, text, timestamp: Date.now(), role: App.user.role, likes: {} }).then(() => {
+      input.value = '';
+      input.focus();
+    });
+  }
+
+  function sendPhoto() {
+    const input = $('#chatPhotoInput');
+    const files = input.files;
+    if (!files.length || !App.user) return;
+    const photos = [];
+    const count = Math.min(files.length, 5);
+    for (let i = 0; i < count; i++) {
+      (function(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const maxWidth = 300;
+            const scale = maxWidth / img.width;
+            canvas.width = maxWidth;
+            canvas.height = img.height * scale;
+            canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+            photos.push({ full: e.target.result, thumb: canvas.toDataURL('image/jpeg', 0.6) });
+            if (photos.length === count) {
+              const ref = App.privateChatWith ? getPrivateChatRef() : DB.ref('chat');
+              const prefix = App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '');
+              ref.push({ user: prefix + App.user.name, text: `📷 ${count} фото`, photos, timestamp: Date.now(), role: App.user.role, likes: {} });
+            }
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      })(files[i]);
+    }
+    input.value = '';
+  }
+
+  function toggleChat() {
+    toggleVisibility('chat');
+    const chatEl = $('#chat');
+    const bar = $('#chatInputBar');
+    if (!chatEl.classList.contains('hidden')) {
+      App.chatOpened = true;
+      bar.style.display = 'flex';
+      App.lastChatTimestamp = Date.now();
+      App.unreadCount = 0;
+      updateBadge();
+      setTimeout(() => chatEl.scrollTop = chatEl.scrollHeight, 100);
+    } else {
+      App.chatOpened = false;
+      bar.style.display = 'none';
+    }
+  }
+
+  function updateBadge() {
+    const badge = $('#chatBadge');
+    if (App.unreadCount > 0) {
+      badge.style.display = 'inline';
+      badge.textContent = App.unreadCount;
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  function openPrivateChat() {
+    if (!App.selectedProfile || App.selectedProfile === App.user.uid) return;
+    App.privateChatWith = App.selectedProfile;
+    const data = App.allUserData[App.selectedProfile];
+    $('#chatLabel').textContent = data ? data.name : '...';
+    $('#chatBackBtn').style.display = 'inline-block';
+    closeMiniProfile();
+    $('#avatarCarousel').classList.remove('open');
+    loadChat();
+  }
+
+  function switchToGlobalChat() {
+    App.privateChatWith = null;
+    $('#chatLabel').textContent = 'Общий чат';
+    $('#chatBackBtn').style.display = 'none';
+    loadChat();
+  }
+
+  // ============ Stickers Panel ============
+  function renderStickerUI() {
+    const content = $('#stickerContent');
+    const tabs = $('#stickerTabs');
+    content.innerHTML = BASE_EMOJIS.map(e => `<div class="emoji-item" data-emoji="${e}">${e}</div>`).join('');
+    content.querySelectorAll('.emoji-item').forEach(el => {
+      el.addEventListener('click', function(ev) {
+        ev.stopPropagation();
+        $('#chatMsgInput').value += this.dataset.emoji;
+        $('#chatMsgInput').focus();
+      });
+    });
+    tabs.innerHTML = '<button class="st-tab active" data-tab="emoji">😀</button>';
+    DB.ref('sticker_packs').once('value').then(snap => {
+      if (snap.exists()) {
+        snap.forEach(child => {
+          const pack = child.val();
+          const allowedUsers = pack.allowed_users || {};
+          if (pack.creator === App.user.uid || App.isCreator || App.isGod || allowedUsers[App.user.uid]) {
+            tabs.innerHTML += `<button class="st-tab" data-tab="${child.key}">📦</button>`;
+          }
+        });
+      }
+      tabs.querySelectorAll('.st-tab').forEach(btn => {
+        btn.addEventListener('click', function(ev) {
+          ev.stopPropagation();
+          const tabId = this.dataset.tab;
+          tabs.querySelectorAll('.st-tab').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          if (tabId === 'emoji') {
+            content.innerHTML = BASE_EMOJIS.map(e => `<div class="emoji-item" data-emoji="${e}">${e}</div>`).join('');
+            content.querySelectorAll('.emoji-item').forEach(el => {
+              el.addEventListener('click', function(ev2) {
+                ev2.stopPropagation();
+                $('#chatMsgInput').value += this.dataset.emoji;
+                $('#chatMsgInput').focus();
+              });
+            });
+          } else {
+            DB.ref('sticker_packs/' + tabId).once('value').then(packSnap => {
+              const pack = packSnap.val();
+              if (pack && pack.stickers) {
+                const stickers = pack.stickers;
+                content.innerHTML = '';
+                for (const stickerId in stickers) {
+                  const st = stickers[stickerId];
+                  content.innerHTML += `<div class="st-item" onclick="event.stopPropagation(); sendSticker('${esc(st.img)}')"><img src="${esc(st.img)}"></div>`;
+                }
+              } else {
+                content.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:12px;">Нет стикеров</p>';
+              }
+            });
+          }
+        });
+      });
+    });
+  }
+
+  window.sendSticker = function(img) {
+    if (!App.user) return;
+    const ref = App.privateChatWith ? getPrivateChatRef() : DB.ref('chat');
+    const prefix = App.isGod ? '👑 ' : (App.isCreator ? '🌌 ' : '');
+    ref.push({ user: prefix + App.user.name, text: '', sticker: img, timestamp: Date.now(), role: App.user.role, likes: {} });
+    $('#stickerPanel').classList.remove('open');
+  };
+
+  // ============ Sidebar & Mini Profile ============
+  function toggleSidebar() { $('#avatarCarousel').classList.toggle('open'); }
+
+  function buildCarousel() {
+    const el = $('#carouselInner');
+    if (!el) return;
+    el.innerHTML = '';
+    const added = new Set();
+    for (const uid in App.allUserData) {
+      if (uid === App.user.uid) continue;
+      const d = App.allUserData[uid];
+      if (added.has(d.name)) continue;
+      added.add(d.name);
+      const online = !!App.activeShifts[uid];
+      const isActive = App.selectedProfile === uid;
+      el.innerHTML += `
+        <div class="avatar-item${isActive ? ' active' : ''}" data-uid="${uid}">
+          ${d.avatar ? `<img src="${esc(d.avatar)}" onerror="this.style.display='none'">` : `<div style="width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#222,#444);display:flex;align-items:center;justify-content:center;font-size:18px;color:#ccc;">${esc(d.name.charAt(0))}</div>`}
+          ${online ? '<div class="online-dot"></div>' : ''}
+        </div>`;
+    }
+    el.querySelectorAll('.avatar-item').forEach(item => {
+      item.addEventListener('click', function() {
+        const uid = this.dataset.uid;
+        App.selectedProfile = uid;
+        el.querySelectorAll('.avatar-item').forEach(x => x.classList.toggle('active', x.dataset.uid === uid));
+        showMiniProfile(uid);
+      });
+    });
+  }
+
+  function showMiniProfile(uid) {
+    const d = App.allUserData[uid];
+    if (!d) return;
+    $('#mpName').textContent = d.name;
+    $('#mpAvatarContainer').innerHTML = `
+      <div style="position:relative;width:64px;height:64px;">
+        ${d.avatar ? `<img src="${esc(d.avatar)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--accent);">` : `<div style="width:100%;height:100%;border-radius:50%;background:#444;display:flex;align-items:center;justify-content:center;font-size:24px;color:#ccc;">${esc(d.name.charAt(0))}</div>`}
+      </div>`;
+    const roleMap = { god: 'Начальник', creator: 'Создатель', manager: 'Сотрудник' };
+    $('#mpStatus').textContent = roleMap[d.role] || 'Сотрудник';
+    $('#mpPunkt').textContent = App.activeShifts[uid] ? '🟢 На смене' : '🔴 Выходной';
+    $('#miniProfile').classList.add('show');
+  }
+
+  function closeMiniProfile() { $('#miniProfile').classList.remove('show'); App.selectedProfile = null; }
+
+  // ============ Avatar ============
+  function loadAvatarSettings() {
+    DB.ref('users/' + App.user.uid + '/avatarSettings').once('value').then(snap => {
+      if (snap.exists()) {
+        const d = snap.val();
+        Object.assign(App.avatarSettings, d);
+      }
+      if (!App.avatarAnimId) updateAllFrames();
+    });
+  }
+
+  // ============ Animation Grid Builder ============
+  function buildAnimationGrid() {
+    const grid = $('#animationGrid');
+    if (!grid) return;
+    let html = '';
+    ANIMATIONS.forEach(anim => {
+      const isActive = App.avatarSettings.style === anim.id;
+      const canUse = !anim.premium || App.isCreator || App.isGod;
+      html += `<button class="style-btn ${isActive ? 'active' : ''} ${anim.premium ? 'premium' : ''}" data-style="${anim.id}" ${!canUse ? 'disabled' : ''}>${anim.label}${anim.premium ? ' 👑' : ''}</button>`;
+    });
+    grid.innerHTML = html;
+
+    grid.querySelectorAll('.style-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        if (this.disabled) return;
+        App.avatarSettings.style = this.dataset.style;
+        grid.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        // Анимация автоматически обновится в updateAllFrames
+      });
+    });
+  }
+
+  // ============ Settings ============
+  function openSettings() {
+    $('#mainContent').style.display = 'none';
+    $('#avatarCarousel').style.display = 'none';
+    $('#settingsPanel').style.display = 'flex';
+    $('#setName').value = '';
+    loadPunktsForSettings();
+    updateSettingsUI();
+    buildAnimationGrid();
+  }
+
+  function closeSettings() {
+    $('#settingsPanel').style.display = 'none';
+    $('#mainContent').style.display = 'flex';
+    $('#avatarCarousel').style.display = 'flex';
+  }
+
+  function loadPunktsForSettings() {
+    DB.ref('punkts').once('value').then(snap => {
+      const sel = $('#setPunkt');
+      sel.innerHTML = '<option value="">Не менять</option>';
+      snap.forEach(child => {
+        sel.innerHTML += `<option value="${esc(child.key)}">${esc(child.key)}</option>`;
+      });
+    });
+  }
+
+  function updateSettingsUI() {
+    const hasAdvanced = App.isCreator || App.isGod;
+    document.getElementById('avatarAdvanced').style.display = hasAdvanced ? 'block' : 'none';
+    document.getElementById('avatarSimple').style.display = hasAdvanced ? 'none' : 'block';
+    $('#setSpeed').value = App.avatarSettings.speed;
+    $('#setSpeedVal').textContent = App.avatarSettings.speed + 'x';
+    $('#setGlow').value = App.avatarSettings.glow;
+    $('#setGlowVal').textContent = App.avatarSettings.glow + 'px';
+    $('#setColor1').value = App.avatarSettings.color1;
+    $('#setColor2').value = App.avatarSettings.color2;
+    $('#setRingColor').value = App.avatarSettings.ringColor;
+    $('#setRingThickness').value = App.avatarSettings.ringThickness;
+  }
+
+  function saveSettings() {
+    const newName = $('#setName').value.trim();
+    const newPunkt = $('#setPunkt').value;
+    const update = {};
+    if (newName) update.name = newName;
+    if (newPunkt) update.punkt = newPunkt;
+    if (Object.keys(update).length) {
+      DB.ref('users/' + App.user.uid).update(update).then(() => {
+        if (newName) App.user.name = newName;
+        if (newPunkt) App.user.punkt = newPunkt;
+        updateUI();
+        toast('Настройки сохранены');
+      });
+    }
+    closeSettings();
+  }
+
+  function saveAvatar() {
+    const settings = {
+      style: App.avatarSettings.style,
+      speed: App.avatarSettings.speed,
+      glow: App.avatarSettings.glow,
+      color1: App.avatarSettings.color1,
+      color2: App.avatarSettings.color2,
+      ringColor: App.avatarSettings.ringColor,
+      ringThickness: App.avatarSettings.ringThickness
+    };
+    
+    // Получаем загруженную картинку (если была)
+    const previewImg = getCachedImage(App.user.avatar);
+    
+    if (previewImg && previewImg !== 'loading') {
+      const canvas = document.createElement('canvas');
+      canvas.width = 200;
+      canvas.height = 200;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(previewImg, 0, 0, 200, 200);
+      settings.photo = canvas.toDataURL('image/jpeg', 0.8);
+    }
+    const update = { avatarSettings: settings };
+    if (settings.photo) update.avatar = settings.photo;
+    
+    DB.ref('users/' + App.user.uid).update(update).then(() => {
+      if (settings.photo) App.user.avatar = settings.photo;
+      App.avatarSettings = settings;
+      toast('Аватар сохранён');
+      closeSettings();
+    });
+  }
+
+  // ============ Database Listeners ============
+  function setupDatabaseListeners() {
+    attachDbListener(DB.ref('users'), 'value', snap => {
+      App.allUserData = {};
+      snap.forEach(child => { App.allUserData[child.key] = child.val(); });
+      buildCarousel();
+    });
+    attachDbListener(DB.ref('activeShifts'), 'value', snap => {
+      App.activeShifts = {};
+      snap.forEach(child => { if (child.val() && child.val().active) App.activeShifts[child.key] = true; });
+      buildCarousel();
+    });
+    attachDbListener(DB.ref('chat').limitToLast(1), 'child_added', snap => {
+      if (App.chatOpened) return;
+      const m = snap.val();
+      if (!m || !App.user) return;
+      if (m.timestamp <= App.lastChatTimestamp) return;
+      const isMine = m.user === '🌌 ' + App.user.name || m.user === '👑 ' + App.user.name || m.user === App.user.name;
+      if (isMine) return;
+      if (App.notifiedKeys[snap.key]) return;
+      App.notifiedKeys[snap.key] = true;
+      App.lastChatTimestamp = Math.max(App.lastChatTimestamp, m.timestamp || 0);
+      App.unreadCount++;
+      updateBadge();
+    });
+  }
+
+  // ============ Init ============
+  function init() {
+    $('#tabLogin').addEventListener('click', toggleAuth);
+    $('#tabRegister').addEventListener('click', toggleAuth);
+    $('#loginBtn').addEventListener('click', login);
+    $('#registerBtn').addEventListener('click', register);
+    $('#resetPassBtn').addEventListener('click', resetPassword);
+    $('#loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+    $('#regPass').addEventListener('keydown', e => { if (e.key === 'Enter') register(); });
+
+    $('#chatHeader').addEventListener('click', toggleChat);
+    $('#chatBackBtn').addEventListener('click', switchToGlobalChat);
+    $('#chatMsgInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }});
+    $('#sendMsgBtn').addEventListener('click', sendMessage);
+    $('#chatPhotoBtn').addEventListener('click', () => $('#chatPhotoInput').click());
+    $('#chatPhotoInput').addEventListener('change', sendPhoto);
+
+    $('#stickerToggleBtn').addEventListener('click', e => {
+      e.stopPropagation();
+      const panel = $('#stickerPanel');
+      panel.classList.toggle('open');
+      if (panel.classList.contains('open')) renderStickerUI();
+    });
+
+    document.addEventListener('click', e => {
+      const panel = $('#stickerPanel');
+      if (panel && panel.classList.contains('open') && !e.target.closest('#stickerPanel') && !e.target.closest('.sticker-toggle')) {
+        panel.classList.remove('open');
+      }
+    });
+
+    $('#sidebarToggleBtn').addEventListener('click', toggleSidebar);
+    $('#sidebarCloseBtn').addEventListener('click', () => $('#avatarCarousel').classList.remove('open'));
+    $('#mpCloseBtn').addEventListener('click', closeMiniProfile);
+    $('#mpChatBtn').addEventListener('click', openPrivateChat);
+
+    document.addEventListener('click', e => {
+      const mp = $('#miniProfile');
+      if (mp && mp.classList.contains('show') && !e.target.closest('#miniProfile') && !e.target.closest('.avatar-item') && !e.target.closest('#sidebarToggleBtn') && !e.target.closest('.msg-author')) {
+        closeMiniProfile();
+      }
+    });
+
+    // Обработчик превью аватара
+    $('#mainProfileCard').addEventListener('click', (e) => {
+        if (e.target.closest('#settingsBtn')) return;
+        openAvatarPreview();
+    });
+    $('#closeAvatarPreview').addEventListener('click', () => {
+        $('#avatarPreviewModal').style.display = 'none';
+        App.previewData = null;
+    });
+
+    $('#settingsBtn').addEventListener('click', openSettings);
+    $('#settingsCloseBtn').addEventListener('click', closeSettings);
+    $('#settingsSaveBtn').addEventListener('click', saveSettings);
+    $('#settingsLogoutBtn').addEventListener('click', () => { closeSettings(); logout(); });
+    $('#avatarCloseBtn').addEventListener('click', closeSettings);
+    $('#avatarSaveBtn').addEventListener('click', saveAvatar);
+
+    $('#setAvatarFile').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        // Локально обновляем аватар в кеше, чтобы пользователь сразу увидел
+        App.user.avatar = ev.target.result;
+        toast('Фото загружено (не забудьте нажать Сохранить)');
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.querySelectorAll('.settings-tab').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const tab = this.dataset.tab;
+        document.querySelectorAll('.settings-tab').forEach(b => { b.classList.remove('active'); b.style.background = 'transparent'; b.style.color = 'var(--muted)'; });
+        this.classList.add('active');
+        this.style.background = 'var(--accent)';
+        this.style.color = '#fff';
+        $('#stab-main').style.display = tab === 'main' ? 'flex' : 'none';
+        $('#stab-avatar').style.display = tab === 'avatar' ? 'flex' : 'none';
+      });
+    });
+
+    $('#setSpeed').addEventListener('input', function() {
+      App.avatarSettings.speed = parseFloat(this.value);
+      $('#setSpeedVal').textContent = App.avatarSettings.speed + 'x';
+    });
+
+    $('#setGlow').addEventListener('input', function() {
+      App.avatarSettings.glow = parseInt(this.value);
+      $('#setGlowVal').textContent = App.avatarSettings.glow + 'px';
+    });
+
+    $('#setColor1').addEventListener('input', function() { App.avatarSettings.color1 = this.value; });
+    $('#setColor2').addEventListener('input', function() { App.avatarSettings.color2 = this.value; });
+    $('#setRingColor').addEventListener('input', function() { App.avatarSettings.ringColor = this.value; });
+    $('#setRingThickness').addEventListener('change', function() { App.avatarSettings.ringThickness = this.value; });
+
+    loadPunktsForRegister();
+
+    AUTH.onAuthStateChanged(async user => {
+      if (user && !App.user) {
+        const snap = await DB.ref('users/' + user.uid).once('value');
+        if (snap.exists()) {
+          App.user = snap.val();
+          App.user.uid = user.uid;
+          finishLogin();
+        }
+      }
+    });
+
+    window.addEventListener('beforeunload', () => {
+      if (App.user) {
+        DB.ref('presence/' + App.user.uid).set({ online: false, ts: Date.now() });
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+})();
+</script>
+</body>
+</html>
+
+
+```
