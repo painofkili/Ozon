@@ -25,7 +25,7 @@ button:active{transform:scale(0.95)}
 .btn-purple{background:#9C27B0;color:#fff}
 .btn-sm{padding:6px 12px;font-size:12px;width:auto}
 .app-container{display:flex;width:100%;height:100%;position:relative;z-index:1;overflow:hidden}
-.main-content{width:100%;max-width:100%;padding:12px 16px;display:flex;flex-direction:column;height:100%;gap:6px}
+.main-content{width:100%;max-width:100%;padding:12px 16px;display:flex;flex-direction:column;height:100%;gap:6px;transition:0.3s}
 .profile-card{display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(12px);flex-shrink:0;cursor:pointer;transition:0.2s}
 .profile-card:hover{background:rgba(40,40,70,0.9)}
 .badge{font-size:12px;font-weight:bold;padding:4px 12px;border-radius:20px;display:inline-block}
@@ -43,17 +43,16 @@ button:active{transform:scale(0.95)}
 .tabs button.active{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff;box-shadow:0 4px 15px rgba(138,43,226,0.3)}
 .tab-content{display:none;width:100%;flex-shrink:0;animation:fadeIn 0.3s ease}
 .tab-content.active-tab{display:block}
-.chat-section{background:var(--bg2);border:1px solid var(--border);border-radius:16px;display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;margin:0;transition:0.3s}
+.chat-section{background:var(--bg2);border:1px solid var(--border);border-radius:16px;display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;margin:0;transition:0.3s cubic-bezier(0.25, 0.8, 0.25, 1)}
 .chat-header-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.2);cursor:pointer;flex-shrink:0}
 .chat-header-bar:hover{background:rgba(0,0,0,0.3)}
-#chat{flex:1;overflow-y:auto;padding:10px 14px;scrollbar-width:thin;scrollbar-color:var(--accent) transparent;background:transparent;display:flex;flex-direction:column;gap:2px}
-#chat.hidden{display:none !important}
+#chat{flex:1;overflow-y:auto;padding:10px 14px;scrollbar-width:thin;scrollbar-color:var(--accent) transparent;background:transparent;display:flex;flex-direction:column;gap:2px;transition:opacity 0.2s}
 .chat-bubble-group{display:flex;flex-direction:column;max-width:85%;position:relative;margin:2px 0}
 .chat-bubble-group.mine{align-self:flex-end;align-items:flex-end}
 .chat-bubble-group.other{align-self:flex-start;align-items:flex-start}
-/* Увеличен размер шрифта для автора, чтобы сочеталось с большой аватаркой */
+/* Увеличен шрифт имени и зазор для больших аватарок */
 .chat-bubble-group .msg-author{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;display:flex;align-items:center;gap:8px;padding:0 4px}
-/* УВЕЛИЧЕННЫЕ АВАТАРКИ В ЧАТЕ: 38x38px */
+/* Крупные аватарки в чате */
 .chat-static-avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;cursor:pointer;flex-shrink:0;border:1px solid rgba(255,255,255,0.1);background:var(--bg3)}
 .text-ava{display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.15);font-weight:bold;font-size:16px;color:#fff}
 .chat-bubble{background:rgba(255,255,255,0.04);padding:8px 14px;word-break:break-word;line-height:1.4;font-size:14px;border:1px solid rgba(255,255,255,0.03);position:relative;border-radius:12px;transition:0.1s}
@@ -63,7 +62,7 @@ button:active{transform:scale(0.95)}
 .chat-bubble.clickable:active{transform:scale(0.98);opacity:0.8}
 .chat-img{max-width:200px;max-height:150px;border-radius:8px;margin-top:4px;cursor:pointer;object-fit:cover}
 .chat-sticker{max-width:120px;max-height:120px;object-fit:contain;margin:2px 0}
-.chat-input-wrapper{position:relative;width:100%;margin-top:auto;flex-shrink:0}
+.chat-input-wrapper{position:relative;width:100%;margin-top:auto;flex-shrink:0;transition:0.3s cubic-bezier(0.25, 0.8, 0.25, 1);opacity:1;transform:translateY(0)}
 .chat-input-bar{width:100%;background:var(--bg2);backdrop-filter:blur(16px);padding:8px 12px;display:flex;gap:8px;align-items:center;z-index:100;border-top:1px solid var(--border);border-radius:16px}
 .input-wrapper{position:relative;flex:1;display:flex;align-items:center;background:rgba(0,0,0,0.3);border-radius:20px;border:1px solid rgba(255,255,255,0.05)}
 .input-wrapper input{background:transparent;border:none;padding:10px 40px 10px 16px;font-size:15px;width:100%}
@@ -137,13 +136,22 @@ button:active{transform:scale(0.95)}
   #tabContentContainer{flex:1;overflow-y:auto}
 }
 
+/* ГЛАВНЫЙ ФИКС СВОРАЧИВАНИЯ ЧАТА ДЛЯ МОБИЛЬНЫХ */
 @media(max-width:1023px){
   .main-content{flex-direction:column;padding:8px;height:100%;}
-  .left-column{flex:0 0 42%; display:flex;flex-direction:column;margin-bottom:4px; transition:0.3s;}
+  
+  .left-column{flex:0 0 42%; display:flex;flex-direction:column;margin-bottom:4px; transition:0.3s cubic-bezier(0.25, 0.8, 0.25, 1);}
   .main-content.tabs-collapsed .left-column { flex: 0 0 auto; min-height:0; }
-  .main-content.chat-collapsed .left-column { flex:1 1 0%; min-height:0; margin-bottom:0; max-height:none; }
-  .right-column{flex:1 1 0%;display:flex;flex-direction:column;min-height:0; transition:0.3s;}
-  .main-content.chat-collapsed .right-column { flex:0 0 auto; min-height:auto; }
+  
+  .right-column{flex:1 1 0%;display:flex;flex-direction:column;min-height:0; transition:0.3s cubic-bezier(0.25, 0.8, 0.25, 1);}
+  
+  /* Состояние когда чат свернут */
+  .main-content.chat-collapsed .left-column { flex: 1 1 100%; margin-bottom:0; max-height:none; }
+  .main-content.chat-collapsed .right-column { flex: 0 0 54px; min-height: 54px; }
+  .main-content.chat-collapsed .chat-section { flex: 0 0 54px; height: 54px; }
+  .main-content.chat-collapsed #chat { opacity: 0; pointer-events: none; }
+  .main-content.chat-collapsed .chat-input-wrapper { opacity: 0; pointer-events: none; transform: translateY(100%); position: absolute; bottom: 0; }
+  
   #tabContentContainer{flex:1;overflow-y:auto;}
   .chat-input-wrapper{position:relative;width:100%;max-width:100%;z-index:100;flex-shrink:0;}
   .chat-input-bar{border-radius:16px;padding:6px 8px;}
@@ -156,7 +164,6 @@ button:active{transform:scale(0.95)}
 <body>
 <div id="toastContainer" class="toast-container"></div>
 
-<!-- Модалка с действиями над сообщением -->
 <div id="msgActionModal" style="display:none; position:fixed; inset:0; z-index:12000; background:rgba(0,0,0,0.6); align-items:flex-end; justify-content:center; backdrop-filter:blur(5px);" onclick="closeMsgActions()">
   <div style="background:var(--bg2); width:100%; max-width:500px; border-radius:24px 24px 0 0; padding:24px; display:flex; flex-direction:column; gap:12px; animation: slideUpModal 0.25s cubic-bezier(0.16, 1, 0.3, 1); border-top:1px solid var(--border);" onclick="event.stopPropagation()">
       <h4 style="text-align:center; color:var(--muted); margin-bottom:8px;">Действия с сообщением</h4>
@@ -333,19 +340,20 @@ button:active{transform:scale(0.95)}
   // 🎨 БЛОК АНИМАЦИЙ АВАТАРОК (ДОБАВЛЯТЬ НОВЫЕ СЮДА)
   // =========================================================================
   
-  // Список анимаций для UI настроек
   const ANIMATIONS = [
     { id:'rgb-ring', label:'Кольцо', premium:false },
     { id:'rgb-rainbow', label:'Радуга 🌈', premium:false },
     { id:'neon-pulse', label:'Пульс 💓', premium:false },
     { id:'running-gradient', label:'Градиент 💫', premium:false },
     
+    // НОВЫЕ АНИМАЦИИ
     { id:'singularity', label:'Сингулярность 🕳️', premium:true }, 
     { id:'quantum-realm', label:'Квант 🌌', premium:true },       
     { id:'dragon-aura', label:'Дракон 🐉', premium:true },        
     { id:'supernova', label:'Сверхновая 💥', premium:true },     
     { id:'sacred-geometry', label:'Геометрия 💠', premium:true }, 
     
+    // ПРЕДЫДУЩИЕ АНИМАЦИИ
     { id:'void-vortex', label:'Черная Дыра 🌌', premium:true },
     { id:'infinity-shield', label:'Щит 🛡️', premium:true },
     { id:'cyber-grid', label:'Сканер 🤖', premium:true },
@@ -360,62 +368,40 @@ button:active{transform:scale(0.95)}
     { id:'god-rays', label:'Нимб 👼', premium:true },
   ];
 
-  // Реестр функций отрисовки. Каждая функция принимает объект (opts) со всеми параметрами.
-  // opts = { ctx, cx, cy, fRadius, avatarRadius, state, speed, color1, color2, glow, layer }
   const EFFECTS_REGISTRY = {
     'singularity': (opts) => {
-        const { ctx, cx, cy, avatarRadius, state, speed, color1, color2, layer } = opts;
+        const { ctx, cx, cy, avatarRadius, state, color1, color2, layer } = opts;
         if(layer === 'back') {
             ctx.save(); ctx.translate(cx, cy);
             ctx.rotate(state.tick * 0.4);
             const grad = ctx.createRadialGradient(0,0, avatarRadius-5, 0,0, avatarRadius+45);
-            grad.addColorStop(0, '#000');
-            grad.addColorStop(0.2, color1);
-            grad.addColorStop(0.5, color2);
-            grad.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = grad;
-            ctx.scale(1, 0.6);
+            grad.addColorStop(0, '#000'); grad.addColorStop(0.2, color1); grad.addColorStop(0.5, color2); grad.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = grad; ctx.scale(1, 0.6);
             ctx.beginPath(); ctx.arc(0, 0, avatarRadius+50, 0, Math.PI*2); ctx.fill();
             ctx.restore();
-            ctx.fillStyle = '#000';
-            ctx.beginPath(); ctx.arc(cx, cy, avatarRadius+2, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(cx, cy, avatarRadius+2, 0, Math.PI*2); ctx.fill();
         }
         if(layer === 'front') {
             ctx.save(); ctx.translate(cx, cy); ctx.rotate(-state.tick * 0.8);
             ctx.strokeStyle = color1; ctx.lineWidth = 2; ctx.shadowBlur = 15; ctx.shadowColor = color2;
             for(let i=0; i<3; i++) {
-                ctx.rotate((Math.PI*2)/3);
-                ctx.beginPath();
-                ctx.arc(0, 0, avatarRadius+15, 0, Math.PI/2);
-                ctx.stroke();
-                const pA = state.tick * 2 + i;
-                const pR = avatarRadius + 10 + Math.sin(state.tick*5)*5;
-                ctx.fillStyle = '#fff';
-                ctx.beginPath(); ctx.arc(Math.cos(pA)*pR, Math.sin(pA)*pR, 2, 0, Math.PI*2); ctx.fill();
+                ctx.rotate((Math.PI*2)/3); ctx.beginPath(); ctx.arc(0, 0, avatarRadius+15, 0, Math.PI/2); ctx.stroke();
+                const pA = state.tick * 2 + i, pR = avatarRadius + 10 + Math.sin(state.tick*5)*5;
+                ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(Math.cos(pA)*pR, Math.sin(pA)*pR, 2, 0, Math.PI*2); ctx.fill();
             }
             ctx.restore();
         }
     },
     'quantum-realm': (opts) => {
-        const { ctx, cx, cy, fRadius, state, speed, color1, color2, layer } = opts;
+        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
         if(layer === 'front') {
-            ctx.save(); ctx.translate(cx, cy);
-            ctx.shadowBlur = 10; ctx.shadowColor = color1;
-            ctx.lineWidth = 1.5;
-            const orbits = [
-                { angle: state.tick*0.5, tilt: 0 },
-                { angle: -state.tick*0.6, tilt: Math.PI/3 },
-                { angle: state.tick*0.7, tilt: -Math.PI/3 }
-            ];
+            ctx.save(); ctx.translate(cx, cy); ctx.shadowBlur = 10; ctx.shadowColor = color1; ctx.lineWidth = 1.5;
+            const orbits = [ { angle: state.tick*0.5, tilt: 0 }, { angle: -state.tick*0.6, tilt: Math.PI/3 }, { angle: state.tick*0.7, tilt: -Math.PI/3 } ];
             orbits.forEach((orb, i) => {
-                ctx.save();
-                ctx.rotate(orb.tilt);
-                ctx.scale(1, 0.3);
-                ctx.rotate(orb.angle);
+                ctx.save(); ctx.rotate(orb.tilt); ctx.scale(1, 0.3); ctx.rotate(orb.angle);
                 ctx.strokeStyle = `rgba(${i%2===0?'0,255,255':'255,100,255'}, 0.4)`;
                 ctx.beginPath(); ctx.arc(0, 0, fRadius+10, 0, Math.PI*2); ctx.stroke();
-                const ex = Math.cos(state.tick*2 + i) * (fRadius+10);
-                const ey = Math.sin(state.tick*2 + i) * (fRadius+10);
+                const ex = Math.cos(state.tick*2 + i) * (fRadius+10), ey = Math.sin(state.tick*2 + i) * (fRadius+10);
                 ctx.fillStyle = i===0 ? color1 : (i===1 ? color2 : '#fff');
                 ctx.beginPath(); ctx.arc(ex, ey, 4, 0, Math.PI*2); ctx.fill();
                 ctx.restore();
@@ -426,90 +412,61 @@ button:active{transform:scale(0.95)}
     'dragon-aura': (opts) => {
         const { ctx, cx, cy, avatarRadius, state, speed, color1, color2, layer } = opts;
         if(layer === 'back') {
-            ctx.shadowBlur = 30; ctx.shadowColor = color1;
-            ctx.fillStyle = color1;
-            ctx.beginPath(); ctx.arc(cx, cy, avatarRadius+5, 0, Math.PI*2); ctx.fill();
-            ctx.shadowBlur = 0;
+            ctx.shadowBlur = 30; ctx.shadowColor = color1; ctx.fillStyle = color1;
+            ctx.beginPath(); ctx.arc(cx, cy, avatarRadius+5, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
         }
         if(layer === 'front') {
             if(!state.dragonFlames) state.dragonFlames = [];
             if(state.dragonFlames.length < 40) {
                 const angle = Math.random() * Math.PI*2;
-                state.dragonFlames.push({
-                    angle: angle,
-                    radius: avatarRadius - 5,
-                    vx: Math.cos(angle) * (1 + Math.random()),
-                    vy: Math.sin(angle) * (1 + Math.random()) - 2,
-                    life: 1,
-                    size: 3 + Math.random()*5,
-                    color: Math.random() > 0.5 ? color1 : color2
-                });
+                state.dragonFlames.push({ angle: angle, radius: avatarRadius - 5, vx: Math.cos(angle) * (1 + Math.random()), vy: Math.sin(angle) * (1 + Math.random()) - 2, life: 1, size: 3 + Math.random()*5, color: Math.random() > 0.5 ? color1 : color2 });
             }
             ctx.globalCompositeOperation = 'lighter';
             state.dragonFlames.forEach(p => {
-                p.radius += 0.5 * speed;
-                p.angle += 0.02 * speed;
-                p.life -= 0.02 * speed;
-                const px = cx + Math.cos(p.angle) * p.radius;
-                const py = cy + Math.sin(p.angle) * p.radius + p.vy*5;
-                ctx.fillStyle = p.color;
-                ctx.globalAlpha = Math.max(0, p.life);
+                p.radius += 0.5 * speed; p.angle += 0.02 * speed; p.life -= 0.02 * speed;
+                const px = cx + Math.cos(p.angle) * p.radius, py = cy + Math.sin(p.angle) * p.radius + p.vy*5;
+                ctx.fillStyle = p.color; ctx.globalAlpha = Math.max(0, p.life);
                 ctx.beginPath(); ctx.arc(px, py, p.size * p.life, 0, Math.PI*2); ctx.fill();
             });
-            ctx.globalAlpha = 1;
-            ctx.globalCompositeOperation = 'source-over';
+            ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
             state.dragonFlames = state.dragonFlames.filter(p => p.life > 0);
-            ctx.strokeStyle = color2; ctx.lineWidth = 2;
-            ctx.beginPath(); ctx.arc(cx, cy, avatarRadius+4, 0, Math.PI*2); ctx.stroke();
+            ctx.strokeStyle = color2; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, avatarRadius+4, 0, Math.PI*2); ctx.stroke();
         }
     },
     'supernova': (opts) => {
-        const { ctx, cx, cy, fRadius, state, speed, color1, color2, glow, layer } = opts;
+        const { ctx, cx, cy, fRadius, state, color1, color2, glow, layer } = opts;
         if(layer === 'back') {
             const pulse = 1 + Math.sin(state.tick*3)*0.1;
             const grad = ctx.createRadialGradient(cx, cy, fRadius, cx, cy, fRadius+60*pulse);
-            grad.addColorStop(0, color1);
-            grad.addColorStop(0.5, color2);
-            grad.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = grad;
-            ctx.beginPath(); ctx.arc(cx, cy, fRadius+80, 0, Math.PI*2); ctx.fill();
+            grad.addColorStop(0, color1); grad.addColorStop(0.5, color2); grad.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(cx, cy, fRadius+80, 0, Math.PI*2); ctx.fill();
         }
         if(layer === 'front') {
             ctx.save(); ctx.translate(cx, cy);
-            const wave1 = (state.tick * 2) % 40;
-            const wave2 = (state.tick * 2 + 20) % 40;
+            const wave1 = (state.tick * 2) % 40, wave2 = (state.tick * 2 + 20) % 40;
             ctx.strokeStyle = color2; ctx.shadowBlur = glow; ctx.shadowColor = color1;
-            ctx.lineWidth = 3 * (1 - wave1/40);
-            ctx.beginPath(); ctx.arc(0, 0, fRadius + wave1, 0, Math.PI*2); ctx.stroke();
-            ctx.lineWidth = 3 * (1 - wave2/40);
-            ctx.beginPath(); ctx.arc(0, 0, fRadius + wave2, 0, Math.PI*2); ctx.stroke();
+            ctx.lineWidth = 3 * (1 - wave1/40); ctx.beginPath(); ctx.arc(0, 0, fRadius + wave1, 0, Math.PI*2); ctx.stroke();
+            ctx.lineWidth = 3 * (1 - wave2/40); ctx.beginPath(); ctx.arc(0, 0, fRadius + wave2, 0, Math.PI*2); ctx.stroke();
             ctx.rotate(state.tick);
             for(let i=0; i<8; i++) {
-                ctx.rotate(Math.PI/4);
-                ctx.beginPath();
-                ctx.moveTo(fRadius, 0);
-                ctx.lineTo(fRadius + 10 + Math.random()*15, 0);
+                ctx.rotate(Math.PI/4); ctx.beginPath(); ctx.moveTo(fRadius, 0); ctx.lineTo(fRadius + 10 + Math.random()*15, 0);
                 ctx.lineWidth = 2; ctx.strokeStyle = '#fff'; ctx.stroke();
             }
             ctx.restore();
         }
     },
     'sacred-geometry': (opts) => {
-        const { ctx, cx, cy, fRadius, state, speed, color1, color2, glow, layer } = opts;
+        const { ctx, cx, cy, fRadius, state, color1, color2, glow, layer } = opts;
         if(layer === 'front') {
-            ctx.save(); ctx.translate(cx, cy);
-            ctx.shadowBlur = glow; ctx.shadowColor = color1;
+            ctx.save(); ctx.translate(cx, cy); ctx.shadowBlur = glow; ctx.shadowColor = color1;
             const drawPolygon = (sides, radius, rotation, color, width) => {
-                ctx.save(); ctx.rotate(rotation);
-                ctx.strokeStyle = color; ctx.lineWidth = width;
-                ctx.beginPath();
+                ctx.save(); ctx.rotate(rotation); ctx.strokeStyle = color; ctx.lineWidth = width; ctx.beginPath();
                 for(let i=0; i<=sides; i++) {
                     const angle = i * (Math.PI*2)/sides;
                     if(i===0) ctx.moveTo(Math.cos(angle)*radius, Math.sin(angle)*radius);
                     else ctx.lineTo(Math.cos(angle)*radius, Math.sin(angle)*radius);
                 }
-                ctx.stroke();
-                ctx.fillStyle = '#fff';
+                ctx.stroke(); ctx.fillStyle = '#fff';
                 for(let i=0; i<sides; i++) {
                     const angle = i * (Math.PI*2)/sides;
                     ctx.beginPath(); ctx.arc(Math.cos(angle)*radius, Math.sin(angle)*radius, 3, 0, Math.PI*2); ctx.fill();
@@ -728,7 +685,6 @@ button:active{transform:scale(0.95)}
   };
   // =========================================================================
 
-  // ============ Firebase Init ============
   const firebaseConfig = {
     apiKey: "AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",
     authDomain: "ozon-grafik-4ad9f.firebaseapp.com",
@@ -779,19 +735,6 @@ button:active{transform:scale(0.95)}
   const customConfirm = m => showCustomModal(m, false);
   const customPrompt = (m, d) => showCustomModal(m, true, d);
 
-  const imageCache = {};
-  function getCachedImage(url, cb) {
-    if(!url) return null;
-    if(imageCache[url] === 'loading') return null;
-    if(imageCache[url] && imageCache[url] !== 'loading') return imageCache[url];
-    imageCache[url] = 'loading';
-    const img = new Image();
-    img.onload = () => { imageCache[url] = img; if(cb) cb(); };
-    img.onerror = () => { delete imageCache[url]; };
-    img.src = url;
-    return null;
-  }
-
   const App = {
     user: null, onShift: false, shiftTimer: null,
     allUserData: {}, activeShifts: {}, presenceData: {}, unreadCount: 0,
@@ -817,7 +760,6 @@ button:active{transform:scale(0.95)}
   function renderPremiumAvatar(canvas, settings, avatarImg, fallbackName) {
     if(!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    
     if(rect.width === 0 || rect.height === 0) return;
 
     const dpr = window.devicePixelRatio || 1;
@@ -859,20 +801,17 @@ button:active{transform:scale(0.95)}
     const style = settings?.style || 'rgb-ring';
     const glow = parseInt(settings?.glow) || 20;
 
-    // Объект параметров для передачи в эффекты
     const effectOpts = { ctx, cx, cy, fRadius, avatarRadius, state, speed, color1, color2, glow };
 
     const drawEffects = (layer) => {
       ctx.shadowBlur = layer === 'front' ? glow : 0;
       ctx.shadowColor = color1;
-      
       effectOpts.layer = layer;
-      const effectRender = EFFECTS_REGISTRY[style];
       
+      const effectRender = EFFECTS_REGISTRY[style];
       if (effectRender) {
           effectRender(effectOpts);
       } else if (layer === 'front') {
-          // Fallback для простых стилей
           ctx.strokeStyle=settings?.ringColor||color1; const t=settings?.ringThickness; ctx.lineWidth=t==='thick'?8:t==='thin'?2:4; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke();
       }
     };
@@ -881,7 +820,8 @@ button:active{transform:scale(0.95)}
     ctx.shadowBlur = 0; ctx.globalAlpha = 1;
     ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, avatarRadius, 0, Math.PI*2); ctx.clip();
     
-    if(avatarImg && avatarImg !== 'loading') { 
+    // Теперь avatarImg - это настоящий загруженный объект Image
+    if(avatarImg && avatarImg.complete) { 
       const ratio = Math.max((avatarRadius*2)/avatarImg.width, (avatarRadius*2)/avatarImg.height); 
       const dw = avatarImg.width*ratio, dh = avatarImg.height*ratio; 
       ctx.drawImage(avatarImg, cx-dw/2, cy-dh/2, dw, dh); 
@@ -902,19 +842,25 @@ button:active{transform:scale(0.95)}
     if(document.hidden) { App.avatarAnimId = requestAnimationFrame(updateAllFrames); return; }
     
     const mc = $('#mainAvatarCanvas');
-    if(mc && App.user) renderPremiumAvatar(mc, App.avatarSettings, getCachedImage(App.user.avatar), App.user.name);
+    if(mc && App.user) {
+        renderPremiumAvatar(mc, App.avatarSettings, App.user.imgObj || null, App.user.name);
+    }
     
     const pm = $('#avatarPreviewModal');
     const pc = $('#previewAvatarCanvas');
     if(pm && pm.style.display !== 'none' && App.previewData) {
-        renderPremiumAvatar(pc, App.previewData.settings, getCachedImage(App.previewData.imgUrl), App.previewData.name);
+        let pImg = null;
+        if (App.previewData.uid === App.user.uid) pImg = App.user.imgObj;
+        else if (App.previewData.uid && App.allUserData[App.previewData.uid]) pImg = App.allUserData[App.previewData.uid].imgObj;
+        
+        renderPremiumAvatar(pc, App.previewData.settings, pImg || null, App.previewData.name);
     }
     
     App.avatarAnimId = requestAnimationFrame(updateAllFrames);
   }
 
   window.openAvatarPreview = function(uid, defName) {
-    const isOwnProfileClick = (uid === undefined);
+    const isOwnProfileClick = (uid === undefined || uid === null);
     const targetUid = isOwnProfileClick ? App.user?.uid : uid;
 
     let s = {style:'rgb-ring', speed:1, color1:'#6366f1', color2:'#a855f7'};
@@ -933,7 +879,7 @@ button:active{transform:scale(0.95)}
         name = name || '?';
     }
     
-    App.previewData = { settings: s, imgUrl, name };
+    App.previewData = { uid: targetUid, settings: s, imgUrl, name };
     $('#previewAvatarName').textContent = name;
     $('#previewAvatarCanvas').style.display = 'block';
     $('#previewFullImage').style.display = 'none';
@@ -970,6 +916,13 @@ button:active{transform:scale(0.95)}
       const snap = await DB.ref('users/'+cred.user.uid).once('value');
       if(!snap.exists()) { err.textContent='Пользователь не найден'; err.style.display='block'; return; }
       App.user = snap.val(); App.user.uid = cred.user.uid;
+      
+      // Загрузка аватарки локально
+      if(App.user.avatar) {
+          App.user.imgObj = new Image();
+          App.user.imgObj.src = App.user.avatar;
+      }
+      
       finishLogin();
     } catch(ex) { err.textContent=ex.message; err.style.display='block'; }
   }
@@ -1002,7 +955,6 @@ button:active{transform:scale(0.95)}
     DB.ref('presence/'+App.user.uid).remove();
     AUTH.signOut().then(() => {
       localStorage.removeItem('ozon_user');
-      for(const k in imageCache) delete imageCache[k];
       App.user = null; App.chatOpened = false;
       $('#app').style.display = 'none';
       $('#loginScreen').style.display = 'flex';
@@ -1404,20 +1356,11 @@ button:active{transform:scale(0.95)}
       }
       
       const safeUid = auid ? esc(auid) : '';
-      const uData = auid ? App.allUserData[auid] : null;
-      let avaImg = (auid === App.user.uid) ? App.user.avatar : (uData ? uData.avatar : null);
-      if (typeof avaImg === 'string' && avaImg.trim() === '') avaImg = null;
-
-      const firstLetter = Array.from(un)[0] ? Array.from(un)[0].toUpperCase() : '?';
-      
-      const safeAvaImg = avaImg ? avaImg.replace(/"/g, '&quot;') : null;
       const cleanUnForJs = un.replace(/'/g, "\\'").replace(/"/g, "&quot;");
       
-      const errorFallback = `this.onerror=null; this.outerHTML='<div class=\\'chat-static-avatar text-ava\\' onclick=\\'event.stopPropagation();window.openAvatarPreview(&quot;${safeUid}&quot;, &quot;${cleanUnForJs}&quot;)\\'>${esc(firstLetter)}</div>'`;
-
-      const avaHtml = (safeAvaImg)
-          ? `<img src="${safeAvaImg}" class="chat-static-avatar" onerror="${errorFallback}" onclick="event.stopPropagation();window.openAvatarPreview('${safeUid}','${cleanUnForJs}')">`
-          : `<div class="chat-static-avatar text-ava" onclick="event.stopPropagation();window.openAvatarPreview('${safeUid}','${cleanUnForJs}')">${esc(firstLetter)}</div>`;
+      // ФИКС МАССИВА В ПАМЯТИ: Мы не вставляем огромный base64 в HTML строку!
+      // Задаем прозрачный пиксель (gif), а потом заполняем src нормальными объектами.
+      const avaHtml = `<img data-uid="${safeUid}" data-name="${cleanUnForJs}" class="chat-static-avatar chat-ava-load" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onclick="event.stopPropagation();window.openAvatarPreview('${safeUid}','${cleanUnForJs}')">`;
       
       const ns=(isC||isG)?'background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;':'';
       let h=`<div class="chat-bubble-group ${isMine?'mine':'other'}"><div class="msg-author" style="${isMine?'flex-direction:row-reverse;':''}">${avaHtml}<span style="${ns}">${esc(un)}</span></div>`;
@@ -1451,6 +1394,20 @@ button:active{transform:scale(0.95)}
     if(!ce) return;
     const was=ce.scrollHeight-ce.scrollTop-ce.clientHeight<60;
     ce.innerHTML=html;
+    
+    // ФИКС МАССИВА В ПАМЯТИ ЧАСТЬ 2: Расставляем аватарки
+    ce.querySelectorAll('.chat-ava-load').forEach(img => {
+        const uid = img.dataset.uid;
+        const uData = uid === App.user?.uid ? App.user : App.allUserData[uid];
+        
+        if (uData && uData.avatar) {
+            img.src = uData.avatar;
+        } else {
+            const firstLetter = Array.from(img.dataset.name || '?')[0].toUpperCase();
+            img.outerHTML = `<div class="chat-static-avatar text-ava" onclick="event.stopPropagation();window.openAvatarPreview('${uid}','${img.dataset.name}')">${esc(firstLetter)}</div>`;
+        }
+    });
+
     if(was||document.activeElement===$('#chatMsgInput'))ce.scrollTop=ce.scrollHeight;
   }
   
@@ -1467,22 +1424,19 @@ button:active{transform:scale(0.95)}
     inp.value='';
   }
   function toggleChat() {
-    const ce=$('#chat'),bar=$('#chatInputBar'), mc=$('#mainContent');
-    if(ce.classList.contains('hidden')){
-      ce.classList.remove('hidden');
+    const mc=$('#mainContent');
+    if(mc.classList.contains('chat-collapsed')){
       mc.classList.remove('chat-collapsed');
       App.chatOpened=true;
-      bar.style.display='flex';
       App.lastChatTimestamp=Date.now();
       App.unreadCount=0;
       updateBadge();
-      setTimeout(()=>ce.scrollTop=ce.scrollHeight,100);
+      const ce=$('#chat');
+      setTimeout(()=>ce.scrollTop=ce.scrollHeight,300);
     }
     else{
-      ce.classList.add('hidden');
       mc.classList.add('chat-collapsed');
       App.chatOpened=false;
-      bar.style.display='none';
     }
   }
   function updateBadge(){const b=$('#chatBadge');if(App.unreadCount>0){b.style.display='inline';b.textContent=App.unreadCount;}else b.style.display='none';}
@@ -1507,8 +1461,23 @@ button:active{transform:scale(0.95)}
     for(const uid in App.allUserData){if(uid===App.user.uid)continue;const d=App.allUserData[uid];const safeName=cleanName(d.name);if(added.has(safeName))continue;added.add(safeName);
       const online = App.presenceData[uid]?.online || !!App.activeShifts[uid];
       const isActive=App.selectedProfile===uid;
-      const firstL = Array.from(safeName)[0] ? Array.from(safeName)[0].toUpperCase() : '?';
-      el.innerHTML+=`<div class="avatar-item${isActive?' active':''}" data-uid="${uid}">${d.avatar?`<img src="${esc(d.avatar)}" onerror="this.style.display='none'">`:`<div style="width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#222,#444);display:flex;align-items:center;justify-content:center;font-size:18px;color:#ccc;">${esc(firstL)}</div>`}${online?'<div class="online-dot"></div>':''}</div>`;}
+      
+      el.innerHTML+=`<div class="avatar-item${isActive?' active':''}" data-uid="${uid}">
+        <img data-uid="${uid}" class="sidebar-ava-load" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+        ${online?'<div class="online-dot"></div>':''}
+      </div>`;}
+      
+    // ФИКС МАССИВА В ПАМЯТИ ЧАСТЬ 3: Расставляем аватарки в сайдбаре
+    el.querySelectorAll('.sidebar-ava-load').forEach(img => {
+        const uData = App.allUserData[img.dataset.uid];
+        if (uData && uData.avatar) {
+            img.src = uData.avatar;
+        } else {
+            const firstL = Array.from(cleanName(uData.name))[0].toUpperCase();
+            img.outerHTML = `<div style="width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#222,#444);display:flex;align-items:center;justify-content:center;font-size:18px;color:#ccc;">${esc(firstL)}</div>`;
+        }
+    });
+      
     el.querySelectorAll('.avatar-item').forEach(item=>item.addEventListener('click',function(){const uid=this.dataset.uid;App.selectedProfile=uid;el.querySelectorAll('.avatar-item').forEach(x=>x.classList.toggle('active',x.dataset.uid===uid));showMiniProfile(uid);}));
   }
 
@@ -1546,8 +1515,15 @@ button:active{transform:scale(0.95)}
     const d=App.allUserData[uid];if(!d)return;
     const cleanUName = cleanName(d.name);
     $('#mpName').textContent=cleanUName;
-    const firstL = Array.from(cleanUName)[0] ? Array.from(cleanUName)[0].toUpperCase() : '?';
-    $('#mpAvatarContainer').innerHTML=`<div style="position:relative;width:64px;height:64px;">${d.avatar?`<img src="${esc(d.avatar)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--accent);">`:`<div style="width:100%;height:100%;border-radius:50%;background:#444;display:flex;align-items:center;justify-content:center;font-size:24px;color:#ccc;">${esc(firstL)}</div>`}</div>`;
+    
+    // ФИКС МАССИВА В ПАМЯТИ ЧАСТЬ 4: Мини профиль
+    $('#mpAvatarContainer').innerHTML=`<div style="position:relative;width:64px;height:64px;"><img id="mpAvaLoad" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" style="width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--accent);"></div>`;
+    if(d.avatar) {
+        $('#mpAvaLoad').src = d.avatar;
+    } else {
+        const firstL = Array.from(cleanUName)[0] ? Array.from(cleanUName)[0].toUpperCase() : '?';
+        $('#mpAvatarContainer').innerHTML = `<div style="position:relative;width:64px;height:64px;"><div style="width:100%;height:100%;border-radius:50%;background:#444;display:flex;align-items:center;justify-content:center;font-size:24px;color:#ccc;">${esc(firstL)}</div></div>`;
+    }
     
     const rm={god:'Начальник',creator:'Создатель',manager:'Сотрудник'};
     $('#mpStatus').textContent=rm[d.role]||'Сотрудник';
@@ -1629,14 +1605,24 @@ button:active{transform:scale(0.95)}
   // ============ DB LISTENERS ============
   function setupDatabaseListeners(){
     attachDbListener(DB.ref('users'),'value',s=>{
-      App.allUserData={};
+      const newData = {};
       s.forEach(c=>{
         const u = c.val();
-        App.allUserData[c.key]=u;
-        if(u.avatar && imageCache[u.avatar] === 'loading') {
-          delete imageCache[u.avatar];
+        const oldU = App.allUserData[c.key];
+        
+        // ФИКС МАССИВА В ПАМЯТИ ЧАСТЬ 1: Создаем объект картинки только если он изменился,
+        // вместо того чтобы забивать словарь огромными строками base64.
+        if (u.avatar) {
+            if (!oldU || oldU.avatar !== u.avatar) {
+                u.imgObj = new Image();
+                u.imgObj.src = u.avatar;
+            } else {
+                u.imgObj = oldU.imgObj;
+            }
         }
+        newData[c.key] = u;
       });
+      App.allUserData = newData;
       buildCarousel();
       if(window.chatSnapCache) {
           renderChatMessages();
@@ -1660,9 +1646,14 @@ button:active{transform:scale(0.95)}
     $('#sidebarToggleBtn').addEventListener('click',toggleSidebar);$('#sidebarCloseBtn').addEventListener('click',()=>$('#avatarCarousel').classList.remove('open'));
     $('#mpCloseBtn').addEventListener('click',closeMiniProfile);$('#mpChatBtn').addEventListener('click',openPrivateChat);
     
+    // Исправленный focusout: скроллит только если реально отскроллено, чтобы не было "прыжков" чата
     document.addEventListener('focusout', (e) => {
         if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
-            setTimeout(() => { window.scrollTo(0, 0); document.body.scrollTop = 0; }, 50);
+            setTimeout(() => { 
+                if(document.body.scrollTop > 0 || document.documentElement.scrollTop > 0) {
+                    window.scrollTo({top: 0, behavior: 'smooth'}); 
+                }
+            }, 50);
         }
     });
 
@@ -1698,7 +1689,9 @@ button:active{transform:scale(0.95)}
           ctx.drawImage(tempImg, (MAX_SIZE - dw) / 2, (MAX_SIZE - dh) / 2, dw, dh);
           
           App.user.avatar = c.toDataURL('image/jpeg', 0.85);
-          delete imageCache[App.user.avatar];
+          App.user.imgObj = new Image();
+          App.user.imgObj.src = App.user.avatar;
+          
           toast('Фото загружено и оптимизировано! Нажмите «Сохранить аватар».');
         };
         tempImg.src = ev.target.result;
@@ -1712,7 +1705,7 @@ button:active{transform:scale(0.95)}
     $('#setColor1').addEventListener('input',function(){App.avatarSettings.color1=this.value;});$('#setColor2').addEventListener('input',function(){App.avatarSettings.color2=this.value;});
     $('#setRingColor').addEventListener('input',function(){App.avatarSettings.ringColor=this.value;});$('#setRingThickness').addEventListener('change',function(){App.avatarSettings.ringThickness=this.value;});
     loadPunktsForRegister();
-    AUTH.onAuthStateChanged(async user=>{if(user&&!App.user){const snap=await DB.ref('users/'+user.uid).once('value');if(snap.exists()){App.user=snap.val();App.user.uid=user.uid;finishLogin();}}});
+    AUTH.onAuthStateChanged(async user=>{if(user&&!App.user){const snap=await DB.ref('users/'+user.uid).once('value');if(snap.exists()){App.user=snap.val();App.user.uid=user.uid;if(App.user.avatar){App.user.imgObj=new Image();App.user.imgObj.src=App.user.avatar;}finishLogin();}}});
     window.addEventListener('beforeunload',()=>{if(App.user)DB.ref('presence/'+App.user.uid).set({online:false,ts:Date.now()});});
     
     window.BASE_EMOJIS = ['😀','😃','😄','😁','😆','😅','😂','🤣','🥲','☺️','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🥸','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','ร้อน','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','☠️','👽','👾','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾'];
