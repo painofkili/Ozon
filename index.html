@@ -6,7 +6,7 @@
 <title>Ozon Hub</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{overflow:hidden;height:100vh;width:100vw;background:#0a0a1a}
+html,body{overflow:hidden;height:100dvh;width:100vw;background:#0a0a1a}
 body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;color:#eee;font-size:16px;display:flex;flex-direction:column}
 :root{--accent:#7c3aed;--accent2:#a855f7;--gold:#f5c518;--bg2:rgba(20,20,50,0.85);--bg3:rgba(30,30,60,0.7);--border:rgba(100,80,220,0.25);--text:#e8e8ff;--muted:#888;--green:#22c55e;--red:#ef4444}
 body.theme-creator{--accent:#7c3aed;--accent2:#00d4ff;--gold:#f5c518}
@@ -24,7 +24,7 @@ button:active{transform:scale(0.95)}
 .btn-blue{background:linear-gradient(135deg,#2196F3,#1565C0);color:#fff;width:100%}
 .btn-purple{background:#9C27B0;color:#fff}
 .btn-sm{padding:6px 12px;font-size:12px;width:auto}
-.app-container{display:flex;width:100%;height:100vh;position:relative;z-index:1;overflow:hidden}
+.app-container{display:flex;width:100%;height:100dvh;position:relative;z-index:1;overflow:hidden}
 .main-content{width:100%;max-width:100%;padding:12px 16px;display:flex;flex-direction:column;height:100%;gap:6px}
 .profile-card{display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(12px);flex-shrink:0;cursor:pointer;transition:0.2s}
 .profile-card:hover{background:rgba(40,40,70,0.9)}
@@ -69,7 +69,7 @@ button:active{transform:scale(0.95)}
 #sendMsgBtn,#chatPhotoBtn{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;padding:0;flex-shrink:0;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.05);color:#aaa}
 #sendMsgBtn{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff;border:none}
 
-.avatar-carousel{width:110px;background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;right:-130px;height:100vh;padding:50px 0 20px;z-index:1000;backdrop-filter:blur(20px);transition:right 0.3s cubic-bezier(0.16,1,0.3,1);box-shadow:-10px 0 30px rgba(0,0,0,0.5)}
+.avatar-carousel{width:110px;background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;right:-130px;height:100dvh;padding:50px 0 20px;z-index:1000;backdrop-filter:blur(20px);transition:right 0.3s cubic-bezier(0.16,1,0.3,1);box-shadow:-10px 0 30px rgba(0,0,0,0.5)}
 .avatar-carousel.open{right:0}
 .avatar-carousel-inner{display:flex;flex-direction:column;align-items:center;width:100%;gap:12px;overflow-y:auto;height:100%;padding:10px 0;scrollbar-width:none;padding-bottom:30px}
 .avatar-carousel-inner::-webkit-scrollbar{display:none}
@@ -113,7 +113,7 @@ button:active{transform:scale(0.95)}
 .worker-row{display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid var(--border);gap:6px;flex-wrap:wrap}
 .worker-row button{width:auto;padding:4px 10px;font-size:11px}
 .zp-result{background:rgba(34,197,94,0.1);padding:12px;border-radius:8px;margin-top:8px;font-size:14px;border:1px solid rgba(34,197,94,0.3);white-space:pre-line}
-.settings-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:20px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;backdrop-filter:blur(20px)}
+.settings-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:20px;max-width:500px;width:100%;max-height:90dvh;overflow-y:auto;backdrop-filter:blur(20px)}
 #settingsPanel{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px}
 .settings-tab{flex:1;padding:8px;border-radius:10px;font-size:13px;background:transparent;color:var(--muted);border:none;cursor:pointer;transition:0.2s}
 .settings-tab.active{background:var(--accent);color:#fff}
@@ -136,18 +136,19 @@ button:active{transform:scale(0.95)}
 }
 
 @media(max-width:1023px){
-  .main-content{flex-direction:column;padding:8px 8px 70px;height:100vh}
-  .left-column{flex:0 0 auto;display:flex;flex-direction:column;max-height:45vh;margin-bottom:4px; transition:0.3s;}
-  .main-content.chat-collapsed .left-column { max-height:100%; flex:1 1 auto; }
+  .main-content{flex-direction:column;padding:8px;height:100dvh;}
   
-  #tabContentContainer{flex:1;overflow-y:auto}
+  .left-column{flex:0 0 42dvh; display:flex;flex-direction:column;margin-bottom:4px; transition:0.3s;}
+  .main-content.chat-collapsed .left-column { flex:1 1 0%; min-height:0; margin-bottom:0; max-height:none; }
   
   .right-column{flex:1 1 0%;display:flex;flex-direction:column;min-height:0; transition:0.3s;}
   .main-content.chat-collapsed .right-column { flex:0 0 auto; min-height:auto; }
-  .main-content.chat-collapsed .chat-section { flex:0 0 auto; }
   
-  .chat-input-wrapper{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:100%;z-index:100}
-  .chat-input-bar{border-radius:12px 12px 0 0;padding:6px 8px}
+  #tabContentContainer{flex:1;overflow-y:auto;}
+  
+  .chat-input-wrapper{position:relative;width:100%;max-width:100%;z-index:100;flex-shrink:0;}
+  .chat-input-bar{border-radius:16px;padding:6px 8px;}
+  
   .mini-profile{right:10px;width:210px}
   .avatar-carousel{width:80px}
   .avatar-item{width:46px;height:46px}
@@ -186,7 +187,7 @@ button:active{transform:scale(0.95)}
   </div>
 </div>
 
-<div id="loginScreen" style="display:flex;align-items:center;justify-content:center;height:100vh;padding:20px;">
+<div id="loginScreen" style="display:flex;align-items:center;justify-content:center;height:100dvh;padding:20px;">
   <div style="max-width:380px;width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:32px;backdrop-filter:blur(20px);display:flex;flex-direction:column;gap:14px;">
     <div style="text-align:center;font-size:24px;font-weight:800;background:linear-gradient(135deg,#f5c518,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Ozon Hub</div>
     <div style="display:flex;background:rgba(0,0,0,0.3);border-radius:12px;padding:4px;">
@@ -271,7 +272,7 @@ button:active{transform:scale(0.95)}
   
   <div class="mini-profile" id="miniProfile">
     <button class="mp-close" id="mpCloseBtn">✕</button>
-    <div id="mpAvatarContainer" style="position:relative;width:64px;height:64px;margin:0 auto;"></div>
+    <div id="mpAvatarContainer" style="position:relative;width:64px;height:64px;margin:0 auto;cursor:pointer;"></div>
     <div id="mpName" style="text-align:center;font-weight:bold;font-size:16px;margin-top:8px;"></div>
     <div id="mpStatus" style="text-align:center;font-size:12px;margin:4px 0;"></div>
     <div id="mpPunkt" style="text-align:center;font-size:12px;font-weight:bold;color:#4CAF50;"></div>
@@ -351,7 +352,7 @@ button:active{transform:scale(0.95)}
   
   // Хелпер для очистки имен от битых символов и системных эмодзи
   function cleanName(n) {
-      if (!n) return '?';
+      if (!n) return '';
       return n.replace(/[\uFFFD🌌👑]/g, '').trim();
   }
   
@@ -558,20 +559,26 @@ button:active{transform:scale(0.95)}
     App.avatarAnimId = requestAnimationFrame(updateAllFrames);
   }
 
+  // Обновленная логика открытия аватара, которая 100% не теряет ваш uid
   window.openAvatarPreview = function(uid, defName) {
+    // Если uid === undefined, значит вызов пришел из нашего главного профиля (#mainProfileCard)
+    const isOwnProfileClick = (uid === undefined);
+    const targetUid = isOwnProfileClick ? App.user?.uid : uid;
+
     let s = {style:'rgb-ring', speed:1, color1:'#6366f1', color2:'#a855f7'};
-    let imgUrl = null, name = cleanName(defName) || 'Аватар';
-    
-    if(uid && uid !== 'undefined' && uid !== 'null' && uid !== '' && App.allUserData[uid]) { 
-        s = App.allUserData[uid].avatarSettings || s; 
-        imgUrl = App.allUserData[uid].avatar; 
-        name = cleanName(App.allUserData[uid].name) || name; 
-    } else if(!uid || uid === 'undefined' || uid === 'null' || uid === '') { 
-        // Неизвестный пользователь - используем заглушки по умолчанию
-    } else if (uid === App.user?.uid) {
+    let imgUrl = null;
+    let name = cleanName(defName) || 'Аватар';
+
+    if (targetUid === App.user?.uid) { 
         s = App.avatarSettings; 
         imgUrl = App.user?.avatar; 
-        name = cleanName(App.user?.name) || name; 
+        name = cleanName(App.user?.name) || 'Аватар'; 
+    } else if(targetUid && targetUid !== 'undefined' && targetUid !== 'null' && App.allUserData[targetUid]) { 
+        s = App.allUserData[targetUid].avatarSettings || s; 
+        imgUrl = App.allUserData[targetUid].avatar; 
+        name = cleanName(App.allUserData[targetUid].name) || name; 
+    } else {
+        name = name || '?';
     }
     
     App.previewData = { settings: s, imgUrl, name };
@@ -952,7 +959,7 @@ button:active{transform:scale(0.95)}
   window.pinMessage = async function() {
       if(!window.activeMsgKey) return;
       const key = window.activeMsgKey;
-      closeMsgActions(); // Закрываем меню СРАЗУ
+      closeMsgActions(); 
       
       const m = App.messagesCache[key];
       if(!m) return;
@@ -972,7 +979,7 @@ button:active{transform:scale(0.95)}
   window.deleteMessage = async function() {
     if(!window.activeMsgKey) return;
     const key = window.activeMsgKey;
-    closeMsgActions(); // Закрываем меню СРАЗУ
+    closeMsgActions();
     
     if(!await customConfirm('Удалить сообщение?')) return;
     const ref = App.privateChatWith ? (()=>{const u=[App.user.uid,App.privateChatWith].sort();return DB.ref('privateChats/'+u[0]+'_'+u[1]);})() : DB.ref('chat');
@@ -1190,7 +1197,6 @@ button:active{transform:scale(0.95)}
     const pi=getCachedImage(App.user.avatar);
     if(pi&&pi!=='loading'){
       const c = document.createElement('canvas');
-      // Увеличено разрешение аватара до 600x600 пикселей для хорошего качества
       c.width = 600; 
       c.height = 600;
       const ctx = c.getContext('2d');
@@ -1239,6 +1245,12 @@ button:active{transform:scale(0.95)}
     document.addEventListener('click',e=>{const p=$('#stickerPanel');if(p&&p.classList.contains('open')&&!e.target.closest('#stickerPanel')&&!e.target.closest('.sticker-toggle'))p.classList.remove('open');});
     $('#sidebarToggleBtn').addEventListener('click',toggleSidebar);$('#sidebarCloseBtn').addEventListener('click',()=>$('#avatarCarousel').classList.remove('open'));
     $('#mpCloseBtn').addEventListener('click',closeMiniProfile);$('#mpChatBtn').addEventListener('click',openPrivateChat);
+    
+    // Добавлен клик на аватарку внутри мини-профиля
+    $('#mpAvatarContainer').addEventListener('click', () => {
+        if(App.selectedProfile) window.openAvatarPreview(App.selectedProfile);
+    });
+
     document.addEventListener('click',e=>{const mp=$('#miniProfile');if(mp&&mp.classList.contains('show')&&!e.target.closest('#miniProfile')&&!e.target.closest('.avatar-item')&&!e.target.closest('#sidebarToggleBtn')&&!e.target.closest('.msg-author'))closeMiniProfile();});
     $('#mainProfileCard').addEventListener('click',e=>{if(e.target.closest('#settingsBtn'))return;window.openAvatarPreview();});
     $('#toggleFullImgBtn').addEventListener('click',()=>{const cv=$('#previewAvatarCanvas'),im=$('#previewFullImage');if(cv.style.display!=='none'){cv.style.display='none';im.src=App.previewData.imgUrl||'';im.style.display='block';$('#toggleFullImgBtn').textContent='Показать с эффектами';}else{cv.style.display='block';im.style.display='none';$('#toggleFullImgBtn').textContent='Показать оригинал';}});
@@ -1256,7 +1268,6 @@ button:active{transform:scale(0.95)}
     AUTH.onAuthStateChanged(async user=>{if(user&&!App.user){const snap=await DB.ref('users/'+user.uid).once('value');if(snap.exists()){App.user=snap.val();App.user.uid=user.uid;finishLogin();}}});
     window.addEventListener('beforeunload',()=>{if(App.user)DB.ref('presence/'+App.user.uid).set({online:false,ts:Date.now()});});
     
-    // Эмодзи по умолчанию
     window.BASE_EMOJIS = ['😀','😃','😄','😁','😆','😅','😂','🤣','🥲','☺️','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🥸','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','ร้อน','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','☠️','👽','👾','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾'];
   }
   document.addEventListener('DOMContentLoaded', init);
