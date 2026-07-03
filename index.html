@@ -53,7 +53,7 @@ button:active{transform:scale(0.95)}
 .chat-bubble-group.mine{align-self:flex-end;align-items:flex-end}
 .chat-bubble-group.other{align-self:flex-start;align-items:flex-start}
 .chat-bubble-group .msg-author{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:2px;display:flex;align-items:center;gap:6px;padding:0 4px}
-.chat-static-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;cursor:pointer;flex-shrink:0;border:1px solid rgba(255,255,255,0.1)}
+.chat-static-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;cursor:pointer;flex-shrink:0;border:1px solid rgba(255,255,255,0.1);background:var(--bg3)}
 .text-ava{display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.15);font-weight:bold;font-size:12px;color:#fff}
 .chat-bubble{background:rgba(255,255,255,0.04);padding:8px 14px;word-break:break-word;line-height:1.4;font-size:14px;border:1px solid rgba(255,255,255,0.03);position:relative;border-radius:12px;transition:0.1s}
 .chat-bubble.mine{background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.1)}
@@ -354,7 +354,6 @@ button:active{transform:scale(0.95)}
   const esc = s => { if(!s) return ''; const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
   const isValidEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
   
-  // Хелпер для очистки имен от любых системных артефактов и эмодзи
   function cleanName(n) {
       if (!n) return '';
       return n.replace(/[\uFFFD🌌👑❖]/g, '').trim();
@@ -411,6 +410,10 @@ button:active{transform:scale(0.95)}
     isCreator: false, isGod: false, previewData: null,
     activeListeners: [], messagesCache: {}
   };
+
+  // Глобальный кэш для чата, чтобы его можно было перерисовывать асинхронно
+  window.chatSnapCache = null;
+
   const ANIMATIONS = [
     { id:'rgb-ring', label:'Кольцо', premium:false },
     { id:'rgb-rainbow', label:'Радуга 🌈', premium:false },
@@ -421,7 +424,13 @@ button:active{transform:scale(0.95)}
     { id:'matrix', label:'Матрица 🧪', premium:true },
     { id:'fire', label:'Огонь 🔥', premium:true },
     { id:'sparks', label:'Искры ⚡', premium:true },
-    { id:'god-rays', label:'Нимб 👼', premium:true }
+    { id:'god-rays', label:'Нимб 👼', premium:true },
+    { id:'void-vortex', label:'Черная Дыра 🌌', premium:true },
+    { id:'infinity-shield', label:'Щит 🛡️', premium:true },
+    { id:'cyber-grid', label:'Сканер 🤖', premium:true },
+    { id:'golden-dust', label:'Пыль ✨', premium:true },
+    { id:'aurora', label:'Сияние 🌌', premium:true },
+    { id:'electro-storm', label:'Шторм ⚡', premium:true }
   ];
   const avatarTimers = new Map();
 
@@ -435,21 +444,26 @@ button:active{transform:scale(0.95)}
   // ============ AVATAR RENDER ENGINE (HiDPI / Retina-Ready) ============
   function renderPremiumAvatar(canvas, settings, avatarImg, fallbackName) {
     if(!canvas) return;
-    const ctx = canvas.getContext('2d');
-    
-    // Адаптивное масштабирование под плотность пикселей экрана (Retina / HiDPI)
-    const dpr = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
-    const displayW = rect.width || canvas.width;
-    const displayH = rect.height || canvas.height;
     
-    // Задаем физический размер буфера рисования в соответствии с DPR
-    if (canvas.width !== displayW * dpr || canvas.height !== displayH * dpr) {
-      canvas.width = displayW * dpr;
-      canvas.height = displayH * dpr;
+    // ВАЖНЫЙ ФИКС: Если холст спрятан (display: none), его размер будет 0
+    // Если мы попробуем масштабировать размер 0 или брать старые значения, он будет расти до бесконечности
+    // и "поедать" видеопамять, что приводит к ужасному качеству или падению GPU
+    if(rect.width === 0 || rect.height === 0) return;
+
+    const dpr = window.devicePixelRatio || 1;
+    const displayW = rect.width;
+    const displayH = rect.height;
+    
+    const targetW = Math.floor(displayW * dpr);
+    const targetH = Math.floor(displayH * dpr);
+
+    if (canvas.width !== targetW || canvas.height !== targetH) {
+      canvas.width = targetW;
+      canvas.height = targetH;
     }
     
-    // Включаем максимальное сглаживание
+    const ctx = canvas.getContext('2d');
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
     
@@ -457,7 +471,12 @@ button:active{transform:scale(0.95)}
     const baseSize = 300, w = baseSize, h = baseSize, cx = w/2, cy = h/2;
     const avatarRadius = 82, fRadius = avatarRadius + 4;
     
-    if(!avatarTimers.has(canvas)) avatarTimers.set(canvas, {tick:0, pulse:1, dir:1, particles:[]});
+    if(!avatarTimers.has(canvas)) {
+      avatarTimers.set(canvas, {
+        tick: 0, pulse: 1, dir: 1, 
+        particles: [], lightning: [], vortexParticles: [], dustParticles: []
+      });
+    }
     const state = avatarTimers.get(canvas);
     const speed = parseFloat(settings?.speed) || 1;
     state.tick += 0.04 * speed;
@@ -469,7 +488,6 @@ button:active{transform:scale(0.95)}
     ctx.clearRect(0,0,trueW,trueH);
     ctx.save();
     
-    // Масштабируем систему координат под физический размер с учетом DPR
     ctx.scale(trueW/baseSize, trueH/baseSize);
     
     const color1 = settings?.color1 || '#6366f1', color2 = settings?.color2 || '#a855f7';
@@ -479,6 +497,7 @@ button:active{transform:scale(0.95)}
     const drawEffects = (layer) => {
       ctx.shadowBlur = layer === 'front' ? glow : 0;
       ctx.shadowColor = color1;
+      
       if(style === 'double-orbit') {
         const oRX = avatarRadius + 38, oRY = avatarRadius * 0.35;
         const a1 = state.tick, a2 = -state.tick * 1.3, a3 = state.tick * 0.8;
@@ -500,7 +519,8 @@ button:active{transform:scale(0.95)}
         };
         if(layer === 'back') { drawOrbit(0,color1,a1,false); drawOrbit(Math.PI/3,color2,a2,false); drawOrbit(-Math.PI/3,'#00d4ff',a3,false); }
         else { drawOrbit(0,color1,a1,true); drawOrbit(Math.PI/3,color2,a2,true); drawOrbit(-Math.PI/3,'#00d4ff',a3,true); }
-      } else if(style === 'god-rays' && layer === 'back') {
+      } 
+      else if(style === 'god-rays' && layer === 'back') {
         ctx.shadowColor = '#ffd700'; ctx.shadowBlur = 20;
         const drawWing = (isLeft) => {
           ctx.save(); ctx.translate(cx+(isLeft?-avatarRadius+5:avatarRadius-5), cy); ctx.scale(isLeft?-1:1,1); ctx.rotate(Math.sin(state.tick*2)*0.08);
@@ -518,7 +538,8 @@ button:active{transform:scale(0.95)}
         ctx.ellipse(cx, haloY, 32, 9, 0, 0, Math.PI*2);
         ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 4; ctx.stroke();
         ctx.shadowBlur = 0;
-      } else if(style === 'matrix') {
+      } 
+      else if(style === 'matrix') {
         if(layer === 'back') { ctx.strokeStyle='#00ff41'; ctx.lineWidth=4; ctx.shadowBlur=15; ctx.shadowColor='#00ff41'; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke(); }
         if(layer === 'front') {
           if(!state.matrixRain) { state.matrixRain = []; for(let i=0;i<30;i++) state.matrixRain.push({x:cx-avatarRadius+Math.random()*avatarRadius*2, y:cy-avatarRadius-Math.random()*200, speed:1.5+Math.random()*2, char:Math.floor(Math.random()*10).toString()}); }
@@ -534,7 +555,8 @@ button:active{transform:scale(0.95)}
           });
           ctx.globalAlpha = 1;
         }
-      } else if(style === 'fire') {
+      } 
+      else if(style === 'fire') {
         if(layer === 'back') { ctx.shadowBlur=20; ctx.shadowColor='#ff3300'; ctx.strokeStyle='#ff3300'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke(); ctx.shadowBlur=0; }
         if(layer === 'front' || layer === 'back') {
           if(!state.fireParticles) state.fireParticles = [];
@@ -544,19 +566,130 @@ button:active{transform:scale(0.95)}
           ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
           if(layer==='front') state.fireParticles = state.fireParticles.filter(p => p.life>0);
         }
-      } else if(style === 'sparks' && layer === 'front') {
+      } 
+      else if(style === 'sparks' && layer === 'front') {
         ctx.shadowColor = color1;
         if(state.particles.length < 50) state.particles.push({angle:Math.random()*Math.PI*2, speed:0.5+Math.random()*2, life:1, size:2+Math.random()*3, distance:avatarRadius+Math.random()*10});
         state.particles = state.particles.filter(p => p.life>0);
         state.particles.forEach(p => { p.angle+=p.speed*0.02; p.distance+=p.speed*0.5; p.life-=0.015; const x=cx+Math.cos(p.angle)*p.distance, y=cy+Math.sin(p.angle)*p.distance; ctx.fillStyle=p.life>0.5?color1:color2; ctx.globalAlpha=p.life; ctx.shadowBlur=10; ctx.beginPath(); ctx.arc(x,y,p.size,0,Math.PI*2); ctx.fill(); });
         ctx.globalAlpha = 1;
-      } else if(layer === 'front') {
+      }
+      else if(style === 'void-vortex') {
+        if(layer === 'back') {
+          ctx.save(); ctx.translate(cx, cy); ctx.rotate(-state.tick * 0.5);
+          const grad = ctx.createRadialGradient(0, 0, avatarRadius - 10, 0, 0, avatarRadius + 30);
+          grad.addColorStop(0, '#000000'); grad.addColorStop(0.3, color1);
+          grad.addColorStop(0.7, color2); grad.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(0, 0, avatarRadius + 40, 0, Math.PI*2); ctx.fill();
+          ctx.restore();
+        }
+        if(layer === 'front') {
+          if(!state.vortexParticles) state.vortexParticles = [];
+          if(state.vortexParticles.length < 60) {
+            state.vortexParticles.push({ angle: Math.random() * Math.PI * 2, radius: avatarRadius + 40 + Math.random() * 40, speed: 1 + Math.random() * 2, size: 1 + Math.random() * 2, color: Math.random() > 0.5 ? color1 : color2, opacity: Math.random() });
+          }
+          ctx.shadowBlur = 10; ctx.shadowColor = color1;
+          state.vortexParticles.forEach(p => {
+            p.radius -= 0.8 * speed; p.angle += 0.03 * speed;
+            if(p.radius < avatarRadius - 20) { p.radius = avatarRadius + 40 + Math.random() * 40; p.angle = Math.random() * Math.PI * 2; }
+            const px = cx + Math.cos(p.angle) * p.radius, py = cy + Math.sin(p.angle) * p.radius;
+            ctx.fillStyle = p.color; ctx.globalAlpha = Math.min(1, (p.radius - (avatarRadius - 20)) / 50);
+            ctx.beginPath(); ctx.arc(px, py, p.size, 0, Math.PI*2); ctx.fill();
+          });
+          ctx.globalAlpha = 1;
+        }
+      }
+      else if(style === 'infinity-shield') {
+        if(layer === 'front') {
+          ctx.save(); ctx.translate(cx, cy); ctx.shadowBlur = glow; ctx.shadowColor = color1;
+          ctx.strokeStyle = color1; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, fRadius + 8, 0, Math.PI*2); ctx.stroke();
+          ctx.rotate(state.tick * 0.7); ctx.strokeStyle = color2; ctx.lineWidth = 4; ctx.lineCap = 'round';
+          ctx.beginPath(); ctx.arc(0, 0, fRadius + 4, 0, Math.PI * 0.6); ctx.stroke();
+          ctx.beginPath(); ctx.arc(0, 0, fRadius + 4, Math.PI, Math.PI * 1.6); ctx.stroke();
+          ctx.rotate(-state.tick * 1.5); ctx.strokeStyle = '#00f2ff'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(0, 0, fRadius + 10, 0, Math.PI * 0.4); ctx.stroke();
+          ctx.beginPath(); ctx.arc(0, 0, fRadius + 10, Math.PI, Math.PI * 1.4); ctx.stroke();
+          ctx.fillStyle = '#ffffff'; ctx.shadowColor = '#ffffff';
+          ctx.beginPath(); ctx.arc(fRadius+4, 0, 4, 0, Math.PI*2); ctx.fill();
+          ctx.beginPath(); ctx.arc(-(fRadius+4), 0, 4, 0, Math.PI*2); ctx.fill();
+          ctx.restore(); ctx.globalAlpha = 1;
+        }
+      }
+      else if(style === 'cyber-grid') {
+        if(layer === 'front') {
+          ctx.save(); ctx.shadowBlur = 0;
+          const scanY = cy - avatarRadius + ((state.tick * 40) % (avatarRadius * 2));
+          ctx.beginPath(); ctx.arc(cx, cy, avatarRadius, 0, Math.PI * 2); ctx.clip();
+          ctx.strokeStyle = 'rgba(0, 242, 255, 0.15)'; ctx.lineWidth = 1;
+          for(let i = cy - avatarRadius; i < cy + avatarRadius; i += 12) { ctx.beginPath(); ctx.moveTo(cx - avatarRadius, i); ctx.lineTo(cx + avatarRadius, i); ctx.stroke(); }
+          const grad = ctx.createLinearGradient(0, scanY - 15, 0, scanY + 15);
+          grad.addColorStop(0, 'rgba(0, 242, 255, 0)'); grad.addColorStop(0.5, color1); grad.addColorStop(1, 'rgba(0, 242, 255, 0)');
+          ctx.fillStyle = grad; ctx.fillRect(cx - avatarRadius, scanY - 15, avatarRadius * 2, 30);
+          ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.shadowBlur = 12; ctx.shadowColor = color1;
+          ctx.beginPath(); ctx.moveTo(cx - avatarRadius, scanY); ctx.lineTo(cx + avatarRadius, scanY); ctx.stroke();
+          ctx.restore();
+        }
+      }
+      else if(style === 'golden-dust') {
+        if(layer === 'back') {
+          const grad = ctx.createRadialGradient(cx, cy, avatarRadius - 10, cx, cy, avatarRadius + 25);
+          grad.addColorStop(0, 'rgba(245, 197, 24, 0.2)'); grad.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(cx, cy, avatarRadius + 30, 0, Math.PI*2); ctx.fill();
+        }
+        if(layer === 'front' || layer === 'back') {
+          if(!state.dustParticles) state.dustParticles = [];
+          if(state.dustParticles.length < 80) { state.dustParticles.push({ x: cx - avatarRadius + Math.random() * (avatarRadius * 2), y: cy + avatarRadius - Math.random() * 10, vx: (Math.random() - 0.5) * 0.8, vy: -0.5 - Math.random() * 1.5, life: 1, size: 1 + Math.random() * 3, sparkle: Math.random(), isFront: Math.random() > 0.4 }); }
+          ctx.shadowBlur = 8; ctx.shadowColor = '#ffd700';
+          state.dustParticles.forEach(p => {
+            if((layer === 'front' && p.isFront) || (layer === 'back' && !p.isFront)) {
+              p.x += p.vx * speed; p.y += p.vy * speed; p.life -= 0.008 * speed; p.sparkle += 0.1;
+              const currentOpacity = Math.max(0, p.life) * (0.5 + Math.sin(p.sparkle) * 0.5);
+              const dist = Math.sqrt(Math.pow(p.x - cx, 2) + Math.pow(p.y - cy, 2));
+              if(p.life <= 0 || dist > avatarRadius + 35) { p.x = cx - avatarRadius + Math.random() * (avatarRadius * 2); p.y = cy + avatarRadius; p.life = 1; p.vy = -0.5 - Math.random() * 1.5; }
+              ctx.fillStyle = `rgba(255, 215, 0, ${currentOpacity})`; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
+            }
+          });
+          ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+        }
+      }
+      else if(style === 'aurora') {
+        if(layer === 'back') {
+          ctx.save(); ctx.shadowBlur = 0; ctx.beginPath(); ctx.arc(cx, cy, avatarRadius + 22, 0, Math.PI*2); ctx.clip();
+          for(let i = 0; i < 3; i++) {
+            const shift = state.tick * (0.3 + i * 0.1);
+            const grad = ctx.createLinearGradient(cx - avatarRadius, 0, cx + avatarRadius, 0);
+            grad.addColorStop(0, 'rgba(0,0,0,0)'); grad.addColorStop(0.3, color1); grad.addColorStop(0.7, color2); grad.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = grad; ctx.beginPath(); ctx.moveTo(cx - avatarRadius - 20, cy + avatarRadius + 20);
+            for(let x = cx - avatarRadius - 20; x <= cx + avatarRadius + 20; x += 10) { const y = cy + Math.sin(x * 0.03 + shift) * 15 + (i * 12) - 10; ctx.lineTo(x, y); }
+            ctx.lineTo(cx + avatarRadius + 20, cy + avatarRadius + 20); ctx.closePath(); ctx.globalAlpha = 0.45; ctx.fill();
+          }
+          ctx.restore(); ctx.globalAlpha = 1;
+        }
+        if(layer === 'front') { ctx.strokeStyle = color2; ctx.lineWidth = 3; ctx.shadowBlur = glow; ctx.shadowColor = color2; ctx.beginPath(); ctx.arc(cx, cy, fRadius, 0, Math.PI*2); ctx.stroke(); }
+      }
+      else if(style === 'electro-storm') {
+        if(layer === 'front') {
+          ctx.save(); ctx.shadowBlur = glow; ctx.shadowColor = color1; ctx.strokeStyle = color2; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, fRadius, 0, Math.PI * 2); ctx.stroke();
+          if (Math.random() > 0.85) {
+            state.lightning = []; const segments = 8, startAngle = Math.random() * Math.PI * 2, endAngle = startAngle + (Math.random() - 0.5) * Math.PI;
+            for(let i = 0; i <= segments; i++) { const progress = i / segments, angle = startAngle + (endAngle - startAngle) * progress, rad = fRadius + (Math.random() - 0.5) * 16; state.lightning.push({ x: cx + Math.cos(angle) * rad, y: cy + Math.sin(angle) * rad }); }
+            state.lightningLife = 5;
+          }
+          if (state.lightning && state.lightning.length > 0 && state.lightningLife > 0) {
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(state.lightning[0].x, state.lightning[0].y);
+            for(let i = 1; i < state.lightning.length; i++) ctx.lineTo(state.lightning[i].x, state.lightning[i].y);
+            ctx.stroke(); state.lightningLife -= 1 * speed;
+          }
+          ctx.restore();
+        }
+      }
+      else if(layer === 'front') {
         if(style==='rgb-ring') { ctx.strokeStyle=color1; ctx.lineWidth=6; ctx.beginPath(); ctx.arc(cx,cy,fRadius,state.tick%(Math.PI*2),(state.tick%(Math.PI*2))+Math.PI*1.5); ctx.stroke(); ctx.strokeStyle=color2; ctx.beginPath(); ctx.arc(cx,cy,fRadius,(state.tick%(Math.PI*2))+Math.PI,(state.tick%(Math.PI*2))+Math.PI*2); ctx.stroke(); }
         else if(style==='rgb-rainbow') { for(let i=0;i<12;i++) { const hue=((state.tick*50+i*30)%360); ctx.strokeStyle=`hsl(${hue},100%,60%)`; ctx.lineWidth=4; ctx.beginPath(); ctx.arc(cx,cy,fRadius+Math.sin(state.tick*2+i)*3,i*Math.PI/6,(i+1)*Math.PI/6); ctx.stroke(); } }
         else if(style==='neon-pulse') { const pR=fRadius+Math.sin(state.tick*3)*6; ctx.strokeStyle=color1; ctx.lineWidth=8*state.pulse; ctx.globalAlpha=0.6; ctx.beginPath(); ctx.arc(cx,cy,pR,0,Math.PI*2); ctx.stroke(); ctx.strokeStyle=color2; ctx.lineWidth=4; ctx.globalAlpha=1; ctx.beginPath(); ctx.arc(cx,cy,pR,0,Math.PI*2); ctx.stroke(); }
         else if(style==='running-gradient') { const grad=ctx.createConicGradient(state.tick%(Math.PI*2),cx,cy); grad.addColorStop(0,color1); grad.addColorStop(0.3,'#ffffff'); grad.addColorStop(0.5,color2); grad.addColorStop(0.7,'#ffffff'); grad.addColorStop(1,color1); ctx.strokeStyle=grad; ctx.lineWidth=6; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke(); }
         else if(style==='comet') { for(let i=0;i<3;i++) { const angle=state.tick*2+i*Math.PI*2/3; const tailLen=30; for(let j=tailLen;j>=0;j--) { const tA=angle-j*0.03; const x=cx+Math.cos(tA)*fRadius, y=cy+Math.sin(tA)*fRadius; const size=6*(1-j/tailLen); ctx.fillStyle=j===0?'#fff':color1; ctx.globalAlpha=1-(j/tailLen); ctx.shadowBlur=j===0?20:0; ctx.shadowColor=color2; ctx.beginPath(); ctx.arc(x,y,size,0,Math.PI*2); ctx.fill(); } } ctx.globalAlpha=1; }
-        else if(!['double-orbit','god-rays','matrix','fire','sparks'].includes(style)) { ctx.strokeStyle=settings?.ringColor||color1; const t=settings?.ringThickness; ctx.lineWidth=t==='thick'?8:t==='thin'?2:4; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke(); }
+        else if(!['double-orbit','god-rays','matrix','fire','sparks','void-vortex','infinity-shield','cyber-grid','golden-dust','aurora','electro-storm'].includes(style)) { ctx.strokeStyle=settings?.ringColor||color1; const t=settings?.ringThickness; ctx.lineWidth=t==='thick'?8:t==='thin'?2:4; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke(); }
       }
     };
 
@@ -583,10 +716,17 @@ button:active{transform:scale(0.95)}
 
   function updateAllFrames() {
     if(document.hidden) { App.avatarAnimId = requestAnimationFrame(updateAllFrames); return; }
+    
     const mc = $('#mainAvatarCanvas');
     if(mc && App.user) renderPremiumAvatar(mc, App.avatarSettings, getCachedImage(App.user.avatar), App.user.name);
+    
     const pm = $('#avatarPreviewModal');
-    if(pm && pm.style.display !== 'none' && App.previewData) renderPremiumAvatar($('#previewAvatarCanvas'), App.previewData.settings, getCachedImage(App.previewData.imgUrl), App.previewData.name);
+    const pc = $('#previewAvatarCanvas');
+    // Отрисовываем превью только когда оно видимо!
+    if(pm && pm.style.display !== 'none' && App.previewData) {
+        renderPremiumAvatar(pc, App.previewData.settings, getCachedImage(App.previewData.imgUrl), App.previewData.name);
+    }
+    
     App.avatarAnimId = requestAnimationFrame(updateAllFrames);
   }
 
@@ -701,6 +841,7 @@ button:active{transform:scale(0.95)}
     DB.ref('presence/'+App.user.uid).set({online:true, ts:Date.now()});
   }
 
+  // ============ UPDATE UI ============
   function updateUI() {
     $('#uname').textContent = cleanName(App.user.name);
     const punktLabel = $('#punktLabel');
@@ -741,7 +882,6 @@ button:active{transform:scale(0.95)}
       const id = this.dataset.tab;
       const mc = $('#mainContent');
       
-      // Логика разворачивания/сворачивания меню
       if(tc.querySelector('.active')?.dataset.tab === id) { 
         const isHidden = cc.style.display === 'none';
         if (isHidden) {
@@ -879,7 +1019,7 @@ button:active{transform:scale(0.95)}
       arr.sort((a,b)=>b.hours-a.hours); let th=''; for(let i=0;i<Math.min(arr.length,5);i++) { const m=['🥇','🥈','🥉','📌','📌'][i]; th+=`<div style="padding:6px;border-bottom:1px solid var(--border);">${m} ${esc(arr[i].name)} — <b>${arr[i].hours.toFixed(1)}ч</b></div>`; }
       arr.sort((a,b)=>b.tovar-a.tovar); let tt=''; for(let i=0;i<Math.min(arr.length,5);i++) { const m=['🥇','🥈','🥉','📌','📌'][i]; tt+=`<div style="padding:6px;border-bottom:1px solid var(--border);">${m} ${esc(arr[i].name)} — <b>${arr[i].tovar} шт</b></div>`; }
       const best=arr.length?`<div style="padding:6px;">🌟 ${esc(arr[0].name)} — ${arr[0].hours.toFixed(1)}ч / ${arr[0].tovar} шт</div>`:'<p style="color:var(--muted);">Нет данных</p>';
-      $('#boardContent').innerHTML = `<div><b>⏱ Топ по часам</b>${th}</div><div style="margin-top:12px;"><b>📦 Топ по товарам</b>${tt}</div><div style="margin-top:12px;"><b>🌟 Работник месяца</b>${best}</div>`;
+      $('#boardContent').innerHTML = `<div><b>⏱ Топ по часам</b>${th}</div><div style="margin:12px 0;"><b>📦 Топ по товарам</b>${tt}</div><div style="margin:12px 0;"><b>🌟 Работник месяца</b>${best}</div>`;
     });
   }
 
@@ -990,7 +1130,6 @@ button:active{transform:scale(0.95)}
   }
 
   // ============ CHAT & PIN ============
-  
   window.activeMsgKey = null;
 
   window.openMsgActions = function(key, canPin, canDelete) {
@@ -1043,83 +1182,93 @@ button:active{transform:scale(0.95)}
     const ref = App.privateChatWith ? (()=>{const u=[App.user.uid,App.privateChatWith].sort();return DB.ref('privateChats/'+u[0]+'_'+u[1]);})() : DB.ref('chat');
     App.chatListener = ref.limitToLast(50);
     App.chatListener.on('value', snap => {
-      App.messagesCache = {};
-      const msgs=[]; snap.forEach(c=>{if(c.val())msgs.push({key:c.key,msg:c.val()});});
-      msgs.sort((a,b)=>a.msg.timestamp-b.msg.timestamp);
-      let html='',group=[];
-      const renderContent = (m) => {
-        let c = ''; if(m.text)c+=esc(m.text);
-        if(m.photo)c+=`<br><img class="chat-img" src="${esc(m.thumb||m.photo)}" onclick="event.stopPropagation();window.open('${esc(m.photo)}','_blank')">`;
-        if(m.sticker)c+=`<img class="chat-sticker" src="${esc(m.sticker)}">`;
-        if(m.photos?.length){c+='<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;">';m.photos.forEach(p=>{const tb=typeof p==='object'?esc(p.thumb):esc(p),fl=typeof p==='object'?esc(p.full):esc(p);c+=`<img class="chat-img" src="${tb}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;cursor:pointer;" onclick="event.stopPropagation();window.open('${fl}','_blank')">`;});c+='</div>';}
-        return c;
-      };
-      
-      const renderGroup = (g) => {
-        const f=g[0], isMine=f.isMine, isC=f.m.user?.startsWith('🌌'), isG=f.m.user?.startsWith('👑');
-        const un = cleanName(f.userName);
-        
-        let auid = f.m.uid || null;
-        
-        // Умный поиск UID для старых сообщений, у которых его не было
-        if (!auid) {
-          if(isMine) auid = App.user.uid;
-          else { 
-            for(const uid in App.allUserData){ 
-                if(cleanName(App.allUserData[uid].name).toLowerCase() === un.toLowerCase()){ 
-                    auid=uid; break; 
-                } 
-            } 
-          }
-        }
-        
-        const safeUid = auid ? esc(auid) : '';
-        const uData = auid ? App.allUserData[auid] : null;
-        let avaImg = (auid === App.user.uid) ? App.user.avatar : (uData ? uData.avatar : null);
-        if (typeof avaImg === 'string' && avaImg.trim() === '') avaImg = null;
-
-        const firstLetter = Array.from(un)[0] ? Array.from(un)[0].toUpperCase() : '?';
-        const errorFallback = `this.onerror=null; this.outerHTML='<div class=\\'chat-static-avatar text-ava\\' onclick=\\'event.stopPropagation();window.openAvatarPreview(\\&quot;${safeUid}\\&quot;, \\&quot;${esc(un)}\\&quot;)\\'>${esc(firstLetter)}</div>'`;
-
-        // Аватар выводится в хорошем качестве из переменной base64, если она доступна
-        const safeAvaImg = avaImg ? avaImg.replace(/"/g, '&quot;') : null;
-        const avaHtml = (safeAvaImg)
-            ? `<img src="${safeAvaImg}" class="chat-static-avatar" onerror="${errorFallback}" onclick="event.stopPropagation();window.openAvatarPreview('${safeUid}','${esc(un)}')">`
-            : `<div class="chat-static-avatar text-ava" onclick="event.stopPropagation();window.openAvatarPreview('${safeUid}','${esc(un)}')">${esc(firstLetter)}</div>`;
-        
-        const ns=(isC||isG)?'background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;':'';
-        let h=`<div class="chat-bubble-group ${isMine?'mine':'other'}"><div class="msg-author" style="${isMine?'flex-direction:row-reverse;':''}">${avaHtml}<span style="${ns}">${esc(un)}</span></div>`;
-        
-        g.forEach(g2=>{
-          const m=g2.m;
-          let cls='chat-bubble clickable';
-          if(isMine)cls+=' mine';else if(isC)cls+=' creator';else if(isG)cls+=' god';
-          
-          const canDelete = isMine || App.isCreator || (App.isGod && !isC);
-          const canPin = App.isCreator || App.isGod;
-          
-          const clickAttr = (canDelete || canPin) ? `onclick="window.openMsgActions('${esc(g2.item.key)}', ${canPin}, ${canDelete})"` : '';
-          h+=`<div class="${cls}" ${clickAttr}>${renderContent(m)}</div>`;
-        });
-        h+='</div>'; return h;
-      };
-      
-      for(let i=0;i<msgs.length;i++){
-        const it=msgs[i],m=it.msg;
-        const un=cleanName(m.user);
-        App.messagesCache[it.key] = m;
-        const isM = m.uid ? m.uid === App.user.uid : (App.user&&(m.user==='🌌 '+App.user.name||m.user==='👑 '+App.user.name||m.user===App.user.name));
-        
-        if(group.length===0||cleanName(group[0].userName)!==un||group[0].isMine!==isM){
-          if(group.length)html+=renderGroup(group);
-          group=[{item:it,userName:m.user,isMine:isM,m}];
-        } else group.push({item:it,userName:m.user,isMine:isM,m});
-      }
-      if(group.length)html+=renderGroup(group);
-      const ce=$('#chat'),was=ce.scrollHeight-ce.scrollTop-ce.clientHeight<60;
-      ce.innerHTML=html;
-      if(was||document.activeElement===$('#chatMsgInput'))ce.scrollTop=ce.scrollHeight;
+      window.chatSnapCache = snap;
+      renderChatMessages();
     });
+  }
+
+  function renderChatMessages() {
+    const snap = window.chatSnapCache;
+    if (!snap) return;
+
+    App.messagesCache = {};
+    const msgs=[]; snap.forEach(c=>{if(c.val())msgs.push({key:c.key,msg:c.val()});});
+    msgs.sort((a,b)=>a.msg.timestamp-b.msg.timestamp);
+    let html='',group=[];
+    
+    const renderContent = (m) => {
+      let c = ''; if(m.text)c+=esc(m.text);
+      if(m.photo)c+=`<br><img class="chat-img" src="${esc(m.thumb||m.photo)}" onclick="event.stopPropagation();window.open('${esc(m.photo)}','_blank')">`;
+      if(m.sticker)c+=`<img class="chat-sticker" src="${esc(m.sticker)}">`;
+      if(m.photos?.length){c+='<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;">';m.photos.forEach(p=>{const tb=typeof p==='object'?esc(p.thumb):esc(p),fl=typeof p==='object'?esc(p.full):esc(p);c+=`<img class="chat-img" src="${tb}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;cursor:pointer;" onclick="event.stopPropagation();window.open('${fl}','_blank')">`;});c+='</div>';}
+      return c;
+    };
+    
+    const renderGroup = (g) => {
+      const f=g[0], isMine=f.isMine, isC=f.m.user?.startsWith('🌌'), isG=f.m.user?.startsWith('👑');
+      const un = cleanName(f.userName);
+      
+      let auid = f.m.uid || null;
+      if (!auid) {
+        if(isMine) auid = App.user.uid;
+        else { 
+          for(const uid in App.allUserData){ 
+              if(cleanName(App.allUserData[uid].name).toLowerCase() === un.toLowerCase()){ 
+                  auid=uid; break; 
+              } 
+          } 
+        }
+      }
+      
+      const safeUid = auid ? esc(auid) : '';
+      const uData = auid ? App.allUserData[auid] : null;
+      let avaImg = (auid === App.user.uid) ? App.user.avatar : (uData ? uData.avatar : null);
+      if (typeof avaImg === 'string' && avaImg.trim() === '') avaImg = null;
+
+      const firstLetter = Array.from(un)[0] ? Array.from(un)[0].toUpperCase() : '?';
+      
+      const safeAvaImg = avaImg ? avaImg.replace(/"/g, '&quot;') : null;
+      const cleanUnForJs = un.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+      
+      const errorFallback = `this.onerror=null; this.outerHTML='<div class=\\'chat-static-avatar text-ava\\' onclick=\\'event.stopPropagation();window.openAvatarPreview(&quot;${safeUid}&quot;, &quot;${cleanUnForJs}&quot;)\\'>${esc(firstLetter)}</div>'`;
+
+      const avaHtml = (safeAvaImg)
+          ? `<img src="${safeAvaImg}" class="chat-static-avatar" onerror="${errorFallback}" onclick="event.stopPropagation();window.openAvatarPreview('${safeUid}','${cleanUnForJs}')">`
+          : `<div class="chat-static-avatar text-ava" onclick="event.stopPropagation();window.openAvatarPreview('${safeUid}','${cleanUnForJs}')">${esc(firstLetter)}</div>`;
+      
+      const ns=(isC||isG)?'background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;':'';
+      let h=`<div class="chat-bubble-group ${isMine?'mine':'other'}"><div class="msg-author" style="${isMine?'flex-direction:row-reverse;':''}">${avaHtml}<span style="${ns}">${esc(un)}</span></div>`;
+      
+      g.forEach(g2=>{
+        const m=g2.m;
+        let cls='chat-bubble clickable';
+        if(isMine)cls+=' mine';else if(isC)cls+=' creator';else if(isG)cls+=' god';
+        const canDelete = isMine || App.isCreator || (App.isGod && !isC);
+        const canPin = App.isCreator || App.isGod;
+        const clickAttr = (canDelete || canPin) ? `onclick="window.openMsgActions('${esc(g2.item.key)}', ${canPin}, ${canDelete})"` : '';
+        h+=`<div class="${cls}" ${clickAttr}>${renderContent(m)}</div>`;
+      });
+      h+='</div>'; return h;
+    };
+    
+    for(let i=0;i<msgs.length;i++){
+      const it=msgs[i],m=it.msg;
+      const un=cleanName(m.user);
+      App.messagesCache[it.key] = m;
+      const isM = m.uid ? m.uid === App.user.uid : (App.user&&(m.user==='🌌 '+App.user.name||m.user==='👑 '+App.user.name||m.user===App.user.name));
+      
+      if(group.length===0||cleanName(group[0].userName)!==un||group[0].isMine!==isM){
+        if(group.length)html+=renderGroup(group);
+        group=[{item:it,userName:m.user,isMine:isM,m}];
+      } else group.push({item:it,userName:m.user,isMine:isM,m});
+    }
+    if(group.length)html+=renderGroup(group);
+    
+    const ce=$('#chat');
+    if(!ce) return;
+    const was=ce.scrollHeight-ce.scrollTop-ce.clientHeight<60;
+    ce.innerHTML=html;
+    if(was||document.activeElement===$('#chatMsgInput'))ce.scrollTop=ce.scrollHeight;
   }
   
   function sendMessage() {
@@ -1243,40 +1392,41 @@ button:active{transform:scale(0.95)}
 
   // ============ AVATAR SETTINGS ============
   function loadAvatarSettings(){DB.ref('users/'+App.user.uid+'/avatarSettings').once('value').then(s=>{if(s.exists())Object.assign(App.avatarSettings,s.val());if(!App.avatarAnimId)updateAllFrames();});}
-  function buildAnimationGrid(){const g=$('#animationGrid');if(!g)return;let h='';ANIMATIONS.forEach(a=>{const ia=App.avatarSettings.style===a.id,cu=!a.premium||App.isCreator||App.isGod;h+=`<button class="style-btn ${ia?'active':''} ${a.premium?'premium':''}" data-style="${a.id}" ${!cu?'disabled':''}>${a.label}${a.premium?' 👑':''}</button>`;});g.innerHTML=h;g.querySelectorAll('.style-btn').forEach(b=>b.addEventListener('click',function(){if(this.disabled)return;App.avatarSettings.style=this.dataset.style;g.querySelectorAll('.style-btn').forEach(x=>x.classList.remove('active'));this.classList.add('active');}));}
+  function buildAnimationGrid() {
+    const g=$('#animationGrid');if(!g)return;let h='';
+    ANIMATIONS.forEach(a=>{
+      const ia=App.avatarSettings.style===a.id;
+      const cu=!a.premium || App.isCreator || App.isGod;
+      h+=`<button class="style-btn ${ia?'active':''} ${a.premium?'premium':''}" data-style="${a.id}" ${!cu?'disabled':''}>${a.label}${a.premium?' 👑':''}</button>`;
+    });
+    g.innerHTML=h;
+    g.querySelectorAll('.style-btn').forEach(b=>b.addEventListener('click',function(){
+      if(this.disabled) return;
+      App.avatarSettings.style=this.dataset.style;
+      g.querySelectorAll('.style-btn').forEach(x=>x.classList.remove('active'));
+      this.classList.add('active');
+    }));
+  }
 
   // ============ SETTINGS ============
   function openSettings(){$('#mainContent').style.display='none';$('#avatarCarousel').style.display='none';$('#settingsPanel').style.display='flex';$('#setName').value='';loadPunktsForSettings();updateSettingsUI();buildAnimationGrid();}
   function closeSettings(){$('#settingsPanel').style.display='none';$('#mainContent').style.display='flex';$('#avatarCarousel').style.display='flex';}
   function loadPunktsForSettings(){DB.ref('punkts').once('value').then(s=>{const sel=$('#setPunkt');sel.innerHTML='<option value="">Не менять</option>';s.forEach(c=>{sel.innerHTML+=`<option value="${esc(c.key)}">${esc(c.key)}</option>`;});});}
   function updateSettingsUI(){const ha=App.isCreator||App.isGod;document.getElementById('avatarAdvanced').style.display=ha?'block':'none';document.getElementById('avatarSimple').style.display=ha?'none':'block';document.getElementById('punktSettingsRow').style.display=App.isGod?'none':'block';$('#setSpeed').value=App.avatarSettings.speed;$('#setSpeedVal').textContent=App.avatarSettings.speed+'x';$('#setGlow').value=App.avatarSettings.glow;$('#setGlowVal').textContent=App.avatarSettings.glow+'px';$('#setColor1').value=App.avatarSettings.color1;$('#setColor2').value=App.avatarSettings.color2;$('#setRingColor').value=App.avatarSettings.ringColor;$('#setRingThickness').value=App.avatarSettings.ringThickness;}
+  
   function saveSettings(){const nn=$('#setName').value.trim(),np=$('#setPunkt').value,up={};if(nn)up.name=nn;if(np&&!App.isGod)up.punkt=np;if(Object.keys(up).length){DB.ref('users/'+App.user.uid).update(up).then(()=>{if(nn)App.user.name=nn;if(np&&!App.isGod)App.user.punkt=np;updateUI();toast('Настройки сохранены');});}closeSettings();}
   
+  // ФИКС КАЧЕСТВА: Мы больше не пересжимаем изображение каждый раз при сохранении рамки,
+  // берем его прямо из памяти и сохраняем, как есть
   function saveAvatar(){
     const s={style:App.avatarSettings.style,speed:App.avatarSettings.speed,glow:App.avatarSettings.glow,color1:App.avatarSettings.color1,color2:App.avatarSettings.color2,ringColor:App.avatarSettings.ringColor,ringThickness:App.avatarSettings.ringThickness};
-    const pi=getCachedImage(App.user.avatar);
-    if(pi&&pi!=='loading'){
-      const c = document.createElement('canvas');
-      // Повышено качество рендеринга до 1024x1024, чтобы аватар не размывался
-      c.width = 1024; 
-      c.height = 1024;
-      const ctx = c.getContext('2d');
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
-      
-      const ratio = Math.max(1024/pi.width, 1024/pi.height);
-      const dw = pi.width * ratio, dh = pi.height * ratio;
-      ctx.drawImage(pi, (1024 - dw) / 2, (1024 - dh) / 2, dw, dh);
-      s.photo = c.toDataURL('image/jpeg', 0.95);
-    }
     const up={avatarSettings:s};
-    if(s.photo)up.avatar=s.photo;
+    
+    if(App.user.avatar) {
+        up.avatar = App.user.avatar;
+    }
+    
     DB.ref('users/'+App.user.uid).update(up).then(()=>{
-      if(s.photo) {
-        App.user.avatar=s.photo;
-        // Очищаем кэш изображения, чтобы мгновенно подгрузить новую чёткую версию
-        delete imageCache[s.photo];
-      }
       App.avatarSettings=s;
       toast('Аватар сохранён');
       closeSettings();
@@ -1305,12 +1455,15 @@ button:active{transform:scale(0.95)}
       s.forEach(c=>{
         const u = c.val();
         App.allUserData[c.key]=u;
-        // Если прилетели обновленные данные о пользователе, сбрасываем кэш старой аватарки для плавной перерисовки
         if(u.avatar && imageCache[u.avatar] === 'loading') {
           delete imageCache[u.avatar];
         }
       });
       buildCarousel();
+      // ФИКС: При загрузке пользователей перерисовываем чат, чтобы появились их аватарки
+      if(window.chatSnapCache) {
+          renderChatMessages();
+      }
     });
     attachDbListener(DB.ref('activeShifts'),'value',s=>{App.activeShifts={};s.forEach(c=>{if(c.val()&&c.val().active)App.activeShifts[c.key]=true;});buildCarousel();});
     attachDbListener(DB.ref('presence'),'value',s=>{App.presenceData={};s.forEach(c=>{App.presenceData[c.key]=c.val();});buildCarousel();});
@@ -1330,7 +1483,6 @@ button:active{transform:scale(0.95)}
     $('#sidebarToggleBtn').addEventListener('click',toggleSidebar);$('#sidebarCloseBtn').addEventListener('click',()=>$('#avatarCarousel').classList.remove('open'));
     $('#mpCloseBtn').addEventListener('click',closeMiniProfile);$('#mpChatBtn').addEventListener('click',openPrivateChat);
     
-    // Сброс скролла при скрытии клавиатуры на iOS
     document.addEventListener('focusout', (e) => {
         if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
             setTimeout(() => { window.scrollTo(0, 0); document.body.scrollTop = 0; }, 50);
@@ -1349,7 +1501,7 @@ button:active{transform:scale(0.95)}
     $('#settingsSaveBtn').addEventListener('click',saveSettings);$('#settingsLogoutBtn').addEventListener('click',()=>{closeSettings();logout();});
     $('#avatarCloseBtn').addEventListener('click',closeSettings);$('#avatarSaveBtn').addEventListener('click',saveAvatar);
     
-    // При выборе файла сжимаем изображение на клиенте до чётких 1024х1024 пикселей без потерь перед сохранением
+    // ОПТИМИЗАЦИЯ ФОТО ПРИ ЗАГРУЗКЕ. Размер: 600px вместо 1024px. Качество: 0.85
     $('#setAvatarFile').addEventListener('change',e=>{
       const f=e.target.files[0];
       if(!f)return;
@@ -1358,17 +1510,18 @@ button:active{transform:scale(0.95)}
         const tempImg = new Image();
         tempImg.onload = function() {
           const c = document.createElement('canvas');
-          c.width = 1024;
-          c.height = 1024;
+          const MAX_SIZE = 600;
+          c.width = MAX_SIZE;
+          c.height = MAX_SIZE;
           const ctx = c.getContext('2d');
           ctx.imageSmoothingEnabled = true;
           ctx.imageSmoothingQuality = 'high';
           
-          const ratio = Math.max(1024/tempImg.width, 1024/tempImg.height);
+          const ratio = Math.max(MAX_SIZE/tempImg.width, MAX_SIZE/tempImg.height);
           const dw = tempImg.width * ratio, dh = tempImg.height * ratio;
-          ctx.drawImage(tempImg, (1024 - dw) / 2, (1024 - dh) / 2, dw, dh);
+          ctx.drawImage(tempImg, (MAX_SIZE - dw) / 2, (MAX_SIZE - dh) / 2, dw, dh);
           
-          App.user.avatar = c.toDataURL('image/jpeg', 0.95);
+          App.user.avatar = c.toDataURL('image/jpeg', 0.85);
           delete imageCache[App.user.avatar];
           toast('Фото загружено и оптимизировано! Нажмите «Сохранить аватар».');
         };
