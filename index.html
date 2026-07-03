@@ -391,7 +391,7 @@ button:active{transform:scale(0.95)}
   function getCachedImage(url, cb) {
     if(!url) return null;
     if(imageCache[url] === 'loading') return null;
-    if(imageCache[url]) return imageCache[url];
+    if(imageCache[url] && imageCache[url] !== 'loading') return imageCache[url];
     imageCache[url] = 'loading';
     const img = new Image();
     img.onload = () => { imageCache[url] = img; if(cb) cb(); };
@@ -432,18 +432,31 @@ button:active{transform:scale(0.95)}
     if(App.chatListener) { App.chatListener.off(); App.chatListener = null; }
   }
 
-  // ============ AVATAR RENDER ENGINE ============
+  // ============ AVATAR RENDER ENGINE (HiDPI / Retina-Ready) ============
   function renderPremiumAvatar(canvas, settings, avatarImg, fallbackName) {
     if(!canvas) return;
     const ctx = canvas.getContext('2d');
     
-    // Включаем сглаживание для старых/мелких аватарок
+    // Адаптивное масштабирование под плотность пикселей экрана (Retina / HiDPI)
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    const displayW = rect.width || canvas.width;
+    const displayH = rect.height || canvas.height;
+    
+    // Задаем физический размер буфера рисования в соответствии с DPR
+    if (canvas.width !== displayW * dpr || canvas.height !== displayH * dpr) {
+      canvas.width = displayW * dpr;
+      canvas.height = displayH * dpr;
+    }
+    
+    // Включаем максимальное сглаживание
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
     
     const trueW = canvas.width, trueH = canvas.height;
     const baseSize = 300, w = baseSize, h = baseSize, cx = w/2, cy = h/2;
     const avatarRadius = 82, fRadius = avatarRadius + 4;
+    
     if(!avatarTimers.has(canvas)) avatarTimers.set(canvas, {tick:0, pulse:1, dir:1, particles:[]});
     const state = avatarTimers.get(canvas);
     const speed = parseFloat(settings?.speed) || 1;
@@ -451,10 +464,14 @@ button:active{transform:scale(0.95)}
     state.pulse += 0.02 * state.dir * speed;
     if(state.pulse >= 1.2) state.dir = -1;
     if(state.pulse <= 0.8) state.dir = 1;
+    
     ctx.setTransform(1,0,0,1,0,0);
     ctx.clearRect(0,0,trueW,trueH);
     ctx.save();
+    
+    // Масштабируем систему координат под физический размер с учетом DPR
     ctx.scale(trueW/baseSize, trueH/baseSize);
+    
     const color1 = settings?.color1 || '#6366f1', color2 = settings?.color2 || '#a855f7';
     const style = settings?.style || 'rgb-ring';
     const glow = parseInt(settings?.glow) || 20;
@@ -546,7 +563,12 @@ button:active{transform:scale(0.95)}
     drawEffects('back');
     ctx.shadowBlur = 0; ctx.globalAlpha = 1;
     ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, avatarRadius, 0, Math.PI*2); ctx.clip();
-    if(avatarImg && avatarImg !== 'loading') { const ratio = Math.max((avatarRadius*2)/avatarImg.width, (avatarRadius*2)/avatarImg.height); const dw = avatarImg.width*ratio, dh = avatarImg.height*ratio; ctx.drawImage(avatarImg, cx-dw/2, cy-dh/2, dw, dh); }
+    
+    if(avatarImg && avatarImg !== 'loading') { 
+      const ratio = Math.max((avatarRadius*2)/avatarImg.width, (avatarRadius*2)/avatarImg.height); 
+      const dw = avatarImg.width*ratio, dh = avatarImg.height*ratio; 
+      ctx.drawImage(avatarImg, cx-dw/2, cy-dh/2, dw, dh); 
+    }
     else { 
       ctx.fillStyle = '#1e1b4b'; ctx.fill(); ctx.fillStyle = '#6366f1'; ctx.font = `bold ${avatarRadius}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; 
       const fn = cleanName(fallbackName) || '?';
@@ -1059,8 +1081,7 @@ button:active{transform:scale(0.95)}
         const firstLetter = Array.from(un)[0] ? Array.from(un)[0].toUpperCase() : '?';
         const errorFallback = `this.onerror=null; this.outerHTML='<div class=\\'chat-static-avatar text-ava\\' onclick=\\'event.stopPropagation();window.openAvatarPreview(\\&quot;${safeUid}\\&quot;, \\&quot;${esc(un)}\\&quot;)\\'>${esc(firstLetter)}</div>'`;
 
-        // avaImg оставляем сырым (без esc), чтобы не сломать base64. 
-        // Если это base64, то кавычки мы заменяем на &quot; чтобы не сломать HTML-атрибут
+        // Аватар выводится в хорошем качестве из переменной base64, если она доступна
         const safeAvaImg = avaImg ? avaImg.replace(/"/g, '&quot;') : null;
         const avaHtml = (safeAvaImg)
             ? `<img src="${safeAvaImg}" class="chat-static-avatar" onerror="${errorFallback}" onclick="event.stopPropagation();window.openAvatarPreview('${safeUid}','${esc(un)}')">`
@@ -1110,7 +1131,7 @@ button:active{transform:scale(0.95)}
   function sendPhoto() {
     const inp=$('#chatPhotoInput'),files=inp.files;if(!files.length||!App.user)return;
     const photos=[],cnt=Math.min(files.length,5);
-    for(let i=0;i<cnt;i++){(function(f){const r=new FileReader();r.onload=function(e){const img=new Image();img.onload=function(){const c=document.createElement('canvas'),mw=300,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);photos.push({full:e.target.result,thumb:c.toDataURL('image/jpeg',0.6)});if(photos.length===cnt){const ref=App.privateChatWith?(()=>{const u=[App.user.uid,App.privateChatWith].sort();return DB.ref('privateChats/'+u[0]+'_'+u[1]);})():DB.ref('chat');const p=App.isGod?'👑 ':(App.isCreator?'🌌 ':'');ref.push({uid:App.user.uid, user:p+App.user.name,text:`📷 ${cnt} фото`,photos,timestamp:Date.now(),role:App.user.role,likes:{}});}};img.src=e.target.result;};r.readAsDataURL(f);})(files[i]);}
+    for(let i=0;i<cnt;i++){(function(f){const r=new FileReader();r.onload=function(e){const img = new Image();img.onload=function(){const c=document.createElement('canvas'),mw=300,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);photos.push({full:e.target.result,thumb:c.toDataURL('image/jpeg',0.6)});if(photos.length===cnt){const ref=App.privateChatWith?(()=>{const u=[App.user.uid,App.privateChatWith].sort();return DB.ref('privateChats/'+u[0]+'_'+u[1]);})():DB.ref('chat');const p=App.isGod?'👑 ':(App.isCreator?'🌌 ':'');ref.push({uid:App.user.uid, user:p+App.user.name,text:`📷 ${cnt} фото`,photos,timestamp:Date.now(),role:App.user.role,likes:{}});}};img.src=e.target.result;};r.readAsDataURL(f);})(files[i]);}
     inp.value='';
   }
   function toggleChat() {
@@ -1236,17 +1257,30 @@ button:active{transform:scale(0.95)}
     const pi=getCachedImage(App.user.avatar);
     if(pi&&pi!=='loading'){
       const c = document.createElement('canvas');
-      c.width = 600; 
-      c.height = 600;
+      // Повышено качество рендеринга до 1024x1024, чтобы аватар не размывался
+      c.width = 1024; 
+      c.height = 1024;
       const ctx = c.getContext('2d');
-      const ratio = Math.max(600/pi.width, 600/pi.height);
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      
+      const ratio = Math.max(1024/pi.width, 1024/pi.height);
       const dw = pi.width * ratio, dh = pi.height * ratio;
-      ctx.drawImage(pi, (600 - dw) / 2, (600 - dh) / 2, dw, dh);
+      ctx.drawImage(pi, (1024 - dw) / 2, (1024 - dh) / 2, dw, dh);
       s.photo = c.toDataURL('image/jpeg', 0.95);
     }
     const up={avatarSettings:s};
     if(s.photo)up.avatar=s.photo;
-    DB.ref('users/'+App.user.uid).update(up).then(()=>{if(s.photo)App.user.avatar=s.photo;App.avatarSettings=s;toast('Аватар сохранён');closeSettings();});
+    DB.ref('users/'+App.user.uid).update(up).then(()=>{
+      if(s.photo) {
+        App.user.avatar=s.photo;
+        // Очищаем кэш изображения, чтобы мгновенно подгрузить новую чёткую версию
+        delete imageCache[s.photo];
+      }
+      App.avatarSettings=s;
+      toast('Аватар сохранён');
+      closeSettings();
+    });
   }
 
   // ============ PINNED & ANNOUNCE ============
@@ -1266,7 +1300,18 @@ button:active{transform:scale(0.95)}
 
   // ============ DB LISTENERS ============
   function setupDatabaseListeners(){
-    attachDbListener(DB.ref('users'),'value',s=>{App.allUserData={};s.forEach(c=>{App.allUserData[c.key]=c.val();});buildCarousel();});
+    attachDbListener(DB.ref('users'),'value',s=>{
+      App.allUserData={};
+      s.forEach(c=>{
+        const u = c.val();
+        App.allUserData[c.key]=u;
+        // Если прилетели обновленные данные о пользователе, сбрасываем кэш старой аватарки для плавной перерисовки
+        if(u.avatar && imageCache[u.avatar] === 'loading') {
+          delete imageCache[u.avatar];
+        }
+      });
+      buildCarousel();
+    });
     attachDbListener(DB.ref('activeShifts'),'value',s=>{App.activeShifts={};s.forEach(c=>{if(c.val()&&c.val().active)App.activeShifts[c.key]=true;});buildCarousel();});
     attachDbListener(DB.ref('presence'),'value',s=>{App.presenceData={};s.forEach(c=>{App.presenceData[c.key]=c.val();});buildCarousel();});
     attachDbListener(DB.ref('chat').limitToLast(1),'child_added',s=>{if(App.chatOpened)return;const m=s.val();if(!m||!App.user)return;if(m.timestamp<=App.lastChatTimestamp)return;const isM = m.uid ? m.uid === App.user.uid : (App.user && (m.user==='🌌 '+App.user.name||m.user==='👑 '+App.user.name||m.user===App.user.name));if(isM)return;if(App.notifiedKeys[s.key])return;App.notifiedKeys[s.key]=true;App.lastChatTimestamp=Math.max(App.lastChatTimestamp,m.timestamp||0);App.unreadCount++;updateBadge();});
@@ -1303,7 +1348,35 @@ button:active{transform:scale(0.95)}
     $('#settingsBtn').addEventListener('click',openSettings);$('#settingsCloseBtn').addEventListener('click',closeSettings);
     $('#settingsSaveBtn').addEventListener('click',saveSettings);$('#settingsLogoutBtn').addEventListener('click',()=>{closeSettings();logout();});
     $('#avatarCloseBtn').addEventListener('click',closeSettings);$('#avatarSaveBtn').addEventListener('click',saveAvatar);
-    $('#setAvatarFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{App.user.avatar=ev.target.result;toast('Фото загружено (не забудьте нажать Сохранить)');};r.readAsDataURL(f);});
+    
+    // При выборе файла сжимаем изображение на клиенте до чётких 1024х1024 пикселей без потерь перед сохранением
+    $('#setAvatarFile').addEventListener('change',e=>{
+      const f=e.target.files[0];
+      if(!f)return;
+      const r=new FileReader();
+      r.onload=ev=>{
+        const tempImg = new Image();
+        tempImg.onload = function() {
+          const c = document.createElement('canvas');
+          c.width = 1024;
+          c.height = 1024;
+          const ctx = c.getContext('2d');
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          
+          const ratio = Math.max(1024/tempImg.width, 1024/tempImg.height);
+          const dw = tempImg.width * ratio, dh = tempImg.height * ratio;
+          ctx.drawImage(tempImg, (1024 - dw) / 2, (1024 - dh) / 2, dw, dh);
+          
+          App.user.avatar = c.toDataURL('image/jpeg', 0.95);
+          delete imageCache[App.user.avatar];
+          toast('Фото загружено и оптимизировано! Нажмите «Сохранить аватар».');
+        };
+        tempImg.src = ev.target.result;
+      };
+      r.readAsDataURL(f);
+    });
+    
     document.querySelectorAll('.settings-tab').forEach(b=>b.addEventListener('click',function(){const tab=this.dataset.tab;document.querySelectorAll('.settings-tab').forEach(x=>{x.classList.remove('active');x.style.background='transparent';x.style.color='var(--muted)';});this.classList.add('active');this.style.background='var(--accent)';this.style.color='#fff';$('#stab-main').style.display=tab==='main'?'flex':'none';$('#stab-avatar').style.display=tab==='avatar'?'flex':'none';}));
     $('#setSpeed').addEventListener('input',function(){App.avatarSettings.speed=parseFloat(this.value);$('#setSpeedVal').textContent=App.avatarSettings.speed+'x';});
     $('#setGlow').addEventListener('input',function(){App.avatarSettings.glow=parseInt(this.value);$('#setGlowVal').textContent=App.avatarSettings.glow+'px';});
