@@ -6,7 +6,6 @@
 <title>Ozon Hub</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-/* Жесткая фиксация для iOS Safari, чтобы интерфейс не уезжал из-за клавиатуры */
 html,body{overflow:hidden;height:100%;width:100%;position:fixed;top:0;left:0;background:#0a0a1a}
 body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;color:#eee;font-size:16px;display:flex;flex-direction:column}
 :root{--accent:#7c3aed;--accent2:#a855f7;--gold:#f5c518;--bg2:rgba(20,20,50,0.85);--bg3:rgba(30,30,60,0.7);--border:rgba(100,80,220,0.25);--text:#e8e8ff;--muted:#888;--green:#22c55e;--red:#ef4444}
@@ -52,9 +51,11 @@ button:active{transform:scale(0.95)}
 .chat-bubble-group{display:flex;flex-direction:column;max-width:85%;position:relative;margin:2px 0}
 .chat-bubble-group.mine{align-self:flex-end;align-items:flex-end}
 .chat-bubble-group.other{align-self:flex-start;align-items:flex-start}
-.chat-bubble-group .msg-author{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:2px;display:flex;align-items:center;gap:6px;padding:0 4px}
-.chat-static-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;cursor:pointer;flex-shrink:0;border:1px solid rgba(255,255,255,0.1);background:var(--bg3)}
-.text-ava{display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.15);font-weight:bold;font-size:12px;color:#fff}
+/* Увеличен размер шрифта для автора, чтобы сочеталось с большой аватаркой */
+.chat-bubble-group .msg-author{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;display:flex;align-items:center;gap:8px;padding:0 4px}
+/* УВЕЛИЧЕННЫЕ АВАТАРКИ В ЧАТЕ: 38x38px */
+.chat-static-avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;cursor:pointer;flex-shrink:0;border:1px solid rgba(255,255,255,0.1);background:var(--bg3)}
+.text-ava{display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.15);font-weight:bold;font-size:16px;color:#fff}
 .chat-bubble{background:rgba(255,255,255,0.04);padding:8px 14px;word-break:break-word;line-height:1.4;font-size:14px;border:1px solid rgba(255,255,255,0.03);position:relative;border-radius:12px;transition:0.1s}
 .chat-bubble.mine{background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.1)}
 .chat-bubble.creator{border-left:2px solid var(--gold);background:rgba(245,197,24,0.06)}
@@ -138,21 +139,14 @@ button:active{transform:scale(0.95)}
 
 @media(max-width:1023px){
   .main-content{flex-direction:column;padding:8px;height:100%;}
-  
   .left-column{flex:0 0 42%; display:flex;flex-direction:column;margin-bottom:4px; transition:0.3s;}
-  /* Когда вкладки свернуты, сайдбар ужимается */
   .main-content.tabs-collapsed .left-column { flex: 0 0 auto; min-height:0; }
-  /* Когда свернут чат, сайдбар на весь экран */
   .main-content.chat-collapsed .left-column { flex:1 1 0%; min-height:0; margin-bottom:0; max-height:none; }
-  
   .right-column{flex:1 1 0%;display:flex;flex-direction:column;min-height:0; transition:0.3s;}
   .main-content.chat-collapsed .right-column { flex:0 0 auto; min-height:auto; }
-  
   #tabContentContainer{flex:1;overflow-y:auto;}
-  
   .chat-input-wrapper{position:relative;width:100%;max-width:100%;z-index:100;flex-shrink:0;}
   .chat-input-bar{border-radius:16px;padding:6px 8px;}
-  
   .mini-profile{right:10px;width:210px}
   .avatar-carousel{width:80px}
   .avatar-item{width:46px;height:46px}
@@ -335,6 +329,405 @@ button:active{transform:scale(0.95)}
 (function() {
   'use strict';
 
+  // =========================================================================
+  // 🎨 БЛОК АНИМАЦИЙ АВАТАРОК (ДОБАВЛЯТЬ НОВЫЕ СЮДА)
+  // =========================================================================
+  
+  // Список анимаций для UI настроек
+  const ANIMATIONS = [
+    { id:'rgb-ring', label:'Кольцо', premium:false },
+    { id:'rgb-rainbow', label:'Радуга 🌈', premium:false },
+    { id:'neon-pulse', label:'Пульс 💓', premium:false },
+    { id:'running-gradient', label:'Градиент 💫', premium:false },
+    
+    { id:'singularity', label:'Сингулярность 🕳️', premium:true }, 
+    { id:'quantum-realm', label:'Квант 🌌', premium:true },       
+    { id:'dragon-aura', label:'Дракон 🐉', premium:true },        
+    { id:'supernova', label:'Сверхновая 💥', premium:true },     
+    { id:'sacred-geometry', label:'Геометрия 💠', premium:true }, 
+    
+    { id:'void-vortex', label:'Черная Дыра 🌌', premium:true },
+    { id:'infinity-shield', label:'Щит 🛡️', premium:true },
+    { id:'cyber-grid', label:'Сканер 🤖', premium:true },
+    { id:'golden-dust', label:'Пыль ✨', premium:true },
+    { id:'aurora', label:'Сияние 🌌', premium:true },
+    { id:'electro-storm', label:'Шторм ⚡', premium:true },
+    { id:'comet', label:'Комета ⭐', premium:true },
+    { id:'double-orbit', label:'Орбита 🪐', premium:true },
+    { id:'matrix', label:'Матрица 🧪', premium:true },
+    { id:'fire', label:'Огонь 🔥', premium:true },
+    { id:'sparks', label:'Искры ⚡', premium:true },
+    { id:'god-rays', label:'Нимб 👼', premium:true },
+  ];
+
+  // Реестр функций отрисовки. Каждая функция принимает объект (opts) со всеми параметрами.
+  // opts = { ctx, cx, cy, fRadius, avatarRadius, state, speed, color1, color2, glow, layer }
+  const EFFECTS_REGISTRY = {
+    'singularity': (opts) => {
+        const { ctx, cx, cy, avatarRadius, state, speed, color1, color2, layer } = opts;
+        if(layer === 'back') {
+            ctx.save(); ctx.translate(cx, cy);
+            ctx.rotate(state.tick * 0.4);
+            const grad = ctx.createRadialGradient(0,0, avatarRadius-5, 0,0, avatarRadius+45);
+            grad.addColorStop(0, '#000');
+            grad.addColorStop(0.2, color1);
+            grad.addColorStop(0.5, color2);
+            grad.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = grad;
+            ctx.scale(1, 0.6);
+            ctx.beginPath(); ctx.arc(0, 0, avatarRadius+50, 0, Math.PI*2); ctx.fill();
+            ctx.restore();
+            ctx.fillStyle = '#000';
+            ctx.beginPath(); ctx.arc(cx, cy, avatarRadius+2, 0, Math.PI*2); ctx.fill();
+        }
+        if(layer === 'front') {
+            ctx.save(); ctx.translate(cx, cy); ctx.rotate(-state.tick * 0.8);
+            ctx.strokeStyle = color1; ctx.lineWidth = 2; ctx.shadowBlur = 15; ctx.shadowColor = color2;
+            for(let i=0; i<3; i++) {
+                ctx.rotate((Math.PI*2)/3);
+                ctx.beginPath();
+                ctx.arc(0, 0, avatarRadius+15, 0, Math.PI/2);
+                ctx.stroke();
+                const pA = state.tick * 2 + i;
+                const pR = avatarRadius + 10 + Math.sin(state.tick*5)*5;
+                ctx.fillStyle = '#fff';
+                ctx.beginPath(); ctx.arc(Math.cos(pA)*pR, Math.sin(pA)*pR, 2, 0, Math.PI*2); ctx.fill();
+            }
+            ctx.restore();
+        }
+    },
+    'quantum-realm': (opts) => {
+        const { ctx, cx, cy, fRadius, state, speed, color1, color2, layer } = opts;
+        if(layer === 'front') {
+            ctx.save(); ctx.translate(cx, cy);
+            ctx.shadowBlur = 10; ctx.shadowColor = color1;
+            ctx.lineWidth = 1.5;
+            const orbits = [
+                { angle: state.tick*0.5, tilt: 0 },
+                { angle: -state.tick*0.6, tilt: Math.PI/3 },
+                { angle: state.tick*0.7, tilt: -Math.PI/3 }
+            ];
+            orbits.forEach((orb, i) => {
+                ctx.save();
+                ctx.rotate(orb.tilt);
+                ctx.scale(1, 0.3);
+                ctx.rotate(orb.angle);
+                ctx.strokeStyle = `rgba(${i%2===0?'0,255,255':'255,100,255'}, 0.4)`;
+                ctx.beginPath(); ctx.arc(0, 0, fRadius+10, 0, Math.PI*2); ctx.stroke();
+                const ex = Math.cos(state.tick*2 + i) * (fRadius+10);
+                const ey = Math.sin(state.tick*2 + i) * (fRadius+10);
+                ctx.fillStyle = i===0 ? color1 : (i===1 ? color2 : '#fff');
+                ctx.beginPath(); ctx.arc(ex, ey, 4, 0, Math.PI*2); ctx.fill();
+                ctx.restore();
+            });
+            ctx.restore();
+        }
+    },
+    'dragon-aura': (opts) => {
+        const { ctx, cx, cy, avatarRadius, state, speed, color1, color2, layer } = opts;
+        if(layer === 'back') {
+            ctx.shadowBlur = 30; ctx.shadowColor = color1;
+            ctx.fillStyle = color1;
+            ctx.beginPath(); ctx.arc(cx, cy, avatarRadius+5, 0, Math.PI*2); ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+        if(layer === 'front') {
+            if(!state.dragonFlames) state.dragonFlames = [];
+            if(state.dragonFlames.length < 40) {
+                const angle = Math.random() * Math.PI*2;
+                state.dragonFlames.push({
+                    angle: angle,
+                    radius: avatarRadius - 5,
+                    vx: Math.cos(angle) * (1 + Math.random()),
+                    vy: Math.sin(angle) * (1 + Math.random()) - 2,
+                    life: 1,
+                    size: 3 + Math.random()*5,
+                    color: Math.random() > 0.5 ? color1 : color2
+                });
+            }
+            ctx.globalCompositeOperation = 'lighter';
+            state.dragonFlames.forEach(p => {
+                p.radius += 0.5 * speed;
+                p.angle += 0.02 * speed;
+                p.life -= 0.02 * speed;
+                const px = cx + Math.cos(p.angle) * p.radius;
+                const py = cy + Math.sin(p.angle) * p.radius + p.vy*5;
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = Math.max(0, p.life);
+                ctx.beginPath(); ctx.arc(px, py, p.size * p.life, 0, Math.PI*2); ctx.fill();
+            });
+            ctx.globalAlpha = 1;
+            ctx.globalCompositeOperation = 'source-over';
+            state.dragonFlames = state.dragonFlames.filter(p => p.life > 0);
+            ctx.strokeStyle = color2; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(cx, cy, avatarRadius+4, 0, Math.PI*2); ctx.stroke();
+        }
+    },
+    'supernova': (opts) => {
+        const { ctx, cx, cy, fRadius, state, speed, color1, color2, glow, layer } = opts;
+        if(layer === 'back') {
+            const pulse = 1 + Math.sin(state.tick*3)*0.1;
+            const grad = ctx.createRadialGradient(cx, cy, fRadius, cx, cy, fRadius+60*pulse);
+            grad.addColorStop(0, color1);
+            grad.addColorStop(0.5, color2);
+            grad.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = grad;
+            ctx.beginPath(); ctx.arc(cx, cy, fRadius+80, 0, Math.PI*2); ctx.fill();
+        }
+        if(layer === 'front') {
+            ctx.save(); ctx.translate(cx, cy);
+            const wave1 = (state.tick * 2) % 40;
+            const wave2 = (state.tick * 2 + 20) % 40;
+            ctx.strokeStyle = color2; ctx.shadowBlur = glow; ctx.shadowColor = color1;
+            ctx.lineWidth = 3 * (1 - wave1/40);
+            ctx.beginPath(); ctx.arc(0, 0, fRadius + wave1, 0, Math.PI*2); ctx.stroke();
+            ctx.lineWidth = 3 * (1 - wave2/40);
+            ctx.beginPath(); ctx.arc(0, 0, fRadius + wave2, 0, Math.PI*2); ctx.stroke();
+            ctx.rotate(state.tick);
+            for(let i=0; i<8; i++) {
+                ctx.rotate(Math.PI/4);
+                ctx.beginPath();
+                ctx.moveTo(fRadius, 0);
+                ctx.lineTo(fRadius + 10 + Math.random()*15, 0);
+                ctx.lineWidth = 2; ctx.strokeStyle = '#fff'; ctx.stroke();
+            }
+            ctx.restore();
+        }
+    },
+    'sacred-geometry': (opts) => {
+        const { ctx, cx, cy, fRadius, state, speed, color1, color2, glow, layer } = opts;
+        if(layer === 'front') {
+            ctx.save(); ctx.translate(cx, cy);
+            ctx.shadowBlur = glow; ctx.shadowColor = color1;
+            const drawPolygon = (sides, radius, rotation, color, width) => {
+                ctx.save(); ctx.rotate(rotation);
+                ctx.strokeStyle = color; ctx.lineWidth = width;
+                ctx.beginPath();
+                for(let i=0; i<=sides; i++) {
+                    const angle = i * (Math.PI*2)/sides;
+                    if(i===0) ctx.moveTo(Math.cos(angle)*radius, Math.sin(angle)*radius);
+                    else ctx.lineTo(Math.cos(angle)*radius, Math.sin(angle)*radius);
+                }
+                ctx.stroke();
+                ctx.fillStyle = '#fff';
+                for(let i=0; i<sides; i++) {
+                    const angle = i * (Math.PI*2)/sides;
+                    ctx.beginPath(); ctx.arc(Math.cos(angle)*radius, Math.sin(angle)*radius, 3, 0, Math.PI*2); ctx.fill();
+                }
+                ctx.restore();
+            };
+            const pulse = Math.sin(state.tick * 2);
+            drawPolygon(3, fRadius + 2 + pulse*2, state.tick * 0.5, color1, 2);
+            drawPolygon(3, fRadius + 2 + pulse*2, state.tick * 0.5 + Math.PI, color2, 2);
+            drawPolygon(6, fRadius + 15, -state.tick * 0.2, 'rgba(255,255,255,0.4)', 1);
+            ctx.restore();
+        }
+    },
+    'void-vortex': (opts) => {
+        const { ctx, cx, cy, avatarRadius, state, speed, color1, color2, layer } = opts;
+        if(layer === 'back') {
+          ctx.save(); ctx.translate(cx, cy); ctx.rotate(-state.tick * 0.5);
+          const grad = ctx.createRadialGradient(0, 0, avatarRadius - 10, 0, 0, avatarRadius + 30);
+          grad.addColorStop(0, '#000000'); grad.addColorStop(0.3, color1); grad.addColorStop(0.7, color2); grad.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(0, 0, avatarRadius + 40, 0, Math.PI*2); ctx.fill();
+          ctx.restore();
+        }
+        if(layer === 'front') {
+          if(!state.vortexParticles) state.vortexParticles = [];
+          if(state.vortexParticles.length < 60) state.vortexParticles.push({ angle: Math.random() * Math.PI * 2, radius: avatarRadius + 40 + Math.random() * 40, speed: 1 + Math.random() * 2, size: 1 + Math.random() * 2, color: Math.random() > 0.5 ? color1 : color2, opacity: Math.random() });
+          ctx.shadowBlur = 10; ctx.shadowColor = color1;
+          state.vortexParticles.forEach(p => {
+            p.radius -= 0.8 * speed; p.angle += 0.03 * speed;
+            if(p.radius < avatarRadius - 20) { p.radius = avatarRadius + 40 + Math.random() * 40; p.angle = Math.random() * Math.PI * 2; }
+            const px = cx + Math.cos(p.angle) * p.radius, py = cy + Math.sin(p.angle) * p.radius;
+            ctx.fillStyle = p.color; ctx.globalAlpha = Math.min(1, (p.radius - (avatarRadius - 20)) / 50);
+            ctx.beginPath(); ctx.arc(px, py, p.size, 0, Math.PI*2); ctx.fill();
+          });
+          ctx.globalAlpha = 1;
+        }
+    },
+    'infinity-shield': (opts) => {
+        const { ctx, cx, cy, fRadius, state, color1, color2, glow, layer } = opts;
+        if(layer === 'front') {
+          ctx.save(); ctx.translate(cx, cy); ctx.shadowBlur = glow; ctx.shadowColor = color1;
+          ctx.strokeStyle = color1; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, fRadius + 8, 0, Math.PI*2); ctx.stroke();
+          ctx.rotate(state.tick * 0.7); ctx.strokeStyle = color2; ctx.lineWidth = 4; ctx.lineCap = 'round';
+          ctx.beginPath(); ctx.arc(0, 0, fRadius + 4, 0, Math.PI * 0.6); ctx.stroke(); ctx.beginPath(); ctx.arc(0, 0, fRadius + 4, Math.PI, Math.PI * 1.6); ctx.stroke();
+          ctx.rotate(-state.tick * 1.5); ctx.strokeStyle = '#00f2ff'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(0, 0, fRadius + 10, 0, Math.PI * 0.4); ctx.stroke(); ctx.beginPath(); ctx.arc(0, 0, fRadius + 10, Math.PI, Math.PI * 1.4); ctx.stroke();
+          ctx.fillStyle = '#ffffff'; ctx.shadowColor = '#ffffff';
+          ctx.beginPath(); ctx.arc(fRadius+4, 0, 4, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(-(fRadius+4), 0, 4, 0, Math.PI*2); ctx.fill();
+          ctx.restore(); ctx.globalAlpha = 1;
+        }
+    },
+    'cyber-grid': (opts) => {
+        const { ctx, cx, cy, avatarRadius, state, color1, layer } = opts;
+        if(layer === 'front') {
+          ctx.save(); ctx.shadowBlur = 0;
+          const scanY = cy - avatarRadius + ((state.tick * 40) % (avatarRadius * 2));
+          ctx.beginPath(); ctx.arc(cx, cy, avatarRadius, 0, Math.PI * 2); ctx.clip();
+          ctx.strokeStyle = 'rgba(0, 242, 255, 0.15)'; ctx.lineWidth = 1;
+          for(let i = cy - avatarRadius; i < cy + avatarRadius; i += 12) { ctx.beginPath(); ctx.moveTo(cx - avatarRadius, i); ctx.lineTo(cx + avatarRadius, i); ctx.stroke(); }
+          const grad = ctx.createLinearGradient(0, scanY - 15, 0, scanY + 15);
+          grad.addColorStop(0, 'rgba(0, 242, 255, 0)'); grad.addColorStop(0.5, color1); grad.addColorStop(1, 'rgba(0, 242, 255, 0)');
+          ctx.fillStyle = grad; ctx.fillRect(cx - avatarRadius, scanY - 15, avatarRadius * 2, 30);
+          ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.shadowBlur = 12; ctx.shadowColor = color1;
+          ctx.beginPath(); ctx.moveTo(cx - avatarRadius, scanY); ctx.lineTo(cx + avatarRadius, scanY); ctx.stroke();
+          ctx.restore();
+        }
+    },
+    'golden-dust': (opts) => {
+        const { ctx, cx, cy, avatarRadius, state, speed, layer } = opts;
+        if(layer === 'back') {
+          const grad = ctx.createRadialGradient(cx, cy, avatarRadius - 10, cx, cy, avatarRadius + 25);
+          grad.addColorStop(0, 'rgba(245, 197, 24, 0.2)'); grad.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(cx, cy, avatarRadius + 30, 0, Math.PI*2); ctx.fill();
+        }
+        if(layer === 'front' || layer === 'back') {
+          if(!state.dustParticles) state.dustParticles = [];
+          if(state.dustParticles.length < 80) state.dustParticles.push({ x: cx - avatarRadius + Math.random() * (avatarRadius * 2), y: cy + avatarRadius - Math.random() * 10, vx: (Math.random() - 0.5) * 0.8, vy: -0.5 - Math.random() * 1.5, life: 1, size: 1 + Math.random() * 3, sparkle: Math.random(), isFront: Math.random() > 0.4 });
+          ctx.shadowBlur = 8; ctx.shadowColor = '#ffd700';
+          state.dustParticles.forEach(p => {
+            if((layer === 'front' && p.isFront) || (layer === 'back' && !p.isFront)) {
+              p.x += p.vx * speed; p.y += p.vy * speed; p.life -= 0.008 * speed; p.sparkle += 0.1;
+              const currentOpacity = Math.max(0, p.life) * (0.5 + Math.sin(p.sparkle) * 0.5);
+              const dist = Math.sqrt(Math.pow(p.x - cx, 2) + Math.pow(p.y - cy, 2));
+              if(p.life <= 0 || dist > avatarRadius + 35) { p.x = cx - avatarRadius + Math.random() * (avatarRadius * 2); p.y = cy + avatarRadius; p.life = 1; p.vy = -0.5 - Math.random() * 1.5; }
+              ctx.fillStyle = `rgba(255, 215, 0, ${currentOpacity})`; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
+            }
+          });
+          ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+        }
+    },
+    'aurora': (opts) => {
+        const { ctx, cx, cy, fRadius, avatarRadius, state, color1, color2, glow, layer } = opts;
+        if(layer === 'back') {
+          ctx.save(); ctx.shadowBlur = 0; ctx.beginPath(); ctx.arc(cx, cy, avatarRadius + 22, 0, Math.PI*2); ctx.clip();
+          for(let i = 0; i < 3; i++) {
+            const shift = state.tick * (0.3 + i * 0.1);
+            const grad = ctx.createLinearGradient(cx - avatarRadius, 0, cx + avatarRadius, 0);
+            grad.addColorStop(0, 'rgba(0,0,0,0)'); grad.addColorStop(0.3, color1); grad.addColorStop(0.7, color2); grad.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = grad; ctx.beginPath(); ctx.moveTo(cx - avatarRadius - 20, cy + avatarRadius + 20);
+            for(let x = cx - avatarRadius - 20; x <= cx + avatarRadius + 20; x += 10) { const y = cy + Math.sin(x * 0.03 + shift) * 15 + (i * 12) - 10; ctx.lineTo(x, y); }
+            ctx.lineTo(cx + avatarRadius + 20, cy + avatarRadius + 20); ctx.closePath(); ctx.globalAlpha = 0.45; ctx.fill();
+          }
+          ctx.restore(); ctx.globalAlpha = 1;
+        }
+        if(layer === 'front') { ctx.strokeStyle = color2; ctx.lineWidth = 3; ctx.shadowBlur = glow; ctx.shadowColor = color2; ctx.beginPath(); ctx.arc(cx, cy, fRadius, 0, Math.PI*2); ctx.stroke(); }
+    },
+    'electro-storm': (opts) => {
+        const { ctx, cx, cy, fRadius, state, speed, color1, color2, glow, layer } = opts;
+        if(layer === 'front') {
+          ctx.save(); ctx.shadowBlur = glow; ctx.shadowColor = color1; ctx.strokeStyle = color2; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, fRadius, 0, Math.PI * 2); ctx.stroke();
+          if (Math.random() > 0.85) {
+            state.lightning = []; const segments = 8, startAngle = Math.random() * Math.PI * 2, endAngle = startAngle + (Math.random() - 0.5) * Math.PI;
+            for(let i = 0; i <= segments; i++) { const progress = i / segments, angle = startAngle + (endAngle - startAngle) * progress, rad = fRadius + (Math.random() - 0.5) * 16; state.lightning.push({ x: cx + Math.cos(angle) * rad, y: cy + Math.sin(angle) * rad }); }
+            state.lightningLife = 5;
+          }
+          if (state.lightning && state.lightning.length > 0 && state.lightningLife > 0) {
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(state.lightning[0].x, state.lightning[0].y);
+            for(let i = 1; i < state.lightning.length; i++) ctx.lineTo(state.lightning[i].x, state.lightning[i].y);
+            ctx.stroke(); state.lightningLife -= 1 * speed;
+          }
+          ctx.restore();
+        }
+    },
+    'rgb-ring': (opts) => {
+        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
+        if(layer==='front') { ctx.strokeStyle=color1; ctx.lineWidth=6; ctx.beginPath(); ctx.arc(cx,cy,fRadius,state.tick%(Math.PI*2),(state.tick%(Math.PI*2))+Math.PI*1.5); ctx.stroke(); ctx.strokeStyle=color2; ctx.beginPath(); ctx.arc(cx,cy,fRadius,(state.tick%(Math.PI*2))+Math.PI,(state.tick%(Math.PI*2))+Math.PI*2); ctx.stroke(); }
+    },
+    'rgb-rainbow': (opts) => {
+        const { ctx, cx, cy, fRadius, state, layer } = opts;
+        if(layer==='front') { for(let i=0;i<12;i++) { const hue=((state.tick*50+i*30)%360); ctx.strokeStyle=`hsl(${hue},100%,60%)`; ctx.lineWidth=4; ctx.beginPath(); ctx.arc(cx,cy,fRadius+Math.sin(state.tick*2+i)*3,i*Math.PI/6,(i+1)*Math.PI/6); ctx.stroke(); } }
+    },
+    'neon-pulse': (opts) => {
+        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
+        if(layer==='front') { const pR=fRadius+Math.sin(state.tick*3)*6; ctx.strokeStyle=color1; ctx.lineWidth=8*state.pulse; ctx.globalAlpha=0.6; ctx.beginPath(); ctx.arc(cx,cy,pR,0,Math.PI*2); ctx.stroke(); ctx.strokeStyle=color2; ctx.lineWidth=4; ctx.globalAlpha=1; ctx.beginPath(); ctx.arc(cx,cy,pR,0,Math.PI*2); ctx.stroke(); }
+    },
+    'running-gradient': (opts) => {
+        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
+        if(layer==='front') { const grad=ctx.createConicGradient(state.tick%(Math.PI*2),cx,cy); grad.addColorStop(0,color1); grad.addColorStop(0.3,'#ffffff'); grad.addColorStop(0.5,color2); grad.addColorStop(0.7,'#ffffff'); grad.addColorStop(1,color1); ctx.strokeStyle=grad; ctx.lineWidth=6; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke(); }
+    },
+    'comet': (opts) => {
+        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
+        if(layer==='front') { for(let i=0;i<3;i++) { const angle=state.tick*2+i*Math.PI*2/3; const tailLen=30; for(let j=tailLen;j>=0;j--) { const tA=angle-j*0.03; const x=cx+Math.cos(tA)*fRadius, y=cy+Math.sin(tA)*fRadius; const size=6*(1-j/tailLen); ctx.fillStyle=j===0?'#fff':color1; ctx.globalAlpha=1-(j/tailLen); ctx.shadowBlur=j===0?20:0; ctx.shadowColor=color2; ctx.beginPath(); ctx.arc(x,y,size,0,Math.PI*2); ctx.fill(); } } ctx.globalAlpha=1; }
+    },
+    'double-orbit': (opts) => {
+        const { ctx, cx, cy, avatarRadius, state, color1, color2, layer } = opts;
+        const oRX = avatarRadius + 38, oRY = avatarRadius * 0.35;
+        const a1 = state.tick, a2 = -state.tick * 1.3, a3 = state.tick * 0.8;
+        const drawOrbit = (rot, col, pAngle, isFront) => {
+          ctx.save(); ctx.translate(cx, cy); ctx.rotate(rot);
+          ctx.beginPath(); ctx.ellipse(0,0,oRX,oRY,0, isFront?0:Math.PI, isFront?Math.PI:Math.PI*2);
+          ctx.strokeStyle = col; ctx.globalAlpha = isFront?0.9:0.2; ctx.lineWidth = isFront?3:1.5; ctx.stroke();
+          const nA = ((pAngle%(Math.PI*2))+Math.PI*2)%(Math.PI*2); const pFront = nA < Math.PI;
+          if((isFront && pFront) || (!isFront && !pFront)) {
+            let px = Math.cos(nA)*oRX, py = Math.sin(nA)*oRY;
+            ctx.fillStyle = col; ctx.shadowColor = col; ctx.shadowBlur = 15; ctx.globalAlpha = 1;
+            ctx.beginPath(); ctx.arc(px, py, 6, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#fff'; ctx.shadowBlur = 0; ctx.beginPath(); ctx.arc(px, py, 2.5, 0, Math.PI*2); ctx.fill();
+          }
+          ctx.restore();
+        };
+        if(layer === 'back') { drawOrbit(0,color1,a1,false); drawOrbit(Math.PI/3,color2,a2,false); drawOrbit(-Math.PI/3,'#00d4ff',a3,false); }
+        else { drawOrbit(0,color1,a1,true); drawOrbit(Math.PI/3,color2,a2,true); drawOrbit(-Math.PI/3,'#00d4ff',a3,true); }
+    },
+    'matrix': (opts) => {
+        const { ctx, cx, cy, fRadius, avatarRadius, state, speed, layer } = opts;
+        if(layer === 'back') { ctx.strokeStyle='#00ff41'; ctx.lineWidth=4; ctx.shadowBlur=15; ctx.shadowColor='#00ff41'; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke(); }
+        if(layer === 'front') {
+          if(!state.matrixRain) { state.matrixRain = []; for(let i=0;i<30;i++) state.matrixRain.push({x:cx-avatarRadius+Math.random()*avatarRadius*2, y:cy-avatarRadius-Math.random()*200, speed:1.5+Math.random()*2, char:Math.floor(Math.random()*10).toString()}); }
+          ctx.font = 'bold 16px monospace'; ctx.textAlign = 'center'; ctx.shadowBlur = 8; ctx.shadowColor = '#00ff41';
+          state.matrixRain.forEach(p => {
+            p.y += p.speed * speed; if(Math.random()>0.9) p.char = Math.floor(Math.random()*10).toString();
+            if(p.y > cy+avatarRadius+20) { p.y = cy-avatarRadius-50-Math.random()*100; p.x = cx-avatarRadius+Math.random()*avatarRadius*2; }
+            const dist = Math.sqrt(Math.pow(p.x-cx,2)+Math.pow(p.y-cy,2));
+            ctx.fillStyle = dist < avatarRadius ? '#ffffff' : '#00ff41';
+            ctx.globalAlpha = Math.max(0, 1-(dist-avatarRadius)/30);
+            if(ctx.globalAlpha>0) ctx.fillText(p.char, p.x, p.y);
+          });
+          ctx.globalAlpha = 1;
+        }
+    },
+    'fire': (opts) => {
+        const { ctx, cx, cy, fRadius, avatarRadius, state, speed, layer } = opts;
+        if(layer === 'back') { ctx.shadowBlur=20; ctx.shadowColor='#ff3300'; ctx.strokeStyle='#ff3300'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke(); ctx.shadowBlur=0; }
+        if(layer === 'front' || layer === 'back') {
+          if(!state.fireParticles) state.fireParticles = [];
+          if(state.fireParticles.length < 150) { const sA = Math.random()*Math.PI*2; state.fireParticles.push({x:cx+Math.cos(sA)*avatarRadius, y:cy+Math.sin(sA)*avatarRadius, vx:(Math.random()-0.5)*1.5, vy:-Math.random()*3-1, life:1, maxLife:1, size:15+Math.random()*15, color:Math.random()>0.5?'#ff3300':(Math.random()>0.5?'#ff7700':'#ffcc00'), isFront:Math.random()>0.5}); }
+          ctx.globalCompositeOperation = 'lighter';
+          state.fireParticles.forEach(p => { if((layer==='front'&&p.isFront)||(layer==='back'&&!p.isFront)) { p.x+=p.vx+Math.sin(p.life*10)*0.5; p.y+=p.vy; p.life-=0.02*speed; const sc = p.life/p.maxLife; ctx.fillStyle=p.color; ctx.globalAlpha=Math.max(0,p.life); ctx.beginPath(); ctx.arc(p.x,p.y,Math.max(0.1,p.size*sc),0,Math.PI*2); ctx.fill(); } });
+          ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+          if(layer==='front') state.fireParticles = state.fireParticles.filter(p => p.life>0);
+        }
+    },
+    'sparks': (opts) => {
+        const { ctx, cx, cy, avatarRadius, state, color1, color2, layer } = opts;
+        if(layer === 'front') {
+          ctx.shadowColor = color1;
+          if(state.particles.length < 50) state.particles.push({angle:Math.random()*Math.PI*2, speed:0.5+Math.random()*2, life:1, size:2+Math.random()*3, distance:avatarRadius+Math.random()*10});
+          state.particles = state.particles.filter(p => p.life>0);
+          state.particles.forEach(p => { p.angle+=p.speed*0.02; p.distance+=p.speed*0.5; p.life-=0.015; const x=cx+Math.cos(p.angle)*p.distance, y=cy+Math.sin(p.angle)*p.distance; ctx.fillStyle=p.life>0.5?color1:color2; ctx.globalAlpha=p.life; ctx.shadowBlur=10; ctx.beginPath(); ctx.arc(x,y,p.size,0,Math.PI*2); ctx.fill(); });
+          ctx.globalAlpha = 1;
+        }
+    },
+    'god-rays': (opts) => {
+        const { ctx, cx, cy, avatarRadius, state, layer } = opts;
+        if(layer === 'back') {
+          ctx.shadowColor = '#ffd700'; ctx.shadowBlur = 20;
+          const drawWing = (isLeft) => {
+            ctx.save(); ctx.translate(cx+(isLeft?-avatarRadius+5:avatarRadius-5), cy); ctx.scale(isLeft?-1:1,1); ctx.rotate(Math.sin(state.tick*2)*0.08);
+            ctx.beginPath(); ctx.moveTo(0,15); ctx.bezierCurveTo(15,-15,30,-35,60,-25); ctx.quadraticCurveTo(50,-10,70,-5); ctx.quadraticCurveTo(55,5,65,15); ctx.quadraticCurveTo(45,15,50,30); ctx.quadraticCurveTo(30,25,30,40); ctx.quadraticCurveTo(15,25,0,15);
+            ctx.fillStyle = 'rgba(255,255,255,0.95)'; ctx.fill(); ctx.strokeStyle = 'rgba(255,215,0,0.6)'; ctx.lineWidth = 1; ctx.stroke();
+            ctx.restore();
+          };
+          drawWing(true); drawWing(false);
+          ctx.beginPath(); const haloY = cy-avatarRadius-15+Math.sin(state.tick*3)*5; ctx.ellipse(cx, haloY, 32, 9, 0, 0, Math.PI*2); ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 4; ctx.stroke(); ctx.shadowBlur = 0;
+        }
+    }
+  };
+  // =========================================================================
+
   // ============ Firebase Init ============
   const firebaseConfig = {
     apiKey: "AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",
@@ -411,28 +804,7 @@ button:active{transform:scale(0.95)}
     activeListeners: [], messagesCache: {}
   };
 
-  // Глобальный кэш для чата, чтобы его можно было перерисовывать асинхронно
   window.chatSnapCache = null;
-
-  const ANIMATIONS = [
-    { id:'rgb-ring', label:'Кольцо', premium:false },
-    { id:'rgb-rainbow', label:'Радуга 🌈', premium:false },
-    { id:'neon-pulse', label:'Пульс 💓', premium:false },
-    { id:'running-gradient', label:'Градиент 💫', premium:false },
-    { id:'comet', label:'Комета ⭐', premium:true },
-    { id:'double-orbit', label:'Орбита 🪐', premium:true },
-    { id:'matrix', label:'Матрица 🧪', premium:true },
-    { id:'fire', label:'Огонь 🔥', premium:true },
-    { id:'sparks', label:'Искры ⚡', premium:true },
-    { id:'god-rays', label:'Нимб 👼', premium:true },
-    { id:'void-vortex', label:'Черная Дыра 🌌', premium:true },
-    { id:'infinity-shield', label:'Щит 🛡️', premium:true },
-    { id:'cyber-grid', label:'Сканер 🤖', premium:true },
-    { id:'golden-dust', label:'Пыль ✨', premium:true },
-    { id:'aurora', label:'Сияние 🌌', premium:true },
-    { id:'electro-storm', label:'Шторм ⚡', premium:true }
-  ];
-  const avatarTimers = new Map();
 
   function attachDbListener(ref, ev, cb) { ref.on(ev, cb); App.activeListeners.push({ref, event:ev, callback:cb}); }
   function clearAllListeners() {
@@ -441,14 +813,11 @@ button:active{transform:scale(0.95)}
     if(App.chatListener) { App.chatListener.off(); App.chatListener = null; }
   }
 
-  // ============ AVATAR RENDER ENGINE (HiDPI / Retina-Ready) ============
+  // ============ AVATAR RENDER ENGINE ============
   function renderPremiumAvatar(canvas, settings, avatarImg, fallbackName) {
     if(!canvas) return;
     const rect = canvas.getBoundingClientRect();
     
-    // ВАЖНЫЙ ФИКС: Если холст спрятан (display: none), его размер будет 0
-    // Если мы попробуем масштабировать размер 0 или брать старые значения, он будет расти до бесконечности
-    // и "поедать" видеопамять, что приводит к ужасному качеству или падению GPU
     if(rect.width === 0 || rect.height === 0) return;
 
     const dpr = window.devicePixelRatio || 1;
@@ -472,10 +841,7 @@ button:active{transform:scale(0.95)}
     const avatarRadius = 82, fRadius = avatarRadius + 4;
     
     if(!avatarTimers.has(canvas)) {
-      avatarTimers.set(canvas, {
-        tick: 0, pulse: 1, dir: 1, 
-        particles: [], lightning: [], vortexParticles: [], dustParticles: []
-      });
+      avatarTimers.set(canvas, { tick: 0, pulse: 1, dir: 1, particles: [] });
     }
     const state = avatarTimers.get(canvas);
     const speed = parseFloat(settings?.speed) || 1;
@@ -487,209 +853,27 @@ button:active{transform:scale(0.95)}
     ctx.setTransform(1,0,0,1,0,0);
     ctx.clearRect(0,0,trueW,trueH);
     ctx.save();
-    
     ctx.scale(trueW/baseSize, trueH/baseSize);
     
     const color1 = settings?.color1 || '#6366f1', color2 = settings?.color2 || '#a855f7';
     const style = settings?.style || 'rgb-ring';
     const glow = parseInt(settings?.glow) || 20;
 
+    // Объект параметров для передачи в эффекты
+    const effectOpts = { ctx, cx, cy, fRadius, avatarRadius, state, speed, color1, color2, glow };
+
     const drawEffects = (layer) => {
       ctx.shadowBlur = layer === 'front' ? glow : 0;
       ctx.shadowColor = color1;
       
-      if(style === 'double-orbit') {
-        const oRX = avatarRadius + 38, oRY = avatarRadius * 0.35;
-        const a1 = state.tick, a2 = -state.tick * 1.3, a3 = state.tick * 0.8;
-        const drawOrbit = (rot, col, pAngle, isFront) => {
-          ctx.save(); ctx.translate(cx, cy); ctx.rotate(rot);
-          ctx.beginPath();
-          ctx.ellipse(0,0,oRX,oRY,0, isFront?0:Math.PI, isFront?Math.PI:Math.PI*2);
-          ctx.strokeStyle = col; ctx.globalAlpha = isFront?0.9:0.2; ctx.lineWidth = isFront?3:1.5; ctx.stroke();
-          const nA = ((pAngle%(Math.PI*2))+Math.PI*2)%(Math.PI*2);
-          const pFront = nA < Math.PI;
-          if((isFront && pFront) || (!isFront && !pFront)) {
-            let px = Math.cos(nA)*oRX, py = Math.sin(nA)*oRY;
-            ctx.fillStyle = col; ctx.shadowColor = col; ctx.shadowBlur = 15; ctx.globalAlpha = 1;
-            ctx.beginPath(); ctx.arc(px, py, 6, 0, Math.PI*2); ctx.fill();
-            ctx.fillStyle = '#fff'; ctx.shadowBlur = 0;
-            ctx.beginPath(); ctx.arc(px, py, 2.5, 0, Math.PI*2); ctx.fill();
-          }
-          ctx.restore();
-        };
-        if(layer === 'back') { drawOrbit(0,color1,a1,false); drawOrbit(Math.PI/3,color2,a2,false); drawOrbit(-Math.PI/3,'#00d4ff',a3,false); }
-        else { drawOrbit(0,color1,a1,true); drawOrbit(Math.PI/3,color2,a2,true); drawOrbit(-Math.PI/3,'#00d4ff',a3,true); }
-      } 
-      else if(style === 'god-rays' && layer === 'back') {
-        ctx.shadowColor = '#ffd700'; ctx.shadowBlur = 20;
-        const drawWing = (isLeft) => {
-          ctx.save(); ctx.translate(cx+(isLeft?-avatarRadius+5:avatarRadius-5), cy); ctx.scale(isLeft?-1:1,1); ctx.rotate(Math.sin(state.tick*2)*0.08);
-          ctx.beginPath(); ctx.moveTo(0,15);
-          ctx.bezierCurveTo(15,-15,30,-35,60,-25);
-          ctx.quadraticCurveTo(50,-10,70,-5); ctx.quadraticCurveTo(55,5,65,15);
-          ctx.quadraticCurveTo(45,15,50,30); ctx.quadraticCurveTo(30,25,30,40);
-          ctx.quadraticCurveTo(15,25,0,15);
-          ctx.fillStyle = 'rgba(255,255,255,0.95)'; ctx.fill();
-          ctx.strokeStyle = 'rgba(255,215,0,0.6)'; ctx.lineWidth = 1; ctx.stroke();
-          ctx.restore();
-        };
-        drawWing(true); drawWing(false);
-        ctx.beginPath(); const haloY = cy-avatarRadius-15+Math.sin(state.tick*3)*5;
-        ctx.ellipse(cx, haloY, 32, 9, 0, 0, Math.PI*2);
-        ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 4; ctx.stroke();
-        ctx.shadowBlur = 0;
-      } 
-      else if(style === 'matrix') {
-        if(layer === 'back') { ctx.strokeStyle='#00ff41'; ctx.lineWidth=4; ctx.shadowBlur=15; ctx.shadowColor='#00ff41'; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke(); }
-        if(layer === 'front') {
-          if(!state.matrixRain) { state.matrixRain = []; for(let i=0;i<30;i++) state.matrixRain.push({x:cx-avatarRadius+Math.random()*avatarRadius*2, y:cy-avatarRadius-Math.random()*200, speed:1.5+Math.random()*2, char:Math.floor(Math.random()*10).toString()}); }
-          ctx.font = 'bold 16px monospace'; ctx.textAlign = 'center'; ctx.shadowBlur = 8; ctx.shadowColor = '#00ff41';
-          state.matrixRain.forEach(p => {
-            p.y += p.speed * speed;
-            if(Math.random()>0.9) p.char = Math.floor(Math.random()*10).toString();
-            if(p.y > cy+avatarRadius+20) { p.y = cy-avatarRadius-50-Math.random()*100; p.x = cx-avatarRadius+Math.random()*avatarRadius*2; }
-            const dist = Math.sqrt(Math.pow(p.x-cx,2)+Math.pow(p.y-cy,2));
-            ctx.fillStyle = dist < avatarRadius ? '#ffffff' : '#00ff41';
-            ctx.globalAlpha = Math.max(0, 1-(dist-avatarRadius)/30);
-            if(ctx.globalAlpha>0) ctx.fillText(p.char, p.x, p.y);
-          });
-          ctx.globalAlpha = 1;
-        }
-      } 
-      else if(style === 'fire') {
-        if(layer === 'back') { ctx.shadowBlur=20; ctx.shadowColor='#ff3300'; ctx.strokeStyle='#ff3300'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke(); ctx.shadowBlur=0; }
-        if(layer === 'front' || layer === 'back') {
-          if(!state.fireParticles) state.fireParticles = [];
-          if(state.fireParticles.length < 150) { const sA = Math.random()*Math.PI*2; state.fireParticles.push({x:cx+Math.cos(sA)*avatarRadius, y:cy+Math.sin(sA)*avatarRadius, vx:(Math.random()-0.5)*1.5, vy:-Math.random()*3-1, life:1, maxLife:1, size:15+Math.random()*15, color:Math.random()>0.5?'#ff3300':(Math.random()>0.5?'#ff7700':'#ffcc00'), isFront:Math.random()>0.5}); }
-          ctx.globalCompositeOperation = 'lighter';
-          state.fireParticles.forEach(p => { if((layer==='front'&&p.isFront)||(layer==='back'&&!p.isFront)) { p.x+=p.vx+Math.sin(p.life*10)*0.5; p.y+=p.vy; p.life-=0.02*speed; const sc = p.life/p.maxLife; ctx.fillStyle=p.color; ctx.globalAlpha=Math.max(0,p.life); ctx.beginPath(); ctx.arc(p.x,p.y,Math.max(0.1,p.size*sc),0,Math.PI*2); ctx.fill(); } });
-          ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
-          if(layer==='front') state.fireParticles = state.fireParticles.filter(p => p.life>0);
-        }
-      } 
-      else if(style === 'sparks' && layer === 'front') {
-        ctx.shadowColor = color1;
-        if(state.particles.length < 50) state.particles.push({angle:Math.random()*Math.PI*2, speed:0.5+Math.random()*2, life:1, size:2+Math.random()*3, distance:avatarRadius+Math.random()*10});
-        state.particles = state.particles.filter(p => p.life>0);
-        state.particles.forEach(p => { p.angle+=p.speed*0.02; p.distance+=p.speed*0.5; p.life-=0.015; const x=cx+Math.cos(p.angle)*p.distance, y=cy+Math.sin(p.angle)*p.distance; ctx.fillStyle=p.life>0.5?color1:color2; ctx.globalAlpha=p.life; ctx.shadowBlur=10; ctx.beginPath(); ctx.arc(x,y,p.size,0,Math.PI*2); ctx.fill(); });
-        ctx.globalAlpha = 1;
-      }
-      else if(style === 'void-vortex') {
-        if(layer === 'back') {
-          ctx.save(); ctx.translate(cx, cy); ctx.rotate(-state.tick * 0.5);
-          const grad = ctx.createRadialGradient(0, 0, avatarRadius - 10, 0, 0, avatarRadius + 30);
-          grad.addColorStop(0, '#000000'); grad.addColorStop(0.3, color1);
-          grad.addColorStop(0.7, color2); grad.addColorStop(1, 'rgba(0,0,0,0)');
-          ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(0, 0, avatarRadius + 40, 0, Math.PI*2); ctx.fill();
-          ctx.restore();
-        }
-        if(layer === 'front') {
-          if(!state.vortexParticles) state.vortexParticles = [];
-          if(state.vortexParticles.length < 60) {
-            state.vortexParticles.push({ angle: Math.random() * Math.PI * 2, radius: avatarRadius + 40 + Math.random() * 40, speed: 1 + Math.random() * 2, size: 1 + Math.random() * 2, color: Math.random() > 0.5 ? color1 : color2, opacity: Math.random() });
-          }
-          ctx.shadowBlur = 10; ctx.shadowColor = color1;
-          state.vortexParticles.forEach(p => {
-            p.radius -= 0.8 * speed; p.angle += 0.03 * speed;
-            if(p.radius < avatarRadius - 20) { p.radius = avatarRadius + 40 + Math.random() * 40; p.angle = Math.random() * Math.PI * 2; }
-            const px = cx + Math.cos(p.angle) * p.radius, py = cy + Math.sin(p.angle) * p.radius;
-            ctx.fillStyle = p.color; ctx.globalAlpha = Math.min(1, (p.radius - (avatarRadius - 20)) / 50);
-            ctx.beginPath(); ctx.arc(px, py, p.size, 0, Math.PI*2); ctx.fill();
-          });
-          ctx.globalAlpha = 1;
-        }
-      }
-      else if(style === 'infinity-shield') {
-        if(layer === 'front') {
-          ctx.save(); ctx.translate(cx, cy); ctx.shadowBlur = glow; ctx.shadowColor = color1;
-          ctx.strokeStyle = color1; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, fRadius + 8, 0, Math.PI*2); ctx.stroke();
-          ctx.rotate(state.tick * 0.7); ctx.strokeStyle = color2; ctx.lineWidth = 4; ctx.lineCap = 'round';
-          ctx.beginPath(); ctx.arc(0, 0, fRadius + 4, 0, Math.PI * 0.6); ctx.stroke();
-          ctx.beginPath(); ctx.arc(0, 0, fRadius + 4, Math.PI, Math.PI * 1.6); ctx.stroke();
-          ctx.rotate(-state.tick * 1.5); ctx.strokeStyle = '#00f2ff'; ctx.lineWidth = 2;
-          ctx.beginPath(); ctx.arc(0, 0, fRadius + 10, 0, Math.PI * 0.4); ctx.stroke();
-          ctx.beginPath(); ctx.arc(0, 0, fRadius + 10, Math.PI, Math.PI * 1.4); ctx.stroke();
-          ctx.fillStyle = '#ffffff'; ctx.shadowColor = '#ffffff';
-          ctx.beginPath(); ctx.arc(fRadius+4, 0, 4, 0, Math.PI*2); ctx.fill();
-          ctx.beginPath(); ctx.arc(-(fRadius+4), 0, 4, 0, Math.PI*2); ctx.fill();
-          ctx.restore(); ctx.globalAlpha = 1;
-        }
-      }
-      else if(style === 'cyber-grid') {
-        if(layer === 'front') {
-          ctx.save(); ctx.shadowBlur = 0;
-          const scanY = cy - avatarRadius + ((state.tick * 40) % (avatarRadius * 2));
-          ctx.beginPath(); ctx.arc(cx, cy, avatarRadius, 0, Math.PI * 2); ctx.clip();
-          ctx.strokeStyle = 'rgba(0, 242, 255, 0.15)'; ctx.lineWidth = 1;
-          for(let i = cy - avatarRadius; i < cy + avatarRadius; i += 12) { ctx.beginPath(); ctx.moveTo(cx - avatarRadius, i); ctx.lineTo(cx + avatarRadius, i); ctx.stroke(); }
-          const grad = ctx.createLinearGradient(0, scanY - 15, 0, scanY + 15);
-          grad.addColorStop(0, 'rgba(0, 242, 255, 0)'); grad.addColorStop(0.5, color1); grad.addColorStop(1, 'rgba(0, 242, 255, 0)');
-          ctx.fillStyle = grad; ctx.fillRect(cx - avatarRadius, scanY - 15, avatarRadius * 2, 30);
-          ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.shadowBlur = 12; ctx.shadowColor = color1;
-          ctx.beginPath(); ctx.moveTo(cx - avatarRadius, scanY); ctx.lineTo(cx + avatarRadius, scanY); ctx.stroke();
-          ctx.restore();
-        }
-      }
-      else if(style === 'golden-dust') {
-        if(layer === 'back') {
-          const grad = ctx.createRadialGradient(cx, cy, avatarRadius - 10, cx, cy, avatarRadius + 25);
-          grad.addColorStop(0, 'rgba(245, 197, 24, 0.2)'); grad.addColorStop(1, 'rgba(0,0,0,0)');
-          ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(cx, cy, avatarRadius + 30, 0, Math.PI*2); ctx.fill();
-        }
-        if(layer === 'front' || layer === 'back') {
-          if(!state.dustParticles) state.dustParticles = [];
-          if(state.dustParticles.length < 80) { state.dustParticles.push({ x: cx - avatarRadius + Math.random() * (avatarRadius * 2), y: cy + avatarRadius - Math.random() * 10, vx: (Math.random() - 0.5) * 0.8, vy: -0.5 - Math.random() * 1.5, life: 1, size: 1 + Math.random() * 3, sparkle: Math.random(), isFront: Math.random() > 0.4 }); }
-          ctx.shadowBlur = 8; ctx.shadowColor = '#ffd700';
-          state.dustParticles.forEach(p => {
-            if((layer === 'front' && p.isFront) || (layer === 'back' && !p.isFront)) {
-              p.x += p.vx * speed; p.y += p.vy * speed; p.life -= 0.008 * speed; p.sparkle += 0.1;
-              const currentOpacity = Math.max(0, p.life) * (0.5 + Math.sin(p.sparkle) * 0.5);
-              const dist = Math.sqrt(Math.pow(p.x - cx, 2) + Math.pow(p.y - cy, 2));
-              if(p.life <= 0 || dist > avatarRadius + 35) { p.x = cx - avatarRadius + Math.random() * (avatarRadius * 2); p.y = cy + avatarRadius; p.life = 1; p.vy = -0.5 - Math.random() * 1.5; }
-              ctx.fillStyle = `rgba(255, 215, 0, ${currentOpacity})`; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
-            }
-          });
-          ctx.shadowBlur = 0; ctx.globalAlpha = 1;
-        }
-      }
-      else if(style === 'aurora') {
-        if(layer === 'back') {
-          ctx.save(); ctx.shadowBlur = 0; ctx.beginPath(); ctx.arc(cx, cy, avatarRadius + 22, 0, Math.PI*2); ctx.clip();
-          for(let i = 0; i < 3; i++) {
-            const shift = state.tick * (0.3 + i * 0.1);
-            const grad = ctx.createLinearGradient(cx - avatarRadius, 0, cx + avatarRadius, 0);
-            grad.addColorStop(0, 'rgba(0,0,0,0)'); grad.addColorStop(0.3, color1); grad.addColorStop(0.7, color2); grad.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = grad; ctx.beginPath(); ctx.moveTo(cx - avatarRadius - 20, cy + avatarRadius + 20);
-            for(let x = cx - avatarRadius - 20; x <= cx + avatarRadius + 20; x += 10) { const y = cy + Math.sin(x * 0.03 + shift) * 15 + (i * 12) - 10; ctx.lineTo(x, y); }
-            ctx.lineTo(cx + avatarRadius + 20, cy + avatarRadius + 20); ctx.closePath(); ctx.globalAlpha = 0.45; ctx.fill();
-          }
-          ctx.restore(); ctx.globalAlpha = 1;
-        }
-        if(layer === 'front') { ctx.strokeStyle = color2; ctx.lineWidth = 3; ctx.shadowBlur = glow; ctx.shadowColor = color2; ctx.beginPath(); ctx.arc(cx, cy, fRadius, 0, Math.PI*2); ctx.stroke(); }
-      }
-      else if(style === 'electro-storm') {
-        if(layer === 'front') {
-          ctx.save(); ctx.shadowBlur = glow; ctx.shadowColor = color1; ctx.strokeStyle = color2; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, fRadius, 0, Math.PI * 2); ctx.stroke();
-          if (Math.random() > 0.85) {
-            state.lightning = []; const segments = 8, startAngle = Math.random() * Math.PI * 2, endAngle = startAngle + (Math.random() - 0.5) * Math.PI;
-            for(let i = 0; i <= segments; i++) { const progress = i / segments, angle = startAngle + (endAngle - startAngle) * progress, rad = fRadius + (Math.random() - 0.5) * 16; state.lightning.push({ x: cx + Math.cos(angle) * rad, y: cy + Math.sin(angle) * rad }); }
-            state.lightningLife = 5;
-          }
-          if (state.lightning && state.lightning.length > 0 && state.lightningLife > 0) {
-            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(state.lightning[0].x, state.lightning[0].y);
-            for(let i = 1; i < state.lightning.length; i++) ctx.lineTo(state.lightning[i].x, state.lightning[i].y);
-            ctx.stroke(); state.lightningLife -= 1 * speed;
-          }
-          ctx.restore();
-        }
-      }
-      else if(layer === 'front') {
-        if(style==='rgb-ring') { ctx.strokeStyle=color1; ctx.lineWidth=6; ctx.beginPath(); ctx.arc(cx,cy,fRadius,state.tick%(Math.PI*2),(state.tick%(Math.PI*2))+Math.PI*1.5); ctx.stroke(); ctx.strokeStyle=color2; ctx.beginPath(); ctx.arc(cx,cy,fRadius,(state.tick%(Math.PI*2))+Math.PI,(state.tick%(Math.PI*2))+Math.PI*2); ctx.stroke(); }
-        else if(style==='rgb-rainbow') { for(let i=0;i<12;i++) { const hue=((state.tick*50+i*30)%360); ctx.strokeStyle=`hsl(${hue},100%,60%)`; ctx.lineWidth=4; ctx.beginPath(); ctx.arc(cx,cy,fRadius+Math.sin(state.tick*2+i)*3,i*Math.PI/6,(i+1)*Math.PI/6); ctx.stroke(); } }
-        else if(style==='neon-pulse') { const pR=fRadius+Math.sin(state.tick*3)*6; ctx.strokeStyle=color1; ctx.lineWidth=8*state.pulse; ctx.globalAlpha=0.6; ctx.beginPath(); ctx.arc(cx,cy,pR,0,Math.PI*2); ctx.stroke(); ctx.strokeStyle=color2; ctx.lineWidth=4; ctx.globalAlpha=1; ctx.beginPath(); ctx.arc(cx,cy,pR,0,Math.PI*2); ctx.stroke(); }
-        else if(style==='running-gradient') { const grad=ctx.createConicGradient(state.tick%(Math.PI*2),cx,cy); grad.addColorStop(0,color1); grad.addColorStop(0.3,'#ffffff'); grad.addColorStop(0.5,color2); grad.addColorStop(0.7,'#ffffff'); grad.addColorStop(1,color1); ctx.strokeStyle=grad; ctx.lineWidth=6; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke(); }
-        else if(style==='comet') { for(let i=0;i<3;i++) { const angle=state.tick*2+i*Math.PI*2/3; const tailLen=30; for(let j=tailLen;j>=0;j--) { const tA=angle-j*0.03; const x=cx+Math.cos(tA)*fRadius, y=cy+Math.sin(tA)*fRadius; const size=6*(1-j/tailLen); ctx.fillStyle=j===0?'#fff':color1; ctx.globalAlpha=1-(j/tailLen); ctx.shadowBlur=j===0?20:0; ctx.shadowColor=color2; ctx.beginPath(); ctx.arc(x,y,size,0,Math.PI*2); ctx.fill(); } } ctx.globalAlpha=1; }
-        else if(!['double-orbit','god-rays','matrix','fire','sparks','void-vortex','infinity-shield','cyber-grid','golden-dust','aurora','electro-storm'].includes(style)) { ctx.strokeStyle=settings?.ringColor||color1; const t=settings?.ringThickness; ctx.lineWidth=t==='thick'?8:t==='thin'?2:4; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke(); }
+      effectOpts.layer = layer;
+      const effectRender = EFFECTS_REGISTRY[style];
+      
+      if (effectRender) {
+          effectRender(effectOpts);
+      } else if (layer === 'front') {
+          // Fallback для простых стилей
+          ctx.strokeStyle=settings?.ringColor||color1; const t=settings?.ringThickness; ctx.lineWidth=t==='thick'?8:t==='thin'?2:4; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke();
       }
     };
 
@@ -722,7 +906,6 @@ button:active{transform:scale(0.95)}
     
     const pm = $('#avatarPreviewModal');
     const pc = $('#previewAvatarCanvas');
-    // Отрисовываем превью только когда оно видимо!
     if(pm && pm.style.display !== 'none' && App.previewData) {
         renderPremiumAvatar(pc, App.previewData.settings, getCachedImage(App.previewData.imgUrl), App.previewData.name);
     }
@@ -1416,15 +1599,10 @@ button:active{transform:scale(0.95)}
   
   function saveSettings(){const nn=$('#setName').value.trim(),np=$('#setPunkt').value,up={};if(nn)up.name=nn;if(np&&!App.isGod)up.punkt=np;if(Object.keys(up).length){DB.ref('users/'+App.user.uid).update(up).then(()=>{if(nn)App.user.name=nn;if(np&&!App.isGod)App.user.punkt=np;updateUI();toast('Настройки сохранены');});}closeSettings();}
   
-  // ФИКС КАЧЕСТВА: Мы больше не пересжимаем изображение каждый раз при сохранении рамки,
-  // берем его прямо из памяти и сохраняем, как есть
   function saveAvatar(){
     const s={style:App.avatarSettings.style,speed:App.avatarSettings.speed,glow:App.avatarSettings.glow,color1:App.avatarSettings.color1,color2:App.avatarSettings.color2,ringColor:App.avatarSettings.ringColor,ringThickness:App.avatarSettings.ringThickness};
     const up={avatarSettings:s};
-    
-    if(App.user.avatar) {
-        up.avatar = App.user.avatar;
-    }
+    if(App.user.avatar) up.avatar = App.user.avatar;
     
     DB.ref('users/'+App.user.uid).update(up).then(()=>{
       App.avatarSettings=s;
@@ -1460,7 +1638,6 @@ button:active{transform:scale(0.95)}
         }
       });
       buildCarousel();
-      // ФИКС: При загрузке пользователей перерисовываем чат, чтобы появились их аватарки
       if(window.chatSnapCache) {
           renderChatMessages();
       }
@@ -1501,7 +1678,6 @@ button:active{transform:scale(0.95)}
     $('#settingsSaveBtn').addEventListener('click',saveSettings);$('#settingsLogoutBtn').addEventListener('click',()=>{closeSettings();logout();});
     $('#avatarCloseBtn').addEventListener('click',closeSettings);$('#avatarSaveBtn').addEventListener('click',saveAvatar);
     
-    // ОПТИМИЗАЦИЯ ФОТО ПРИ ЗАГРУЗКЕ. Размер: 600px вместо 1024px. Качество: 0.85
     $('#setAvatarFile').addEventListener('change',e=>{
       const f=e.target.files[0];
       if(!f)return;
