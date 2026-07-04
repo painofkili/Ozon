@@ -957,18 +957,48 @@ button:active{transform:scale(0.95)}
     if(App.chatListener) { App.chatListener.off(); App.chatListener = null; }
   }
 
-  // ============ AVATAR RENDER ENGINE ============
+  // =========================================================================
+  //  🚀 ОПТИМИЗИРОВАННЫЙ РЕНДЕР АВАТАРОК (Ozon Hub)
+  //  Архитектура:
+  //    1. chat-static-avatar — рендер 1 раз, без анимации (tick = 0)
+  //    2. animated-avatar — живые анимации через requestAnimationFrame
+  //    3. При document.hidden — цикл приостанавливается
+  // =========================================================================
+
+  // ---- ГЛОБАЛЬНЫЕ ДАННЫЕ (заполняются из Firebase) ----
+  // App.allUserData[uid] = { name, avatar, avatarSettings, imgObj, ... }
+  // App.user = текущий пользователь
+
+  // ---- КЭШИ ДЛЯ СТАТИЧНЫХ АВАТАРОК В ЧАТЕ ----
+  const staticAvatarCache = new Map(); // key = uid, value = dataURL
+
+  // ---- ТАЙМЕРЫ ДЛЯ АНИМИРОВАННЫХ АВАТАРОК ----
   const avatarTimers = new Map();
-  
-  function renderPremiumAvatar(canvas, settings, avatarImg, fallbackName) {
-    if(!canvas) return;
+
+  // ---- ФЛАГ РАБОТЫ ЦИКЛА ----
+  let animationLoopRunning = false;
+  let animationFrameId = null;
+
+  // ================================================================
+  //  1.  ФУНКЦИЯ РЕНДЕРА (ОСНОВНАЯ)
+  // ================================================================
+
+  /**
+   * @param {HTMLCanvasElement} canvas
+   * @param {Object} settings — { style, speed, glow, color1, color2, ringColor, ringThickness }
+   * @param {HTMLImageElement|null} imgObj — загруженное изображение
+   * @param {string} userName — для буквы-заглушки
+   * @param {number} tick — текущий шаг анимации (0 для статики)
+   */
+  function renderPremiumAvatar(canvas, settings, imgObj, userName, tick = 0) {
+    if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    if(rect.width === 0 || rect.height === 0) return;
+    if (rect.width === 0 || rect.height === 0) return;
 
     const dpr = window.devicePixelRatio || 1;
     const displayW = rect.width;
     const displayH = rect.height;
-    
+
     const targetW = Math.floor(displayW * dpr);
     const targetH = Math.floor(displayH * dpr);
 
@@ -976,152 +1006,638 @@ button:active{transform:scale(0.95)}
       canvas.width = targetW;
       canvas.height = targetH;
     }
-    
+
     const ctx = canvas.getContext('2d');
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
-    
-    const trueW = canvas.width, trueH = canvas.height;
-    const baseSize = 300, w = baseSize, h = baseSize, cx = w/2, cy = h/2;
-    const avatarRadius = 82, fRadius = avatarRadius + 4;
-    
-    if(!avatarTimers.has(canvas)) {
-      avatarTimers.set(canvas, { tick: 0, pulse: 1, dir: 1, particles: [] });
-    }
-    const state = avatarTimers.get(canvas);
-    const speed = parseFloat(settings?.speed) || 1;
-    state.tick += 0.04 * speed;
-    state.pulse += 0.02 * state.dir * speed;
-    if(state.pulse >= 1.2) state.dir = -1;
-    if(state.pulse <= 0.8) state.dir = 1;
-    
-    ctx.setTransform(1,0,0,1,0,0);
-    ctx.clearRect(0,0,trueW,trueH);
+
+    const baseSize = 300;
+    const cx = baseSize / 2;
+    const cy = baseSize / 2;
+    const avatarRadius = 82;
+    const fRadius = avatarRadius + 4;
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.save();
-    ctx.scale(trueW/baseSize, trueH/baseSize);
-    
-    const color1 = settings?.color1 || '#6366f1', color2 = settings?.color2 || '#a855f7';
+    ctx.scale(canvas.width / baseSize, canvas.height / baseSize);
+
+    const color1 = settings?.color1 || '#6366f1';
+    const color2 = settings?.color2 || '#a855f7';
     const style = settings?.style || 'off';
     const glow = parseInt(settings?.glow) || 20;
+    const speed = parseFloat(settings?.speed) || 1;
 
-    const effectOpts = { ctx, cx, cy, fRadius, avatarRadius, state, speed, color1, color2, glow };
-
-    const drawEffects = (layer) => {
-      ctx.shadowBlur = layer === 'front' ? glow : 0;
-      ctx.shadowColor = color1;
-      effectOpts.layer = layer;
-      
-      const effectRender = EFFECTS_REGISTRY[style];
-      if (effectRender) {
-          effectRender(effectOpts);
-      } else if (layer === 'front') {
-          ctx.strokeStyle=settings?.ringColor||color1; 
-          const t=settings?.ringThickness; 
-          ctx.lineWidth=t==='thick'?8:t==='thin'?2:4; 
-          ctx.beginPath(); 
-          ctx.arc(cx,cy,fRadius,0,Math.PI*2); 
-          ctx.stroke();
+    // ---- Состояние для анимации ----
+    let state;
+    if (tick === 0) {
+      // Статика: состояние создается, но не обновляется
+      state = { tick: 0, pulse: 1, dir: 1, particles: [] };
+    } else {
+      if (!avatarTimers.has(canvas)) {
+        avatarTimers.set(canvas, { tick: 0, pulse: 1, dir: 1, particles: [] });
       }
-    };
+      state = avatarTimers.get(canvas);
+      state.tick += 0.04 * speed;
+      state.pulse += 0.02 * state.dir * speed;
+      if (state.pulse >= 1.2) state.dir = -1;
+      if (state.pulse <= 0.8) state.dir = 1;
+    }
 
-    const drawFallback = () => {
-        ctx.fillStyle = '#1e1b4b'; 
-        ctx.fill(); 
-        ctx.fillStyle = '#6366f1'; 
-        ctx.font = `bold ${avatarRadius}px sans-serif`; 
-        ctx.textAlign = 'center'; 
-        ctx.textBaseline = 'middle'; 
-        const fn = cleanName(fallbackName) || '?';
-        const firstLetter = Array.from(fn)[0] ? Array.from(fn)[0].toUpperCase() : '?';
-        ctx.fillText(firstLetter, cx, cy+Math.floor(avatarRadius/6)); 
-    };
+    // ---- ОБЩИЙ ОПТС ДЛЯ ЭФФЕКТОВ ----
+    const opts = { ctx, cx, cy, fRadius, avatarRadius, state, speed, color1, color2, glow };
 
-    drawEffects('back');
-    ctx.shadowBlur = 0; ctx.globalAlpha = 1;
-    ctx.save(); 
-    ctx.beginPath(); 
-    ctx.arc(cx, cy, avatarRadius, 0, Math.PI*2); 
+    // ---- РИСУЕМ BACK-СЛОЙ ----
+    const backEffect = EFFECTS[style]?.back || null;
+    if (backEffect) {
+      ctx.shadowBlur = 0;
+      backEffect(opts);
+    }
+
+    // ---- КЛИП (обрезаем по кругу) ----
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, avatarRadius, 0, Math.PI * 2);
     ctx.clip();
-    
-    // Рисуем аватарку - всегда используем переданное изображение
-    if(avatarImg && avatarImg.complete && avatarImg.naturalWidth > 0) { 
-        try {
-            const ratio = Math.max((avatarRadius*2)/avatarImg.naturalWidth, (avatarRadius*2)/avatarImg.naturalHeight); 
-            const dw = avatarImg.naturalWidth*ratio, dh = avatarImg.naturalHeight*ratio; 
-            ctx.drawImage(avatarImg, cx-dw/2, cy-dh/2, dw, dh); 
-        } catch(e) {
-            drawFallback();
-        }
-    } else if(avatarImg && typeof avatarImg === 'string') {
-        // Если передана строка URL - пробуем загрузить через Image
-        const tempImg = new Image();
-        tempImg.onload = function() {
-            renderPremiumAvatar(canvas, settings, tempImg, fallbackName);
-        };
-        tempImg.src = avatarImg;
-        drawFallback();
-    } else { 
-        drawFallback();
+
+    // ---- РИСУЕМ ИЗОБРАЖЕНИЕ ----
+    if (imgObj && imgObj.complete && imgObj.naturalWidth > 0) {
+      try {
+        const ratio = Math.max(
+          (avatarRadius * 2) / imgObj.naturalWidth,
+          (avatarRadius * 2) / imgObj.naturalHeight
+        );
+        const dw = imgObj.naturalWidth * ratio;
+        const dh = imgObj.naturalHeight * ratio;
+        ctx.drawImage(imgObj, cx - dw / 2, cy - dh / 2, dw, dh);
+      } catch (_) {
+        drawFallback(ctx, cx, cy, avatarRadius, userName);
+      }
+    } else {
+      drawFallback(ctx, cx, cy, avatarRadius, userName);
     }
     ctx.restore();
-    ctx.beginPath(); 
-    ctx.arc(cx, cy, avatarRadius, 0, Math.PI*2); 
-    ctx.lineWidth = 2; 
-    ctx.strokeStyle = 'rgba(0,0,0,0.5)'; 
+
+    // ---- РАМКА ----
+    ctx.beginPath();
+    ctx.arc(cx, cy, avatarRadius, 0, Math.PI * 2);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgba(0,0,0,0.5)';
     ctx.stroke();
-    drawEffects('front');
+
+    // ---- FRONT-СЛОЙ ----
+    const frontEffect = EFFECTS[style]?.front || null;
+    if (frontEffect) {
+      ctx.shadowBlur = glow;
+      ctx.shadowColor = color1;
+      frontEffect(opts);
+    } else {
+      // Дефолтное кольцо
+      ctx.strokeStyle = settings?.ringColor || color1;
+      const t = settings?.ringThickness;
+      ctx.lineWidth = t === 'thick' ? 8 : t === 'thin' ? 2 : 4;
+      ctx.shadowBlur = 0;
+      ctx.beginPath();
+      ctx.arc(cx, cy, fRadius, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
     ctx.restore();
   }
+
+  // ---- ЗАГЛУШКА ----
+  function drawFallback(ctx, cx, cy, radius, userName) {
+    ctx.fillStyle = '#1e1b4b';
+    ctx.fill();
+    ctx.fillStyle = '#6366f1';
+    ctx.font = `bold ${radius}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const letter = (userName || '?').charAt(0).toUpperCase();
+    ctx.fillText(letter, cx, cy + Math.floor(radius / 6));
+  }
+
+  // ================================================================
+  //  2.  ЭФФЕКТЫ (СЛОЖНАЯ МАТЕМАТИКА)
+  // ================================================================
+
+  const EFFECTS = {
+
+    // ---------- FIRE (Огонь) ----------
+    fire: {
+      back(opts) {
+        const { ctx, cx, cy, fRadius } = opts;
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = '#ff3300';
+        ctx.strokeStyle = '#ff3300';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(cx, cy, fRadius, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      },
+      front(opts) {
+        const { ctx, cx, cy, fRadius, state, speed } = opts;
+        if (!state.fireParticles) state.fireParticles = [];
+
+        // Создаем новые частицы
+        if (state.fireParticles.length < 180) {
+          const angle = Math.random() * Math.PI * 2;
+          const radius = fRadius + Math.random() * 15;
+          state.fireParticles.push({
+            x: cx + Math.cos(angle) * radius,
+            y: cy + Math.sin(angle) * radius,
+            vx: (Math.random() - 0.5) * 2,
+            vy: -Math.random() * 4 - 1.5,
+            life: 0.8 + Math.random() * 0.4,
+            maxLife: 0.8 + Math.random() * 0.4,
+            size: 8 + Math.random() * 18,
+            // Цвет: от ярко-желтого к оранжевому и красному
+            r: 255,
+            g: 150 + Math.floor(Math.random() * 105),
+            b: 20 + Math.floor(Math.random() * 40),
+          });
+        }
+
+        ctx.globalCompositeOperation = 'lighter';
+        state.fireParticles.forEach((p) => {
+          // Физика: тяга вверх + случайные боковые колебания
+          p.x += p.vx + Math.sin(p.life * 20 + p.x * 0.01) * 0.8;
+          p.y += p.vy;
+          p.vy -= 0.05 * speed;
+          p.life -= 0.015 * speed;
+
+          const lifeRatio = Math.max(0, p.life / p.maxLife);
+          const size = p.size * (0.3 + 0.7 * lifeRatio);
+
+          // Цвет: при угасании смещаемся к красному/оранжевому
+          const r = p.r;
+          const g = Math.floor(p.g * lifeRatio * 0.9);
+          const b = Math.floor(p.b * lifeRatio * 0.7);
+
+          ctx.fillStyle = `rgb(${r}, ${Math.floor(g)}, ${Math.floor(b)})`;
+          ctx.globalAlpha = Math.max(0, lifeRatio * 0.9);
+
+          // Рисуем вытянутую каплю (язык пламени)
+          ctx.beginPath();
+          const angle = Math.atan2(p.vy, p.vx) + Math.PI / 2;
+          const len = size * (0.5 + 0.5 * lifeRatio);
+          const w = size * 0.4 * (0.3 + 0.7 * lifeRatio);
+          const x1 = p.x - Math.cos(angle) * len * 0.3;
+          const y1 = p.y - Math.sin(angle) * len * 0.3;
+          const x2 = p.x + Math.cos(angle) * len * 0.7;
+          const y2 = p.y + Math.sin(angle) * len * 0.7;
+          const cpx1 = p.x - Math.sin(angle) * w;
+          const cpy1 = p.y + Math.cos(angle) * w;
+          const cpx2 = p.x + Math.sin(angle) * w;
+          const cpy2 = p.y - Math.cos(angle) * w;
+
+          ctx.moveTo(x1, y1);
+          ctx.quadraticCurveTo(cpx1, cpy1, x2, y2);
+          ctx.quadraticCurveTo(cpx2, cpy2, x1, y1);
+          ctx.fill();
+        });
+
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = 1;
+
+        // Удаляем умершие частицы
+        state.fireParticles = state.fireParticles.filter((p) => p.life > 0);
+      },
+    },
+
+    // ---------- ELECTRO-STORM (Молнии) ----------
+    'electro-storm': {
+      front(opts) {
+        const { ctx, cx, cy, fRadius, state, speed, color1, color2, glow } = opts;
+
+        // Фоновое свечение
+        ctx.shadowBlur = glow;
+        ctx.shadowColor = color1;
+        ctx.strokeStyle = color2;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(cx, cy, fRadius, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Генерируем молнию с заданной вероятностью
+        if (!state.lightningBolt || Math.random() > 0.92) {
+          state.lightningBolt = generateLightning(cx, cy, fRadius, 8, 20);
+          state.lightningLife = 8 + Math.random() * 6;
+        }
+
+        if (state.lightningBolt && state.lightningLife > 0) {
+          ctx.shadowBlur = 25;
+          ctx.shadowColor = '#00e5ff';
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 2.5;
+
+          const points = state.lightningBolt;
+          ctx.beginPath();
+          ctx.moveTo(points[0].x, points[0].y);
+          for (let i = 1; i < points.length; i++) {
+            ctx.lineTo(points[i].x, points[i].y);
+          }
+          ctx.stroke();
+
+          // Вторичная молния (более тусклая, с задержкой)
+          if (state.lightningLife > 3) {
+            ctx.strokeStyle = '#00e5ff';
+            ctx.lineWidth = 1.2;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = '#00e5ff';
+            ctx.beginPath();
+            const offset = 3 + Math.random() * 4;
+            ctx.moveTo(points[0].x + (Math.random() - 0.5) * offset, points[0].y + (Math.random() - 0.5) * offset);
+            for (let i = 1; i < points.length; i++) {
+              const ox = (Math.random() - 0.5) * 2;
+              const oy = (Math.random() - 0.5) * 2;
+              ctx.lineTo(points[i].x + ox, points[i].y + oy);
+            }
+            ctx.stroke();
+          }
+
+          state.lightningLife -= 0.5 * speed;
+        }
+
+        ctx.shadowBlur = 0;
+      },
+    },
+
+    // ---------- CYBER-GRID (Сканер/Радар) ----------
+    'cyber-grid': {
+      front(opts) {
+        const { ctx, cx, cy, fRadius, state, speed, color1, color2, glow } = opts;
+
+        // Внешняя рамка
+        ctx.shadowBlur = glow;
+        ctx.shadowColor = color1;
+        ctx.strokeStyle = color2;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(cx, cy, fRadius, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Засечки (метки) по кругу
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = color1;
+        ctx.lineWidth = 1.5;
+        for (let i = 0; i < 36; i++) {
+          const angle = (i / 36) * Math.PI * 2;
+          const len = i % 3 === 0 ? 10 : 5;
+          const r1 = fRadius - 2;
+          const r2 = fRadius - 2 - len;
+          ctx.beginPath();
+          ctx.moveTo(cx + Math.cos(angle) * r1, cy + Math.sin(angle) * r1);
+          ctx.lineTo(cx + Math.cos(angle) * r2, cy + Math.sin(angle) * r2);
+          ctx.stroke();
+        }
+
+        // Вращающаяся дуга со шлейфом (conic gradient)
+        const angle = state.tick * 1.2;
+        const grad = ctx.createConicGradient(angle, cx, cy);
+        const fade = 0.6 + 0.4 * Math.sin(state.tick * 2);
+        grad.addColorStop(0, `rgba(0, 255, 200, ${fade})`);
+        grad.addColorStop(0.05, `rgba(0, 255, 200, ${fade * 0.6})`);
+        grad.addColorStop(0.15, `rgba(0, 255, 200, ${fade * 0.2})`);
+        grad.addColorStop(0.3, 'rgba(0, 255, 200, 0)');
+
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = '#00ffc8';
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = grad;
+        ctx.beginPath();
+        ctx.arc(cx, cy, fRadius + 4, angle - 0.4, angle + 0.1);
+        ctx.stroke();
+
+        // Центральная точка
+        ctx.shadowBlur = 15;
+        ctx.fillStyle = '#00ffc8';
+        ctx.beginPath();
+        ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Линия от центра к краю (луч сканера)
+        ctx.shadowBlur = 8;
+        ctx.strokeStyle = 'rgba(0, 255, 200, 0.5)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        const endX = cx + Math.cos(angle) * (fRadius + 6);
+        const endY = cy + Math.sin(angle) * (fRadius + 6);
+        ctx.lineTo(endX, endY);
+        ctx.stroke();
+
+        ctx.shadowBlur = 0;
+      },
+    },
+
+    // ---------- SYMBIOTE (Щупальца) ----------
+    symbiote: {
+      back(opts) {
+        const { ctx, cx, cy, fRadius, color1 } = opts;
+        ctx.shadowBlur = 30;
+        ctx.shadowColor = color1;
+        ctx.fillStyle = color1;
+        ctx.globalAlpha = 0.15;
+        ctx.beginPath();
+        ctx.arc(cx, cy, fRadius + 20, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.shadowBlur = 0;
+      },
+      front(opts) {
+        const { ctx, cx, cy, fRadius, state, speed, color1, color2 } = opts;
+
+        // Сохраняем клип, чтобы щупальца не вылезали за аватар
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, fRadius, 0, Math.PI * 2);
+        ctx.clip();
+
+        const tentacles = 8;
+        const baseLength = fRadius * 0.85;
+
+        ctx.lineWidth = 4;
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = color2;
+
+        for (let i = 0; i < tentacles; i++) {
+          const baseAngle = (i / tentacles) * Math.PI * 2;
+          const waveOffset = state.tick * 1.5 + i * 0.8;
+
+          // Длина пульсирует
+          const pulseLen = 1 + 0.2 * Math.sin(state.tick * 1.2 + i * 1.1);
+          const len = baseLength * pulseLen;
+
+          // Толщина к концу уменьшается
+          const startWidth = 7 + 2 * Math.sin(state.tick * 0.7 + i);
+          const endWidth = 1 + Math.sin(state.tick * 0.9 + i * 1.3) * 0.5 + 1;
+
+          // Точки щупальца
+          const segments = 16;
+          const points = [];
+          for (let j = 0; j <= segments; j++) {
+            const t = j / segments;
+            const angle = baseAngle + t * 0.6 * Math.sin(waveOffset + t * 4);
+            const r = fRadius + t * len;
+            const x = cx + Math.cos(angle) * r;
+            const y = cy + Math.sin(angle) * r;
+            // Дрожание (живой эффект)
+            const shake = 0.8 + 0.4 * Math.sin(state.tick * 3 + i * 2 + j * 0.7);
+            points.push({
+              x: x + (Math.random() - 0.5) * shake * 0.5,
+              y: y + (Math.random() - 0.5) * shake * 0.5,
+              t: t,
+            });
+          }
+
+          // Рисуем щупальце
+          const grad = ctx.createLinearGradient(
+            points[0].x, points[0].y,
+            points[points.length - 1].x, points[points.length - 1].y
+          );
+          const hue = (i / tentacles) * 360 + state.tick * 20;
+          grad.addColorStop(0, color1);
+          grad.addColorStop(0.5, color2);
+          grad.addColorStop(1, `hsl(${hue % 360}, 80%, 60%)`);
+
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = startWidth;
+
+          ctx.beginPath();
+          ctx.moveTo(points[0].x, points[0].y);
+          for (let j = 1; j < points.length; j++) {
+            const cp1x = points[j - 1].x + (points[j].x - points[j - 1].x) * 0.3;
+            const cp1y = points[j - 1].y + (points[j].y - points[j - 1].y) * 0.3;
+            const cp2x = points[j].x - (points[j].x - points[j - 1].x) * 0.3;
+            const cp2y = points[j].y - (points[j].y - points[j - 1].y) * 0.3;
+            ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, points[j].x, points[j].y);
+          }
+          ctx.stroke();
+
+          // Присоски (маленькие кружочки вдоль щупальца)
+          ctx.fillStyle = 'rgba(255,255,255,0.3)';
+          ctx.shadowBlur = 5;
+          for (let j = 1; j < points.length - 1; j += 3) {
+            const p = points[j];
+            const size = 1 + (1 - p.t) * 2 + 0.5 * Math.sin(state.tick * 2 + j);
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        ctx.restore();
+        ctx.shadowBlur = 0;
+      },
+    },
+  };
+
+  // ---- ГЕНЕРАТОР МОЛНИИ (рекурсивный) ----
+  function generateLightning(cx, cy, radius, segments, spread) {
+    const points = [];
+    const startAngle = Math.random() * Math.PI * 2;
+    const endAngle = startAngle + (Math.random() - 0.5) * Math.PI * 0.8;
+
+    for (let i = 0; i <= segments; i++) {
+      const t = i / segments;
+      const angle = startAngle + (endAngle - startAngle) * t;
+      const r = radius + (Math.random() - 0.5) * spread * (1 - t * 0.3);
+      points.push({
+        x: cx + Math.cos(angle) * r,
+        y: cy + Math.sin(angle) * r,
+      });
+    }
+
+    // Дополнительные ответвления (для реализма)
+    const branches = 2 + Math.floor(Math.random() * 3);
+    for (let b = 0; b < branches; b++) {
+      const idx = 2 + Math.floor(Math.random() * (segments - 2));
+      const base = points[idx];
+      const angle = Math.atan2(base.y - cy, base.x - cx) + (Math.random() - 0.5) * 1.2;
+      const len = 10 + Math.random() * 30;
+      const subPoints = 3 + Math.floor(Math.random() * 4);
+      for (let j = 0; j <= subPoints; j++) {
+        const t = j / subPoints;
+        const x = base.x + Math.cos(angle + t * 0.5) * len * t;
+        const y = base.y + Math.sin(angle + t * 0.5) * len * t;
+        points.push({ x, y });
+      }
+    }
+
+    return points;
+  }
+
+  // ================================================================
+  //  3.  ИНИЦИАЛИЗАЦИЯ СТАТИЧНЫХ АВАТАРОК В ЧАТЕ
+  // ================================================================
+
+  /**
+   * Вызывается при рендере сообщений в чате.
+   * Все canvas с классом .chat-static-avatar рендерятся 1 раз (tick = 0).
+   * Результат кэшируется по uid для повторного использования.
+   */
+  function initChatAvatars() {
+    const canvases = document.querySelectorAll('canvas.chat-static-avatar');
+    canvases.forEach((canvas) => {
+      const uid = canvas.dataset.uid;
+      if (!uid) return;
+
+      // Кэш: если уже рендерили — пропускаем
+      if (staticAvatarCache.has(uid)) {
+        const cachedData = staticAvatarCache.get(uid);
+        // Восстанавливаем из кэша (если нужно)
+        const img = new Image();
+        img.src = cachedData;
+        img.onload = () => {
+          const ctx = canvas.getContext('2d');
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        };
+        return;
+      }
+
+      // Получаем данные пользователя
+      const userData = (uid === App.user?.uid) ? App.user : App.allUserData[uid];
+      if (!userData) return;
+
+      const settings = userData.avatarSettings || { style: 'off', speed: 1, glow: 20, color1: '#6366f1', color2: '#a855f7' };
+      const imgObj = userData.imgObj || null;
+      const name = userData.name || '?';
+
+      // Рендерим с tick = 0 (статично)
+      renderPremiumAvatar(canvas, settings, imgObj, name, 0);
+
+      // Кэшируем результат как dataURL
+      try {
+        staticAvatarCache.set(uid, canvas.toDataURL('image/png'));
+      } catch (_) { /* игнорируем */ }
+    });
+  }
+
+  // ================================================================
+  //  4.  ГЛАВНЫЙ АНИМАЦИОННЫЙ ЦИКЛ
+  // ================================================================
 
   function updateAllFrames() {
-    if(document.hidden) { App.avatarAnimId = requestAnimationFrame(updateAllFrames); return; }
-    
-    const mc = $('#mainAvatarCanvas');
-    if(mc && App.user) {
-        renderPremiumAvatar(mc, App.avatarSettings, App.user.imgObj || null, App.user.name);
+    // Пауза, если вкладка скрыта
+    if (document.hidden) {
+      animationFrameId = requestAnimationFrame(updateAllFrames);
+      return;
     }
-    
-    const pm = $('#avatarPreviewModal');
-    const pc = $('#previewAvatarCanvas');
-    if(pm && pm.style.display !== 'none' && App.previewData) {
-        let pImg = null;
-        if (App.previewData.uid === App.user.uid) pImg = App.user.imgObj;
-        else if (App.previewData.uid && App.allUserData[App.previewData.uid]) pImg = App.allUserData[App.previewData.uid].imgObj;
-        
-        renderPremiumAvatar(pc, App.previewData.settings, pImg || null, App.previewData.name);
+
+    // Собираем все анимированные аватарки (исключая статичные из чата)
+    const animatedCanvases = document.querySelectorAll('canvas.animated-avatar:not(.chat-static-avatar)');
+
+    if (animatedCanvases.length === 0) {
+      animationFrameId = requestAnimationFrame(updateAllFrames);
+      return;
     }
-    
-    App.avatarAnimId = requestAnimationFrame(updateAllFrames);
+
+    animatedCanvases.forEach((canvas) => {
+      const uid = canvas.dataset.uid;
+      if (!uid) return;
+
+      const userData = (uid === App.user?.uid) ? App.user : App.allUserData[uid];
+      if (!userData) return;
+
+      const settings = userData.avatarSettings || { style: 'off', speed: 1, glow: 20, color1: '#6366f1', color2: '#a855f7' };
+      const imgObj = userData.imgObj || null;
+      const name = userData.name || '?';
+
+      // Передаем tick = 1 (анимация включена, state обновляется внутри)
+      renderPremiumAvatar(canvas, settings, imgObj, name, 1);
+    });
+
+    // Перерисовываем также главную аватарку в профиле
+    const mainCanvas = document.getElementById('mainAvatarCanvas');
+    if (mainCanvas && App.user) {
+      const settings = App.avatarSettings || { style: 'off', speed: 1, glow: 20, color1: '#6366f1', color2: '#a855f7' };
+      const imgObj = App.user.imgObj || null;
+      const name = App.user.name || '?';
+      renderPremiumAvatar(mainCanvas, settings, imgObj, name, 1);
+    }
+
+    // Мини-профиль (если открыт)
+    const mpCanvas = document.querySelector('#mpAvatarContainer canvas');
+    if (mpCanvas && App.selectedProfile) {
+      const uid = App.selectedProfile;
+      const userData = App.allUserData[uid];
+      if (userData) {
+        const settings = userData.avatarSettings || { style: 'off', speed: 1, glow: 20, color1: '#6366f1', color2: '#a855f7' };
+        const imgObj = userData.imgObj || null;
+        const name = userData.name || '?';
+        renderPremiumAvatar(mpCanvas, settings, imgObj, name, 1);
+      }
+    }
+
+    // Продолжаем цикл
+    animationFrameId = requestAnimationFrame(updateAllFrames);
   }
 
-  window.openAvatarPreview = function(uid, defName) {
-    const isOwnProfileClick = (uid === undefined || uid === null);
-    const targetUid = isOwnProfileClick ? App.user?.uid : uid;
+  // ================================================================
+  //  5.  ЗАПУСК / ОСТАНОВКА
+  // ================================================================
 
-    let s = {style:'off', speed:1, color1:'#6366f1', color2:'#a855f7'};
-    let imgUrl = null;
-    let name = cleanName(defName) || 'Аватар';
+  function startAnimationLoop() {
+    if (animationLoopRunning) return;
+    animationLoopRunning = true;
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    animationFrameId = requestAnimationFrame(updateAllFrames);
+  }
 
-    if (targetUid === App.user?.uid) { 
-        s = App.avatarSettings; 
-        imgUrl = App.user?.avatar; 
-        name = cleanName(App.user?.name) || 'Аватар'; 
-    } else if(targetUid && targetUid !== 'undefined' && targetUid !== 'null' && App.allUserData[targetUid]) { 
-        s = App.allUserData[targetUid].avatarSettings || s; 
-        imgUrl = App.allUserData[targetUid].avatar; 
-        name = cleanName(App.allUserData[targetUid].name) || name; 
-    } else {
-        name = name || '?';
+  function stopAnimationLoop() {
+    animationLoopRunning = false;
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = null;
     }
-    
-    App.previewData = { uid: targetUid, settings: s, imgUrl, name };
-    $('#previewAvatarName').textContent = name;
-    $('#previewAvatarCanvas').style.display = 'block';
-    $('#previewFullImage').style.display = 'none';
-    $('#toggleFullImgBtn').textContent = 'Показать оригинал';
-    $('#toggleFullImgBtn').style.display = imgUrl ? 'block' : 'none';
-    $('#avatarPreviewModal').style.display = 'flex';
-  };
+  }
+
+  // ---- АВТОМАТИЧЕСКИЙ ЗАПУСК ПОСЛЕ ЗАГРУЗКИ DOM ----
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      startAnimationLoop();
+      // Перерендер статичных аватарок при добавлении новых сообщений
+      const observer = new MutationObserver(() => {
+        initChatAvatars();
+      });
+      const chatContainer = document.getElementById('chat');
+      if (chatContainer) {
+        observer.observe(chatContainer, { childList: true, subtree: true });
+      }
+    });
+  } else {
+    startAnimationLoop();
+  }
+
+  // ---- ПАУЗА ПРИ СВЕРТЫВАНИИ ВКЛАДКИ ----
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      // Пауза: цикл продолжает работать, но внутри updateAllFrames мы проверяем document.hidden
+      // и не обновляем анимации, а просто делаем requestAnimationFrame.
+    } else {
+      // Возобновляем
+    }
+  });
+
+  // ---- ОЧИСТКА ПРИ ВЫХОДЕ ----
+  window.addEventListener('beforeunload', () => {
+    stopAnimationLoop();
+    avatarTimers.clear();
+    staticAvatarCache.clear();
+  });
+
+  // ================================================================
+  //  6.  ЭКСПОРТ (глобальные функции)
+  // ================================================================
+
+  window.renderPremiumAvatar = renderPremiumAvatar;
+  window.initChatAvatars = initChatAvatars;
+  window.startAnimationLoop = startAnimationLoop;
+  window.stopAnimationLoop = stopAnimationLoop;
+  window.updateAllFrames = updateAllFrames;
 
   // ============ AUTH ============
   let isLoginMode = true;
@@ -1593,7 +2109,7 @@ button:active{transform:scale(0.95)}
       const safeUid = auid ? esc(auid) : '';
       const cleanUnForJs = un.replace(/'/g, "\\'").replace(/"/g, "&quot;");
       
-      const avaHtml = `<img data-uid="${safeUid}" data-name="${cleanUnForJs}" class="chat-static-avatar chat-ava-load" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onclick="event.stopPropagation();window.openAvatarPreview('${safeUid}','${cleanUnForJs}')">`;
+      const avaHtml = `<canvas data-uid="${safeUid}" data-name="${cleanUnForJs}" class="chat-static-avatar canvas-avatar" width="120" height="120" style="width:38px;height:38px;" onclick="event.stopPropagation();window.openAvatarPreview('${safeUid}','${cleanUnForJs}')"></canvas>`;
       
       const ns=(isC||isG)?'background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;':'';
       let h=`<div class="chat-bubble-group ${isMine?'mine':'other'}"><div class="msg-author" style="${isMine?'flex-direction:row-reverse;':''}">${avaHtml}<span style="${ns}">${esc(un)}</span></div>`;
@@ -1627,38 +2143,7 @@ button:active{transform:scale(0.95)}
     if(!ce) return;
     const was=ce.scrollHeight-ce.scrollTop-ce.clientHeight<60;
     ce.innerHTML=html;
-    
-    // Рендерим аватарки через Canvas для единого качества
-    ce.querySelectorAll('.chat-ava-load').forEach(img => {
-        const uid = img.dataset.uid;
-        const uData = uid === App.user?.uid ? App.user : App.allUserData[uid];
-        
-        // Создаем canvas вместо img для единого качества
-        const canvas = document.createElement('canvas');
-        canvas.className = 'chat-static-avatar canvas-avatar';
-        canvas.width = 120;
-        canvas.height = 120;
-        canvas.style.width = '38px';
-        canvas.style.height = '38px';
-        canvas.dataset.uid = uid || '';
-        canvas.dataset.name = img.dataset.name || '?';
-        canvas.onclick = (e) => {
-            e.stopPropagation();
-            window.openAvatarPreview(uid || '', img.dataset.name || '');
-        };
-        
-        // Заменяем img на canvas
-        img.parentNode.replaceChild(canvas, img);
-        
-        // Рендерим аватарку на canvas
-        const settings = uData?.avatarSettings || { style: 'off', speed: 1, color1: '#6366f1', color2: '#a855f7' };
-        const avatarImg = uData?.imgObj || null;
-        const name = uData?.name || img.dataset.name || '?';
-        
-        // Сохраняем ссылку на данные для обновления в цикле
-        canvas._avatarData = { settings, avatarImg, name };
-    });
-
+    initChatAvatars();
     if(was||document.activeElement===$('#chatMsgInput'))ce.scrollTop=ce.scrollHeight;
   }
   
