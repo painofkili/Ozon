@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -49,18 +50,23 @@ button:active{transform:scale(0.95)}
 .chat-header-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.2);cursor:pointer;flex-shrink:0}
 .chat-header-bar:hover{background:rgba(0,0,0,0.3)}
 #chat{flex:1;overflow-y:auto;padding:10px 14px;scrollbar-width:thin;scrollbar-color:var(--accent) transparent;background:transparent;display:flex;flex-direction:column;gap:2px;transition:opacity 0.2s}
-.chat-bubble-group{display:flex;flex-direction:column;max-width:85%;position:relative;margin:2px 0}
+.chat-bubble-group{display:flex;flex-direction:column;max-width:85%;position:relative;margin:4px 0}
 .chat-bubble-group.mine{align-self:flex-end;align-items:flex-end}
 .chat-bubble-group.other{align-self:flex-start;align-items:flex-start}
 .chat-bubble-group .msg-author{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;display:flex;align-items:center;gap:8px;padding:0 4px}
 .chat-static-avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;cursor:pointer;flex-shrink:0;border:1px solid rgba(255,255,255,0.1);background:var(--bg3)}
 .chat-static-avatar.canvas-avatar{background:transparent;border:none;overflow:visible}
 .text-ava{display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.15);font-weight:bold;font-size:16px;color:#fff}
-.chat-bubble{background:rgba(255,255,255,0.04);padding:8px 14px;word-break:break-word;line-height:1.4;font-size:14px;border:1px solid rgba(255,255,255,0.03);position:relative;border-radius:12px;transition:0.1s}
-.chat-bubble.mine{background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.1)}
-.chat-bubble.creator{border-left:2px solid var(--gold);background:rgba(245,197,24,0.06)}
-.chat-bubble.god{border-left:2px solid #FFD700;background:rgba(255,215,0,0.06)}
-.chat-bubble.clickable:active{transform:scale(0.98);opacity:0.8}
+
+/* Unified Chat Bubble Styling */
+.chat-bubble-wrapper{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.03);position:relative;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:0.1s}
+.chat-bubble-wrapper.mine{background:rgba(76,175,80,0.15);border-color:rgba(76,175,80,0.1)}
+.chat-bubble-wrapper.creator{border-left:3px solid var(--gold);background:rgba(245,197,24,0.06)}
+.chat-bubble-wrapper.god{border-left:3px solid #FFD700;background:rgba(255,215,0,0.06)}
+.chat-msg-item{padding:8px 14px;word-break:break-word;line-height:1.4;font-size:14px;position:relative;cursor:pointer;transition:0.1s}
+.chat-msg-item:not(:last-child){border-bottom:1px solid rgba(255,255,255,0.05)}
+.chat-msg-item:active{background:rgba(255,255,255,0.1)}
+
 .chat-img{max-width:200px;max-height:150px;border-radius:8px;margin-top:4px;cursor:pointer;object-fit:cover}
 .chat-sticker{max-width:120px;max-height:120px;object-fit:contain;margin:2px 0}
 .chat-input-wrapper{position:relative;width:100%;margin-top:auto;flex-shrink:0;transition:0.3s cubic-bezier(0.25, 0.8, 0.25, 1);opacity:1;transform:translateY(0)}
@@ -119,11 +125,6 @@ button:active{transform:scale(0.95)}
 #settingsPanel{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px}
 .settings-tab{flex:1;padding:8px;border-radius:10px;font-size:13px;background:transparent;color:var(--muted);border:none;cursor:pointer;transition:0.2s}
 .settings-tab.active{background:var(--accent);color:#fff}
-.style-btn{padding:8px 6px;border-radius:10px;border:2px solid #444;background:rgba(0,0,0,0.3);color:#ccc;font-size:11px;cursor:pointer;transition:0.2s;width:100%}
-.style-btn.active{border-color:var(--accent);background:rgba(124,58,237,0.2);color:#fff}
-.style-btn.premium{border-color:#FFD700;background:rgba(255,215,0,0.05)}
-.style-btn.off-btn{border-color:var(--red);background:rgba(239,68,68,0.1);color:#f87171}
-.style-btn.off-btn.active{border-color:var(--red);background:rgba(239,68,68,0.3);color:#fff}
 
 .avatar-wrap{position:relative;width:76px;height:76px;flex-shrink:0;border-radius:50%}
 #mainAvatarCanvas{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:130px;height:130px;pointer-events:none;z-index:2}
@@ -172,7 +173,7 @@ button:active{transform:scale(0.95)}
 
 <div id="avatarPreviewModal" style="display:none;position:fixed;inset:0;z-index:11000;background:rgba(0,0,0,0.85);backdrop-filter:blur(15px);align-items:center;justify-content:center;flex-direction:column;">
   <button id="closeAvatarPreview" style="position:absolute;top:max(30px, env(safe-area-inset-top));right:30px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);color:#fff;width:44px;height:44px;border-radius:50%;font-size:22px;cursor:pointer;transition:0.2s;z-index:12000;display:flex;align-items:center;justify-content:center;">✕</button>
-  <canvas id="previewAvatarCanvas" width="600" height="600" style="width:100%;max-width:400px;aspect-ratio:1/1;"></canvas>
+  <canvas id="previewAvatarCanvas" width="600" height="600" style="width:100%;max-width:350px;aspect-ratio:1/1;margin:0 auto;display:block;"></canvas>
   <img id="previewFullImage" style="display:none;max-width:90vw;max-height:75vh;border-radius:12px;border:2px solid var(--accent);object-fit:contain;box-shadow:0 10px 40px rgba(0,0,0,0.5);">
   <div id="previewAvatarName" style="margin-top:10px;font-size:28px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></div>
   <button id="toggleFullImgBtn" class="btn-gray" style="margin-top:16px;max-width:250px;padding:12px;">Показать оригинал</button>
@@ -301,7 +302,7 @@ button:active{transform:scale(0.95)}
       <div><label style="font-size:12px;color:var(--muted);">Загрузить фото</label><input type="file" id="setAvatarFile" accept="image/*"></div>
       <div id="avatarAdvanced">
         <label style="font-size:12px;color:var(--muted);">Стиль рамки</label>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:4px;" id="animationGrid"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:4px;" id="animationGrid"></div>
         <div style="margin-top:8px;"><label style="font-size:12px;color:var(--muted);">Скорость <span id="setSpeedVal">1x</span></label><input type="range" id="setSpeed" min="0.1" max="3" step="0.1" value="1"></div>
         <div><label style="font-size:12px;color:var(--muted);">Свечение <span id="setGlowVal">20px</span></label><input type="range" id="setGlow" min="0" max="50" step="1" value="20"></div>
         <div><label style="font-size:12px;color:var(--muted);">Цвет 1</label><input type="color" id="setColor1" value="#6366f1"></div>
@@ -456,7 +457,6 @@ button:active{transform:scale(0.95)}
           ctx.strokeStyle = color2; ctx.lineWidth = 2; 
           ctx.beginPath(); ctx.arc(cx, cy, fRadius, 0, Math.PI * 2); ctx.stroke();
           
-          // Tesla Coil Lightning Branches
           if (Math.random() > 0.65) {
               state.bolts = [];
               const numBolts = 1 + Math.floor(Math.random()*3);
@@ -467,7 +467,7 @@ button:active{transform:scale(0.95)}
                   let py = cy + Math.sin(angle)*fRadius;
                   bolt.push({x: px, y: py});
                   for(let i=0; i<6; i++) {
-                      angle += (Math.random()-0.5)*1.8; // Sharp random turns
+                      angle += (Math.random()-0.5)*1.8;
                       let dist = 10 + Math.random()*20;
                       px += Math.cos(angle)*dist;
                       py += Math.sin(angle)*dist;
@@ -501,7 +501,6 @@ button:active{transform:scale(0.95)}
           ctx.strokeStyle = color1; ctx.lineWidth = 2;
           ctx.shadowBlur = 10; ctx.shadowColor = color2;
 
-          // HUD Rotating Arcs
           ctx.rotate(state.tick * 0.5);
           ctx.setLineDash([15, 10, 5, 10]);
           ctx.beginPath(); ctx.arc(0, 0, fRadius + 4, 0, Math.PI*2); ctx.stroke();
@@ -512,7 +511,6 @@ button:active{transform:scale(0.95)}
           ctx.beginPath(); ctx.arc(0, 0, fRadius + 12, 0, Math.PI*2); ctx.stroke();
           ctx.setLineDash([]);
           
-          // Data nodes
           for(let i=0; i<3; i++) {
               ctx.rotate(Math.PI*2/3);
               ctx.fillStyle = '#fff';
@@ -521,7 +519,6 @@ button:active{transform:scale(0.95)}
 
           ctx.restore();
           
-          // Vertical Scanline
           const scanY = cy - fRadius + ((state.tick * 50) % (fRadius * 2));
           ctx.save();
           ctx.beginPath(); ctx.arc(cx, cy, fRadius, 0, Math.PI*2); ctx.clip();
@@ -543,7 +540,6 @@ button:active{transform:scale(0.95)}
           ctx.save(); 
           ctx.beginPath(); ctx.arc(cx, cy, fRadius + 25, 0, Math.PI*2); ctx.clip();
           
-          // Smooth overlapping Northern Lights waves
           for(let i = 0; i < 4; i++) {
             let phase = state.tick * (0.4 + i*0.15);
             ctx.beginPath(); 
@@ -578,10 +574,10 @@ button:active{transform:scale(0.95)}
         if(layer === 'front') {
           if(!state.flames) state.flames = [];
           if(state.flames.length < 100) { 
-              const angle = -Math.PI/2 + (Math.random()-0.5)*Math.PI*1.2; // Spawns mostly bottom/sides
+              const angle = -Math.PI/2 + (Math.random()-0.5)*Math.PI*1.2;
               state.flames.push({
                   x: cx + Math.cos(angle)*fRadius*0.8, 
-                  y: cy + fRadius - 5, // start near bottom
+                  y: cy + fRadius - 5, 
                   vx: (Math.random()-0.5)*1.5, 
                   vy: -1.5 - Math.random()*3, 
                   life: 1, maxLife: 1, 
@@ -592,7 +588,7 @@ button:active{transform:scale(0.95)}
           
           ctx.globalCompositeOperation = 'lighter';
           state.flames.forEach(p => { 
-              p.x += p.vx + Math.sin(p.life*15)*0.8; // Wavy upwards motion
+              p.x += p.vx + Math.sin(p.life*15)*0.8; 
               p.y += p.vy; 
               p.life -= 0.015 * speed; 
               const sc = p.life/p.maxLife; 
@@ -600,7 +596,6 @@ button:active{transform:scale(0.95)}
               ctx.globalAlpha = Math.max(0, p.life); 
               
               ctx.beginPath();
-              // Draw stretched flame teardrop
               ctx.ellipse(p.x, p.y, p.size * sc * 0.5, p.size * sc, 0, 0, Math.PI*2);
               ctx.fill(); 
           });
@@ -969,17 +964,51 @@ button:active{transform:scale(0.95)}
         }
     },
     'god-rays': (opts) => {
-        const { ctx, cx, cy, fRadius, state, layer } = opts;
+        const { ctx, cx, cy, fRadius, state, speed, layer } = opts;
         if(layer === 'back') {
-          ctx.shadowColor = '#ffd700'; ctx.shadowBlur = 20;
-          const drawWing = (isLeft) => {
-            ctx.save(); ctx.translate(cx+(isLeft?-fRadius+5:fRadius-5), cy); ctx.scale(isLeft?-1:1,1); ctx.rotate(Math.sin(state.tick*2)*0.08);
-            ctx.beginPath(); ctx.moveTo(0,15); ctx.bezierCurveTo(15,-15,30,-35,60,-25); ctx.quadraticCurveTo(50,-10,70,-5); ctx.quadraticCurveTo(55,5,65,15); ctx.quadraticCurveTo(45,15,50,30); ctx.quadraticCurveTo(30,25,30,40); ctx.quadraticCurveTo(15,25,0,15);
-            ctx.fillStyle = 'rgba(255,255,255,0.95)'; ctx.fill(); ctx.strokeStyle = 'rgba(255,215,0,0.6)'; ctx.lineWidth = 1; ctx.stroke();
-            ctx.restore();
-          };
-          drawWing(true); drawWing(false);
-          ctx.beginPath(); const haloY = cy-fRadius-15+Math.sin(state.tick*3)*5; ctx.ellipse(cx, haloY, 32, 9, 0, 0, Math.PI*2); ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 4; ctx.stroke(); ctx.shadowBlur = 0;
+          ctx.save(); ctx.translate(cx, cy);
+          
+          ctx.shadowBlur = 20; ctx.shadowColor = '#ffd700';
+          ctx.strokeStyle = 'rgba(255, 215, 0, 0.6)';
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.ellipse(0, -fRadius - 15 + Math.sin(state.tick*3)*5, 35, 10, 0, 0, Math.PI*2);
+          ctx.stroke();
+
+          const numRays = 12;
+          ctx.rotate(state.tick * 0.15);
+          for(let i=0; i<numRays; i++) {
+              ctx.rotate((Math.PI*2)/numRays);
+              const alpha = 0.2 + Math.sin(state.tick*4 + i)*0.15;
+              const grad = ctx.createLinearGradient(0, fRadius, 0, fRadius + 90);
+              grad.addColorStop(0, `rgba(255, 215, 0, ${alpha})`);
+              grad.addColorStop(1, 'rgba(255, 215, 0, 0)');
+              ctx.fillStyle = grad;
+              ctx.beginPath();
+              ctx.moveTo(-15, fRadius);
+              ctx.lineTo(15, fRadius);
+              ctx.lineTo(0, fRadius + 90);
+              ctx.fill();
+          }
+          ctx.restore();
+        }
+        if(layer === 'front') {
+            if(!state.holyParticles) state.holyParticles = [];
+            if(Math.random() > 0.5 && state.holyParticles.length < 25) {
+                state.holyParticles.push({ angle: Math.random()*Math.PI*2, dist: fRadius - 10, size: 1.5 + Math.random()*2.5, speed: 0.5 + Math.random(), life: 1 });
+            }
+            ctx.fillStyle = '#fff';
+            ctx.shadowBlur = 12; ctx.shadowColor = '#ffd700';
+            state.holyParticles.forEach(p => {
+                p.dist += p.speed * speed;
+                p.life -= 0.015 * speed;
+                ctx.globalAlpha = Math.max(0, p.life);
+                ctx.beginPath(); 
+                ctx.arc(cx + Math.cos(p.angle)*p.dist, cy + Math.sin(p.angle)*p.dist - (1-p.life)*40, p.size, 0, Math.PI*2); 
+                ctx.fill();
+            });
+            state.holyParticles = state.holyParticles.filter(p => p.life > 0);
+            ctx.globalAlpha = 1;
         }
     }
   };
@@ -1173,22 +1202,40 @@ button:active{transform:scale(0.95)}
   function updateAllFrames() {
     if(document.hidden) { App.avatarAnimId = requestAnimationFrame(updateAllFrames); return; }
     
-    const mc = $('#mainAvatarCanvas');
+    const mc = document.getElementById('mainAvatarCanvas');
     if(mc && App.user) {
         renderPremiumAvatar(mc, App.avatarSettings, App.user.imgObj || null, App.user.name);
     }
     
-    const pm = $('#avatarPreviewModal');
-    const pc = $('#previewAvatarCanvas');
+    const pm = document.getElementById('avatarPreviewModal');
     if(pm && pm.style.display !== 'none' && App.previewData) {
+        const pc = document.getElementById('previewAvatarCanvas');
         renderPremiumAvatar(pc, App.previewData.settings, App.previewData.imgObj || null, App.previewData.name);
+    }
+
+    const avatars = document.querySelectorAll('.canvas-avatar, .sidebar-avatar-canvas');
+    for(let i=0; i<avatars.length; i++) {
+        const c = avatars[i];
+        if(c._avatarData) {
+            renderPremiumAvatar(c, c._avatarData.settings, c._avatarData.avatarImg, c._avatarData.name);
+        }
+    }
+
+    const settingsPanel = document.getElementById('settingsPanel');
+    if (settingsPanel && settingsPanel.style.display !== 'none') {
+        const previews = document.querySelectorAll('.anim-preview-canvas');
+        for(let i=0; i<previews.length; i++) {
+            const c = previews[i];
+            const style = c.dataset.style;
+            renderPremiumAvatar(c, { ...App.avatarSettings, style: style }, App.user?.imgObj || null, App.user?.name || '?');
+        }
     }
     
     App.avatarAnimId = requestAnimationFrame(updateAllFrames);
   }
 
   window.openAvatarPreview = function(uid, defName) {
-    const isOwnProfileClick = (uid === undefined || uid === null);
+    const isOwnProfileClick = (!uid || uid === 'undefined' || uid === 'null');
     const targetUid = isOwnProfileClick ? App.user?.uid : uid;
 
     let s = {style:'off', speed:1, color1:'#6366f1', color2:'#a855f7'};
@@ -1201,7 +1248,7 @@ button:active{transform:scale(0.95)}
         imgUrl = App.user?.avatar; 
         imgObj = App.user?.imgObj;
         name = cleanName(App.user?.name) || 'Аватар'; 
-    } else if(targetUid && targetUid !== 'undefined' && targetUid !== 'null' && App.allUserData[targetUid]) { 
+    } else if(targetUid && App.allUserData[targetUid]) { 
         s = App.allUserData[targetUid].avatarSettings || s; 
         imgUrl = App.allUserData[targetUid].avatar; 
         imgObj = App.allUserData[targetUid].imgObj;
@@ -1694,21 +1741,24 @@ button:active{transform:scale(0.95)}
       const safeUid = auid ? esc(auid) : '';
       const cleanUnForJs = un.replace(/'/g, "\\'").replace(/"/g, "&quot;");
       
-      const avaHtml = `<img data-uid="${safeUid}" data-name="${cleanUnForJs}" class="chat-static-avatar chat-ava-load" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onclick="event.stopPropagation();window.openAvatarPreview('${safeUid}','${cleanUnForJs}')">`;
-      
+      const avaHtml = `<canvas data-uid="${safeUid}" data-name="${cleanUnForJs}" class="chat-static-avatar canvas-avatar" width="120" height="120" style="width:38px;height:38px;" onclick="event.stopPropagation();window.openAvatarPreview('${safeUid}','${cleanUnForJs}')"></canvas>`;
       const ns=(isC||isG)?'background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;':'';
-      let h=`<div class="chat-bubble-group ${isMine?'mine':'other'}"><div class="msg-author" style="${isMine?'flex-direction:row-reverse;':''}">${avaHtml}<span style="${ns}">${esc(un)}</span></div>`;
+      
+      let wrapperCls = 'chat-bubble-wrapper';
+      if(isMine) wrapperCls += ' mine';
+      else if(isC) wrapperCls += ' creator';
+      else if(isG) wrapperCls += ' god';
+
+      let h=`<div class="chat-bubble-group ${isMine?'mine':'other'}"><div class="msg-author" style="${isMine?'flex-direction:row-reverse;':''}">${avaHtml}<span style="${ns}">${esc(un)}</span></div><div class="${wrapperCls}">`;
       
       g.forEach(g2=>{
         const m=g2.m;
-        let cls='chat-bubble clickable';
-        if(isMine)cls+=' mine';else if(isC)cls+=' creator';else if(isG)cls+=' god';
         const canDelete = isMine || App.isCreator || (App.isGod && !isC);
         const canPin = App.isCreator || App.isGod;
         const clickAttr = (canDelete || canPin) ? `onclick="window.openMsgActions('${esc(g2.item.key)}', ${canPin}, ${canDelete})"` : '';
-        h+=`<div class="${cls}" ${clickAttr}>${renderContent(m)}</div>`;
+        h+=`<div class="chat-msg-item" ${clickAttr}>${renderContent(m)}</div>`;
       });
-      h+='</div>'; return h;
+      h+='</div></div>'; return h;
     };
     
     for(let i=0;i<msgs.length;i++){
@@ -1729,29 +1779,12 @@ button:active{transform:scale(0.95)}
     const was=ce.scrollHeight-ce.scrollTop-ce.clientHeight<60;
     ce.innerHTML=html;
     
-    ce.querySelectorAll('.chat-ava-load').forEach(img => {
-        const uid = img.dataset.uid;
+    ce.querySelectorAll('.canvas-avatar').forEach(canvas => {
+        const uid = canvas.dataset.uid;
         const uData = uid === App.user?.uid ? App.user : App.allUserData[uid];
-        
-        const canvas = document.createElement('canvas');
-        canvas.className = 'chat-static-avatar canvas-avatar';
-        canvas.width = 120;
-        canvas.height = 120;
-        canvas.style.width = '38px';
-        canvas.style.height = '38px';
-        canvas.dataset.uid = uid || '';
-        canvas.dataset.name = img.dataset.name || '?';
-        canvas.onclick = (e) => {
-            e.stopPropagation();
-            window.openAvatarPreview(uid || '', img.dataset.name || '');
-        };
-        
-        img.parentNode.replaceChild(canvas, img);
-        
         const settings = uData?.avatarSettings || { style: 'off', speed: 1, color1: '#6366f1', color2: '#a855f7' };
         const avatarImg = uData?.imgObj || null;
-        const name = uData?.name || img.dataset.name || '?';
-        
+        const name = uData?.name || canvas.dataset.name || '?';
         canvas._avatarData = { settings, avatarImg, name };
     });
 
@@ -1919,21 +1952,63 @@ button:active{transform:scale(0.95)}
 
   // ============ AVATAR SETTINGS ============
   function loadAvatarSettings(){DB.ref('users/'+App.user.uid+'/avatarSettings').once('value').then(s=>{if(s.exists())Object.assign(App.avatarSettings,s.val());if(!App.avatarAnimId)updateAllFrames();});}
+  
   function buildAnimationGrid() {
-    const g=$('#animationGrid');if(!g)return;let h='';
-    ANIMATIONS.forEach(a=>{
-      const ia=App.avatarSettings.style===a.id;
-      const cu=!a.premium || App.isCreator || App.isGod;
-      const cls = a.id === 'off' ? 'style-btn off-btn' : 'style-btn';
-      h+=`<button class="${cls} ${ia?'active':''} ${a.premium?'premium':''}" data-style="${a.id}" ${!cu?'disabled':''}>${a.label}${a.premium?' 👑':''}</button>`;
+    const g=$('#animationGrid');if(!g)return;
+    g.innerHTML = '';
+    
+    ANIMATIONS.forEach(a => {
+        const ia = App.avatarSettings.style === a.id;
+        const cu = !a.premium || App.isCreator || App.isGod;
+        
+        const box = document.createElement('div');
+        box.className = `anim-preview-box ${ia ? 'active' : ''}`;
+        box.style.cssText = `
+            position: relative;
+            border-radius: 12px;
+            border: 2px solid ${ia ? 'var(--accent)' : 'rgba(255,255,255,0.1)'};
+            background: rgba(0,0,0,0.3);
+            cursor: ${cu ? 'pointer' : 'not-allowed'};
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 4px;
+            opacity: ${cu ? '1' : '0.4'};
+            transition: 0.2s;
+        `;
+        
+        const canvas = document.createElement('canvas');
+        canvas.className = 'anim-preview-canvas';
+        canvas.dataset.style = a.id;
+        canvas.width = 120;
+        canvas.height = 120;
+        canvas.style.width = '60px';
+        canvas.style.height = '60px';
+        canvas.style.marginBottom = '6px';
+        
+        const label = document.createElement('div');
+        label.style.fontSize = '10px';
+        label.style.textAlign = 'center';
+        label.style.color = '#ccc';
+        label.innerHTML = a.label + (a.premium ? ' <span style="color:#FFD700;font-size:12px;">👑</span>' : '');
+        
+        box.appendChild(canvas);
+        box.appendChild(label);
+        
+        if (cu) {
+            box.addEventListener('click', function() {
+                App.avatarSettings.style = a.id;
+                document.querySelectorAll('.anim-preview-box').forEach(x => {
+                    x.classList.remove('active');
+                    x.style.borderColor = 'rgba(255,255,255,0.1)';
+                });
+                this.classList.add('active');
+                this.style.borderColor = 'var(--accent)';
+            });
+        }
+        g.appendChild(box);
     });
-    g.innerHTML=h;
-    g.querySelectorAll('.style-btn').forEach(b=>b.addEventListener('click',function(){
-      if(this.disabled) return;
-      App.avatarSettings.style=this.dataset.style;
-      g.querySelectorAll('.style-btn').forEach(x=>x.classList.remove('active'));
-      this.classList.add('active');
-    }));
   }
 
   // ============ SETTINGS ============
@@ -2081,3 +2156,5 @@ button:active{transform:scale(0.95)}
 </script>
 </body>
 </html>
+
+```
