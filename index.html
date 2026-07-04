@@ -59,14 +59,13 @@ button:active{transform:scale(0.95)}
 .text-ava{display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.15);font-weight:bold;font-size:16px;color:#fff}
 .chat-bubble{background:rgba(255,255,255,0.04);padding:8px 14px;word-break:break-word;line-height:1.4;font-size:14px;position:relative;border-radius:12px;transition:0.1s}
 
-/* 🔥 НОВЫЕ ПРИКОЛЬНЫЕ РАМКИ ДЛЯ ПУЗЫРЕЙ */
+/* Градиентные рамки для пузырей */
 .chat-bubble.mine{
     background:rgba(124, 58, 237, 0.15);
     border: 1px solid transparent;
     background-clip: padding-box;
     position: relative;
 }
-/* Рамка для своих сообщений (Фиолетово-розовый градиент) */
 .chat-bubble.mine::before {
     content: '';
     position: absolute; inset: -2px;
@@ -85,7 +84,6 @@ button:active{transform:scale(0.95)}
     background-clip: padding-box;
     position: relative;
 }
-/* Рамка для чужих сообщений (Сине-голубой градиент) */
 .chat-bubble.other::before {
     content: '';
     position: absolute; inset: -2px;
@@ -104,7 +102,6 @@ button:active{transform:scale(0.95)}
     background-clip: padding-box;
     position: relative;
 }
-/* Рамка для Создателя/Бога (Золотая) */
 .chat-bubble.creator::before {
     content: '';
     position: absolute; inset: -2px;
@@ -183,8 +180,8 @@ button:active{transform:scale(0.95)}
 .style-btn.off-btn{border-color:var(--red);background:rgba(239,68,68,0.1);color:#f87171}
 .style-btn.off-btn.active{border-color:var(--red);background:rgba(239,68,68,0.3);color:#fff}
 
-.avatar-wrap{position:relative;width:76px;height:76px;flex-shrink:0;border-radius:50%}
-#mainAvatarCanvas{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:130px;height:130px;pointer-events:none;z-index:2}
+.avatar-wrap{position:relative;width:80px;height:80px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center}
+#mainAvatarCanvas{width:80px;height:80px;border-radius:50%;pointer-events:none;z-index:2}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
 @media(min-width:1024px){
@@ -393,7 +390,7 @@ button:active{transform:scale(0.95)}
   'use strict';
 
   // =========================================================================
-  // 🎨 БЛОК АНИМАЦИЙ И РЕНДЕРА АВАТАРОК (ФИНАЛЬНАЯ ВЕРСИЯ)
+  // 🎨 БЛОК АНИМАЦИЙ И РЕНДЕРА АВАТАРОК (ФИКС РАЗМЕРА И АНИМАЦИЙ)
   // =========================================================================
   
   const ANIMATIONS = [
@@ -430,7 +427,7 @@ button:active{transform:scale(0.95)}
   let animationLoopRunning = false;
   let animationFrameId = null;
 
-  // Главная функция рендера (единый размер для всех, без сплющивания)
+  // Главная функция рендера
   function renderPremiumAvatar(canvas, settings, imgObj, userName, tick = 0) {
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
@@ -452,8 +449,8 @@ button:active{transform:scale(0.95)}
     const size = targetSize;
     const cx = size / 2;
     const cy = size / 2;
-    const avatarRadius = (size / 2) * 0.85; // Сама картинка
-    const fRadius = (size / 2) * 0.95; // Кольцо (всегда 95% от размера холста)
+    const avatarRadius = (size / 2) * 0.85; 
+    const fRadius = (size / 2) * 0.95; // Кольцо всегда 95% от размера
 
     ctx.clearRect(0, 0, size, size);
 
@@ -695,6 +692,7 @@ button:active{transform:scale(0.95)}
     }
     for (let i = 0; i < renderMap.length; i++) {
       const item = renderMap[i];
+      // ПЕРЕДАЕМ tick=1, ЧТОБЫ АНИМАЦИЯ КРУТИЛАСЬ
       renderPremiumAvatar(item.canvas, item.settings, item.imgObj, item.name, 1);
     }
     animationFrameId = requestAnimationFrame(updateAllFrames);
@@ -733,7 +731,7 @@ button:active{transform:scale(0.95)}
   window.updateAllFrames = updateAllFrames;
 
   // =========================================================================
-  //  ОСНОВНАЯ ЛОГИКА ПРИЛОЖЕНИЯ (БЕЗ ИЗМЕНЕНИЙ, КРОМЕ ЧАТА)
+  //  ОСНОВНАЯ ЛОГИКА ПРИЛОЖЕНИЯ
   // =========================================================================
 
   const firebaseConfig = {
@@ -808,8 +806,6 @@ button:active{transform:scale(0.95)}
   }
 
   // ============ AUTH И ЛОГИКА ============
-  // (Весь функционал сохранен полностью, опускаю комментарии для краткости)
-  
   let isLoginMode = true;
   function toggleAuth() { isLoginMode = !isLoginMode; $('#loginFields').style.display = isLoginMode ? 'flex' : 'none'; $('#registerFields').style.display = isLoginMode ? 'none' : 'flex'; $('#tabLogin').style.background = isLoginMode ? '#7c3aed' : 'transparent'; $('#tabLogin').style.color = isLoginMode ? '#fff' : '#6a7a94'; $('#tabRegister').style.background = isLoginMode ? 'transparent' : '#7c3aed'; $('#tabRegister').style.color = isLoginMode ? '#6a7a94' : '#fff'; $('#authError').style.display = 'none'; }
   function loadPunktsForRegister() { DB.ref('punkts').once('value').then(s => { const sel = $('#regPunkt'); sel.innerHTML = '<option value="">Выберите пункт</option>'; s.forEach(c => { const d = c.val(); sel.innerHTML += `<option value="${esc(c.key)}">Пункт ${esc(c.key)} (${d.rate||0}₽/ч)</option>`; }); }); }
@@ -881,7 +877,6 @@ button:active{transform:scale(0.95)}
   }
   function renderTab(id) { const p = document.getElementById('panel_'+id); if(!p) return; p.innerHTML=''; const renderers = { shift: renderShift, stats: renderStats, history: renderHistory, board: renderBoard, power: renderPower, stickers: renderStickerManager, workers: renderWorkers, salary: renderSalary, announce: renderAnnounce }; if(renderers[id]) renderers[id](p); }
   
-  // Упрощенные функции смен, статистики и т.д. (логика без изменений)
   function renderShift(p) { p.innerHTML = '<div class="card"><div id="shiftContent">Загрузка...</div></div><button class="btn-gray" id="shiftLogoutBtn" style="margin-top:8px;width:100%;">Выйти из аккаунта</button>'; $('#shiftLogoutBtn').addEventListener('click', logout); loadShift(); }
   function loadShift() { const el = $('#shiftContent'); if(!el) return; DB.ref('activeShifts/'+App.user.uid).once('value').then(s => { if(s.exists()&&s.val().active) { const st = s.val().startTime; el.innerHTML = `<div style="text-align:center;"><div>На смене с <b>${new Date(st).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'})}</b></div><div style="font-size:28px;font-weight:800;color:var(--green);margin:4px 0;" id="shiftTimerDisplay">00:00:00</div></div><div style="display:flex;gap:8px;margin-top:10px;"><input type="number" id="tovarCount" placeholder="Кол-во товаров" min="0" style="flex:1;"></div><button class="btn-red" id="endShiftBtn" style="padding:16px;width:100%;margin-top:10px;">ЗАВЕРШИТЬ СМЕНУ</button>`; $('#endShiftBtn').addEventListener('click', endShift); startTimer(st); } else { el.innerHTML = '<p style="color:var(--muted);margin-bottom:12px;">Вы не на смене</p><button class="btn-green" id="startShiftBtn" style="padding:16px;width:100%;">НА СМЕНУ</button>'; $('#startShiftBtn').addEventListener('click', startShift); } }); }
   function startTimer(st) { if(App.shiftTimer) clearInterval(App.shiftTimer); const d = $('#shiftTimerDisplay'); App.shiftTimer = setInterval(() => { const e = Math.floor((Date.now()-st)/1000); if(d) d.textContent = secToHMS(e); }, 1000); }
@@ -896,7 +891,7 @@ button:active{transform:scale(0.95)}
   function renderSalary(p) { /* ... стандартная логика ... */ }
   function renderAnnounce(p) { /* ... стандартная логика ... */ }
 
-  // ============ ЧАТ И СООБЩЕНИЯ (С ИСПРАВЛЕННОЙ ГРУППИРОВКОЙ) ============
+  // ============ ЧАТ И СООБЩЕНИЯ ============
   window.activeMsgKey = null;
   window.openMsgActions = function(key, canPin, canDelete) { window.activeMsgKey = key; document.getElementById('btnPinMsg').style.display = canPin ? 'block' : 'none'; document.getElementById('btnDelMsg').style.display = canDelete ? 'block' : 'none'; document.getElementById('msgActionModal').style.display = 'flex'; };
   window.closeMsgActions = function() { document.getElementById('msgActionModal').style.display = 'none'; window.activeMsgKey = null; };
@@ -912,7 +907,7 @@ button:active{transform:scale(0.95)}
     App.chatListener.on('value', snap => { window.chatSnapCache = snap; renderChatMessages(); });
   }
 
-  // 🌟 ИЗМЕНЕНИЕ: Убрана группировка сообщений в пузыри, каждое сообщение отдельное.
+  // Каждое сообщение отдельное, без объединения в группы
   function renderChatMessages() {
     const snap = window.chatSnapCache;
     if (!snap) return;
@@ -1013,7 +1008,7 @@ button:active{transform:scale(0.95)}
     renderPremiumAvatar(canvas, d?.avatarSettings || { style: 'off' }, d?.imgObj || null, d?.name || '?', 0);
     const rm={god:'Начальник',creator:'Создатель',manager:'Сотрудник'}; $('#mpStatus').textContent=rm[d.role]||'Сотрудник';
     if(d.role === 'god' || d.role === 'creator') { $('#mpPunkt').textContent = App.presenceData[uid]?.online ? '🟢 Онлайн' : '🔴 Оффлайн'; $('#mpPunkt').style.color = App.presenceData[uid]?.online ? '#4CAF50' : 'var(--muted)'; } else { $('#mpPunkt').textContent = App.activeShifts[uid] ? '🟢 На смене' : '🔴 Выходной'; $('#mpPunkt').style.color = App.activeShifts[uid] ? '#4CAF50' : 'var(--muted)'; }
-    $('#mpCalendarContainer').style.display = 'none'; // Упрощено для читаемости
+    $('#mpCalendarContainer').style.display = 'none';
     $('#miniProfile').classList.add('show');
   }
   function closeMiniProfile(){$('#miniProfile').classList.remove('show');App.selectedProfile=null;}
