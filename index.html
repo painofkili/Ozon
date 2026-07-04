@@ -54,7 +54,7 @@ button:active{transform:scale(0.95)}
 .chat-bubble-group.other{align-self:flex-start;align-items:flex-start}
 .chat-bubble-group .msg-author{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;display:flex;align-items:center;gap:8px;padding:0 4px}
 .chat-static-avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;cursor:pointer;flex-shrink:0;border:1px solid rgba(255,255,255,0.1);background:var(--bg3)}
-.chat-static-avatar.canvas-avatar{background:transparent;border:none;overflow:visible}
+.chat-static-avatar.canvas-avatar{background:transparent;border:none;overflow:visible;width:38px;height:38px;min-width:38px;min-height:38px}
 .text-ava{display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.15);font-weight:bold;font-size:16px;color:#fff}
 .chat-bubble{background:rgba(255,255,255,0.04);padding:8px 14px;word-break:break-word;line-height:1.4;font-size:14px;border:1px solid rgba(255,255,255,0.03);position:relative;border-radius:12px;transition:0.1s}
 .chat-bubble.mine{background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.1)}
@@ -77,11 +77,11 @@ button:active{transform:scale(0.95)}
 .avatar-carousel-inner::-webkit-scrollbar{display:none}
 .sidebar-close-btn{position:absolute;top:15px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#eee;width:36px;height:36px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:0.2s;z-index:10;box-shadow:0 4px 10px rgba(0,0,0,0.3)}
 .sidebar-close-btn:hover{background:#e94560;color:#fff;border-color:#e94560;transform:translateX(-50%) scale(1.1)}
-.avatar-item{width:56px;height:56px;border-radius:50%;cursor:pointer;position:relative;transition:0.2s;flex-shrink:0}
+.avatar-item{width:56px;height:56px;border-radius:50%;cursor:pointer;position:relative;transition:0.2s;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .avatar-item:hover{transform:scale(1.05)}
-.avatar-item .avatar-canvas{width:56px;height:56px;border-radius:50%;display:block;border:2px solid transparent}
+.avatar-item .avatar-canvas{width:56px;height:56px;border-radius:50%;display:block;border:2px solid transparent;flex-shrink:0}
 .avatar-item.active .avatar-canvas{border-color:var(--gold);box-shadow:0 0 15px rgba(245,197,24,0.3)}
-.avatar-item .online-dot{position:absolute;bottom:2px;right:2px;width:12px;height:12px;background:#4CAF50;border-radius:50%;border:2px solid #111}
+.avatar-item .online-dot{position:absolute;bottom:4px;right:4px;width:12px;height:12px;background:#4CAF50;border-radius:50%;border:2px solid #111;z-index:2}
 .btn-sidebar-toggle{position:fixed;right:0;top:50%;transform:translateY(-50%);width:36px;height:50px;background:var(--bg2);border:1px solid var(--border);border-right:none;border-radius:14px 0 0 14px;color:#fff;font-size:14px;cursor:pointer;z-index:999;backdrop-filter:blur(8px)}
 
 .mini-profile{position:fixed;right:130px;top:50%;transform:translateY(-50%);background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px;width:240px;z-index:1100;display:none;backdrop-filter:blur(20px);box-shadow:0 10px 40px rgba(0,0,0,0.6)}
@@ -90,6 +90,7 @@ button:active{transform:scale(0.95)}
 @keyframes slideUpModal{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .mini-profile .mp-close{position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.05);border:none;color:#aaa;width:28px;height:28px;border-radius:50%;font-size:12px;cursor:pointer}
 .mini-profile .mp-close:hover{background:#e94560;color:#fff}
+.mini-profile .mp-avatar-canvas{width:64px;height:64px;border-radius:50%;border:2px solid var(--accent);display:block;margin:0 auto;cursor:pointer}
 
 #stickerPanel{position:absolute;bottom:calc(100% + 8px);right:0;width:300px;height:340px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;display:none;flex-direction:column;z-index:1000;box-shadow:0 10px 40px rgba(0,0,0,0.6);backdrop-filter:blur(20px);overflow:hidden}
 #stickerPanel.open{display:flex}
@@ -136,6 +137,7 @@ button:active{transform:scale(0.95)}
     min-width: 38px !important;
     min-height: 38px !important;
     border-radius: 50%;
+    flex-shrink: 0;
 }
 
 @media(min-width:1024px){
@@ -284,7 +286,7 @@ button:active{transform:scale(0.95)}
   
   <div class="mini-profile" id="miniProfile">
     <button class="mp-close" id="mpCloseBtn">✕</button>
-    <div id="mpAvatarContainer" style="position:relative;width:64px;height:64px;margin:0 auto;cursor:pointer;"></div>
+    <div id="mpAvatarContainer" style="position:relative;width:64px;height:64px;margin:0 auto;"></div>
     <div id="mpName" style="text-align:center;font-weight:bold;font-size:16px;margin-top:8px;"></div>
     <div id="mpStatus" style="text-align:center;font-size:12px;margin:4px 0;"></div>
     <div id="mpPunkt" style="text-align:center;font-size:12px;font-weight:bold;color:#4CAF50;"></div>
@@ -2127,8 +2129,8 @@ button:active{transform:scale(0.95)}
       const isActive=App.selectedProfile===uid;
       
       const canvas = document.createElement('canvas');
-      canvas.width = 160;
-      canvas.height = 160;
+      canvas.width = 200;
+      canvas.height = 200;
       canvas.style.width = '56px';
       canvas.style.height = '56px';
       canvas.className = 'avatar-canvas';
@@ -2138,7 +2140,7 @@ button:active{transform:scale(0.95)}
       const avatarImg = d?.imgObj || null;
       const name = d?.name || '?';
       
-      // Рендерим сразу
+      // Рендерим сразу с анимацией (tick=1)
       renderPremiumAvatar(canvas, settings, avatarImg, name, 1);
       
       const wrapper = document.createElement('div');
@@ -2198,8 +2200,7 @@ button:active{transform:scale(0.95)}
     canvas.height = 200;
     canvas.style.width = '64px';
     canvas.style.height = '64px';
-    canvas.style.borderRadius = '50%';
-    canvas.style.border = '2px solid var(--accent)';
+    canvas.className = 'mp-avatar-canvas';
     container.appendChild(canvas);
     
     const settings = d?.avatarSettings || { style: 'off', speed: 1, color1: '#6366f1', color2: '#a855f7' };
