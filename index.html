@@ -24,6 +24,8 @@ button:active{transform:scale(0.95)}
 .btn-blue{background:linear-gradient(135deg,#2196F3,#1565C0);color:#fff;width:100%}
 .btn-purple{background:#9C27B0;color:#fff}
 .btn-sm{padding:6px 12px;font-size:12px;width:auto}
+.btn-off{background:rgba(100,100,100,0.3);color:#aaa;border:1px solid rgba(255,255,255,0.1);width:100%}
+.btn-off.active{border-color:var(--red);color:#fff;background:rgba(239,68,68,0.2)}
 .app-container{display:flex;width:100%;height:100%;position:relative;z-index:1;overflow:hidden}
 .main-content{width:100%;max-width:100%;padding:12px 16px;display:flex;flex-direction:column;height:100%;gap:6px;transition:0.3s}
 .profile-card{display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(12px);flex-shrink:0;cursor:pointer;transition:0.2s}
@@ -52,6 +54,7 @@ button:active{transform:scale(0.95)}
 .chat-bubble-group.other{align-self:flex-start;align-items:flex-start}
 .chat-bubble-group .msg-author{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;display:flex;align-items:center;gap:8px;padding:0 4px}
 .chat-static-avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;cursor:pointer;flex-shrink:0;border:1px solid rgba(255,255,255,0.1);background:var(--bg3)}
+.chat-static-avatar.canvas-avatar{background:transparent;border:none;overflow:visible}
 .text-ava{display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.15);font-weight:bold;font-size:16px;color:#fff}
 .chat-bubble{background:rgba(255,255,255,0.04);padding:8px 14px;word-break:break-word;line-height:1.4;font-size:14px;border:1px solid rgba(255,255,255,0.03);position:relative;border-radius:12px;transition:0.1s}
 .chat-bubble.mine{background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.1)}
@@ -119,6 +122,8 @@ button:active{transform:scale(0.95)}
 .style-btn{padding:8px 6px;border-radius:10px;border:2px solid #444;background:rgba(0,0,0,0.3);color:#ccc;font-size:11px;cursor:pointer;transition:0.2s;width:100%}
 .style-btn.active{border-color:var(--accent);background:rgba(124,58,237,0.2);color:#fff}
 .style-btn.premium{border-color:#FFD700;background:rgba(255,215,0,0.05)}
+.style-btn.off-btn{border-color:var(--red);background:rgba(239,68,68,0.1);color:#f87171}
+.style-btn.off-btn.active{border-color:var(--red);background:rgba(239,68,68,0.3);color:#fff}
 
 .avatar-wrap{position:relative;width:76px;height:76px;flex-shrink:0;border-radius:50%}
 #mainAvatarCanvas{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:130px;height:130px;pointer-events:none;z-index:2}
@@ -329,23 +334,20 @@ button:active{transform:scale(0.95)}
   'use strict';
 
   // =========================================================================
-  // 🎨 БЛОК АНИМАЦИЙ АВАТАРОК (ДОБАВЛЯТЬ НОВЫЕ СЮДА)
+  // 🎨 БЛОК АНИМАЦИЙ АВАТАРОК
   // =========================================================================
   
   const ANIMATIONS = [
+    { id:'off', label:'Без анимации', premium:false },
     { id:'rgb-ring', label:'Кольцо', premium:false },
     { id:'rgb-rainbow', label:'Радуга 🌈', premium:false },
     { id:'neon-pulse', label:'Пульс 💓', premium:false },
     { id:'running-gradient', label:'Градиент 💫', premium:false },
-    
-    // НОВЕЙШИЕ ЕБЕЙШИЕ АНИМАЦИИ
     { id:'glitch', label:'Глитч 📺', premium:true }, 
     { id:'symbiote', label:'Симбиот 🦠', premium:true },       
     { id:'runes', label:'Руны 📜', premium:true },        
     { id:'pulsar', label:'Квазар 🌟', premium:true },     
     { id:'frost', label:'Фрост ❄️', premium:true }, 
-    
-    // ПРЕДЫДУЩИЕ АНИМАЦИИ
     { id:'singularity', label:'Сингуля 🕳️', premium:true }, 
     { id:'quantum-realm', label:'Квант 🌌', premium:true },       
     { id:'dragon-aura', label:'Дракон 🐉', premium:true },        
@@ -366,11 +368,19 @@ button:active{transform:scale(0.95)}
   ];
 
   const EFFECTS_REGISTRY = {
-    // === 5 АБСОЛЮТНО НОВЫХ АНИМАЦИЙ ===
+    'off': (opts) => {
+        const { ctx, cx, cy, fRadius, layer } = opts;
+        if(layer === 'front') {
+            ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(cx, cy, fRadius, 0, Math.PI*2);
+            ctx.stroke();
+        }
+    },
     'glitch': (opts) => {
         const { ctx, cx, cy, fRadius, state, speed, color1, color2, layer } = opts;
         if (layer === 'front') {
-            // Вероятность сильного "вздрагивания"
             const isGlitching = Math.random() > 0.85;
             const shiftX = isGlitching ? (Math.random() - 0.5) * 15 * speed : 0;
             const shiftY = isGlitching ? (Math.random() - 0.5) * 15 * speed : 0;
@@ -379,17 +389,13 @@ button:active{transform:scale(0.95)}
             ctx.lineWidth = 4;
             ctx.globalCompositeOperation = 'screen';
 
-            // Голубой канал
             ctx.strokeStyle = '#0ff';
             ctx.beginPath(); ctx.arc(shiftX, shiftY, fRadius, 0, Math.PI*2); ctx.stroke();
-            // Красный канал
             ctx.strokeStyle = '#f00';
             ctx.beginPath(); ctx.arc(-shiftX, -shiftY, fRadius, 0, Math.PI*2); ctx.stroke();
-            // Основной цвет
             ctx.strokeStyle = color1;
             ctx.beginPath(); ctx.arc(0, 0, fRadius, 0, Math.PI*2); ctx.stroke();
 
-            // Горизонтальные полосы помех
             if (isGlitching || Math.random() > 0.95) {
                 ctx.fillStyle = Math.random() > 0.5 ? color2 : '#fff';
                 for(let i=0; i<4; i++) {
@@ -407,10 +413,8 @@ button:active{transform:scale(0.95)}
             ctx.fillStyle = color1;
             ctx.shadowBlur = 15; ctx.shadowColor = color2;
             
-            // Рисуем живое, пульсирующее тело симбиота вокруг аватара
             ctx.beginPath();
             for(let a=0; a<=Math.PI*2.1; a+=0.1) {
-                // Искажения по синусоидам разной частоты
                 const r = fRadius + Math.sin(a*4 + state.tick*3)*6 + Math.cos(a*7 - state.tick*2)*3;
                 if(a===0) ctx.moveTo(Math.cos(a)*r, Math.sin(a)*r);
                 else ctx.lineTo(Math.cos(a)*r, Math.sin(a)*r);
@@ -420,7 +424,6 @@ button:active{transform:scale(0.95)}
             ctx.strokeStyle = color1;
             ctx.stroke();
 
-            // Капли, отрывающиеся от тела
             if (!state.drips) state.drips = [];
             if (Math.random() > 0.7 && state.drips.length < 20) {
                 const angle = Math.random() * Math.PI*2;
@@ -449,12 +452,10 @@ button:active{transform:scale(0.95)}
             ctx.save(); ctx.translate(cx, cy);
             ctx.shadowBlur = 12; ctx.shadowColor = color1;
             
-            // Внешнее вращающееся кольцо
             ctx.save();
             ctx.rotate(state.tick * 0.4);
             ctx.strokeStyle = color1; ctx.lineWidth = 2;
             ctx.beginPath(); ctx.arc(0, 0, fRadius + 18, 0, Math.PI*2); ctx.stroke();
-            // Точки на внешнем кольце
             ctx.fillStyle = color2;
             for(let i=0; i<12; i++) {
                 ctx.beginPath(); ctx.arc(0, fRadius+18, 2.5, 0, Math.PI*2); ctx.fill();
@@ -462,13 +463,11 @@ button:active{transform:scale(0.95)}
             }
             ctx.restore();
 
-            // Внутреннее кольцо в другую сторону
             ctx.save();
             ctx.rotate(-state.tick * 0.6);
             ctx.strokeStyle = color2; ctx.lineWidth = 1.5;
             ctx.beginPath(); ctx.arc(0, 0, fRadius + 2, 0, Math.PI*2); ctx.stroke();
             
-            // Руны (скандинавский футарк)
             ctx.font = '16px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
             ctx.fillStyle = '#fff';
             ctx.shadowColor = color2; ctx.shadowBlur = 8;
@@ -485,12 +484,10 @@ button:active{transform:scale(0.95)}
         const { ctx, cx, cy, fRadius, state, speed, color1, color2, layer } = opts;
         if (layer === 'back') {
             ctx.save(); ctx.translate(cx, cy);
-            // Ядро
             const grad = ctx.createRadialGradient(0,0, fRadius-10, 0,0, fRadius+60);
             grad.addColorStop(0, color1); grad.addColorStop(1, 'rgba(0,0,0,0)');
             ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(0,0, fRadius+60, 0, Math.PI*2); ctx.fill();
 
-            // Мощные джеты (лучи) из полюсов
             ctx.rotate(state.tick * 0.3);
             const jetGrad = ctx.createLinearGradient(0, -fRadius-120, 0, fRadius+120);
             jetGrad.addColorStop(0, 'rgba(0,0,0,0)');
@@ -501,7 +498,6 @@ button:active{transform:scale(0.95)}
             ctx.fillStyle = jetGrad;
             ctx.globalCompositeOperation = 'lighter';
             
-            // Пульсация толщины и длины луча
             const w = 8 + Math.sin(state.tick*6)*4;
             const h = fRadius + 100 + Math.sin(state.tick*4)*30;
             ctx.beginPath(); ctx.ellipse(0, 0, w, h, 0, 0, Math.PI*2); ctx.fill();
@@ -511,7 +507,6 @@ button:active{transform:scale(0.95)}
             ctx.save(); ctx.translate(cx, cy); ctx.rotate(-state.tick * 2);
             ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.shadowBlur = 15; ctx.shadowColor = color1;
             ctx.beginPath(); ctx.arc(0, 0, fRadius, 0, Math.PI*2); ctx.stroke();
-            // Раскаленные точки материи на горизонте событий
             ctx.fillStyle = '#fff';
             for(let i=0; i<3; i++) {
                 ctx.beginPath(); ctx.arc(fRadius, 0, 3 + Math.random()*2, 0, Math.PI*2); ctx.fill();
@@ -528,15 +523,12 @@ button:active{transform:scale(0.95)}
             ctx.shadowBlur = 12; ctx.shadowColor = '#fff';
             ctx.lineWidth = 2.5;
 
-            // Базовое ледяное кольцо
             ctx.beginPath(); ctx.arc(0, 0, fRadius, 0, Math.PI*2); ctx.stroke();
 
-            // Ледяные шипы, вращающиеся медленно
             const numSpikes = 14;
             ctx.fillStyle = color2;
             for(let i=0; i<numSpikes; i++) {
                 const angle = (i * Math.PI*2/numSpikes) + state.tick*0.2;
-                // Длина шипа пульсирует
                 const spikeLen = 6 + Math.sin(state.tick*3 + i*2)*6;
                 ctx.save();
                 ctx.rotate(angle);
@@ -548,7 +540,6 @@ button:active{transform:scale(0.95)}
                 ctx.restore();
             }
 
-            // Метель (снежинки, улетающие наружу)
             if(!state.snow) state.snow = [];
             if(state.snow.length < 40) {
                 state.snow.push({ angle: Math.random()*Math.PI*2, dist: fRadius, life: 1, drift: (Math.random()-0.5)*0.03 });
@@ -566,26 +557,24 @@ button:active{transform:scale(0.95)}
             ctx.restore();
         }
     },
-
-    // === ПРЕДЫДУЩИЕ АНИМАЦИИ ===
     'singularity': (opts) => {
-        const { ctx, cx, cy, avatarRadius, state, color1, color2, layer } = opts;
+        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
         if(layer === 'back') {
             ctx.save(); ctx.translate(cx, cy);
             ctx.rotate(state.tick * 0.4);
-            const grad = ctx.createRadialGradient(0,0, avatarRadius-5, 0,0, avatarRadius+45);
+            const grad = ctx.createRadialGradient(0,0, fRadius-5, 0,0, fRadius+45);
             grad.addColorStop(0, '#000'); grad.addColorStop(0.2, color1); grad.addColorStop(0.5, color2); grad.addColorStop(1, 'rgba(0,0,0,0)');
             ctx.fillStyle = grad; ctx.scale(1, 0.6);
-            ctx.beginPath(); ctx.arc(0, 0, avatarRadius+50, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(0, 0, fRadius+50, 0, Math.PI*2); ctx.fill();
             ctx.restore();
-            ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(cx, cy, avatarRadius+2, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(cx, cy, fRadius+2, 0, Math.PI*2); ctx.fill();
         }
         if(layer === 'front') {
             ctx.save(); ctx.translate(cx, cy); ctx.rotate(-state.tick * 0.8);
             ctx.strokeStyle = color1; ctx.lineWidth = 2; ctx.shadowBlur = 15; ctx.shadowColor = color2;
             for(let i=0; i<3; i++) {
-                ctx.rotate((Math.PI*2)/3); ctx.beginPath(); ctx.arc(0, 0, avatarRadius+15, 0, Math.PI/2); ctx.stroke();
-                const pA = state.tick * 2 + i, pR = avatarRadius + 10 + Math.sin(state.tick*5)*5;
+                ctx.rotate((Math.PI*2)/3); ctx.beginPath(); ctx.arc(0, 0, fRadius+15, 0, Math.PI/2); ctx.stroke();
+                const pA = state.tick * 2 + i, pR = fRadius + 10 + Math.sin(state.tick*5)*5;
                 ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(Math.cos(pA)*pR, Math.sin(pA)*pR, 2, 0, Math.PI*2); ctx.fill();
             }
             ctx.restore();
@@ -609,16 +598,16 @@ button:active{transform:scale(0.95)}
         }
     },
     'dragon-aura': (opts) => {
-        const { ctx, cx, cy, avatarRadius, state, speed, color1, color2, layer } = opts;
+        const { ctx, cx, cy, fRadius, state, speed, color1, color2, layer } = opts;
         if(layer === 'back') {
             ctx.shadowBlur = 30; ctx.shadowColor = color1; ctx.fillStyle = color1;
-            ctx.beginPath(); ctx.arc(cx, cy, avatarRadius+5, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
+            ctx.beginPath(); ctx.arc(cx, cy, fRadius+5, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
         }
         if(layer === 'front') {
             if(!state.dragonFlames) state.dragonFlames = [];
             if(state.dragonFlames.length < 40) {
                 const angle = Math.random() * Math.PI*2;
-                state.dragonFlames.push({ angle: angle, radius: avatarRadius - 5, vx: Math.cos(angle) * (1 + Math.random()), vy: Math.sin(angle) * (1 + Math.random()) - 2, life: 1, size: 3 + Math.random()*5, color: Math.random() > 0.5 ? color1 : color2 });
+                state.dragonFlames.push({ angle: angle, radius: fRadius - 5, vx: Math.cos(angle) * (1 + Math.random()), vy: Math.sin(angle) * (1 + Math.random()) - 2, life: 1, size: 3 + Math.random()*5, color: Math.random() > 0.5 ? color1 : color2 });
             }
             ctx.globalCompositeOperation = 'lighter';
             state.dragonFlames.forEach(p => {
@@ -629,7 +618,7 @@ button:active{transform:scale(0.95)}
             });
             ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
             state.dragonFlames = state.dragonFlames.filter(p => p.life > 0);
-            ctx.strokeStyle = color2; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, avatarRadius+4, 0, Math.PI*2); ctx.stroke();
+            ctx.strokeStyle = color2; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, fRadius+4, 0, Math.PI*2); ctx.stroke();
         }
     },
     'supernova': (opts) => {
@@ -680,23 +669,23 @@ button:active{transform:scale(0.95)}
         }
     },
     'void-vortex': (opts) => {
-        const { ctx, cx, cy, avatarRadius, state, speed, color1, color2, layer } = opts;
+        const { ctx, cx, cy, fRadius, state, speed, color1, color2, layer } = opts;
         if(layer === 'back') {
           ctx.save(); ctx.translate(cx, cy); ctx.rotate(-state.tick * 0.5);
-          const grad = ctx.createRadialGradient(0, 0, avatarRadius - 10, 0, 0, avatarRadius + 30);
+          const grad = ctx.createRadialGradient(0, 0, fRadius - 10, 0, 0, fRadius + 30);
           grad.addColorStop(0, '#000000'); grad.addColorStop(0.3, color1); grad.addColorStop(0.7, color2); grad.addColorStop(1, 'rgba(0,0,0,0)');
-          ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(0, 0, avatarRadius + 40, 0, Math.PI*2); ctx.fill();
+          ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(0, 0, fRadius + 40, 0, Math.PI*2); ctx.fill();
           ctx.restore();
         }
         if(layer === 'front') {
           if(!state.vortexParticles) state.vortexParticles = [];
-          if(state.vortexParticles.length < 60) state.vortexParticles.push({ angle: Math.random() * Math.PI * 2, radius: avatarRadius + 40 + Math.random() * 40, speed: 1 + Math.random() * 2, size: 1 + Math.random() * 2, color: Math.random() > 0.5 ? color1 : color2, opacity: Math.random() });
+          if(state.vortexParticles.length < 60) state.vortexParticles.push({ angle: Math.random() * Math.PI * 2, radius: fRadius + 40 + Math.random() * 40, speed: 1 + Math.random() * 2, size: 1 + Math.random() * 2, color: Math.random() > 0.5 ? color1 : color2, opacity: Math.random() });
           ctx.shadowBlur = 10; ctx.shadowColor = color1;
           state.vortexParticles.forEach(p => {
             p.radius -= 0.8 * speed; p.angle += 0.03 * speed;
-            if(p.radius < avatarRadius - 20) { p.radius = avatarRadius + 40 + Math.random() * 40; p.angle = Math.random() * Math.PI * 2; }
+            if(p.radius < fRadius - 20) { p.radius = fRadius + 40 + Math.random() * 40; p.angle = Math.random() * Math.PI * 2; }
             const px = cx + Math.cos(p.angle) * p.radius, py = cy + Math.sin(p.angle) * p.radius;
-            ctx.fillStyle = p.color; ctx.globalAlpha = Math.min(1, (p.radius - (avatarRadius - 20)) / 50);
+            ctx.fillStyle = p.color; ctx.globalAlpha = Math.min(1, (p.radius - (fRadius - 20)) / 50);
             ctx.beginPath(); ctx.arc(px, py, p.size, 0, Math.PI*2); ctx.fill();
           });
           ctx.globalAlpha = 1;
@@ -717,38 +706,38 @@ button:active{transform:scale(0.95)}
         }
     },
     'cyber-grid': (opts) => {
-        const { ctx, cx, cy, avatarRadius, state, color1, layer } = opts;
+        const { ctx, cx, cy, fRadius, state, color1, layer } = opts;
         if(layer === 'front') {
           ctx.save(); ctx.shadowBlur = 0;
-          const scanY = cy - avatarRadius + ((state.tick * 40) % (avatarRadius * 2));
-          ctx.beginPath(); ctx.arc(cx, cy, avatarRadius, 0, Math.PI * 2); ctx.clip();
+          const scanY = cy - fRadius + ((state.tick * 40) % (fRadius * 2));
+          ctx.beginPath(); ctx.arc(cx, cy, fRadius, 0, Math.PI * 2); ctx.clip();
           ctx.strokeStyle = 'rgba(0, 242, 255, 0.15)'; ctx.lineWidth = 1;
-          for(let i = cy - avatarRadius; i < cy + avatarRadius; i += 12) { ctx.beginPath(); ctx.moveTo(cx - avatarRadius, i); ctx.lineTo(cx + avatarRadius, i); ctx.stroke(); }
+          for(let i = cy - fRadius; i < cy + fRadius; i += 12) { ctx.beginPath(); ctx.moveTo(cx - fRadius, i); ctx.lineTo(cx + fRadius, i); ctx.stroke(); }
           const grad = ctx.createLinearGradient(0, scanY - 15, 0, scanY + 15);
           grad.addColorStop(0, 'rgba(0, 242, 255, 0)'); grad.addColorStop(0.5, color1); grad.addColorStop(1, 'rgba(0, 242, 255, 0)');
-          ctx.fillStyle = grad; ctx.fillRect(cx - avatarRadius, scanY - 15, avatarRadius * 2, 30);
+          ctx.fillStyle = grad; ctx.fillRect(cx - fRadius, scanY - 15, fRadius * 2, 30);
           ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.shadowBlur = 12; ctx.shadowColor = color1;
-          ctx.beginPath(); ctx.moveTo(cx - avatarRadius, scanY); ctx.lineTo(cx + avatarRadius, scanY); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(cx - fRadius, scanY); ctx.lineTo(cx + fRadius, scanY); ctx.stroke();
           ctx.restore();
         }
     },
     'golden-dust': (opts) => {
-        const { ctx, cx, cy, avatarRadius, state, speed, layer } = opts;
+        const { ctx, cx, cy, fRadius, state, speed, layer } = opts;
         if(layer === 'back') {
-          const grad = ctx.createRadialGradient(cx, cy, avatarRadius - 10, cx, cy, avatarRadius + 25);
+          const grad = ctx.createRadialGradient(cx, cy, fRadius - 10, cx, cy, fRadius + 25);
           grad.addColorStop(0, 'rgba(245, 197, 24, 0.2)'); grad.addColorStop(1, 'rgba(0,0,0,0)');
-          ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(cx, cy, avatarRadius + 30, 0, Math.PI*2); ctx.fill();
+          ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(cx, cy, fRadius + 30, 0, Math.PI*2); ctx.fill();
         }
         if(layer === 'front' || layer === 'back') {
           if(!state.dustParticles) state.dustParticles = [];
-          if(state.dustParticles.length < 80) state.dustParticles.push({ x: cx - avatarRadius + Math.random() * (avatarRadius * 2), y: cy + avatarRadius - Math.random() * 10, vx: (Math.random() - 0.5) * 0.8, vy: -0.5 - Math.random() * 1.5, life: 1, size: 1 + Math.random() * 3, sparkle: Math.random(), isFront: Math.random() > 0.4 });
+          if(state.dustParticles.length < 80) state.dustParticles.push({ x: cx - fRadius + Math.random() * (fRadius * 2), y: cy + fRadius - Math.random() * 10, vx: (Math.random() - 0.5) * 0.8, vy: -0.5 - Math.random() * 1.5, life: 1, size: 1 + Math.random() * 3, sparkle: Math.random(), isFront: Math.random() > 0.4 });
           ctx.shadowBlur = 8; ctx.shadowColor = '#ffd700';
           state.dustParticles.forEach(p => {
             if((layer === 'front' && p.isFront) || (layer === 'back' && !p.isFront)) {
               p.x += p.vx * speed; p.y += p.vy * speed; p.life -= 0.008 * speed; p.sparkle += 0.1;
               const currentOpacity = Math.max(0, p.life) * (0.5 + Math.sin(p.sparkle) * 0.5);
               const dist = Math.sqrt(Math.pow(p.x - cx, 2) + Math.pow(p.y - cy, 2));
-              if(p.life <= 0 || dist > avatarRadius + 35) { p.x = cx - avatarRadius + Math.random() * (avatarRadius * 2); p.y = cy + avatarRadius; p.life = 1; p.vy = -0.5 - Math.random() * 1.5; }
+              if(p.life <= 0 || dist > fRadius + 35) { p.x = cx - fRadius + Math.random() * (fRadius * 2); p.y = cy + fRadius; p.life = 1; p.vy = -0.5 - Math.random() * 1.5; }
               ctx.fillStyle = `rgba(255, 215, 0, ${currentOpacity})`; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
             }
           });
@@ -756,16 +745,16 @@ button:active{transform:scale(0.95)}
         }
     },
     'aurora': (opts) => {
-        const { ctx, cx, cy, fRadius, avatarRadius, state, color1, color2, glow, layer } = opts;
+        const { ctx, cx, cy, fRadius, state, color1, color2, glow, layer } = opts;
         if(layer === 'back') {
-          ctx.save(); ctx.shadowBlur = 0; ctx.beginPath(); ctx.arc(cx, cy, avatarRadius + 22, 0, Math.PI*2); ctx.clip();
+          ctx.save(); ctx.shadowBlur = 0; ctx.beginPath(); ctx.arc(cx, cy, fRadius + 22, 0, Math.PI*2); ctx.clip();
           for(let i = 0; i < 3; i++) {
             const shift = state.tick * (0.3 + i * 0.1);
-            const grad = ctx.createLinearGradient(cx - avatarRadius, 0, cx + avatarRadius, 0);
+            const grad = ctx.createLinearGradient(cx - fRadius, 0, cx + fRadius, 0);
             grad.addColorStop(0, 'rgba(0,0,0,0)'); grad.addColorStop(0.3, color1); grad.addColorStop(0.7, color2); grad.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = grad; ctx.beginPath(); ctx.moveTo(cx - avatarRadius - 20, cy + avatarRadius + 20);
-            for(let x = cx - avatarRadius - 20; x <= cx + avatarRadius + 20; x += 10) { const y = cy + Math.sin(x * 0.03 + shift) * 15 + (i * 12) - 10; ctx.lineTo(x, y); }
-            ctx.lineTo(cx + avatarRadius + 20, cy + avatarRadius + 20); ctx.closePath(); ctx.globalAlpha = 0.45; ctx.fill();
+            ctx.fillStyle = grad; ctx.beginPath(); ctx.moveTo(cx - fRadius - 20, cy + fRadius + 20);
+            for(let x = cx - fRadius - 20; x <= cx + fRadius + 20; x += 10) { const y = cy + Math.sin(x * 0.03 + shift) * 15 + (i * 12) - 10; ctx.lineTo(x, y); }
+            ctx.lineTo(cx + fRadius + 20, cy + fRadius + 20); ctx.closePath(); ctx.globalAlpha = 0.45; ctx.fill();
           }
           ctx.restore(); ctx.globalAlpha = 1;
         }
@@ -809,8 +798,8 @@ button:active{transform:scale(0.95)}
         if(layer==='front') { for(let i=0;i<3;i++) { const angle=state.tick*2+i*Math.PI*2/3; const tailLen=30; for(let j=tailLen;j>=0;j--) { const tA=angle-j*0.03; const x=cx+Math.cos(tA)*fRadius, y=cy+Math.sin(tA)*fRadius; const size=6*(1-j/tailLen); ctx.fillStyle=j===0?'#fff':color1; ctx.globalAlpha=1-(j/tailLen); ctx.shadowBlur=j===0?20:0; ctx.shadowColor=color2; ctx.beginPath(); ctx.arc(x,y,size,0,Math.PI*2); ctx.fill(); } } ctx.globalAlpha=1; }
     },
     'double-orbit': (opts) => {
-        const { ctx, cx, cy, avatarRadius, state, color1, color2, layer } = opts;
-        const oRX = avatarRadius + 38, oRY = avatarRadius * 0.35;
+        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
+        const oRX = fRadius + 38, oRY = fRadius * 0.35;
         const a1 = state.tick, a2 = -state.tick * 1.3, a3 = state.tick * 0.8;
         const drawOrbit = (rot, col, pAngle, isFront) => {
           ctx.save(); ctx.translate(cx, cy); ctx.rotate(rot);
@@ -829,28 +818,28 @@ button:active{transform:scale(0.95)}
         else { drawOrbit(0,color1,a1,true); drawOrbit(Math.PI/3,color2,a2,true); drawOrbit(-Math.PI/3,'#00d4ff',a3,true); }
     },
     'matrix': (opts) => {
-        const { ctx, cx, cy, fRadius, avatarRadius, state, speed, layer } = opts;
+        const { ctx, cx, cy, fRadius, state, speed, layer } = opts;
         if(layer === 'back') { ctx.strokeStyle='#00ff41'; ctx.lineWidth=4; ctx.shadowBlur=15; ctx.shadowColor='#00ff41'; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke(); }
         if(layer === 'front') {
-          if(!state.matrixRain) { state.matrixRain = []; for(let i=0;i<30;i++) state.matrixRain.push({x:cx-avatarRadius+Math.random()*avatarRadius*2, y:cy-avatarRadius-Math.random()*200, speed:1.5+Math.random()*2, char:Math.floor(Math.random()*10).toString()}); }
+          if(!state.matrixRain) { state.matrixRain = []; for(let i=0;i<30;i++) state.matrixRain.push({x:cx-fRadius+Math.random()*fRadius*2, y:cy-fRadius-Math.random()*200, speed:1.5+Math.random()*2, char:Math.floor(Math.random()*10).toString()}); }
           ctx.font = 'bold 16px monospace'; ctx.textAlign = 'center'; ctx.shadowBlur = 8; ctx.shadowColor = '#00ff41';
           state.matrixRain.forEach(p => {
             p.y += p.speed * speed; if(Math.random()>0.9) p.char = Math.floor(Math.random()*10).toString();
-            if(p.y > cy+avatarRadius+20) { p.y = cy-avatarRadius-50-Math.random()*100; p.x = cx-avatarRadius+Math.random()*avatarRadius*2; }
+            if(p.y > cy+fRadius+20) { p.y = cy-fRadius-50-Math.random()*100; p.x = cx-fRadius+Math.random()*fRadius*2; }
             const dist = Math.sqrt(Math.pow(p.x-cx,2)+Math.pow(p.y-cy,2));
-            ctx.fillStyle = dist < avatarRadius ? '#ffffff' : '#00ff41';
-            ctx.globalAlpha = Math.max(0, 1-(dist-avatarRadius)/30);
+            ctx.fillStyle = dist < fRadius ? '#ffffff' : '#00ff41';
+            ctx.globalAlpha = Math.max(0, 1-(dist-fRadius)/30);
             if(ctx.globalAlpha>0) ctx.fillText(p.char, p.x, p.y);
           });
           ctx.globalAlpha = 1;
         }
     },
     'fire': (opts) => {
-        const { ctx, cx, cy, fRadius, avatarRadius, state, speed, layer } = opts;
+        const { ctx, cx, cy, fRadius, state, speed, layer } = opts;
         if(layer === 'back') { ctx.shadowBlur=20; ctx.shadowColor='#ff3300'; ctx.strokeStyle='#ff3300'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke(); ctx.shadowBlur=0; }
         if(layer === 'front' || layer === 'back') {
           if(!state.fireParticles) state.fireParticles = [];
-          if(state.fireParticles.length < 150) { const sA = Math.random()*Math.PI*2; state.fireParticles.push({x:cx+Math.cos(sA)*avatarRadius, y:cy+Math.sin(sA)*avatarRadius, vx:(Math.random()-0.5)*1.5, vy:-Math.random()*3-1, life:1, maxLife:1, size:15+Math.random()*15, color:Math.random()>0.5?'#ff3300':(Math.random()>0.5?'#ff7700':'#ffcc00'), isFront:Math.random()>0.5}); }
+          if(state.fireParticles.length < 150) { const sA = Math.random()*Math.PI*2; state.fireParticles.push({x:cx+Math.cos(sA)*fRadius, y:cy+Math.sin(sA)*fRadius, vx:(Math.random()-0.5)*1.5, vy:-Math.random()*3-1, life:1, maxLife:1, size:15+Math.random()*15, color:Math.random()>0.5?'#ff3300':(Math.random()>0.5?'#ff7700':'#ffcc00'), isFront:Math.random()>0.5}); }
           ctx.globalCompositeOperation = 'lighter';
           state.fireParticles.forEach(p => { if((layer==='front'&&p.isFront)||(layer==='back'&&!p.isFront)) { p.x+=p.vx+Math.sin(p.life*10)*0.5; p.y+=p.vy; p.life-=0.02*speed; const sc = p.life/p.maxLife; ctx.fillStyle=p.color; ctx.globalAlpha=Math.max(0,p.life); ctx.beginPath(); ctx.arc(p.x,p.y,Math.max(0.1,p.size*sc),0,Math.PI*2); ctx.fill(); } });
           ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
@@ -858,27 +847,27 @@ button:active{transform:scale(0.95)}
         }
     },
     'sparks': (opts) => {
-        const { ctx, cx, cy, avatarRadius, state, color1, color2, layer } = opts;
+        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
         if(layer === 'front') {
           ctx.shadowColor = color1;
-          if(state.particles.length < 50) state.particles.push({angle:Math.random()*Math.PI*2, speed:0.5+Math.random()*2, life:1, size:2+Math.random()*3, distance:avatarRadius+Math.random()*10});
+          if(state.particles.length < 50) state.particles.push({angle:Math.random()*Math.PI*2, speed:0.5+Math.random()*2, life:1, size:2+Math.random()*3, distance:fRadius+Math.random()*10});
           state.particles = state.particles.filter(p => p.life>0);
           state.particles.forEach(p => { p.angle+=p.speed*0.02; p.distance+=p.speed*0.5; p.life-=0.015; const x=cx+Math.cos(p.angle)*p.distance, y=cy+Math.sin(p.angle)*p.distance; ctx.fillStyle=p.life>0.5?color1:color2; ctx.globalAlpha=p.life; ctx.shadowBlur=10; ctx.beginPath(); ctx.arc(x,y,p.size,0,Math.PI*2); ctx.fill(); });
           ctx.globalAlpha = 1;
         }
     },
     'god-rays': (opts) => {
-        const { ctx, cx, cy, avatarRadius, state, layer } = opts;
+        const { ctx, cx, cy, fRadius, state, layer } = opts;
         if(layer === 'back') {
           ctx.shadowColor = '#ffd700'; ctx.shadowBlur = 20;
           const drawWing = (isLeft) => {
-            ctx.save(); ctx.translate(cx+(isLeft?-avatarRadius+5:avatarRadius-5), cy); ctx.scale(isLeft?-1:1,1); ctx.rotate(Math.sin(state.tick*2)*0.08);
+            ctx.save(); ctx.translate(cx+(isLeft?-fRadius+5:fRadius-5), cy); ctx.scale(isLeft?-1:1,1); ctx.rotate(Math.sin(state.tick*2)*0.08);
             ctx.beginPath(); ctx.moveTo(0,15); ctx.bezierCurveTo(15,-15,30,-35,60,-25); ctx.quadraticCurveTo(50,-10,70,-5); ctx.quadraticCurveTo(55,5,65,15); ctx.quadraticCurveTo(45,15,50,30); ctx.quadraticCurveTo(30,25,30,40); ctx.quadraticCurveTo(15,25,0,15);
             ctx.fillStyle = 'rgba(255,255,255,0.95)'; ctx.fill(); ctx.strokeStyle = 'rgba(255,215,0,0.6)'; ctx.lineWidth = 1; ctx.stroke();
             ctx.restore();
           };
           drawWing(true); drawWing(false);
-          ctx.beginPath(); const haloY = cy-avatarRadius-15+Math.sin(state.tick*3)*5; ctx.ellipse(cx, haloY, 32, 9, 0, 0, Math.PI*2); ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 4; ctx.stroke(); ctx.shadowBlur = 0;
+          ctx.beginPath(); const haloY = cy-fRadius-15+Math.sin(state.tick*3)*5; ctx.ellipse(cx, haloY, 32, 9, 0, 0, Math.PI*2); ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 4; ctx.stroke(); ctx.shadowBlur = 0;
         }
     }
   };
@@ -953,7 +942,7 @@ button:active{transform:scale(0.95)}
     chatOpened: true, lastChatTimestamp: 0,
     selectedProfile: null, privateChatWith: null,
     calYear: null, calMonth: null,
-    avatarSettings: { style:'rgb-ring', speed:1, glow:20, color1:'#6366f1', color2:'#a855f7', ringColor:'#7c3aed', ringThickness:'medium' },
+    avatarSettings: { style:'off', speed:1, glow:20, color1:'#6366f1', color2:'#a855f7', ringColor:'#7c3aed', ringThickness:'medium' },
     chatListener: null, notifiedKeys: {}, avatarAnimId: null,
     isCreator: false, isGod: false, previewData: null,
     activeListeners: [], messagesCache: {}
@@ -969,6 +958,8 @@ button:active{transform:scale(0.95)}
   }
 
   // ============ AVATAR RENDER ENGINE ============
+  const avatarTimers = new Map();
+  
   function renderPremiumAvatar(canvas, settings, avatarImg, fallbackName) {
     if(!canvas) return;
     const rect = canvas.getBoundingClientRect();
@@ -1010,7 +1001,7 @@ button:active{transform:scale(0.95)}
     ctx.scale(trueW/baseSize, trueH/baseSize);
     
     const color1 = settings?.color1 || '#6366f1', color2 = settings?.color2 || '#a855f7';
-    const style = settings?.style || 'rgb-ring';
+    const style = settings?.style || 'off';
     const glow = parseInt(settings?.glow) || 20;
 
     const effectOpts = { ctx, cx, cy, fRadius, avatarRadius, state, speed, color1, color2, glow };
@@ -1024,12 +1015,22 @@ button:active{transform:scale(0.95)}
       if (effectRender) {
           effectRender(effectOpts);
       } else if (layer === 'front') {
-          ctx.strokeStyle=settings?.ringColor||color1; const t=settings?.ringThickness; ctx.lineWidth=t==='thick'?8:t==='thin'?2:4; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke();
+          ctx.strokeStyle=settings?.ringColor||color1; 
+          const t=settings?.ringThickness; 
+          ctx.lineWidth=t==='thick'?8:t==='thin'?2:4; 
+          ctx.beginPath(); 
+          ctx.arc(cx,cy,fRadius,0,Math.PI*2); 
+          ctx.stroke();
       }
     };
 
     const drawFallback = () => {
-        ctx.fillStyle = '#1e1b4b'; ctx.fill(); ctx.fillStyle = '#6366f1'; ctx.font = `bold ${avatarRadius}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; 
+        ctx.fillStyle = '#1e1b4b'; 
+        ctx.fill(); 
+        ctx.fillStyle = '#6366f1'; 
+        ctx.font = `bold ${avatarRadius}px sans-serif`; 
+        ctx.textAlign = 'center'; 
+        ctx.textBaseline = 'middle'; 
         const fn = cleanName(fallbackName) || '?';
         const firstLetter = Array.from(fn)[0] ? Array.from(fn)[0].toUpperCase() : '?';
         ctx.fillText(firstLetter, cx, cy+Math.floor(avatarRadius/6)); 
@@ -1037,22 +1038,37 @@ button:active{transform:scale(0.95)}
 
     drawEffects('back');
     ctx.shadowBlur = 0; ctx.globalAlpha = 1;
-    ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, avatarRadius, 0, Math.PI*2); ctx.clip();
+    ctx.save(); 
+    ctx.beginPath(); 
+    ctx.arc(cx, cy, avatarRadius, 0, Math.PI*2); 
+    ctx.clip();
     
-    if(avatarImg && avatarImg.complete) { 
-        if (avatarImg.naturalWidth > 0 && avatarImg.naturalHeight > 0) {
+    // Рисуем аватарку - всегда используем переданное изображение
+    if(avatarImg && avatarImg.complete && avatarImg.naturalWidth > 0) { 
+        try {
             const ratio = Math.max((avatarRadius*2)/avatarImg.naturalWidth, (avatarRadius*2)/avatarImg.naturalHeight); 
             const dw = avatarImg.naturalWidth*ratio, dh = avatarImg.naturalHeight*ratio; 
             ctx.drawImage(avatarImg, cx-dw/2, cy-dh/2, dw, dh); 
-        } else {
+        } catch(e) {
             drawFallback();
         }
-    }
-    else { 
+    } else if(avatarImg && typeof avatarImg === 'string') {
+        // Если передана строка URL - пробуем загрузить через Image
+        const tempImg = new Image();
+        tempImg.onload = function() {
+            renderPremiumAvatar(canvas, settings, tempImg, fallbackName);
+        };
+        tempImg.src = avatarImg;
+        drawFallback();
+    } else { 
         drawFallback();
     }
     ctx.restore();
-    ctx.beginPath(); ctx.arc(cx, cy, avatarRadius, 0, Math.PI*2); ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(0,0,0,0.5)'; ctx.stroke();
+    ctx.beginPath(); 
+    ctx.arc(cx, cy, avatarRadius, 0, Math.PI*2); 
+    ctx.lineWidth = 2; 
+    ctx.strokeStyle = 'rgba(0,0,0,0.5)'; 
+    ctx.stroke();
     drawEffects('front');
     ctx.restore();
   }
@@ -1082,7 +1098,7 @@ button:active{transform:scale(0.95)}
     const isOwnProfileClick = (uid === undefined || uid === null);
     const targetUid = isOwnProfileClick ? App.user?.uid : uid;
 
-    let s = {style:'rgb-ring', speed:1, color1:'#6366f1', color2:'#a855f7'};
+    let s = {style:'off', speed:1, color1:'#6366f1', color2:'#a855f7'};
     let imgUrl = null;
     let name = cleanName(defName) || 'Аватар';
 
@@ -1138,6 +1154,7 @@ button:active{transform:scale(0.95)}
       
       if(App.user.avatar) {
           App.user.imgObj = new Image();
+          App.user.imgObj.crossOrigin = 'Anonymous';
           App.user.imgObj.src = App.user.avatar;
       }
       
@@ -1611,24 +1628,35 @@ button:active{transform:scale(0.95)}
     const was=ce.scrollHeight-ce.scrollTop-ce.clientHeight<60;
     ce.innerHTML=html;
     
+    // Рендерим аватарки через Canvas для единого качества
     ce.querySelectorAll('.chat-ava-load').forEach(img => {
         const uid = img.dataset.uid;
         const uData = uid === App.user?.uid ? App.user : App.allUserData[uid];
         
-        if (uData && uData.avatar) {
-            img.onerror = function() {
-                const nameStr = this.dataset.name || '?';
-                const firstL = Array.from(nameStr)[0].toUpperCase();
-                const safeName = nameStr.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-                this.outerHTML = `<div class="chat-static-avatar text-ava" onclick="event.stopPropagation();window.openAvatarPreview('${uid}','${safeName}')">${esc(firstL)}</div>`;
-            };
-            img.src = uData.avatar;
-        } else {
-            const nameStr = img.dataset.name || '?';
-            const firstL = Array.from(nameStr)[0].toUpperCase();
-            const safeName = nameStr.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-            img.outerHTML = `<div class="chat-static-avatar text-ava" onclick="event.stopPropagation();window.openAvatarPreview('${uid}','${safeName}')">${esc(firstL)}</div>`;
-        }
+        // Создаем canvas вместо img для единого качества
+        const canvas = document.createElement('canvas');
+        canvas.className = 'chat-static-avatar canvas-avatar';
+        canvas.width = 120;
+        canvas.height = 120;
+        canvas.style.width = '38px';
+        canvas.style.height = '38px';
+        canvas.dataset.uid = uid || '';
+        canvas.dataset.name = img.dataset.name || '?';
+        canvas.onclick = (e) => {
+            e.stopPropagation();
+            window.openAvatarPreview(uid || '', img.dataset.name || '');
+        };
+        
+        // Заменяем img на canvas
+        img.parentNode.replaceChild(canvas, img);
+        
+        // Рендерим аватарку на canvas
+        const settings = uData?.avatarSettings || { style: 'off', speed: 1, color1: '#6366f1', color2: '#a855f7' };
+        const avatarImg = uData?.imgObj || null;
+        const name = uData?.name || img.dataset.name || '?';
+        
+        // Сохраняем ссылку на данные для обновления в цикле
+        canvas._avatarData = { settings, avatarImg, name };
     });
 
     if(was||document.activeElement===$('#chatMsgInput'))ce.scrollTop=ce.scrollHeight;
@@ -1669,6 +1697,7 @@ button:active{transform:scale(0.95)}
   // ============ STICKERS PANEL ============
   function renderStickerUI() {
     const c=$('#stickerContent'),t=$('#stickerTabs');
+    const BASE_EMOJIS = ['😀','😃','😄','😁','😆','😅','😂','🤣','🥲','☺️','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🥸','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','☠️','👽','👾','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾'];
     c.innerHTML=BASE_EMOJIS.map(e=>`<div class="emoji-item" data-emoji="${e}">${e}</div>`).join('');
     c.querySelectorAll('.emoji-item').forEach(el=>el.addEventListener('click',function(ev){ev.stopPropagation();$('#chatMsgInput').value+=this.dataset.emoji;$('#chatMsgInput').focus();}));
     t.innerHTML='<button class="st-tab active" data-tab="emoji">😀</button>';
@@ -1685,26 +1714,36 @@ button:active{transform:scale(0.95)}
       const online = App.presenceData[uid]?.online || !!App.activeShifts[uid];
       const isActive=App.selectedProfile===uid;
       
-      el.innerHTML+=`<div class="avatar-item${isActive?' active':''}" data-uid="${uid}">
-        <img data-uid="${uid}" class="sidebar-ava-load" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
-        ${online?'<div class="online-dot"></div>':''}
-      </div>`;}
+      // Используем canvas для единого качества
+      const canvas = document.createElement('canvas');
+      canvas.width = 120;
+      canvas.height = 120;
+      canvas.style.width = '56px';
+      canvas.style.height = '56px';
+      canvas.style.borderRadius = '50%';
+      canvas.style.display = 'block';
+      canvas.className = 'sidebar-avatar-canvas';
+      canvas.dataset.uid = uid;
       
-    el.querySelectorAll('.sidebar-ava-load').forEach(img => {
-        const uData = App.allUserData[img.dataset.uid];
-        if (uData && uData.avatar) {
-            img.onerror = function() {
-                const nameStr = uData ? cleanName(uData.name) : '?';
-                const firstL = Array.from(nameStr)[0].toUpperCase();
-                this.outerHTML = `<div style="width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#222,#444);display:flex;align-items:center;justify-content:center;font-size:18px;color:#ccc;">${esc(firstL)}</div>`;
-            };
-            img.src = uData.avatar;
-        } else {
-            const nameStr = uData ? cleanName(uData.name) : '?';
-            const firstL = Array.from(nameStr)[0].toUpperCase();
-            img.outerHTML = `<div style="width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#222,#444);display:flex;align-items:center;justify-content:center;font-size:18px;color:#ccc;">${esc(firstL)}</div>`;
-        }
-    });
+      // Рендерим аватарку на canvas
+      const settings = d?.avatarSettings || { style: 'off', speed: 1, color1: '#6366f1', color2: '#a855f7' };
+      const avatarImg = d?.imgObj || null;
+      const name = d?.name || '?';
+      
+      const wrapper = document.createElement('div');
+      wrapper.className = `avatar-item${isActive?' active':''}`;
+      wrapper.dataset.uid = uid;
+      wrapper.appendChild(canvas);
+      if(online){
+        const dot = document.createElement('div');
+        dot.className = 'online-dot';
+        wrapper.appendChild(dot);
+      }
+      el.appendChild(wrapper);
+      
+      // Сохраняем данные для рендеринга
+      canvas._avatarData = { settings, avatarImg, name, uid };
+    }
       
     el.querySelectorAll('.avatar-item').forEach(item=>item.addEventListener('click',function(){const uid=this.dataset.uid;App.selectedProfile=uid;el.querySelectorAll('.avatar-item').forEach(x=>x.classList.toggle('active',x.dataset.uid===uid));showMiniProfile(uid);}));
   }
@@ -1744,18 +1783,23 @@ button:active{transform:scale(0.95)}
     const cleanUName = cleanName(d.name);
     $('#mpName').textContent=cleanUName;
     
-    $('#mpAvatarContainer').innerHTML=`<div style="position:relative;width:64px;height:64px;"><img id="mpAvaLoad" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" style="width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--accent);"></div>`;
-    if(d.avatar) {
-        const img = $('#mpAvaLoad');
-        img.onerror = function() {
-            const firstL = Array.from(cleanUName)[0] ? Array.from(cleanUName)[0].toUpperCase() : '?';
-            this.parentElement.innerHTML = `<div style="width:100%;height:100%;border-radius:50%;background:#444;display:flex;align-items:center;justify-content:center;font-size:24px;color:#ccc;">${esc(firstL)}</div>`;
-        };
-        img.src = d.avatar;
-    } else {
-        const firstL = Array.from(cleanUName)[0] ? Array.from(cleanUName)[0].toUpperCase() : '?';
-        $('#mpAvatarContainer').innerHTML = `<div style="position:relative;width:64px;height:64px;"><div style="width:100%;height:100%;border-radius:50%;background:#444;display:flex;align-items:center;justify-content:center;font-size:24px;color:#ccc;">${esc(firstL)}</div></div>`;
-    }
+    // Используем canvas для мини-профиля
+    const container = $('#mpAvatarContainer');
+    container.innerHTML = '';
+    const canvas = document.createElement('canvas');
+    canvas.width = 160;
+    canvas.height = 160;
+    canvas.style.width = '64px';
+    canvas.style.height = '64px';
+    canvas.style.borderRadius = '50%';
+    canvas.style.border = '2px solid var(--accent)';
+    container.appendChild(canvas);
+    
+    const settings = d?.avatarSettings || { style: 'off', speed: 1, color1: '#6366f1', color2: '#a855f7' };
+    const avatarImg = d?.imgObj || null;
+    const name = d?.name || '?';
+    
+    renderPremiumAvatar(canvas, settings, avatarImg, name);
     
     const rm={god:'Начальник',creator:'Создатель',manager:'Сотрудник'};
     $('#mpStatus').textContent=rm[d.role]||'Сотрудник';
@@ -1788,7 +1832,8 @@ button:active{transform:scale(0.95)}
     ANIMATIONS.forEach(a=>{
       const ia=App.avatarSettings.style===a.id;
       const cu=!a.premium || App.isCreator || App.isGod;
-      h+=`<button class="style-btn ${ia?'active':''} ${a.premium?'premium':''}" data-style="${a.id}" ${!cu?'disabled':''}>${a.label}${a.premium?' 👑':''}</button>`;
+      const cls = a.id === 'off' ? 'style-btn off-btn' : 'style-btn';
+      h+=`<button class="${cls} ${ia?'active':''} ${a.premium?'premium':''}" data-style="${a.id}" ${!cu?'disabled':''}>${a.label}${a.premium?' 👑':''}</button>`;
     });
     g.innerHTML=h;
     g.querySelectorAll('.style-btn').forEach(b=>b.addEventListener('click',function(){
@@ -1845,6 +1890,7 @@ button:active{transform:scale(0.95)}
         if (u.avatar) {
             if (!oldU || oldU.avatar !== u.avatar || !oldU.imgObj) {
                 u.imgObj = new Image();
+                u.imgObj.crossOrigin = 'Anonymous';
                 u.imgObj.src = u.avatar;
             } else {
                 u.imgObj = oldU.imgObj;
@@ -1919,6 +1965,7 @@ button:active{transform:scale(0.95)}
           
           App.user.avatar = c.toDataURL('image/jpeg', 0.85);
           App.user.imgObj = new Image();
+          App.user.imgObj.crossOrigin = 'Anonymous';
           App.user.imgObj.src = App.user.avatar;
           
           toast('Фото загружено и оптимизировано! Нажмите «Сохранить аватар».');
@@ -1934,10 +1981,8 @@ button:active{transform:scale(0.95)}
     $('#setColor1').addEventListener('input',function(){App.avatarSettings.color1=this.value;});$('#setColor2').addEventListener('input',function(){App.avatarSettings.color2=this.value;});
     $('#setRingColor').addEventListener('input',function(){App.avatarSettings.ringColor=this.value;});$('#setRingThickness').addEventListener('change',function(){App.avatarSettings.ringThickness=this.value;});
     loadPunktsForRegister();
-    AUTH.onAuthStateChanged(async user=>{if(user&&!App.user){const snap=await DB.ref('users/'+user.uid).once('value');if(snap.exists()){App.user=snap.val();App.user.uid=user.uid;if(App.user.avatar){App.user.imgObj=new Image();App.user.imgObj.src=App.user.avatar;}finishLogin();}}});
+    AUTH.onAuthStateChanged(async user=>{if(user&&!App.user){const snap=await DB.ref('users/'+user.uid).once('value');if(snap.exists()){App.user=snap.val();App.user.uid=user.uid;if(App.user.avatar){App.user.imgObj=new Image();App.user.imgObj.crossOrigin='Anonymous';App.user.imgObj.src=App.user.avatar;}finishLogin();}}});
     window.addEventListener('beforeunload',()=>{if(App.user)DB.ref('presence/'+App.user.uid).set({online:false,ts:Date.now()});});
-    
-    window.BASE_EMOJIS = ['😀','😃','😄','😁','😆','😅','😂','🤣','🥲','☺️','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🥸','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','ร้อน','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','☠️','👽','👾','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾'];
   }
   document.addEventListener('DOMContentLoaded', init);
 })();
