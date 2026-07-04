@@ -338,15 +338,20 @@ button:active{transform:scale(0.95)}
     { id:'neon-pulse', label:'Пульс 💓', premium:false },
     { id:'running-gradient', label:'Градиент 💫', premium:false },
     
-    // НОВЫЕ АНИМАЦИИ
-    { id:'singularity', label:'Сингулярность 🕳️', premium:true }, 
-    { id:'quantum-realm', label:'Квант 🌌', premium:true },       
-    { id:'dragon-aura', label:'Дракон 🐉', premium:true },        
-    { id:'supernova', label:'Сверхновая 💥', premium:true },     
-    { id:'sacred-geometry', label:'Геометрия 💠', premium:true }, 
+    // НОВЕЙШИЕ ЕБЕЙШИЕ АНИМАЦИИ
+    { id:'glitch', label:'Глитч 📺', premium:true }, 
+    { id:'symbiote', label:'Симбиот 🦠', premium:true },       
+    { id:'runes', label:'Руны 📜', premium:true },        
+    { id:'pulsar', label:'Квазар 🌟', premium:true },     
+    { id:'frost', label:'Фрост ❄️', premium:true }, 
     
     // ПРЕДЫДУЩИЕ АНИМАЦИИ
-    { id:'void-vortex', label:'Черная Дыра 🌌', premium:true },
+    { id:'singularity', label:'Сингуля 🕳️', premium:true }, 
+    { id:'quantum-realm', label:'Квант 🌌', premium:true },       
+    { id:'dragon-aura', label:'Дракон 🐉', premium:true },        
+    { id:'supernova', label:'Сверхнов 💥', premium:true },     
+    { id:'sacred-geometry', label:'Геометрия 💠', premium:true }, 
+    { id:'void-vortex', label:'ЧернДыра 🌌', premium:true },
     { id:'infinity-shield', label:'Щит 🛡️', premium:true },
     { id:'cyber-grid', label:'Сканер 🤖', premium:true },
     { id:'golden-dust', label:'Пыль ✨', premium:true },
@@ -361,6 +366,208 @@ button:active{transform:scale(0.95)}
   ];
 
   const EFFECTS_REGISTRY = {
+    // === 5 АБСОЛЮТНО НОВЫХ АНИМАЦИЙ ===
+    'glitch': (opts) => {
+        const { ctx, cx, cy, fRadius, state, speed, color1, color2, layer } = opts;
+        if (layer === 'front') {
+            // Вероятность сильного "вздрагивания"
+            const isGlitching = Math.random() > 0.85;
+            const shiftX = isGlitching ? (Math.random() - 0.5) * 15 * speed : 0;
+            const shiftY = isGlitching ? (Math.random() - 0.5) * 15 * speed : 0;
+
+            ctx.save(); ctx.translate(cx, cy);
+            ctx.lineWidth = 4;
+            ctx.globalCompositeOperation = 'screen';
+
+            // Голубой канал
+            ctx.strokeStyle = '#0ff';
+            ctx.beginPath(); ctx.arc(shiftX, shiftY, fRadius, 0, Math.PI*2); ctx.stroke();
+            // Красный канал
+            ctx.strokeStyle = '#f00';
+            ctx.beginPath(); ctx.arc(-shiftX, -shiftY, fRadius, 0, Math.PI*2); ctx.stroke();
+            // Основной цвет
+            ctx.strokeStyle = color1;
+            ctx.beginPath(); ctx.arc(0, 0, fRadius, 0, Math.PI*2); ctx.stroke();
+
+            // Горизонтальные полосы помех
+            if (isGlitching || Math.random() > 0.95) {
+                ctx.fillStyle = Math.random() > 0.5 ? color2 : '#fff';
+                for(let i=0; i<4; i++) {
+                    const y = (Math.random()-0.5)*fRadius*2;
+                    ctx.fillRect(-fRadius-20, y, (fRadius+20)*2, Math.random()*5);
+                }
+            }
+            ctx.restore();
+        }
+    },
+    'symbiote': (opts) => {
+        const { ctx, cx, cy, fRadius, state, speed, color1, color2, layer } = opts;
+        if (layer === 'front') {
+            ctx.save(); ctx.translate(cx, cy);
+            ctx.fillStyle = color1;
+            ctx.shadowBlur = 15; ctx.shadowColor = color2;
+            
+            // Рисуем живое, пульсирующее тело симбиота вокруг аватара
+            ctx.beginPath();
+            for(let a=0; a<=Math.PI*2.1; a+=0.1) {
+                // Искажения по синусоидам разной частоты
+                const r = fRadius + Math.sin(a*4 + state.tick*3)*6 + Math.cos(a*7 - state.tick*2)*3;
+                if(a===0) ctx.moveTo(Math.cos(a)*r, Math.sin(a)*r);
+                else ctx.lineTo(Math.cos(a)*r, Math.sin(a)*r);
+            }
+            ctx.closePath();
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = color1;
+            ctx.stroke();
+
+            // Капли, отрывающиеся от тела
+            if (!state.drips) state.drips = [];
+            if (Math.random() > 0.7 && state.drips.length < 20) {
+                const angle = Math.random() * Math.PI*2;
+                state.drips.push({ angle, dist: fRadius, speed: 0.5 + Math.random()*1.5, life: 1 });
+            }
+            state.drips.forEach(d => {
+                d.dist += d.speed * speed;
+                d.life -= 0.02 * speed;
+                ctx.beginPath();
+                ctx.arc(Math.cos(d.angle)*d.dist, Math.sin(d.angle)*d.dist, 4*d.life, 0, Math.PI*2);
+                ctx.fill();
+            });
+            state.drips = state.drips.filter(d => d.life > 0);
+            ctx.restore();
+        }
+    },
+    'runes': (opts) => {
+        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
+        if (layer === 'back') {
+            ctx.shadowBlur = 30; ctx.shadowColor = color1;
+            ctx.fillStyle = color1; ctx.globalAlpha = 0.25;
+            ctx.beginPath(); ctx.arc(cx, cy, fRadius + 25, 0, Math.PI*2); ctx.fill();
+            ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+        }
+        if (layer === 'front') {
+            ctx.save(); ctx.translate(cx, cy);
+            ctx.shadowBlur = 12; ctx.shadowColor = color1;
+            
+            // Внешнее вращающееся кольцо
+            ctx.save();
+            ctx.rotate(state.tick * 0.4);
+            ctx.strokeStyle = color1; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(0, 0, fRadius + 18, 0, Math.PI*2); ctx.stroke();
+            // Точки на внешнем кольце
+            ctx.fillStyle = color2;
+            for(let i=0; i<12; i++) {
+                ctx.beginPath(); ctx.arc(0, fRadius+18, 2.5, 0, Math.PI*2); ctx.fill();
+                ctx.rotate(Math.PI*2 / 12);
+            }
+            ctx.restore();
+
+            // Внутреннее кольцо в другую сторону
+            ctx.save();
+            ctx.rotate(-state.tick * 0.6);
+            ctx.strokeStyle = color2; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.arc(0, 0, fRadius + 2, 0, Math.PI*2); ctx.stroke();
+            
+            // Руны (скандинавский футарк)
+            ctx.font = '16px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#fff';
+            ctx.shadowColor = color2; ctx.shadowBlur = 8;
+            const runes = ['ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ','ᚹ'];
+            for(let i=0; i<8; i++) {
+                ctx.fillText(runes[i], 0, -(fRadius+10));
+                ctx.rotate(Math.PI*2 / 8);
+            }
+            ctx.restore();
+            ctx.restore();
+        }
+    },
+    'pulsar': (opts) => {
+        const { ctx, cx, cy, fRadius, state, speed, color1, color2, layer } = opts;
+        if (layer === 'back') {
+            ctx.save(); ctx.translate(cx, cy);
+            // Ядро
+            const grad = ctx.createRadialGradient(0,0, fRadius-10, 0,0, fRadius+60);
+            grad.addColorStop(0, color1); grad.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(0,0, fRadius+60, 0, Math.PI*2); ctx.fill();
+
+            // Мощные джеты (лучи) из полюсов
+            ctx.rotate(state.tick * 0.3);
+            const jetGrad = ctx.createLinearGradient(0, -fRadius-120, 0, fRadius+120);
+            jetGrad.addColorStop(0, 'rgba(0,0,0,0)');
+            jetGrad.addColorStop(0.3, color2);
+            jetGrad.addColorStop(0.5, '#fff');
+            jetGrad.addColorStop(0.7, color2);
+            jetGrad.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = jetGrad;
+            ctx.globalCompositeOperation = 'lighter';
+            
+            // Пульсация толщины и длины луча
+            const w = 8 + Math.sin(state.tick*6)*4;
+            const h = fRadius + 100 + Math.sin(state.tick*4)*30;
+            ctx.beginPath(); ctx.ellipse(0, 0, w, h, 0, 0, Math.PI*2); ctx.fill();
+            ctx.restore();
+        }
+        if (layer === 'front') {
+            ctx.save(); ctx.translate(cx, cy); ctx.rotate(-state.tick * 2);
+            ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.shadowBlur = 15; ctx.shadowColor = color1;
+            ctx.beginPath(); ctx.arc(0, 0, fRadius, 0, Math.PI*2); ctx.stroke();
+            // Раскаленные точки материи на горизонте событий
+            ctx.fillStyle = '#fff';
+            for(let i=0; i<3; i++) {
+                ctx.beginPath(); ctx.arc(fRadius, 0, 3 + Math.random()*2, 0, Math.PI*2); ctx.fill();
+                ctx.rotate(Math.PI*2/3);
+            }
+            ctx.restore();
+        }
+    },
+    'frost': (opts) => {
+        const { ctx, cx, cy, fRadius, state, speed, color1, color2, layer } = opts;
+        if (layer === 'front') {
+            ctx.save(); ctx.translate(cx, cy);
+            ctx.strokeStyle = color1; 
+            ctx.shadowBlur = 12; ctx.shadowColor = '#fff';
+            ctx.lineWidth = 2.5;
+
+            // Базовое ледяное кольцо
+            ctx.beginPath(); ctx.arc(0, 0, fRadius, 0, Math.PI*2); ctx.stroke();
+
+            // Ледяные шипы, вращающиеся медленно
+            const numSpikes = 14;
+            ctx.fillStyle = color2;
+            for(let i=0; i<numSpikes; i++) {
+                const angle = (i * Math.PI*2/numSpikes) + state.tick*0.2;
+                // Длина шипа пульсирует
+                const spikeLen = 6 + Math.sin(state.tick*3 + i*2)*6;
+                ctx.save();
+                ctx.rotate(angle);
+                ctx.beginPath();
+                ctx.moveTo(fRadius, -4);
+                ctx.lineTo(fRadius + spikeLen, 0);
+                ctx.lineTo(fRadius, 4);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            // Метель (снежинки, улетающие наружу)
+            if(!state.snow) state.snow = [];
+            if(state.snow.length < 40) {
+                state.snow.push({ angle: Math.random()*Math.PI*2, dist: fRadius, life: 1, drift: (Math.random()-0.5)*0.03 });
+            }
+            ctx.fillStyle = '#fff';
+            state.snow.forEach(s => {
+                s.dist += (0.8 + Math.random()*0.5) * speed;
+                s.angle += s.drift * speed;
+                s.life -= 0.015 * speed;
+                ctx.globalAlpha = Math.max(0, s.life);
+                ctx.beginPath(); ctx.arc(Math.cos(s.angle)*s.dist, Math.sin(s.angle)*s.dist, 2, 0, Math.PI*2); ctx.fill();
+            });
+            state.snow = state.snow.filter(s => s.life > 0);
+
+            ctx.restore();
+        }
+    },
+
+    // === ПРЕДЫДУЩИЕ АНИМАЦИИ ===
     'singularity': (opts) => {
         const { ctx, cx, cy, avatarRadius, state, color1, color2, layer } = opts;
         if(layer === 'back') {
@@ -821,7 +1028,6 @@ button:active{transform:scale(0.95)}
       }
     };
 
-    // ФИКС КРАША ДВИЖКА (Заглушка если картинка битая (размер 0))
     const drawFallback = () => {
         ctx.fillStyle = '#1e1b4b'; ctx.fill(); ctx.fillStyle = '#6366f1'; ctx.font = `bold ${avatarRadius}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; 
         const fn = cleanName(fallbackName) || '?';
@@ -1370,7 +1576,6 @@ button:active{transform:scale(0.95)}
       const safeUid = auid ? esc(auid) : '';
       const cleanUnForJs = un.replace(/'/g, "\\'").replace(/"/g, "&quot;");
       
-      // ФИКС КРАША ЧАТА И БИТЫХ КАРТИНОК
       const avaHtml = `<img data-uid="${safeUid}" data-name="${cleanUnForJs}" class="chat-static-avatar chat-ava-load" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onclick="event.stopPropagation();window.openAvatarPreview('${safeUid}','${cleanUnForJs}')">`;
       
       const ns=(isC||isG)?'background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;':'';
@@ -1406,13 +1611,11 @@ button:active{transform:scale(0.95)}
     const was=ce.scrollHeight-ce.scrollTop-ce.clientHeight<60;
     ce.innerHTML=html;
     
-    // Подстановка реальных картинок с защитой от ошибок
     ce.querySelectorAll('.chat-ava-load').forEach(img => {
         const uid = img.dataset.uid;
         const uData = uid === App.user?.uid ? App.user : App.allUserData[uid];
         
         if (uData && uData.avatar) {
-            // Если код картинки битый, она заменится на кружок с буквой
             img.onerror = function() {
                 const nameStr = this.dataset.name || '?';
                 const firstL = Array.from(nameStr)[0].toUpperCase();
@@ -1487,7 +1690,6 @@ button:active{transform:scale(0.95)}
         ${online?'<div class="online-dot"></div>':''}
       </div>`;}
       
-    // ФИКС БИТЫХ КАРТИНОК В САЙДБАРЕ
     el.querySelectorAll('.sidebar-ava-load').forEach(img => {
         const uData = App.allUserData[img.dataset.uid];
         if (uData && uData.avatar) {
@@ -1542,7 +1744,6 @@ button:active{transform:scale(0.95)}
     const cleanUName = cleanName(d.name);
     $('#mpName').textContent=cleanUName;
     
-    // ФИКС БИТЫХ КАРТИНОК В МИНИ-ПРОФИЛЕ
     $('#mpAvatarContainer').innerHTML=`<div style="position:relative;width:64px;height:64px;"><img id="mpAvaLoad" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" style="width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--accent);"></div>`;
     if(d.avatar) {
         const img = $('#mpAvaLoad');
@@ -1641,7 +1842,6 @@ button:active{transform:scale(0.95)}
         const u = c.val();
         const oldU = App.allUserData[c.key];
         
-        // ФИКС МАССИВА КАРТИНОК
         if (u.avatar) {
             if (!oldU || oldU.avatar !== u.avatar || !oldU.imgObj) {
                 u.imgObj = new Image();
