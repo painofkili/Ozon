@@ -49,71 +49,17 @@ button:active{transform:scale(0.95)}
 .chat-header-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.2);cursor:pointer;flex-shrink:0}
 .chat-header-bar:hover{background:rgba(0,0,0,0.3)}
 #chat{flex:1;overflow-y:auto;padding:10px 14px;scrollbar-width:thin;scrollbar-color:var(--accent) transparent;background:transparent;display:flex;flex-direction:column;gap:2px;transition:opacity 0.2s}
-.chat-bubble-group{display:flex;flex-direction:column;max-width:90%;position:relative;margin:4px 0;animation:fadeIn 0.15s ease}
+.chat-bubble-group{display:flex;flex-direction:column;max-width:85%;position:relative;margin:2px 0}
 .chat-bubble-group.mine{align-self:flex-end;align-items:flex-end}
 .chat-bubble-group.other{align-self:flex-start;align-items:flex-start}
 .chat-bubble-group .msg-author{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;display:flex;align-items:center;gap:8px;padding:0 4px}
-.chat-bubble-group .msg-author span{font-size:13px;font-weight:700}
-.chat-static-avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;cursor:pointer;flex-shrink:0;background:var(--bg3)}
-.chat-static-avatar.canvas-avatar{background:transparent;border:none;overflow:visible;width:36px;height:36px;min-width:36px;min-height:36px}
+.chat-static-avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;cursor:pointer;flex-shrink:0;border:1px solid rgba(255,255,255,0.1);background:var(--bg3)}
+.chat-static-avatar.canvas-avatar{background:transparent;border:none;overflow:visible;width:38px;height:38px;min-width:38px;min-height:38px}
 .text-ava{display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.15);font-weight:bold;font-size:16px;color:#fff}
-.chat-bubble{background:rgba(255,255,255,0.04);padding:8px 14px;word-break:break-word;line-height:1.4;font-size:14px;position:relative;border-radius:12px;transition:0.1s}
-
-/* Градиентные рамки для пузырей */
-.chat-bubble.mine{
-    background:rgba(124, 58, 237, 0.15);
-    border: 1px solid transparent;
-    background-clip: padding-box;
-    position: relative;
-}
-.chat-bubble.mine::before {
-    content: '';
-    position: absolute; inset: -2px;
-    border-radius: 14px; 
-    padding: 2px;
-    background: linear-gradient(135deg, #7c3aed, #db2777);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-}
-
-.chat-bubble.other{
-    background:rgba(59, 130, 246, 0.1);
-    border: 1px solid transparent;
-    background-clip: padding-box;
-    position: relative;
-}
-.chat-bubble.other::before {
-    content: '';
-    position: absolute; inset: -2px;
-    border-radius: 14px; 
-    padding: 2px;
-    background: linear-gradient(135deg, #3b82f6, #06b6d4);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-}
-
-.chat-bubble.creator{
-    border: 1px solid transparent;
-    background: rgba(245,197,24,0.08);
-    background-clip: padding-box;
-    position: relative;
-}
-.chat-bubble.creator::before {
-    content: '';
-    position: absolute; inset: -2px;
-    border-radius: 14px; 
-    padding: 2px;
-    background: linear-gradient(135deg, var(--gold), #f59e0b, var(--gold));
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-}
-
+.chat-bubble{background:rgba(255,255,255,0.04);padding:8px 14px;word-break:break-word;line-height:1.4;font-size:14px;border:1px solid rgba(255,255,255,0.03);position:relative;border-radius:12px;transition:0.1s}
+.chat-bubble.mine{background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.1)}
+.chat-bubble.creator{border-left:2px solid var(--gold);background:rgba(245,197,24,0.06)}
+.chat-bubble.god{border-left:2px solid #FFD700;background:rgba(255,215,0,0.06)}
 .chat-bubble.clickable:active{transform:scale(0.98);opacity:0.8}
 .chat-img{max-width:200px;max-height:150px;border-radius:8px;margin-top:4px;cursor:pointer;object-fit:cover}
 .chat-sticker{max-width:120px;max-height:120px;object-fit:contain;margin:2px 0}
@@ -180,9 +126,19 @@ button:active{transform:scale(0.95)}
 .style-btn.off-btn{border-color:var(--red);background:rgba(239,68,68,0.1);color:#f87171}
 .style-btn.off-btn.active{border-color:var(--red);background:rgba(239,68,68,0.3);color:#fff}
 
-.avatar-wrap{position:relative;width:80px;height:80px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center}
-#mainAvatarCanvas{width:80px;height:80px;border-radius:50%;pointer-events:none;z-index:2}
+.avatar-wrap{position:relative;width:76px;height:76px;flex-shrink:0;border-radius:50%}
+#mainAvatarCanvas{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:130px;height:130px;pointer-events:none;z-index:2}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* Исправление для аватарок в чате */
+.chat-static-avatar.canvas-avatar {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    min-height: 38px !important;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
 
 @media(min-width:1024px){
   .app-container{flex-direction:row;align-items:stretch;justify-content:center;gap:16px;padding:12px}
@@ -390,7 +346,7 @@ button:active{transform:scale(0.95)}
   'use strict';
 
   // =========================================================================
-  // 🎨 БЛОК АНИМАЦИЙ И РЕНДЕРА АВАТАРОК (ФИКС РАЗМЕРА И АНИМАЦИЙ)
+  // 🎨 БЛОК АНИМАЦИЙ АВАТАРОК
   // =========================================================================
   
   const ANIMATIONS = [
@@ -423,315 +379,510 @@ button:active{transform:scale(0.95)}
     { id:'god-rays', label:'Нимб 👼', premium:true },
   ];
 
-  const avatarTimers = new Map();
-  let animationLoopRunning = false;
-  let animationFrameId = null;
-
-  // Главная функция рендера
-  function renderPremiumAvatar(canvas, settings, imgObj, userName, tick = 0) {
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    if (rect.width === 0 || rect.height === 0) return;
-
-    const dpr = window.devicePixelRatio || 1;
-    const displaySize = Math.min(rect.width, rect.height);
-    const targetSize = Math.floor(displaySize * dpr);
-
-    if (canvas.width !== targetSize || canvas.height !== targetSize) {
-      canvas.width = targetSize;
-      canvas.height = targetSize;
-    }
-
-    const ctx = canvas.getContext('2d');
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-
-    const size = targetSize;
-    const cx = size / 2;
-    const cy = size / 2;
-    const avatarRadius = (size / 2) * 0.85; 
-    const fRadius = (size / 2) * 0.95; // Кольцо всегда 95% от размера
-
-    ctx.clearRect(0, 0, size, size);
-
-    const color1 = settings?.color1 || '#6366f1';
-    const color2 = settings?.color2 || '#a855f7';
-    const style = settings?.style || 'off';
-    const glow = parseInt(settings?.glow) || 20;
-    const speed = parseFloat(settings?.speed) || 1;
-
-    let state;
-    if (!avatarTimers.has(canvas)) {
-      avatarTimers.set(canvas, { tick: 0, pulse: 1, dir: 1, particles: [] });
-    }
-    state = avatarTimers.get(canvas);
-    if (tick === 0) state.tick = 0;
-    else state.tick += 0.04 * speed;
-
-    const opts = { ctx, cx, cy, fRadius, avatarRadius, state, speed, color1, color2, glow };
-
-    // Фон (Back)
-    const backEffect = EFFECTS[style]?.back || null;
-    if (backEffect) { ctx.shadowBlur = 0; backEffect(opts); }
-
-    // Сама аватарка
-    ctx.save();
-    ctx.beginPath(); ctx.arc(cx, cy, avatarRadius, 0, Math.PI * 2); ctx.clip();
-    if (imgObj && imgObj.complete && imgObj.naturalWidth > 0) {
-      try {
-        const ratio = Math.max((avatarRadius * 2) / imgObj.naturalWidth, (avatarRadius * 2) / imgObj.naturalHeight);
-        const dw = imgObj.naturalWidth * ratio; const dh = imgObj.naturalHeight * ratio;
-        ctx.drawImage(imgObj, cx - dw / 2, cy - dh / 2, dw, dh);
-      } catch (_) { drawFallback(ctx, cx, cy, avatarRadius, userName); }
-    } else { drawFallback(ctx, cx, cy, avatarRadius, userName); }
-    ctx.restore();
-
-    // Фронт (Кольцо и анимации)
-    const frontEffect = EFFECTS[style]?.front || null;
-    if (frontEffect) {
-      ctx.shadowBlur = glow; ctx.shadowColor = color1;
-      frontEffect(opts);
-    } else {
-      ctx.strokeStyle = settings?.ringColor || color1;
-      const t = settings?.ringThickness;
-      ctx.lineWidth = t === 'thick' ? size * 0.045 : t === 'thin' ? size * 0.015 : size * 0.025;
-      ctx.shadowBlur = 0;
-      ctx.beginPath(); ctx.arc(cx, cy, fRadius, 0, Math.PI * 2); ctx.stroke();
-    }
-  }
-
-  function drawFallback(ctx, cx, cy, radius, userName) {
-    ctx.fillStyle = '#1e1b4b'; ctx.fill();
-    ctx.fillStyle = '#6366f1';
-    const fontSize = radius * 0.9;
-    ctx.font = `bold ${fontSize}px sans-serif`;
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    const letter = (userName || '?').charAt(0).toUpperCase();
-    ctx.fillText(letter, cx, cy + (fontSize * 0.1));
-  }
-
-  const EFFECTS = {
-    fire: {
-      back(opts) {
-        const { ctx, cx, cy, fRadius } = opts;
-        ctx.shadowBlur = 20; ctx.shadowColor = '#ff3300';
-        ctx.strokeStyle = '#ff3300'; ctx.lineWidth = 3;
-        ctx.beginPath(); ctx.arc(cx, cy, fRadius, 0, Math.PI * 2); ctx.stroke();
-        ctx.shadowBlur = 0;
-      },
-      front(opts) {
-        const { ctx, cx, cy, fRadius, state, speed } = opts;
-        if (!state.fireParticles) state.fireParticles = [];
-        if (state.fireParticles.length < 180) {
-          const angle = Math.random() * Math.PI * 2;
-          const radius = fRadius + Math.random() * 15;
-          state.fireParticles.push({
-            x: cx + Math.cos(angle) * radius, y: cy + Math.sin(angle) * radius,
-            vx: (Math.random() - 0.5) * 2, vy: -Math.random() * 4 - 1.5,
-            life: 0.8 + Math.random() * 0.4, maxLife: 0.8 + Math.random() * 0.4,
-            size: 8 + Math.random() * 18, r: 255, g: 150 + Math.floor(Math.random() * 105), b: 20 + Math.floor(Math.random() * 40),
-          });
-        }
-        ctx.globalCompositeOperation = 'lighter';
-        state.fireParticles.forEach((p) => {
-          p.x += p.vx + Math.sin(p.life * 20 + p.x * 0.01) * 0.8;
-          p.y += p.vy; p.vy -= 0.05 * speed; p.life -= 0.015 * speed;
-          const lifeRatio = Math.max(0, p.life / p.maxLife);
-          const size = p.size * (0.3 + 0.7 * lifeRatio);
-          const r = p.r; const g = Math.floor(p.g * lifeRatio * 0.9); const b = Math.floor(p.b * lifeRatio * 0.7);
-          ctx.fillStyle = `rgb(${r}, ${Math.floor(g)}, ${Math.floor(b)})`;
-          ctx.globalAlpha = Math.max(0, lifeRatio * 0.9);
-          const angle = Math.atan2(p.vy, p.vx) + Math.PI / 2;
-          const len = size * (0.5 + 0.5 * lifeRatio);
-          const w = size * 0.4 * (0.3 + 0.7 * lifeRatio);
-          const x1 = p.x - Math.cos(angle) * len * 0.3, y1 = p.y - Math.sin(angle) * len * 0.3;
-          const x2 = p.x + Math.cos(angle) * len * 0.7, y2 = p.y + Math.sin(angle) * len * 0.7;
-          const cpx1 = p.x - Math.sin(angle) * w, cpy1 = p.y + Math.cos(angle) * w;
-          const cpx2 = p.x + Math.sin(angle) * w, cpy2 = p.y - Math.cos(angle) * w;
-          ctx.beginPath(); ctx.moveTo(x1, y1);
-          ctx.quadraticCurveTo(cpx1, cpy1, x2, y2);
-          ctx.quadraticCurveTo(cpx2, cpy2, x1, y1); ctx.fill();
-        });
-        ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
-        state.fireParticles = state.fireParticles.filter((p) => p.life > 0);
-      },
-    },
-    'electro-storm': {
-      front(opts) {
-        const { ctx, cx, cy, fRadius, state, speed, color1, color2, glow } = opts;
-        ctx.shadowBlur = glow; ctx.shadowColor = color1; ctx.strokeStyle = color2; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.arc(cx, cy, fRadius, 0, Math.PI * 2); ctx.stroke();
-        if (!state.lightningBolt || Math.random() > 0.92) {
-          state.lightningBolt = generateLightning(cx, cy, fRadius, 8, 20);
-          state.lightningLife = 8 + Math.random() * 6;
-        }
-        if (state.lightningBolt && state.lightningLife > 0) {
-          ctx.shadowBlur = 25; ctx.shadowColor = '#00e5ff'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5;
-          const points = state.lightningBolt;
-          ctx.beginPath(); ctx.moveTo(points[0].x, points[0].y);
-          for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
-          ctx.stroke();
-          if (state.lightningLife > 3) {
-            ctx.strokeStyle = '#00e5ff'; ctx.lineWidth = 1.2; ctx.shadowBlur = 15; ctx.shadowColor = '#00e5ff';
-            ctx.beginPath(); const offset = 3 + Math.random() * 4;
-            ctx.moveTo(points[0].x + (Math.random() - 0.5) * offset, points[0].y + (Math.random() - 0.5) * offset);
-            for (let i = 1; i < points.length; i++) {
-              const ox = (Math.random() - 0.5) * 2, oy = (Math.random() - 0.5) * 2;
-              ctx.lineTo(points[i].x + ox, points[i].y + oy);
-            }
+  const EFFECTS_REGISTRY = {
+    'off': (opts) => {
+        const { ctx, cx, cy, fRadius, layer } = opts;
+        if(layer === 'front') {
+            ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(cx, cy, fRadius, 0, Math.PI*2);
             ctx.stroke();
-          }
-          state.lightningLife -= 0.5 * speed;
         }
-        ctx.shadowBlur = 0;
-      },
     },
-    'cyber-grid': {
-      front(opts) {
-        const { ctx, cx, cy, fRadius, state, speed, color1, color2, glow } = opts;
-        ctx.shadowBlur = glow; ctx.shadowColor = color1; ctx.strokeStyle = color2; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.arc(cx, cy, fRadius, 0, Math.PI * 2); ctx.stroke();
-        ctx.shadowBlur = 0; ctx.strokeStyle = color1; ctx.lineWidth = 1.5;
-        for (let i = 0; i < 36; i++) {
-          const angle = (i / 36) * Math.PI * 2; const len = i % 3 === 0 ? 10 : 5;
-          const r1 = fRadius - 2, r2 = fRadius - 2 - len;
-          ctx.beginPath(); ctx.moveTo(cx + Math.cos(angle) * r1, cy + Math.sin(angle) * r1);
-          ctx.lineTo(cx + Math.cos(angle) * r2, cy + Math.sin(angle) * r2); ctx.stroke();
+    'glitch': (opts) => {
+        const { ctx, cx, cy, fRadius, state, speed, color1, color2, layer } = opts;
+        if (layer === 'front') {
+            const isGlitching = Math.random() > 0.85;
+            const shiftX = isGlitching ? (Math.random() - 0.5) * 15 * speed : 0;
+            const shiftY = isGlitching ? (Math.random() - 0.5) * 15 * speed : 0;
+
+            ctx.save(); ctx.translate(cx, cy);
+            ctx.lineWidth = 4;
+            ctx.globalCompositeOperation = 'screen';
+
+            ctx.strokeStyle = '#0ff';
+            ctx.beginPath(); ctx.arc(shiftX, shiftY, fRadius, 0, Math.PI*2); ctx.stroke();
+            ctx.strokeStyle = '#f00';
+            ctx.beginPath(); ctx.arc(-shiftX, -shiftY, fRadius, 0, Math.PI*2); ctx.stroke();
+            ctx.strokeStyle = color1;
+            ctx.beginPath(); ctx.arc(0, 0, fRadius, 0, Math.PI*2); ctx.stroke();
+
+            if (isGlitching || Math.random() > 0.95) {
+                ctx.fillStyle = Math.random() > 0.5 ? color2 : '#fff';
+                for(let i=0; i<4; i++) {
+                    const y = (Math.random()-0.5)*fRadius*2;
+                    ctx.fillRect(-fRadius-20, y, (fRadius+20)*2, Math.random()*5);
+                }
+            }
+            ctx.restore();
         }
-        const angle = state.tick * 1.2; const grad = ctx.createConicGradient(angle, cx, cy);
-        const fade = 0.6 + 0.4 * Math.sin(state.tick * 2);
-        grad.addColorStop(0, `rgba(0, 255, 200, ${fade})`); grad.addColorStop(0.05, `rgba(0, 255, 200, ${fade * 0.6})`); grad.addColorStop(0.15, `rgba(0, 255, 200, ${fade * 0.2})`); grad.addColorStop(0.3, 'rgba(0, 255, 200, 0)');
-        ctx.shadowBlur = 20; ctx.shadowColor = '#00ffc8'; ctx.lineWidth = 4; ctx.strokeStyle = grad;
-        ctx.beginPath(); ctx.arc(cx, cy, fRadius + 4, angle - 0.4, angle + 0.1); ctx.stroke();
-        ctx.shadowBlur = 15; ctx.fillStyle = '#00ffc8'; ctx.beginPath(); ctx.arc(cx, cy, 4, 0, Math.PI * 2); ctx.fill();
-        ctx.shadowBlur = 8; ctx.strokeStyle = 'rgba(0, 255, 200, 0.5)'; ctx.lineWidth = 1.5;
-        ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(angle) * (fRadius + 6), cy + Math.sin(angle) * (fRadius + 6)); ctx.stroke();
-        ctx.shadowBlur = 0;
-      },
     },
-    symbiote: {
-      back(opts) {
-        const { ctx, cx, cy, fRadius, color1 } = opts;
-        ctx.shadowBlur = 30; ctx.shadowColor = color1; ctx.fillStyle = color1; ctx.globalAlpha = 0.15;
-        ctx.beginPath(); ctx.arc(cx, cy, fRadius + 20, 0, Math.PI * 2); ctx.fill();
-        ctx.globalAlpha = 1; ctx.shadowBlur = 0;
-      },
-      front(opts) {
-        const { ctx, cx, cy, fRadius, state, speed, color1, color2 } = opts;
-        ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, fRadius, 0, Math.PI * 2); ctx.clip();
-        const tentacles = 8; const baseLength = fRadius * 0.85;
-        ctx.lineWidth = 4; ctx.shadowBlur = 15; ctx.shadowColor = color2;
-        for (let i = 0; i < tentacles; i++) {
-          const baseAngle = (i / tentacles) * Math.PI * 2; const waveOffset = state.tick * 1.5 + i * 0.8;
-          const pulseLen = 1 + 0.2 * Math.sin(state.tick * 1.2 + i * 1.1); const len = baseLength * pulseLen;
-          const startWidth = 7 + 2 * Math.sin(state.tick * 0.7 + i); const endWidth = 1 + Math.sin(state.tick * 0.9 + i * 1.3) * 0.5 + 1;
-          const segments = 16; const points = [];
-          for (let j = 0; j <= segments; j++) {
-            const t = j / segments; const angle = baseAngle + t * 0.6 * Math.sin(waveOffset + t * 4); const r = fRadius + t * len;
-            const x = cx + Math.cos(angle) * r; const y = cy + Math.sin(angle) * r; const shake = 0.8 + 0.4 * Math.sin(state.tick * 3 + i * 2 + j * 0.7);
-            points.push({ x: x + (Math.random() - 0.5) * shake * 0.5, y: y + (Math.random() - 0.5) * shake * 0.5, t });
-          }
-          const grad = ctx.createLinearGradient(points[0].x, points[0].y, points[points.length - 1].x, points[points.length - 1].y);
-          const hue = (i / tentacles) * 360 + state.tick * 20;
-          grad.addColorStop(0, color1); grad.addColorStop(0.5, color2); grad.addColorStop(1, `hsl(${hue % 360}, 80%, 60%)`);
-          ctx.strokeStyle = grad; ctx.lineWidth = startWidth;
-          ctx.beginPath(); ctx.moveTo(points[0].x, points[0].y);
-          for (let j = 1; j < points.length; j++) {
-            const cp1x = points[j - 1].x + (points[j].x - points[j - 1].x) * 0.3; const cp1y = points[j - 1].y + (points[j].y - points[j - 1].y) * 0.3;
-            const cp2x = points[j].x - (points[j].x - points[j - 1].x) * 0.3; const cp2y = points[j].y - (points[j].y - points[j - 1].y) * 0.3;
-            ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, points[j].x, points[j].y);
-          }
-          ctx.stroke();
-          ctx.fillStyle = 'rgba(255,255,255,0.3)'; ctx.shadowBlur = 5;
-          for (let j = 1; j < points.length - 1; j += 3) {
-            const p = points[j]; const size = 1 + (1 - p.t) * 2 + 0.5 * Math.sin(state.tick * 2 + j);
-            ctx.beginPath(); ctx.arc(p.x, p.y, size, 0, Math.PI * 2); ctx.fill();
-          }
+    'symbiote': (opts) => {
+        const { ctx, cx, cy, fRadius, state, speed, color1, color2, layer } = opts;
+        if (layer === 'front') {
+            ctx.save(); ctx.translate(cx, cy);
+            ctx.fillStyle = color1;
+            ctx.shadowBlur = 15; ctx.shadowColor = color2;
+            
+            ctx.beginPath();
+            for(let a=0; a<=Math.PI*2.1; a+=0.1) {
+                const r = fRadius + Math.sin(a*4 + state.tick*3)*6 + Math.cos(a*7 - state.tick*2)*3;
+                if(a===0) ctx.moveTo(Math.cos(a)*r, Math.sin(a)*r);
+                else ctx.lineTo(Math.cos(a)*r, Math.sin(a)*r);
+            }
+            ctx.closePath();
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = color1;
+            ctx.stroke();
+
+            if (!state.drips) state.drips = [];
+            if (Math.random() > 0.7 && state.drips.length < 20) {
+                const angle = Math.random() * Math.PI*2;
+                state.drips.push({ angle, dist: fRadius, speed: 0.5 + Math.random()*1.5, life: 1 });
+            }
+            state.drips.forEach(d => {
+                d.dist += d.speed * speed;
+                d.life -= 0.02 * speed;
+                ctx.beginPath();
+                ctx.arc(Math.cos(d.angle)*d.dist, Math.sin(d.angle)*d.dist, 4*d.life, 0, Math.PI*2);
+                ctx.fill();
+            });
+            state.drips = state.drips.filter(d => d.life > 0);
+            ctx.restore();
         }
-        ctx.restore(); ctx.shadowBlur = 0;
-      },
     },
+    'runes': (opts) => {
+        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
+        if (layer === 'back') {
+            ctx.shadowBlur = 30; ctx.shadowColor = color1;
+            ctx.fillStyle = color1; ctx.globalAlpha = 0.25;
+            ctx.beginPath(); ctx.arc(cx, cy, fRadius + 25, 0, Math.PI*2); ctx.fill();
+            ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+        }
+        if (layer === 'front') {
+            ctx.save(); ctx.translate(cx, cy);
+            ctx.shadowBlur = 12; ctx.shadowColor = color1;
+            
+            ctx.save();
+            ctx.rotate(state.tick * 0.4);
+            ctx.strokeStyle = color1; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(0, 0, fRadius + 18, 0, Math.PI*2); ctx.stroke();
+            ctx.fillStyle = color2;
+            for(let i=0; i<12; i++) {
+                ctx.beginPath(); ctx.arc(0, fRadius+18, 2.5, 0, Math.PI*2); ctx.fill();
+                ctx.rotate(Math.PI*2 / 12);
+            }
+            ctx.restore();
+
+            ctx.save();
+            ctx.rotate(-state.tick * 0.6);
+            ctx.strokeStyle = color2; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.arc(0, 0, fRadius + 2, 0, Math.PI*2); ctx.stroke();
+            
+            ctx.font = '16px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#fff';
+            ctx.shadowColor = color2; ctx.shadowBlur = 8;
+            const runes = ['ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ','ᚹ'];
+            for(let i=0; i<8; i++) {
+                ctx.fillText(runes[i], 0, -(fRadius+10));
+                ctx.rotate(Math.PI*2 / 8);
+            }
+            ctx.restore();
+            ctx.restore();
+        }
+    },
+    'pulsar': (opts) => {
+        const { ctx, cx, cy, fRadius, state, speed, color1, color2, layer } = opts;
+        if (layer === 'back') {
+            ctx.save(); ctx.translate(cx, cy);
+            const grad = ctx.createRadialGradient(0,0, fRadius-10, 0,0, fRadius+60);
+            grad.addColorStop(0, color1); grad.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(0,0, fRadius+60, 0, Math.PI*2); ctx.fill();
+
+            ctx.rotate(state.tick * 0.3);
+            const jetGrad = ctx.createLinearGradient(0, -fRadius-120, 0, fRadius+120);
+            jetGrad.addColorStop(0, 'rgba(0,0,0,0)');
+            jetGrad.addColorStop(0.3, color2);
+            jetGrad.addColorStop(0.5, '#fff');
+            jetGrad.addColorStop(0.7, color2);
+            jetGrad.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = jetGrad;
+            ctx.globalCompositeOperation = 'lighter';
+            
+            const w = 8 + Math.sin(state.tick*6)*4;
+            const h = fRadius + 100 + Math.sin(state.tick*4)*30;
+            ctx.beginPath(); ctx.ellipse(0, 0, w, h, 0, 0, Math.PI*2); ctx.fill();
+            ctx.restore();
+        }
+        if (layer === 'front') {
+            ctx.save(); ctx.translate(cx, cy); ctx.rotate(-state.tick * 2);
+            ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.shadowBlur = 15; ctx.shadowColor = color1;
+            ctx.beginPath(); ctx.arc(0, 0, fRadius, 0, Math.PI*2); ctx.stroke();
+            ctx.fillStyle = '#fff';
+            for(let i=0; i<3; i++) {
+                ctx.beginPath(); ctx.arc(fRadius, 0, 3 + Math.random()*2, 0, Math.PI*2); ctx.fill();
+                ctx.rotate(Math.PI*2/3);
+            }
+            ctx.restore();
+        }
+    },
+    'frost': (opts) => {
+        const { ctx, cx, cy, fRadius, state, speed, color1, color2, layer } = opts;
+        if (layer === 'front') {
+            ctx.save(); ctx.translate(cx, cy);
+            ctx.strokeStyle = color1; 
+            ctx.shadowBlur = 12; ctx.shadowColor = '#fff';
+            ctx.lineWidth = 2.5;
+
+            ctx.beginPath(); ctx.arc(0, 0, fRadius, 0, Math.PI*2); ctx.stroke();
+
+            const numSpikes = 14;
+            ctx.fillStyle = color2;
+            for(let i=0; i<numSpikes; i++) {
+                const angle = (i * Math.PI*2/numSpikes) + state.tick*0.2;
+                const spikeLen = 6 + Math.sin(state.tick*3 + i*2)*6;
+                ctx.save();
+                ctx.rotate(angle);
+                ctx.beginPath();
+                ctx.moveTo(fRadius, -4);
+                ctx.lineTo(fRadius + spikeLen, 0);
+                ctx.lineTo(fRadius, 4);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            if(!state.snow) state.snow = [];
+            if(state.snow.length < 40) {
+                state.snow.push({ angle: Math.random()*Math.PI*2, dist: fRadius, life: 1, drift: (Math.random()-0.5)*0.03 });
+            }
+            ctx.fillStyle = '#fff';
+            state.snow.forEach(s => {
+                s.dist += (0.8 + Math.random()*0.5) * speed;
+                s.angle += s.drift * speed;
+                s.life -= 0.015 * speed;
+                ctx.globalAlpha = Math.max(0, s.life);
+                ctx.beginPath(); ctx.arc(Math.cos(s.angle)*s.dist, Math.sin(s.angle)*s.dist, 2, 0, Math.PI*2); ctx.fill();
+            });
+            state.snow = state.snow.filter(s => s.life > 0);
+
+            ctx.restore();
+        }
+    },
+    'singularity': (opts) => {
+        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
+        if(layer === 'back') {
+            ctx.save(); ctx.translate(cx, cy);
+            ctx.rotate(state.tick * 0.4);
+            const grad = ctx.createRadialGradient(0,0, fRadius-5, 0,0, fRadius+45);
+            grad.addColorStop(0, '#000'); grad.addColorStop(0.2, color1); grad.addColorStop(0.5, color2); grad.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = grad; ctx.scale(1, 0.6);
+            ctx.beginPath(); ctx.arc(0, 0, fRadius+50, 0, Math.PI*2); ctx.fill();
+            ctx.restore();
+            ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(cx, cy, fRadius+2, 0, Math.PI*2); ctx.fill();
+        }
+        if(layer === 'front') {
+            ctx.save(); ctx.translate(cx, cy); ctx.rotate(-state.tick * 0.8);
+            ctx.strokeStyle = color1; ctx.lineWidth = 2; ctx.shadowBlur = 15; ctx.shadowColor = color2;
+            for(let i=0; i<3; i++) {
+                ctx.rotate((Math.PI*2)/3); ctx.beginPath(); ctx.arc(0, 0, fRadius+15, 0, Math.PI/2); ctx.stroke();
+                const pA = state.tick * 2 + i, pR = fRadius + 10 + Math.sin(state.tick*5)*5;
+                ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(Math.cos(pA)*pR, Math.sin(pA)*pR, 2, 0, Math.PI*2); ctx.fill();
+            }
+            ctx.restore();
+        }
+    },
+    'quantum-realm': (opts) => {
+        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
+        if(layer === 'front') {
+            ctx.save(); ctx.translate(cx, cy); ctx.shadowBlur = 10; ctx.shadowColor = color1; ctx.lineWidth = 1.5;
+            const orbits = [ { angle: state.tick*0.5, tilt: 0 }, { angle: -state.tick*0.6, tilt: Math.PI/3 }, { angle: state.tick*0.7, tilt: -Math.PI/3 } ];
+            orbits.forEach((orb, i) => {
+                ctx.save(); ctx.rotate(orb.tilt); ctx.scale(1, 0.3); ctx.rotate(orb.angle);
+                ctx.strokeStyle = `rgba(${i%2===0?'0,255,255':'255,100,255'}, 0.4)`;
+                ctx.beginPath(); ctx.arc(0, 0, fRadius+10, 0, Math.PI*2); ctx.stroke();
+                const ex = Math.cos(state.tick*2 + i) * (fRadius+10), ey = Math.sin(state.tick*2 + i) * (fRadius+10);
+                ctx.fillStyle = i===0 ? color1 : (i===1 ? color2 : '#fff');
+                ctx.beginPath(); ctx.arc(ex, ey, 4, 0, Math.PI*2); ctx.fill();
+                ctx.restore();
+            });
+            ctx.restore();
+        }
+    },
+    'dragon-aura': (opts) => {
+        const { ctx, cx, cy, fRadius, state, speed, color1, color2, layer } = opts;
+        if(layer === 'back') {
+            ctx.shadowBlur = 30; ctx.shadowColor = color1; ctx.fillStyle = color1;
+            ctx.beginPath(); ctx.arc(cx, cy, fRadius+5, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
+        }
+        if(layer === 'front') {
+            if(!state.dragonFlames) state.dragonFlames = [];
+            if(state.dragonFlames.length < 40) {
+                const angle = Math.random() * Math.PI*2;
+                state.dragonFlames.push({ angle: angle, radius: fRadius - 5, vx: Math.cos(angle) * (1 + Math.random()), vy: Math.sin(angle) * (1 + Math.random()) - 2, life: 1, size: 3 + Math.random()*5, color: Math.random() > 0.5 ? color1 : color2 });
+            }
+            ctx.globalCompositeOperation = 'lighter';
+            state.dragonFlames.forEach(p => {
+                p.radius += 0.5 * speed; p.angle += 0.02 * speed; p.life -= 0.02 * speed;
+                const px = cx + Math.cos(p.angle) * p.radius, py = cy + Math.sin(p.angle) * p.radius + p.vy*5;
+                ctx.fillStyle = p.color; ctx.globalAlpha = Math.max(0, p.life);
+                ctx.beginPath(); ctx.arc(px, py, p.size * p.life, 0, Math.PI*2); ctx.fill();
+            });
+            ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+            state.dragonFlames = state.dragonFlames.filter(p => p.life > 0);
+            ctx.strokeStyle = color2; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, fRadius+4, 0, Math.PI*2); ctx.stroke();
+        }
+    },
+    'supernova': (opts) => {
+        const { ctx, cx, cy, fRadius, state, color1, color2, glow, layer } = opts;
+        if(layer === 'back') {
+            const pulse = 1 + Math.sin(state.tick*3)*0.1;
+            const grad = ctx.createRadialGradient(cx, cy, fRadius, cx, cy, fRadius+60*pulse);
+            grad.addColorStop(0, color1); grad.addColorStop(0.5, color2); grad.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(cx, cy, fRadius+80, 0, Math.PI*2); ctx.fill();
+        }
+        if(layer === 'front') {
+            ctx.save(); ctx.translate(cx, cy);
+            const wave1 = (state.tick * 2) % 40, wave2 = (state.tick * 2 + 20) % 40;
+            ctx.strokeStyle = color2; ctx.shadowBlur = glow; ctx.shadowColor = color1;
+            ctx.lineWidth = 3 * (1 - wave1/40); ctx.beginPath(); ctx.arc(0, 0, fRadius + wave1, 0, Math.PI*2); ctx.stroke();
+            ctx.lineWidth = 3 * (1 - wave2/40); ctx.beginPath(); ctx.arc(0, 0, fRadius + wave2, 0, Math.PI*2); ctx.stroke();
+            ctx.rotate(state.tick);
+            for(let i=0; i<8; i++) {
+                ctx.rotate(Math.PI/4); ctx.beginPath(); ctx.moveTo(fRadius, 0); ctx.lineTo(fRadius + 10 + Math.random()*15, 0);
+                ctx.lineWidth = 2; ctx.strokeStyle = '#fff'; ctx.stroke();
+            }
+            ctx.restore();
+        }
+    },
+    'sacred-geometry': (opts) => {
+        const { ctx, cx, cy, fRadius, state, color1, color2, glow, layer } = opts;
+        if(layer === 'front') {
+            ctx.save(); ctx.translate(cx, cy); ctx.shadowBlur = glow; ctx.shadowColor = color1;
+            const drawPolygon = (sides, radius, rotation, color, width) => {
+                ctx.save(); ctx.rotate(rotation); ctx.strokeStyle = color; ctx.lineWidth = width; ctx.beginPath();
+                for(let i=0; i<=sides; i++) {
+                    const angle = i * (Math.PI*2)/sides;
+                    if(i===0) ctx.moveTo(Math.cos(angle)*radius, Math.sin(angle)*radius);
+                    else ctx.lineTo(Math.cos(angle)*radius, Math.sin(angle)*radius);
+                }
+                ctx.stroke(); ctx.fillStyle = '#fff';
+                for(let i=0; i<sides; i++) {
+                    const angle = i * (Math.PI*2)/sides;
+                    ctx.beginPath(); ctx.arc(Math.cos(angle)*radius, Math.sin(angle)*radius, 3, 0, Math.PI*2); ctx.fill();
+                }
+                ctx.restore();
+            };
+            const pulse = Math.sin(state.tick * 2);
+            drawPolygon(3, fRadius + 2 + pulse*2, state.tick * 0.5, color1, 2);
+            drawPolygon(3, fRadius + 2 + pulse*2, state.tick * 0.5 + Math.PI, color2, 2);
+            drawPolygon(6, fRadius + 15, -state.tick * 0.2, 'rgba(255,255,255,0.4)', 1);
+            ctx.restore();
+        }
+    },
+    'void-vortex': (opts) => {
+        const { ctx, cx, cy, fRadius, state, speed, color1, color2, layer } = opts;
+        if(layer === 'back') {
+          ctx.save(); ctx.translate(cx, cy); ctx.rotate(-state.tick * 0.5);
+          const grad = ctx.createRadialGradient(0, 0, fRadius - 10, 0, 0, fRadius + 30);
+          grad.addColorStop(0, '#000000'); grad.addColorStop(0.3, color1); grad.addColorStop(0.7, color2); grad.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(0, 0, fRadius + 40, 0, Math.PI*2); ctx.fill();
+          ctx.restore();
+        }
+        if(layer === 'front') {
+          if(!state.vortexParticles) state.vortexParticles = [];
+          if(state.vortexParticles.length < 60) state.vortexParticles.push({ angle: Math.random() * Math.PI * 2, radius: fRadius + 40 + Math.random() * 40, speed: 1 + Math.random() * 2, size: 1 + Math.random() * 2, color: Math.random() > 0.5 ? color1 : color2, opacity: Math.random() });
+          ctx.shadowBlur = 10; ctx.shadowColor = color1;
+          state.vortexParticles.forEach(p => {
+            p.radius -= 0.8 * speed; p.angle += 0.03 * speed;
+            if(p.radius < fRadius - 20) { p.radius = fRadius + 40 + Math.random() * 40; p.angle = Math.random() * Math.PI * 2; }
+            const px = cx + Math.cos(p.angle) * p.radius, py = cy + Math.sin(p.angle) * p.radius;
+            ctx.fillStyle = p.color; ctx.globalAlpha = Math.min(1, (p.radius - (fRadius - 20)) / 50);
+            ctx.beginPath(); ctx.arc(px, py, p.size, 0, Math.PI*2); ctx.fill();
+          });
+          ctx.globalAlpha = 1;
+        }
+    },
+    'infinity-shield': (opts) => {
+        const { ctx, cx, cy, fRadius, state, color1, color2, glow, layer } = opts;
+        if(layer === 'front') {
+          ctx.save(); ctx.translate(cx, cy); ctx.shadowBlur = glow; ctx.shadowColor = color1;
+          ctx.strokeStyle = color1; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, fRadius + 8, 0, Math.PI*2); ctx.stroke();
+          ctx.rotate(state.tick * 0.7); ctx.strokeStyle = color2; ctx.lineWidth = 4; ctx.lineCap = 'round';
+          ctx.beginPath(); ctx.arc(0, 0, fRadius + 4, 0, Math.PI * 0.6); ctx.stroke(); ctx.beginPath(); ctx.arc(0, 0, fRadius + 4, Math.PI, Math.PI * 1.6); ctx.stroke();
+          ctx.rotate(-state.tick * 1.5); ctx.strokeStyle = '#00f2ff'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(0, 0, fRadius + 10, 0, Math.PI * 0.4); ctx.stroke(); ctx.beginPath(); ctx.arc(0, 0, fRadius + 10, Math.PI, Math.PI * 1.4); ctx.stroke();
+          ctx.fillStyle = '#ffffff'; ctx.shadowColor = '#ffffff';
+          ctx.beginPath(); ctx.arc(fRadius+4, 0, 4, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(-(fRadius+4), 0, 4, 0, Math.PI*2); ctx.fill();
+          ctx.restore(); ctx.globalAlpha = 1;
+        }
+    },
+    'cyber-grid': (opts) => {
+        const { ctx, cx, cy, fRadius, state, color1, layer } = opts;
+        if(layer === 'front') {
+          ctx.save(); ctx.shadowBlur = 0;
+          const scanY = cy - fRadius + ((state.tick * 40) % (fRadius * 2));
+          ctx.beginPath(); ctx.arc(cx, cy, fRadius, 0, Math.PI * 2); ctx.clip();
+          ctx.strokeStyle = 'rgba(0, 242, 255, 0.15)'; ctx.lineWidth = 1;
+          for(let i = cy - fRadius; i < cy + fRadius; i += 12) { ctx.beginPath(); ctx.moveTo(cx - fRadius, i); ctx.lineTo(cx + fRadius, i); ctx.stroke(); }
+          const grad = ctx.createLinearGradient(0, scanY - 15, 0, scanY + 15);
+          grad.addColorStop(0, 'rgba(0, 242, 255, 0)'); grad.addColorStop(0.5, color1); grad.addColorStop(1, 'rgba(0, 242, 255, 0)');
+          ctx.fillStyle = grad; ctx.fillRect(cx - fRadius, scanY - 15, fRadius * 2, 30);
+          ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.shadowBlur = 12; ctx.shadowColor = color1;
+          ctx.beginPath(); ctx.moveTo(cx - fRadius, scanY); ctx.lineTo(cx + fRadius, scanY); ctx.stroke();
+          ctx.restore();
+        }
+    },
+    'golden-dust': (opts) => {
+        const { ctx, cx, cy, fRadius, state, speed, layer } = opts;
+        if(layer === 'back') {
+          const grad = ctx.createRadialGradient(cx, cy, fRadius - 10, cx, cy, fRadius + 25);
+          grad.addColorStop(0, 'rgba(245, 197, 24, 0.2)'); grad.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(cx, cy, fRadius + 30, 0, Math.PI*2); ctx.fill();
+        }
+        if(layer === 'front' || layer === 'back') {
+          if(!state.dustParticles) state.dustParticles = [];
+          if(state.dustParticles.length < 80) state.dustParticles.push({ x: cx - fRadius + Math.random() * (fRadius * 2), y: cy + fRadius - Math.random() * 10, vx: (Math.random() - 0.5) * 0.8, vy: -0.5 - Math.random() * 1.5, life: 1, size: 1 + Math.random() * 3, sparkle: Math.random(), isFront: Math.random() > 0.4 });
+          ctx.shadowBlur = 8; ctx.shadowColor = '#ffd700';
+          state.dustParticles.forEach(p => {
+            if((layer === 'front' && p.isFront) || (layer === 'back' && !p.isFront)) {
+              p.x += p.vx * speed; p.y += p.vy * speed; p.life -= 0.008 * speed; p.sparkle += 0.1;
+              const currentOpacity = Math.max(0, p.life) * (0.5 + Math.sin(p.sparkle) * 0.5);
+              const dist = Math.sqrt(Math.pow(p.x - cx, 2) + Math.pow(p.y - cy, 2));
+              if(p.life <= 0 || dist > fRadius + 35) { p.x = cx - fRadius + Math.random() * (fRadius * 2); p.y = cy + fRadius; p.life = 1; p.vy = -0.5 - Math.random() * 1.5; }
+              ctx.fillStyle = `rgba(255, 215, 0, ${currentOpacity})`; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
+            }
+          });
+          ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+        }
+    },
+    'aurora': (opts) => {
+        const { ctx, cx, cy, fRadius, state, color1, color2, glow, layer } = opts;
+        if(layer === 'back') {
+          ctx.save(); ctx.shadowBlur = 0; ctx.beginPath(); ctx.arc(cx, cy, fRadius + 22, 0, Math.PI*2); ctx.clip();
+          for(let i = 0; i < 3; i++) {
+            const shift = state.tick * (0.3 + i * 0.1);
+            const grad = ctx.createLinearGradient(cx - fRadius, 0, cx + fRadius, 0);
+            grad.addColorStop(0, 'rgba(0,0,0,0)'); grad.addColorStop(0.3, color1); grad.addColorStop(0.7, color2); grad.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = grad; ctx.beginPath(); ctx.moveTo(cx - fRadius - 20, cy + fRadius + 20);
+            for(let x = cx - fRadius - 20; x <= cx + fRadius + 20; x += 10) { const y = cy + Math.sin(x * 0.03 + shift) * 15 + (i * 12) - 10; ctx.lineTo(x, y); }
+            ctx.lineTo(cx + fRadius + 20, cy + fRadius + 20); ctx.closePath(); ctx.globalAlpha = 0.45; ctx.fill();
+          }
+          ctx.restore(); ctx.globalAlpha = 1;
+        }
+        if(layer === 'front') { ctx.strokeStyle = color2; ctx.lineWidth = 3; ctx.shadowBlur = glow; ctx.shadowColor = color2; ctx.beginPath(); ctx.arc(cx, cy, fRadius, 0, Math.PI*2); ctx.stroke(); }
+    },
+    'electro-storm': (opts) => {
+        const { ctx, cx, cy, fRadius, state, speed, color1, color2, glow, layer } = opts;
+        if(layer === 'front') {
+          ctx.save(); ctx.shadowBlur = glow; ctx.shadowColor = color1; ctx.strokeStyle = color2; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, fRadius, 0, Math.PI * 2); ctx.stroke();
+          if (Math.random() > 0.85) {
+            state.lightning = []; const segments = 8, startAngle = Math.random() * Math.PI * 2, endAngle = startAngle + (Math.random() - 0.5) * Math.PI;
+            for(let i = 0; i <= segments; i++) { const progress = i / segments, angle = startAngle + (endAngle - startAngle) * progress, rad = fRadius + (Math.random() - 0.5) * 16; state.lightning.push({ x: cx + Math.cos(angle) * rad, y: cy + Math.sin(angle) * rad }); }
+            state.lightningLife = 5;
+          }
+          if (state.lightning && state.lightning.length > 0 && state.lightningLife > 0) {
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(state.lightning[0].x, state.lightning[0].y);
+            for(let i = 1; i < state.lightning.length; i++) ctx.lineTo(state.lightning[i].x, state.lightning[i].y);
+            ctx.stroke(); state.lightningLife -= 1 * speed;
+          }
+          ctx.restore();
+        }
+    },
+    'rgb-ring': (opts) => {
+        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
+        if(layer==='front') { ctx.strokeStyle=color1; ctx.lineWidth=6; ctx.beginPath(); ctx.arc(cx,cy,fRadius,state.tick%(Math.PI*2),(state.tick%(Math.PI*2))+Math.PI*1.5); ctx.stroke(); ctx.strokeStyle=color2; ctx.beginPath(); ctx.arc(cx,cy,fRadius,(state.tick%(Math.PI*2))+Math.PI,(state.tick%(Math.PI*2))+Math.PI*2); ctx.stroke(); }
+    },
+    'rgb-rainbow': (opts) => {
+        const { ctx, cx, cy, fRadius, state, layer } = opts;
+        if(layer==='front') { for(let i=0;i<12;i++) { const hue=((state.tick*50+i*30)%360); ctx.strokeStyle=`hsl(${hue},100%,60%)`; ctx.lineWidth=4; ctx.beginPath(); ctx.arc(cx,cy,fRadius+Math.sin(state.tick*2+i)*3,i*Math.PI/6,(i+1)*Math.PI/6); ctx.stroke(); } }
+    },
+    'neon-pulse': (opts) => {
+        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
+        if(layer==='front') { const pR=fRadius+Math.sin(state.tick*3)*6; ctx.strokeStyle=color1; ctx.lineWidth=8*state.pulse; ctx.globalAlpha=0.6; ctx.beginPath(); ctx.arc(cx,cy,pR,0,Math.PI*2); ctx.stroke(); ctx.strokeStyle=color2; ctx.lineWidth=4; ctx.globalAlpha=1; ctx.beginPath(); ctx.arc(cx,cy,pR,0,Math.PI*2); ctx.stroke(); }
+    },
+    'running-gradient': (opts) => {
+        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
+        if(layer==='front') { const grad=ctx.createConicGradient(state.tick%(Math.PI*2),cx,cy); grad.addColorStop(0,color1); grad.addColorStop(0.3,'#ffffff'); grad.addColorStop(0.5,color2); grad.addColorStop(0.7,'#ffffff'); grad.addColorStop(1,color1); ctx.strokeStyle=grad; ctx.lineWidth=6; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke(); }
+    },
+    'comet': (opts) => {
+        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
+        if(layer==='front') { for(let i=0;i<3;i++) { const angle=state.tick*2+i*Math.PI*2/3; const tailLen=30; for(let j=tailLen;j>=0;j--) { const tA=angle-j*0.03; const x=cx+Math.cos(tA)*fRadius, y=cy+Math.sin(tA)*fRadius; const size=6*(1-j/tailLen); ctx.fillStyle=j===0?'#fff':color1; ctx.globalAlpha=1-(j/tailLen); ctx.shadowBlur=j===0?20:0; ctx.shadowColor=color2; ctx.beginPath(); ctx.arc(x,y,size,0,Math.PI*2); ctx.fill(); } } ctx.globalAlpha=1; }
+    },
+    'double-orbit': (opts) => {
+        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
+        const oRX = fRadius + 38, oRY = fRadius * 0.35;
+        const a1 = state.tick, a2 = -state.tick * 1.3, a3 = state.tick * 0.8;
+        const drawOrbit = (rot, col, pAngle, isFront) => {
+          ctx.save(); ctx.translate(cx, cy); ctx.rotate(rot);
+          ctx.beginPath(); ctx.ellipse(0,0,oRX,oRY,0, isFront?0:Math.PI, isFront?Math.PI:Math.PI*2);
+          ctx.strokeStyle = col; ctx.globalAlpha = isFront?0.9:0.2; ctx.lineWidth = isFront?3:1.5; ctx.stroke();
+          const nA = ((pAngle%(Math.PI*2))+Math.PI*2)%(Math.PI*2); const pFront = nA < Math.PI;
+          if((isFront && pFront) || (!isFront && !pFront)) {
+            let px = Math.cos(nA)*oRX, py = Math.sin(nA)*oRY;
+            ctx.fillStyle = col; ctx.shadowColor = col; ctx.shadowBlur = 15; ctx.globalAlpha = 1;
+            ctx.beginPath(); ctx.arc(px, py, 6, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#fff'; ctx.shadowBlur = 0; ctx.beginPath(); ctx.arc(px, py, 2.5, 0, Math.PI*2); ctx.fill();
+          }
+          ctx.restore();
+        };
+        if(layer === 'back') { drawOrbit(0,color1,a1,false); drawOrbit(Math.PI/3,color2,a2,false); drawOrbit(-Math.PI/3,'#00d4ff',a3,false); }
+        else { drawOrbit(0,color1,a1,true); drawOrbit(Math.PI/3,color2,a2,true); drawOrbit(-Math.PI/3,'#00d4ff',a3,true); }
+    },
+    'matrix': (opts) => {
+        const { ctx, cx, cy, fRadius, state, speed, layer } = opts;
+        if(layer === 'back') { ctx.strokeStyle='#00ff41'; ctx.lineWidth=4; ctx.shadowBlur=15; ctx.shadowColor='#00ff41'; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke(); }
+        if(layer === 'front') {
+          if(!state.matrixRain) { state.matrixRain = []; for(let i=0;i<30;i++) state.matrixRain.push({x:cx-fRadius+Math.random()*fRadius*2, y:cy-fRadius-Math.random()*200, speed:1.5+Math.random()*2, char:Math.floor(Math.random()*10).toString()}); }
+          ctx.font = 'bold 16px monospace'; ctx.textAlign = 'center'; ctx.shadowBlur = 8; ctx.shadowColor = '#00ff41';
+          state.matrixRain.forEach(p => {
+            p.y += p.speed * speed; if(Math.random()>0.9) p.char = Math.floor(Math.random()*10).toString();
+            if(p.y > cy+fRadius+20) { p.y = cy-fRadius-50-Math.random()*100; p.x = cx-fRadius+Math.random()*fRadius*2; }
+            const dist = Math.sqrt(Math.pow(p.x-cx,2)+Math.pow(p.y-cy,2));
+            ctx.fillStyle = dist < fRadius ? '#ffffff' : '#00ff41';
+            ctx.globalAlpha = Math.max(0, 1-(dist-fRadius)/30);
+            if(ctx.globalAlpha>0) ctx.fillText(p.char, p.x, p.y);
+          });
+          ctx.globalAlpha = 1;
+        }
+    },
+    'fire': (opts) => {
+        const { ctx, cx, cy, fRadius, state, speed, layer } = opts;
+        if(layer === 'back') { ctx.shadowBlur=20; ctx.shadowColor='#ff3300'; ctx.strokeStyle='#ff3300'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke(); ctx.shadowBlur=0; }
+        if(layer === 'front' || layer === 'back') {
+          if(!state.fireParticles) state.fireParticles = [];
+          if(state.fireParticles.length < 150) { const sA = Math.random()*Math.PI*2; state.fireParticles.push({x:cx+Math.cos(sA)*fRadius, y:cy+Math.sin(sA)*fRadius, vx:(Math.random()-0.5)*1.5, vy:-Math.random()*3-1, life:1, maxLife:1, size:15+Math.random()*15, color:Math.random()>0.5?'#ff3300':(Math.random()>0.5?'#ff7700':'#ffcc00'), isFront:Math.random()>0.5}); }
+          ctx.globalCompositeOperation = 'lighter';
+          state.fireParticles.forEach(p => { if((layer==='front'&&p.isFront)||(layer==='back'&&!p.isFront)) { p.x+=p.vx+Math.sin(p.life*10)*0.5; p.y+=p.vy; p.life-=0.02*speed; const sc = p.life/p.maxLife; ctx.fillStyle=p.color; ctx.globalAlpha=Math.max(0,p.life); ctx.beginPath(); ctx.arc(p.x,p.y,Math.max(0.1,p.size*sc),0,Math.PI*2); ctx.fill(); } });
+          ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+          if(layer==='front') state.fireParticles = state.fireParticles.filter(p => p.life>0);
+        }
+    },
+    'sparks': (opts) => {
+        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
+        if(layer === 'front') {
+          ctx.shadowColor = color1;
+          if(state.particles.length < 50) state.particles.push({angle:Math.random()*Math.PI*2, speed:0.5+Math.random()*2, life:1, size:2+Math.random()*3, distance:fRadius+Math.random()*10});
+          state.particles = state.particles.filter(p => p.life>0);
+          state.particles.forEach(p => { p.angle+=p.speed*0.02; p.distance+=p.speed*0.5; p.life-=0.015; const x=cx+Math.cos(p.angle)*p.distance, y=cy+Math.sin(p.angle)*p.distance; ctx.fillStyle=p.life>0.5?color1:color2; ctx.globalAlpha=p.life; ctx.shadowBlur=10; ctx.beginPath(); ctx.arc(x,y,p.size,0,Math.PI*2); ctx.fill(); });
+          ctx.globalAlpha = 1;
+        }
+    },
+    'god-rays': (opts) => {
+        const { ctx, cx, cy, fRadius, state, layer } = opts;
+        if(layer === 'back') {
+          ctx.shadowColor = '#ffd700'; ctx.shadowBlur = 20;
+          const drawWing = (isLeft) => {
+            ctx.save(); ctx.translate(cx+(isLeft?-fRadius+5:fRadius-5), cy); ctx.scale(isLeft?-1:1,1); ctx.rotate(Math.sin(state.tick*2)*0.08);
+            ctx.beginPath(); ctx.moveTo(0,15); ctx.bezierCurveTo(15,-15,30,-35,60,-25); ctx.quadraticCurveTo(50,-10,70,-5); ctx.quadraticCurveTo(55,5,65,15); ctx.quadraticCurveTo(45,15,50,30); ctx.quadraticCurveTo(30,25,30,40); ctx.quadraticCurveTo(15,25,0,15);
+            ctx.fillStyle = 'rgba(255,255,255,0.95)'; ctx.fill(); ctx.strokeStyle = 'rgba(255,215,0,0.6)'; ctx.lineWidth = 1; ctx.stroke();
+            ctx.restore();
+          };
+          drawWing(true); drawWing(false);
+          ctx.beginPath(); const haloY = cy-fRadius-15+Math.sin(state.tick*3)*5; ctx.ellipse(cx, haloY, 32, 9, 0, 0, Math.PI*2); ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 4; ctx.stroke(); ctx.shadowBlur = 0;
+        }
+    }
   };
-
-  function generateLightning(cx, cy, radius, segments, spread) {
-    const points = [];
-    const startAngle = Math.random() * Math.PI * 2; const endAngle = startAngle + (Math.random() - 0.5) * Math.PI * 0.8;
-    for (let i = 0; i <= segments; i++) {
-      const t = i / segments; const angle = startAngle + (endAngle - startAngle) * t;
-      const r = radius + (Math.random() - 0.5) * spread * (1 - t * 0.3);
-      points.push({ x: cx + Math.cos(angle) * r, y: cy + Math.sin(angle) * r });
-    }
-    const branches = 2 + Math.floor(Math.random() * 3);
-    for (let b = 0; b < branches; b++) {
-      const idx = 2 + Math.floor(Math.random() * (segments - 2));
-      const base = points[idx];
-      const angle = Math.atan2(base.y - cy, base.x - cx) + (Math.random() - 0.5) * 1.2;
-      const len = 10 + Math.random() * 30; const subPoints = 3 + Math.floor(Math.random() * 4);
-      for (let j = 0; j <= subPoints; j++) {
-        const t = j / subPoints;
-        points.push({ x: base.x + Math.cos(angle + t * 0.5) * len * t, y: base.y + Math.sin(angle + t * 0.5) * len * t });
-      }
-    }
-    return points;
-  }
-
-  // Главный анимационный цикл
-  function updateAllFrames() {
-    if (document.hidden) { animationFrameId = requestAnimationFrame(updateAllFrames); return; }
-    const renderMap = [];
-    const mainCanvas = document.getElementById('mainAvatarCanvas');
-    if (mainCanvas && App.user) renderMap.push({canvas: mainCanvas, settings: App.avatarSettings, imgObj: App.user.imgObj || null, name: App.user.name || '?'});
-    document.querySelectorAll('#carouselInner .avatar-canvas').forEach((canvas) => {
-      const uid = canvas.dataset.uid; if (!uid) return; const userData = App.allUserData[uid];
-      if (userData) renderMap.push({canvas: canvas, settings: userData.avatarSettings || { style: 'off' }, imgObj: userData.imgObj || null, name: userData.name || '?'});
-    });
-    const mpCanvas = document.querySelector('#mpAvatarContainer canvas');
-    if (mpCanvas && App.selectedProfile) {
-      const userData = App.allUserData[App.selectedProfile];
-      if (userData) renderMap.push({canvas: mpCanvas, settings: userData.avatarSettings || { style: 'off' }, imgObj: userData.imgObj || null, name: userData.name || '?'});
-    }
-    for (let i = 0; i < renderMap.length; i++) {
-      const item = renderMap[i];
-      // ПЕРЕДАЕМ tick=1, ЧТОБЫ АНИМАЦИЯ КРУТИЛАСЬ
-      renderPremiumAvatar(item.canvas, item.settings, item.imgObj, item.name, 1);
-    }
-    animationFrameId = requestAnimationFrame(updateAllFrames);
-  }
-
-  function startAnimationLoop() {
-    if (animationLoopRunning) return;
-    animationLoopRunning = true;
-    if (animationFrameId) cancelAnimationFrame(animationFrameId);
-    animationFrameId = requestAnimationFrame(updateAllFrames);
-  }
-
-  function stopAnimationLoop() {
-    animationLoopRunning = false;
-    if (animationFrameId) { cancelAnimationFrame(animationFrameId); animationFrameId = null; }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      startAnimationLoop();
-      const observer = new MutationObserver(() => {
-        document.querySelectorAll('canvas.chat-static-avatar').forEach((c) => {
-             const uid = c.dataset.uid; const userData = App.allUserData[uid];
-             if(userData) renderPremiumAvatar(c, userData.avatarSettings || {}, userData.imgObj, userData.name, 0);
-        });
-      });
-      const chatContainer = document.getElementById('chat');
-      if (chatContainer) observer.observe(chatContainer, { childList: true, subtree: true });
-    });
-  } else { startAnimationLoop(); }
-
-  window.addEventListener('beforeunload', () => { stopAnimationLoop(); avatarTimers.clear(); });
-  window.renderPremiumAvatar = renderPremiumAvatar;
-  window.startAnimationLoop = startAnimationLoop;
-  window.stopAnimationLoop = stopAnimationLoop;
-  window.updateAllFrames = updateAllFrames;
-
-  // =========================================================================
-  //  ОСНОВНАЯ ЛОГИКА ПРИЛОЖЕНИЯ
   // =========================================================================
 
   const firebaseConfig = {
@@ -784,6 +935,19 @@ button:active{transform:scale(0.95)}
   const customConfirm = m => showCustomModal(m, false);
   const customPrompt = (m, d) => showCustomModal(m, true, d);
 
+  const imageCache = {};
+  function getCachedImage(url, cb) {
+    if(!url) return null;
+    if(imageCache[url] === 'loading') return null;
+    if(imageCache[url] && imageCache[url] !== 'loading') return imageCache[url];
+    imageCache[url] = 'loading';
+    const img = new Image();
+    img.onload = () => { imageCache[url] = img; if(cb) cb(); };
+    img.onerror = () => { delete imageCache[url]; };
+    img.src = url;
+    return null;
+  }
+
   const App = {
     user: null, onShift: false, shiftTimer: null,
     allUserData: {}, activeShifts: {}, presenceData: {}, unreadCount: 0,
@@ -791,7 +955,7 @@ button:active{transform:scale(0.95)}
     selectedProfile: null, privateChatWith: null,
     calYear: null, calMonth: null,
     avatarSettings: { style:'off', speed:1, glow:20, color1:'#6366f1', color2:'#a855f7', ringColor:'#7c3aed', ringThickness:'medium' },
-    chatListener: null, notifiedKeys: {},
+    chatListener: null, notifiedKeys: {}, avatarAnimId: null,
     isCreator: false, isGod: false, previewData: null,
     activeListeners: [], messagesCache: {}
   };
@@ -805,10 +969,625 @@ button:active{transform:scale(0.95)}
     if(App.chatListener) { App.chatListener.off(); App.chatListener = null; }
   }
 
-  // ============ AUTH И ЛОГИКА ============
+  // =========================================================================
+  //  🚀 ОПТИМИЗИРОВАННЫЙ РЕНДЕР АВАТАРОК (Ozon Hub)
+  // =========================================================================
+
+  // ---- КЭШИ ДЛЯ СТАТИЧНЫХ АВАТАРОК В ЧАТЕ ----
+  const staticAvatarCache = new Map();
+
+  // ---- ТАЙМЕРЫ ДЛЯ АНИМИРОВАННЫХ АВАТАРОК ----
+  const avatarTimers = new Map();
+
+  // ---- ФЛАГ РАБОТЫ ЦИКЛА ----
+  let animationLoopRunning = false;
+  let animationFrameId = null;
+
+  // ================================================================
+  //  1.  ФУНКЦИЯ РЕНДЕРА (ОСНОВНАЯ)
+  // ================================================================
+
+  function renderPremiumAvatar(canvas, settings, imgObj, userName, tick = 0) {
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return;
+
+    const dpr = window.devicePixelRatio || 1;
+    const displayW = rect.width;
+    const displayH = rect.height;
+
+    const targetW = Math.floor(displayW * dpr);
+    const targetH = Math.floor(displayH * dpr);
+
+    if (canvas.width !== targetW || canvas.height !== targetH) {
+      canvas.width = targetW;
+      canvas.height = targetH;
+    }
+
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
+    const baseSize = 300;
+    const cx = baseSize / 2;
+    const cy = baseSize / 2;
+    const avatarRadius = 82;
+    const fRadius = avatarRadius + 4;
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.save();
+    ctx.scale(canvas.width / baseSize, canvas.height / baseSize);
+
+    const color1 = settings?.color1 || '#6366f1';
+    const color2 = settings?.color2 || '#a855f7';
+    const style = settings?.style || 'off';
+    const glow = parseInt(settings?.glow) || 20;
+    const speed = parseFloat(settings?.speed) || 1;
+
+    let state;
+    if (tick === 0) {
+      state = { tick: 0, pulse: 1, dir: 1, particles: [] };
+    } else {
+      if (!avatarTimers.has(canvas)) {
+        avatarTimers.set(canvas, { tick: 0, pulse: 1, dir: 1, particles: [] });
+      }
+      state = avatarTimers.get(canvas);
+      state.tick += 0.04 * speed;
+      state.pulse += 0.02 * state.dir * speed;
+      if (state.pulse >= 1.2) state.dir = -1;
+      if (state.pulse <= 0.8) state.dir = 1;
+    }
+
+    const opts = { ctx, cx, cy, fRadius, avatarRadius, state, speed, color1, color2, glow };
+
+    const backEffect = EFFECTS[style]?.back || null;
+    if (backEffect) {
+      ctx.shadowBlur = 0;
+      backEffect(opts);
+    }
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, avatarRadius, 0, Math.PI * 2);
+    ctx.clip();
+
+    if (imgObj && imgObj.complete && imgObj.naturalWidth > 0) {
+      try {
+        const ratio = Math.max(
+          (avatarRadius * 2) / imgObj.naturalWidth,
+          (avatarRadius * 2) / imgObj.naturalHeight
+        );
+        const dw = imgObj.naturalWidth * ratio;
+        const dh = imgObj.naturalHeight * ratio;
+        ctx.drawImage(imgObj, cx - dw / 2, cy - dh / 2, dw, dh);
+      } catch (_) {
+        drawFallback(ctx, cx, cy, avatarRadius, userName);
+      }
+    } else {
+      drawFallback(ctx, cx, cy, avatarRadius, userName);
+    }
+    ctx.restore();
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, avatarRadius, 0, Math.PI * 2);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+    ctx.stroke();
+
+    const frontEffect = EFFECTS[style]?.front || null;
+    if (frontEffect) {
+      ctx.shadowBlur = glow;
+      ctx.shadowColor = color1;
+      frontEffect(opts);
+    } else {
+      ctx.strokeStyle = settings?.ringColor || color1;
+      const t = settings?.ringThickness;
+      ctx.lineWidth = t === 'thick' ? 8 : t === 'thin' ? 2 : 4;
+      ctx.shadowBlur = 0;
+      ctx.beginPath();
+      ctx.arc(cx, cy, fRadius, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+
+  function drawFallback(ctx, cx, cy, radius, userName) {
+    ctx.fillStyle = '#1e1b4b';
+    ctx.fill();
+    ctx.fillStyle = '#6366f1';
+    ctx.font = `bold ${radius}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const letter = (userName || '?').charAt(0).toUpperCase();
+    ctx.fillText(letter, cx, cy + Math.floor(radius / 6));
+  }
+
+  // ================================================================
+  //  2.  ЭФФЕКТЫ (СЛОЖНАЯ МАТЕМАТИКА)
+  // ================================================================
+
+  const EFFECTS = {
+
+    fire: {
+      back(opts) {
+        const { ctx, cx, cy, fRadius } = opts;
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = '#ff3300';
+        ctx.strokeStyle = '#ff3300';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(cx, cy, fRadius, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      },
+      front(opts) {
+        const { ctx, cx, cy, fRadius, state, speed } = opts;
+        if (!state.fireParticles) state.fireParticles = [];
+
+        if (state.fireParticles.length < 180) {
+          const angle = Math.random() * Math.PI * 2;
+          const radius = fRadius + Math.random() * 15;
+          state.fireParticles.push({
+            x: cx + Math.cos(angle) * radius,
+            y: cy + Math.sin(angle) * radius,
+            vx: (Math.random() - 0.5) * 2,
+            vy: -Math.random() * 4 - 1.5,
+            life: 0.8 + Math.random() * 0.4,
+            maxLife: 0.8 + Math.random() * 0.4,
+            size: 8 + Math.random() * 18,
+            r: 255,
+            g: 150 + Math.floor(Math.random() * 105),
+            b: 20 + Math.floor(Math.random() * 40),
+          });
+        }
+
+        ctx.globalCompositeOperation = 'lighter';
+        state.fireParticles.forEach((p) => {
+          p.x += p.vx + Math.sin(p.life * 20 + p.x * 0.01) * 0.8;
+          p.y += p.vy;
+          p.vy -= 0.05 * speed;
+          p.life -= 0.015 * speed;
+
+          const lifeRatio = Math.max(0, p.life / p.maxLife);
+          const size = p.size * (0.3 + 0.7 * lifeRatio);
+
+          const r = p.r;
+          const g = Math.floor(p.g * lifeRatio * 0.9);
+          const b = Math.floor(p.b * lifeRatio * 0.7);
+
+          ctx.fillStyle = `rgb(${r}, ${Math.floor(g)}, ${Math.floor(b)})`;
+          ctx.globalAlpha = Math.max(0, lifeRatio * 0.9);
+
+          ctx.beginPath();
+          const angle = Math.atan2(p.vy, p.vx) + Math.PI / 2;
+          const len = size * (0.5 + 0.5 * lifeRatio);
+          const w = size * 0.4 * (0.3 + 0.7 * lifeRatio);
+          const x1 = p.x - Math.cos(angle) * len * 0.3;
+          const y1 = p.y - Math.sin(angle) * len * 0.3;
+          const x2 = p.x + Math.cos(angle) * len * 0.7;
+          const y2 = p.y + Math.sin(angle) * len * 0.7;
+          const cpx1 = p.x - Math.sin(angle) * w;
+          const cpy1 = p.y + Math.cos(angle) * w;
+          const cpx2 = p.x + Math.sin(angle) * w;
+          const cpy2 = p.y - Math.cos(angle) * w;
+
+          ctx.moveTo(x1, y1);
+          ctx.quadraticCurveTo(cpx1, cpy1, x2, y2);
+          ctx.quadraticCurveTo(cpx2, cpy2, x1, y1);
+          ctx.fill();
+        });
+
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = 1;
+        state.fireParticles = state.fireParticles.filter((p) => p.life > 0);
+      },
+    },
+
+    'electro-storm': {
+      front(opts) {
+        const { ctx, cx, cy, fRadius, state, speed, color1, color2, glow } = opts;
+
+        ctx.shadowBlur = glow;
+        ctx.shadowColor = color1;
+        ctx.strokeStyle = color2;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(cx, cy, fRadius, 0, Math.PI * 2);
+        ctx.stroke();
+
+        if (!state.lightningBolt || Math.random() > 0.92) {
+          state.lightningBolt = generateLightning(cx, cy, fRadius, 8, 20);
+          state.lightningLife = 8 + Math.random() * 6;
+        }
+
+        if (state.lightningBolt && state.lightningLife > 0) {
+          ctx.shadowBlur = 25;
+          ctx.shadowColor = '#00e5ff';
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 2.5;
+
+          const points = state.lightningBolt;
+          ctx.beginPath();
+          ctx.moveTo(points[0].x, points[0].y);
+          for (let i = 1; i < points.length; i++) {
+            ctx.lineTo(points[i].x, points[i].y);
+          }
+          ctx.stroke();
+
+          if (state.lightningLife > 3) {
+            ctx.strokeStyle = '#00e5ff';
+            ctx.lineWidth = 1.2;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = '#00e5ff';
+            ctx.beginPath();
+            const offset = 3 + Math.random() * 4;
+            ctx.moveTo(points[0].x + (Math.random() - 0.5) * offset, points[0].y + (Math.random() - 0.5) * offset);
+            for (let i = 1; i < points.length; i++) {
+              const ox = (Math.random() - 0.5) * 2;
+              const oy = (Math.random() - 0.5) * 2;
+              ctx.lineTo(points[i].x + ox, points[i].y + oy);
+            }
+            ctx.stroke();
+          }
+
+          state.lightningLife -= 0.5 * speed;
+        }
+
+        ctx.shadowBlur = 0;
+      },
+    },
+
+    'cyber-grid': {
+      front(opts) {
+        const { ctx, cx, cy, fRadius, state, speed, color1, color2, glow } = opts;
+
+        ctx.shadowBlur = glow;
+        ctx.shadowColor = color1;
+        ctx.strokeStyle = color2;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(cx, cy, fRadius, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = color1;
+        ctx.lineWidth = 1.5;
+        for (let i = 0; i < 36; i++) {
+          const angle = (i / 36) * Math.PI * 2;
+          const len = i % 3 === 0 ? 10 : 5;
+          const r1 = fRadius - 2;
+          const r2 = fRadius - 2 - len;
+          ctx.beginPath();
+          ctx.moveTo(cx + Math.cos(angle) * r1, cy + Math.sin(angle) * r1);
+          ctx.lineTo(cx + Math.cos(angle) * r2, cy + Math.sin(angle) * r2);
+          ctx.stroke();
+        }
+
+        const angle = state.tick * 1.2;
+        const grad = ctx.createConicGradient(angle, cx, cy);
+        const fade = 0.6 + 0.4 * Math.sin(state.tick * 2);
+        grad.addColorStop(0, `rgba(0, 255, 200, ${fade})`);
+        grad.addColorStop(0.05, `rgba(0, 255, 200, ${fade * 0.6})`);
+        grad.addColorStop(0.15, `rgba(0, 255, 200, ${fade * 0.2})`);
+        grad.addColorStop(0.3, 'rgba(0, 255, 200, 0)');
+
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = '#00ffc8';
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = grad;
+        ctx.beginPath();
+        ctx.arc(cx, cy, fRadius + 4, angle - 0.4, angle + 0.1);
+        ctx.stroke();
+
+        ctx.shadowBlur = 15;
+        ctx.fillStyle = '#00ffc8';
+        ctx.beginPath();
+        ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.shadowBlur = 8;
+        ctx.strokeStyle = 'rgba(0, 255, 200, 0.5)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        const endX = cx + Math.cos(angle) * (fRadius + 6);
+        const endY = cy + Math.sin(angle) * (fRadius + 6);
+        ctx.lineTo(endX, endY);
+        ctx.stroke();
+
+        ctx.shadowBlur = 0;
+      },
+    },
+
+    symbiote: {
+      back(opts) {
+        const { ctx, cx, cy, fRadius, color1 } = opts;
+        ctx.shadowBlur = 30;
+        ctx.shadowColor = color1;
+        ctx.fillStyle = color1;
+        ctx.globalAlpha = 0.15;
+        ctx.beginPath();
+        ctx.arc(cx, cy, fRadius + 20, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.shadowBlur = 0;
+      },
+      front(opts) {
+        const { ctx, cx, cy, fRadius, state, speed, color1, color2 } = opts;
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, fRadius, 0, Math.PI * 2);
+        ctx.clip();
+
+        const tentacles = 8;
+        const baseLength = fRadius * 0.85;
+
+        ctx.lineWidth = 4;
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = color2;
+
+        for (let i = 0; i < tentacles; i++) {
+          const baseAngle = (i / tentacles) * Math.PI * 2;
+          const waveOffset = state.tick * 1.5 + i * 0.8;
+
+          const pulseLen = 1 + 0.2 * Math.sin(state.tick * 1.2 + i * 1.1);
+          const len = baseLength * pulseLen;
+
+          const startWidth = 7 + 2 * Math.sin(state.tick * 0.7 + i);
+          const endWidth = 1 + Math.sin(state.tick * 0.9 + i * 1.3) * 0.5 + 1;
+
+          const segments = 16;
+          const points = [];
+          for (let j = 0; j <= segments; j++) {
+            const t = j / segments;
+            const angle = baseAngle + t * 0.6 * Math.sin(waveOffset + t * 4);
+            const r = fRadius + t * len;
+            const x = cx + Math.cos(angle) * r;
+            const y = cy + Math.sin(angle) * r;
+            const shake = 0.8 + 0.4 * Math.sin(state.tick * 3 + i * 2 + j * 0.7);
+            points.push({
+              x: x + (Math.random() - 0.5) * shake * 0.5,
+              y: y + (Math.random() - 0.5) * shake * 0.5,
+              t: t,
+            });
+          }
+
+          const grad = ctx.createLinearGradient(
+            points[0].x, points[0].y,
+            points[points.length - 1].x, points[points.length - 1].y
+          );
+          const hue = (i / tentacles) * 360 + state.tick * 20;
+          grad.addColorStop(0, color1);
+          grad.addColorStop(0.5, color2);
+          grad.addColorStop(1, `hsl(${hue % 360}, 80%, 60%)`);
+
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = startWidth;
+
+          ctx.beginPath();
+          ctx.moveTo(points[0].x, points[0].y);
+          for (let j = 1; j < points.length; j++) {
+            const cp1x = points[j - 1].x + (points[j].x - points[j - 1].x) * 0.3;
+            const cp1y = points[j - 1].y + (points[j].y - points[j - 1].y) * 0.3;
+            const cp2x = points[j].x - (points[j].x - points[j - 1].x) * 0.3;
+            const cp2y = points[j].y - (points[j].y - points[j - 1].y) * 0.3;
+            ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, points[j].x, points[j].y);
+          }
+          ctx.stroke();
+
+          ctx.fillStyle = 'rgba(255,255,255,0.3)';
+          ctx.shadowBlur = 5;
+          for (let j = 1; j < points.length - 1; j += 3) {
+            const p = points[j];
+            const size = 1 + (1 - p.t) * 2 + 0.5 * Math.sin(state.tick * 2 + j);
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        ctx.restore();
+        ctx.shadowBlur = 0;
+      },
+    },
+  };
+
+  function generateLightning(cx, cy, radius, segments, spread) {
+    const points = [];
+    const startAngle = Math.random() * Math.PI * 2;
+    const endAngle = startAngle + (Math.random() - 0.5) * Math.PI * 0.8;
+
+    for (let i = 0; i <= segments; i++) {
+      const t = i / segments;
+      const angle = startAngle + (endAngle - startAngle) * t;
+      const r = radius + (Math.random() - 0.5) * spread * (1 - t * 0.3);
+      points.push({
+        x: cx + Math.cos(angle) * r,
+        y: cy + Math.sin(angle) * r,
+      });
+    }
+
+    const branches = 2 + Math.floor(Math.random() * 3);
+    for (let b = 0; b < branches; b++) {
+      const idx = 2 + Math.floor(Math.random() * (segments - 2));
+      const base = points[idx];
+      const angle = Math.atan2(base.y - cy, base.x - cx) + (Math.random() - 0.5) * 1.2;
+      const len = 10 + Math.random() * 30;
+      const subPoints = 3 + Math.floor(Math.random() * 4);
+      for (let j = 0; j <= subPoints; j++) {
+        const t = j / subPoints;
+        const x = base.x + Math.cos(angle + t * 0.5) * len * t;
+        const y = base.y + Math.sin(angle + t * 0.5) * len * t;
+        points.push({ x, y });
+      }
+    }
+
+    return points;
+  }
+
+  // ================================================================
+  //  3.  ИНИЦИАЛИЗАЦИЯ СТАТИЧНЫХ АВАТАРОК В ЧАТЕ
+  // ================================================================
+
+  function initChatAvatars() {
+    const canvases = document.querySelectorAll('canvas.chat-static-avatar');
+    canvases.forEach((canvas) => {
+      const uid = canvas.dataset.uid;
+      if (!uid) return;
+
+      if (staticAvatarCache.has(uid)) {
+        const cachedData = staticAvatarCache.get(uid);
+        const img = new Image();
+        img.src = cachedData;
+        img.onload = () => {
+          const ctx = canvas.getContext('2d');
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        };
+        return;
+      }
+
+      const userData = (uid === App.user?.uid) ? App.user : App.allUserData[uid];
+      if (!userData) return;
+
+      const settings = userData.avatarSettings || { style: 'off', speed: 1, glow: 20, color1: '#6366f1', color2: '#a855f7' };
+      const imgObj = userData.imgObj || null;
+      const name = userData.name || '?';
+
+      renderPremiumAvatar(canvas, settings, imgObj, name, 0);
+
+      try {
+        staticAvatarCache.set(uid, canvas.toDataURL('image/png'));
+      } catch (_) { }
+    });
+  }
+
+  // ================================================================
+  //  4.  ГЛАВНЫЙ АНИМАЦИОННЫЙ ЦИКЛ
+  // ================================================================
+
+  function updateAllFrames() {
+    if (document.hidden) {
+      animationFrameId = requestAnimationFrame(updateAllFrames);
+      return;
+    }
+
+    // Главная аватарка в профиле (анимированная)
+    const mainCanvas = document.getElementById('mainAvatarCanvas');
+    if (mainCanvas && App.user) {
+      const settings = App.avatarSettings || { style: 'off', speed: 1, glow: 20, color1: '#6366f1', color2: '#a855f7' };
+      const imgObj = App.user.imgObj || null;
+      const name = App.user.name || '?';
+      renderPremiumAvatar(mainCanvas, settings, imgObj, name, 1);
+    }
+
+    // Аватарки в карусели (анимированные)
+    const carouselCanvases = document.querySelectorAll('#carouselInner .avatar-canvas');
+    carouselCanvases.forEach((canvas) => {
+      const uid = canvas.dataset.uid;
+      if (!uid) return;
+      const userData = App.allUserData[uid];
+      if (!userData) return;
+      const settings = userData.avatarSettings || { style: 'off', speed: 1, glow: 20, color1: '#6366f1', color2: '#a855f7' };
+      const imgObj = userData.imgObj || null;
+      const name = userData.name || '?';
+      renderPremiumAvatar(canvas, settings, imgObj, name, 1);
+    });
+
+    // Аватарка в мини-профиле (анимированная)
+    const mpCanvas = document.querySelector('#mpAvatarContainer canvas');
+    if (mpCanvas && App.selectedProfile) {
+      const uid = App.selectedProfile;
+      const userData = App.allUserData[uid];
+      if (userData) {
+        const settings = userData.avatarSettings || { style: 'off', speed: 1, glow: 20, color1: '#6366f1', color2: '#a855f7' };
+        const imgObj = userData.imgObj || null;
+        const name = userData.name || '?';
+        renderPremiumAvatar(mpCanvas, settings, imgObj, name, 1);
+      }
+    }
+
+    animationFrameId = requestAnimationFrame(updateAllFrames);
+  }
+
+  // ================================================================
+  //  5.  ЗАПУСК / ОСТАНОВКА
+  // ================================================================
+
+  function startAnimationLoop() {
+    if (animationLoopRunning) return;
+    animationLoopRunning = true;
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    animationFrameId = requestAnimationFrame(updateAllFrames);
+  }
+
+  function stopAnimationLoop() {
+    animationLoopRunning = false;
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = null;
+    }
+  }
+
+  // ---- АВТОМАТИЧЕСКИЙ ЗАПУСК ----
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      startAnimationLoop();
+      const observer = new MutationObserver(() => {
+        initChatAvatars();
+      });
+      const chatContainer = document.getElementById('chat');
+      if (chatContainer) {
+        observer.observe(chatContainer, { childList: true, subtree: true });
+      }
+    });
+  } else {
+    startAnimationLoop();
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    // Просто пропускаем, чтобы не грузить CPU
+  });
+
+  window.addEventListener('beforeunload', () => {
+    stopAnimationLoop();
+    avatarTimers.clear();
+    staticAvatarCache.clear();
+  });
+
+  window.renderPremiumAvatar = renderPremiumAvatar;
+  window.initChatAvatars = initChatAvatars;
+  window.startAnimationLoop = startAnimationLoop;
+  window.stopAnimationLoop = stopAnimationLoop;
+  window.updateAllFrames = updateAllFrames;
+
+  // =========================================================================
+  //  КОНЕЦ БЛОКА РЕНДЕРА АВАТАРОК
+  // =========================================================================
+
+  // ============ AUTH ============
   let isLoginMode = true;
-  function toggleAuth() { isLoginMode = !isLoginMode; $('#loginFields').style.display = isLoginMode ? 'flex' : 'none'; $('#registerFields').style.display = isLoginMode ? 'none' : 'flex'; $('#tabLogin').style.background = isLoginMode ? '#7c3aed' : 'transparent'; $('#tabLogin').style.color = isLoginMode ? '#fff' : '#6a7a94'; $('#tabRegister').style.background = isLoginMode ? 'transparent' : '#7c3aed'; $('#tabRegister').style.color = isLoginMode ? '#6a7a94' : '#fff'; $('#authError').style.display = 'none'; }
-  function loadPunktsForRegister() { DB.ref('punkts').once('value').then(s => { const sel = $('#regPunkt'); sel.innerHTML = '<option value="">Выберите пункт</option>'; s.forEach(c => { const d = c.val(); sel.innerHTML += `<option value="${esc(c.key)}">Пункт ${esc(c.key)} (${d.rate||0}₽/ч)</option>`; }); }); }
+  function toggleAuth() {
+    isLoginMode = !isLoginMode;
+    $('#loginFields').style.display = isLoginMode ? 'flex' : 'none';
+    $('#registerFields').style.display = isLoginMode ? 'none' : 'flex';
+    $('#tabLogin').style.background = isLoginMode ? '#7c3aed' : 'transparent';
+    $('#tabLogin').style.color = isLoginMode ? '#fff' : '#6a7a94';
+    $('#tabRegister').style.background = isLoginMode ? 'transparent' : '#7c3aed';
+    $('#tabRegister').style.color = isLoginMode ? '#6a7a94' : '#fff';
+    $('#authError').style.display = 'none';
+  }
+
+  function loadPunktsForRegister() {
+    DB.ref('punkts').once('value').then(s => {
+      const sel = $('#regPunkt'); sel.innerHTML = '<option value="">Выберите пункт</option>';
+      s.forEach(c => { const d = c.val(); sel.innerHTML += `<option value="${esc(c.key)}">Пункт ${esc(c.key)} (${d.rate||0}₽/ч)</option>`; });
+    });
+  }
+
   async function login() {
     const e = $('#loginEmail').value.trim(), p = $('#loginPass').value.trim(), err = $('#authError');
     if(!e||!p) { err.textContent='Заполните все поля'; err.style.display='block'; return; }
@@ -817,10 +1596,17 @@ button:active{transform:scale(0.95)}
       const snap = await DB.ref('users/'+cred.user.uid).once('value');
       if(!snap.exists()) { err.textContent='Пользователь не найден'; err.style.display='block'; return; }
       App.user = snap.val(); App.user.uid = cred.user.uid;
-      if(App.user.avatar) { App.user.imgObj = new Image(); App.user.imgObj.crossOrigin = 'Anonymous'; App.user.imgObj.src = App.user.avatar; }
+      
+      if(App.user.avatar) {
+          App.user.imgObj = new Image();
+          App.user.imgObj.crossOrigin = 'Anonymous';
+          App.user.imgObj.src = App.user.avatar;
+      }
+      
       finishLogin();
     } catch(ex) { err.textContent=ex.message; err.style.display='block'; }
   }
+
   async function register() {
     const n = $('#regName').value.trim(), e = $('#regEmail').value.trim(), p = $('#regPass').value.trim(), punkt = $('#regPunkt').value, err = $('#authError');
     if(!n||!e||!p||!punkt) { err.textContent='Заполните все поля'; err.style.display='block'; return; }
@@ -833,70 +1619,376 @@ button:active{transform:scale(0.95)}
       finishLogin();
     } catch(ex) { err.textContent=ex.message; err.style.display='block'; }
   }
-  async function resetPassword() { const e = $('#loginEmail').value.trim(); if(!e) { toast('Введите email', true); return; } try { await AUTH.sendPasswordResetEmail(e); toast('📧 Ссылка для сброса отправлена на '+e); } catch(ex) { toast(ex.message, true); } }
-  async function logout() { if(!await customConfirm('Выйти из аккаунта?')) return; clearAllListeners(); if(App.shiftTimer) clearInterval(App.shiftTimer); DB.ref('presence/'+App.user.uid).remove(); AUTH.signOut().then(() => { localStorage.removeItem('ozon_user'); App.user = null; App.chatOpened = false; $('#app').style.display = 'none'; $('#loginScreen').style.display = 'flex'; document.body.className = ''; }); }
+
+  async function resetPassword() {
+    const e = $('#loginEmail').value.trim();
+    if(!e) { toast('Введите email', true); return; }
+    try { await AUTH.sendPasswordResetEmail(e); toast('📧 Ссылка для сброса отправлена на '+e); }
+    catch(ex) { toast(ex.message, true); }
+  }
+
+  async function logout() {
+    if(!await customConfirm('Выйти из аккаунта?')) return;
+    clearAllListeners();
+    if(App.shiftTimer) clearInterval(App.shiftTimer);
+    if(App.avatarAnimId) cancelAnimationFrame(App.avatarAnimId);
+    DB.ref('presence/'+App.user.uid).remove();
+    AUTH.signOut().then(() => {
+      localStorage.removeItem('ozon_user');
+      App.user = null; App.chatOpened = false;
+      $('#app').style.display = 'none';
+      $('#loginScreen').style.display = 'flex';
+      document.body.className = '';
+    });
+  }
+
   function finishLogin() {
-    App.isCreator = App.user.role === 'creator'; App.isGod = App.user.role === 'god';
+    App.isCreator = App.user.role === 'creator';
+    App.isGod = App.user.role === 'god';
     localStorage.setItem('ozon_user', JSON.stringify({uid:App.user.uid, name:App.user.name, role:App.user.role}));
-    $('#loginScreen').style.display = 'none'; $('#app').style.display = 'flex'; document.body.className = 'theme-'+App.user.role;
+    $('#loginScreen').style.display = 'none';
+    $('#app').style.display = 'flex';
+    document.body.className = 'theme-'+App.user.role;
     App.chatOpened = true; App.lastChatTimestamp = Date.now();
     updateUI(); renderTabs(); loadChat(); loadPinned(); loadAnnounce();
     setupDatabaseListeners(); loadAvatarSettings(); buildCarousel(); renderStickerUI(); buildAnimationGrid();
-    DB.ref('activeShifts/'+App.user.uid).once('value').then(s => { if(s.exists()&&s.val().active) App.onShift = true; }); DB.ref('presence/'+App.user.uid).set({online:true, ts:Date.now()});
+    DB.ref('activeShifts/'+App.user.uid).once('value').then(s => { if(s.exists()&&s.val().active) App.onShift = true; });
+    DB.ref('presence/'+App.user.uid).set({online:true, ts:Date.now()});
   }
+
+  // ============ UPDATE UI ============
   function updateUI() {
-    $('#uname').textContent = cleanName(App.user.name); const punktLabel = $('#punktLabel');
-    if (App.isGod) punktLabel.style.display = 'none'; else { punktLabel.style.display = ''; $('#upunkt').textContent = App.user.punkt || '—'; }
+    $('#uname').textContent = cleanName(App.user.name);
+    const punktLabel = $('#punktLabel');
+    if (App.isGod) {
+      punktLabel.style.display = 'none';
+    } else {
+      punktLabel.style.display = '';
+      $('#upunkt').textContent = App.user.punkt || '—';
+    }
     const b = $('#roleBadge'), nw = $('#creatorNameWrapper');
     if(App.user.role==='god') { b.className='badge badge-god'; b.textContent='Начальник'; nw.className='name-god'; }
     else if(App.user.role==='creator') { b.className='badge badge-creator'; b.textContent='Создатель'; nw.className='name-creator'; }
     else { b.className='badge badge-manager'; b.textContent='Сотрудник'; nw.className='name-manager'; }
   }
 
+  // ============ TABS ============
   function getTabConfig() {
-    if(App.isCreator) return [{id:'shift',icon:'🔵',label:'Смена'},{id:'stats',icon:'📊',label:'Стат'},{id:'history',icon:'💳',label:'Выплаты'},{id:'board',icon:'🏆',label:'Доска'},{id:'power',icon:'⚡',label:'Сила'},{id:'stickers',icon:'🎨',label:'Стикеры'}];
-    if(App.isGod) return [{id:'stats',icon:'📊',label:'Стат'},{id:'workers',icon:'👥',label:'Сотрудники'},{id:'salary',icon:'💰',label:'Расчёт ЗП'},{id:'announce',icon:'📢',label:'Объявления'},{id:'board',icon:'🏆',label:'Доска'}];
-    return [{id:'shift',icon:'🔵',label:'Смена'},{id:'stats',icon:'📊',label:'Стат'},{id:'history',icon:'💳',label:'Выплаты'},{id:'board',icon:'🏆',label:'Доска'}];
+    if(App.isCreator) return [
+      {id:'shift',icon:'🔵',label:'Смена'},{id:'stats',icon:'📊',label:'Стат'},{id:'history',icon:'💳',label:'Выплаты'},
+      {id:'board',icon:'🏆',label:'Доска'},{id:'power',icon:'⚡',label:'Сила'},{id:'stickers',icon:'🎨',label:'Стикеры'}
+    ];
+    if(App.isGod) return [
+      {id:'stats',icon:'📊',label:'Стат'},{id:'workers',icon:'👥',label:'Сотрудники'},
+      {id:'salary',icon:'💰',label:'Расчёт ЗП'},{id:'announce',icon:'📢',label:'Объявления'},{id:'board',icon:'🏆',label:'Доска'}
+    ];
+    return [
+      {id:'shift',icon:'🔵',label:'Смена'},{id:'stats',icon:'📊',label:'Стат'},{id:'history',icon:'💳',label:'Выплаты'},{id:'board',icon:'🏆',label:'Доска'}
+    ];
   }
+
   function renderTabs() {
     const cfg = getTabConfig(), tc = $('#tabsContainer'), cc = $('#tabContentContainer');
     tc.innerHTML = cfg.map((t,i) => `<button id="tab_${t.id}" class="${i===0?'active':''}" data-tab="${t.id}">${t.icon} <span class="tab-label">${esc(t.label)}</span></button>`).join('');
     cc.innerHTML = cfg.map((t,i) => `<div id="panel_${t.id}" class="tab-content${i===0?' active-tab':''}"></div>`).join('');
     if(cfg.length) renderTab(cfg[0].id);
+    
     tc.querySelectorAll('button').forEach(btn => btn.addEventListener('click', function() {
-      const id = this.dataset.tab; const mc = $('#mainContent');
+      const id = this.dataset.tab;
+      const mc = $('#mainContent');
+      
       if(tc.querySelector('.active')?.dataset.tab === id) { 
         const isHidden = cc.style.display === 'none';
-        if (isHidden) { cc.style.display = 'block'; mc.classList.remove('tabs-collapsed'); this.classList.add('active'); } 
-        else { cc.style.display = 'none'; mc.classList.add('tabs-collapsed'); this.classList.remove('active'); } return; 
+        if (isHidden) {
+            cc.style.display = 'block';
+            mc.classList.remove('tabs-collapsed');
+            this.classList.add('active');
+        } else {
+            cc.style.display = 'none';
+            mc.classList.add('tabs-collapsed');
+            this.classList.remove('active');
+        }
+        return; 
       }
-      $$('#tabsContainer button').forEach(b=>b.classList.remove('active')); $$('#tabContentContainer .tab-content').forEach(p=>p.classList.remove('active-tab'));
-      this.classList.add('active'); cc.style.display = 'block'; mc.classList.remove('tabs-collapsed');
-      const panel = document.getElementById('panel_'+id); if(panel) panel.classList.add('active-tab'); renderTab(id);
+      
+      $$('#tabsContainer button').forEach(b=>b.classList.remove('active'));
+      $$('#tabContentContainer .tab-content').forEach(p=>p.classList.remove('active-tab'));
+      this.classList.add('active'); 
+      cc.style.display = 'block';
+      mc.classList.remove('tabs-collapsed');
+      
+      const panel = document.getElementById('panel_'+id);
+      if(panel) panel.classList.add('active-tab');
+      renderTab(id);
     }));
   }
-  function renderTab(id) { const p = document.getElementById('panel_'+id); if(!p) return; p.innerHTML=''; const renderers = { shift: renderShift, stats: renderStats, history: renderHistory, board: renderBoard, power: renderPower, stickers: renderStickerManager, workers: renderWorkers, salary: renderSalary, announce: renderAnnounce }; if(renderers[id]) renderers[id](p); }
-  
-  function renderShift(p) { p.innerHTML = '<div class="card"><div id="shiftContent">Загрузка...</div></div><button class="btn-gray" id="shiftLogoutBtn" style="margin-top:8px;width:100%;">Выйти из аккаунта</button>'; $('#shiftLogoutBtn').addEventListener('click', logout); loadShift(); }
-  function loadShift() { const el = $('#shiftContent'); if(!el) return; DB.ref('activeShifts/'+App.user.uid).once('value').then(s => { if(s.exists()&&s.val().active) { const st = s.val().startTime; el.innerHTML = `<div style="text-align:center;"><div>На смене с <b>${new Date(st).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'})}</b></div><div style="font-size:28px;font-weight:800;color:var(--green);margin:4px 0;" id="shiftTimerDisplay">00:00:00</div></div><div style="display:flex;gap:8px;margin-top:10px;"><input type="number" id="tovarCount" placeholder="Кол-во товаров" min="0" style="flex:1;"></div><button class="btn-red" id="endShiftBtn" style="padding:16px;width:100%;margin-top:10px;">ЗАВЕРШИТЬ СМЕНУ</button>`; $('#endShiftBtn').addEventListener('click', endShift); startTimer(st); } else { el.innerHTML = '<p style="color:var(--muted);margin-bottom:12px;">Вы не на смене</p><button class="btn-green" id="startShiftBtn" style="padding:16px;width:100%;">НА СМЕНУ</button>'; $('#startShiftBtn').addEventListener('click', startShift); } }); }
-  function startTimer(st) { if(App.shiftTimer) clearInterval(App.shiftTimer); const d = $('#shiftTimerDisplay'); App.shiftTimer = setInterval(() => { const e = Math.floor((Date.now()-st)/1000); if(d) d.textContent = secToHMS(e); }, 1000); }
-  function startShift() { const punktName = App.user.punkt || 'Не указан'; DB.ref('activeShifts/'+App.user.uid).set({active:true,startTime:Date.now(),punct:App.user.punkt}).then(() => { const p = App.isGod?'👑 ':(App.isCreator?'🌌 ':''); DB.ref('chat').push({uid:App.user.uid,user:p+App.user.name,text:`🔵 Пункт ${punktName} на смене`,timestamp:Date.now(),role:App.user.role,likes:{}}); loadShift(); toast(`Смена начата! Пункт: ${punktName}`); }); }
-  function endShift() { const tv = parseInt($('#tovarCount')?.value)||0; const punktName = App.user.punkt || 'Не указан'; DB.ref('activeShifts/'+App.user.uid).once('value').then(s => { if(!s.exists()) return; const st = s.val().startTime; const hr = Math.round((Date.now()-st)/3600000*100)/100; const id = App.user.uid+'_'+Date.now(); DB.ref('shifts/'+id).set({user:App.user.uid,user_name:App.user.name,punkt:punktName,date:new Date().toLocaleDateString('ru-RU'),timeFrom:new Date(st).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'}),timeTo:new Date().toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'}),hours:hr,tovar:tv,paid:false,timestamp:Date.now()}).then(() => { const p = App.isGod?'👑 ':(App.isCreator?'🌌 ':''); const stTime = new Date(st).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'}); const endTime = new Date().toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'}); DB.ref('chat').push({uid:App.user.uid,user:p+App.user.name,text:`🔴 Пункт ${punktName} с ${stTime} до ${endTime}`,timestamp:Date.now(),role:App.user.role,likes:{}}); DB.ref('activeShifts/'+App.user.uid).remove(); if(App.shiftTimer) clearInterval(App.shiftTimer); App.onShift = false; loadShift(); toast(`Смена завершена! ${hr}ч, ${tv} товаров`); }); }); }
-  function renderStats(p) { /* ... стандартная логика ... */ }
-  function renderHistory(p) { /* ... стандартная логика ... */ }
-  function renderBoard(p) { /* ... стандартная логика ... */ }
-  function renderPower(p) { /* ... стандартная логика ... */ }
-  function renderStickerManager(p) { /* ... стандартная логика ... */ }
-  function renderWorkers(p) { /* ... стандартная логика ... */ }
-  function renderSalary(p) { /* ... стандартная логика ... */ }
-  function renderAnnounce(p) { /* ... стандартная логика ... */ }
 
-  // ============ ЧАТ И СООБЩЕНИЯ ============
+  function renderTab(id) {
+    const p = document.getElementById('panel_'+id);
+    if(!p) return; p.innerHTML='';
+    const renderers = {
+      shift: renderShift, stats: renderStats, history: renderHistory, board: renderBoard,
+      power: renderPower, stickers: renderStickerManager, workers: renderWorkers,
+      salary: renderSalary, announce: renderAnnounce
+    };
+    if(renderers[id]) renderers[id](p);
+  }
+
+  // ============ SHIFT ============
+  function renderShift(p) {
+    p.innerHTML = '<div class="card"><div id="shiftContent">Загрузка...</div></div><button class="btn-gray" id="shiftLogoutBtn" style="margin-top:8px;width:100%;">Выйти из аккаунта</button>';
+    $('#shiftLogoutBtn').addEventListener('click', logout);
+    loadShift();
+  }
+  function loadShift() {
+    const el = $('#shiftContent'); if(!el) return;
+    DB.ref('activeShifts/'+App.user.uid).once('value').then(s => {
+      if(s.exists()&&s.val().active) {
+        const st = s.val().startTime;
+        el.innerHTML = `<div style="text-align:center;"><div>На смене с <b>${new Date(st).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'})}</b></div><div style="font-size:28px;font-weight:800;color:var(--green);margin:4px 0;" id="shiftTimerDisplay">00:00:00</div></div><div style="display:flex;gap:8px;margin-top:10px;"><input type="number" id="tovarCount" placeholder="Кол-во товаров" min="0" style="flex:1;"></div><button class="btn-red" id="endShiftBtn" style="padding:16px;width:100%;margin-top:10px;">ЗАВЕРШИТЬ СМЕНУ</button>`;
+        $('#endShiftBtn').addEventListener('click', endShift);
+        startTimer(st);
+      } else {
+        el.innerHTML = '<p style="color:var(--muted);margin-bottom:12px;">Вы не на смене</p><button class="btn-green" id="startShiftBtn" style="padding:16px;width:100%;">НА СМЕНУ</button>';
+        $('#startShiftBtn').addEventListener('click', startShift);
+      }
+    });
+  }
+  function startTimer(st) { if(App.shiftTimer) clearInterval(App.shiftTimer); const d = $('#shiftTimerDisplay'); App.shiftTimer = setInterval(() => { const e = Math.floor((Date.now()-st)/1000); if(d) d.textContent = secToHMS(e); }, 1000); }
+  function startShift() {
+    const punktName = App.user.punkt || 'Не указан';
+    DB.ref('activeShifts/'+App.user.uid).set({active:true,startTime:Date.now(),punct:App.user.punkt}).then(() => { 
+      const p = App.isGod?'👑 ':(App.isCreator?'🌌 ':'');
+      DB.ref('chat').push({uid:App.user.uid,user:p+App.user.name,text:`🔵 Пункт ${punktName} на смене`,timestamp:Date.now(),role:App.user.role,likes:{}}); 
+      loadShift(); toast(`Смена начата! Пункт: ${punktName}`); 
+    });
+  }
+  function endShift() {
+    const tv = parseInt($('#tovarCount')?.value)||0;
+    const punktName = App.user.punkt || 'Не указан';
+    DB.ref('activeShifts/'+App.user.uid).once('value').then(s => {
+      if(!s.exists()) return; const st = s.val().startTime;
+      const hr = Math.round((Date.now()-st)/3600000*100)/100;
+      const id = App.user.uid+'_'+Date.now();
+      DB.ref('shifts/'+id).set({user:App.user.uid,user_name:App.user.name,punkt:punktName,date:new Date().toLocaleDateString('ru-RU'),timeFrom:new Date(st).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'}),timeTo:new Date().toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'}),hours:hr,tovar:tv,paid:false,timestamp:Date.now()}).then(() => { 
+        const p = App.isGod?'👑 ':(App.isCreator?'🌌 ':'');
+        const stTime = new Date(st).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'});
+        const endTime = new Date().toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'});
+        DB.ref('chat').push({uid:App.user.uid,user:p+App.user.name,text:`🔴 Пункт ${punktName} с ${stTime} до ${endTime}`,timestamp:Date.now(),role:App.user.role,likes:{}}); 
+        DB.ref('activeShifts/'+App.user.uid).remove(); if(App.shiftTimer) clearInterval(App.shiftTimer); 
+        App.onShift = false; loadShift(); toast(`Смена завершена! ${hr}ч, ${tv} товаров`); 
+      });
+    });
+  }
+
+  // ============ STATS ============
+  function renderStats(p) {
+    const n = new Date(); App.calYear = n.getFullYear(); App.calMonth = n.getMonth();
+    p.innerHTML = `<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><button class="btn-gray" id="calPrev" style="width:auto;padding:6px 12px;">◀</button><div id="calTitle" style="font-size:14px;font-weight:700;"></div><button class="btn-gray" id="calNext" style="width:auto;padding:6px 12px;">▶</button></div><div id="calGrid" class="calendar"></div></div><div class="card"><div>Смен: <b id="statShifts">0</b></div><div>Часов: <b id="statHours">0</b></div><div>Товаров: <b id="statTovar">0</b></div></div><button class="btn-red" id="clearShiftsBtn" style="width:100%;padding:12px;margin-top:10px;">Очистить мои смены</button>`;
+    $('#calPrev').addEventListener('click',()=>changeCal(-1)); $('#calNext').addEventListener('click',()=>changeCal(1));
+    $('#clearShiftsBtn').addEventListener('click',clearShifts); renderCalendar();
+  }
+  function renderCalendar() {
+    const m = ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
+    $('#calTitle').textContent = m[App.calMonth]+' '+App.calYear;
+    DB.ref('shifts').once('value').then(s => {
+      const sh = {}; let ts=0,th=0,tt=0;
+      s.forEach(c => { 
+        const x = c.val(); 
+        if(x.user===App.user.uid || x.user_name===App.user.name || x.user===App.user.name) { 
+          const d = x.timestamp ? new Date(x.timestamp) : new Date(); 
+          if(!isNaN(d.getTime()) && d.getFullYear()===App.calYear && d.getMonth()===App.calMonth) { 
+            const day = d.getDate(); 
+            if(!sh[day]) sh[day]={count:0,hours:0,tovar:0}; 
+            sh[day].count++; sh[day].hours+=x.hours||0; sh[day].tovar+=x.tovar||0; 
+          } 
+        } 
+      });
+      for(const k in sh) { ts+=sh[k].count; th+=sh[k].hours; tt+=sh[k].tovar; }
+      $('#statShifts').textContent=ts; $('#statHours').textContent=th.toFixed(1); $('#statTovar').textContent=tt;
+      const fd=new Date(App.calYear,App.calMonth,1).getDay(),off=(fd+6)%7,dim=new Date(App.calYear,App.calMonth+1,0).getDate(),today=new Date(),grid=$('#calGrid');
+      let h = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(d=>`<div class="header">${d}</div>`).join('');
+      for(let i=0;i<off;i++) h+='<div></div>';
+      for(let d=1;d<=dim;d++) { const isT=today.getDate()===d&&today.getMonth()===App.calMonth&&today.getFullYear()===App.calYear,has=!!sh[d]; h+=`<div class="${isT?'today ':''}${has?'shift-day':''}">${d}</div>`; }
+      grid.innerHTML = h;
+    });
+  }
+  function changeCal(dir) { App.calMonth+=dir; if(App.calMonth<0){App.calMonth=11;App.calYear--;} if(App.calMonth>11){App.calMonth=0;App.calYear++;} renderCalendar(); }
+  async function clearShifts() { if(!await customConfirm('Очистить все ваши смены безвозвратно?')) return; DB.ref('shifts').orderByChild('user').equalTo(App.user.uid).once('value').then(s=>{const p=[];s.forEach(c=>p.push(DB.ref('shifts/'+c.key).remove()));return Promise.all(p);}).then(()=>{toast('Смены очищены');renderCalendar();}); }
+
+  // ============ HISTORY ============
+  function renderHistory(p) {
+    p.innerHTML = '<div class="card"><h4>💳 Выплаты</h4><div id="historyContent">Загрузка...</div></div>';
+    DB.ref('payments').orderByChild('user').equalTo(App.user.uid).once('value').then(s => {
+      const items=[]; s.forEach(c=>items.push(c.val())); items.sort((a,b)=>b.timestamp-a.timestamp);
+      $('#historyContent').innerHTML = items.length ? items.map(x=>`<div style="padding:10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;"><span>${fmtDate(x.timestamp)}</span><span style="color:var(--green);font-weight:bold;">${x.total}₽</span></div>`).join('') : '<p style="color:var(--muted);">Нет выплат</p>';
+    });
+  }
+
+  // ============ BOARD ============
+  function renderBoard(p) {
+    p.innerHTML = '<div class="card"><h4>🏆 Доска почёта</h4><div id="boardContent">Загрузка...</div></div>';
+    DB.ref('shifts').once('value').then(s => {
+      const stats={}; s.forEach(c=>{const x=c.val();if(!x.user)return;const uid=x.user;if(!stats[uid])stats[uid]={hours:0,tovar:0};stats[uid].hours+=x.hours||0;stats[uid].tovar+=x.tovar||0;});
+      const arr=[]; for(const uid in stats) { const un=cleanName(App.allUserData[uid]?.name||uid); arr.push({name:un,hours:stats[uid].hours,tovar:stats[uid].tovar}); }
+      arr.sort((a,b)=>b.hours-a.hours); let th=''; for(let i=0;i<Math.min(arr.length,5);i++) { const m=['🥇','🥈','🥉','📌','📌'][i]; th+=`<div style="padding:6px;border-bottom:1px solid var(--border);">${m} ${esc(arr[i].name)} — <b>${arr[i].hours.toFixed(1)}ч</b></div>`; }
+      arr.sort((a,b)=>b.tovar-a.tovar); let tt=''; for(let i=0;i<Math.min(arr.length,5);i++) { const m=['🥇','🥈','🥉','📌','📌'][i]; tt+=`<div style="padding:6px;border-bottom:1px solid var(--border);">${m} ${esc(arr[i].name)} — <b>${arr[i].tovar} шт</b></div>`; }
+      const best=arr.length?`<div style="padding:6px;">🌟 ${esc(arr[0].name)} — ${arr[0].hours.toFixed(1)}ч / ${arr[0].tovar} шт</div>`:'<p style="color:var(--muted);">Нет данных</p>';
+      $('#boardContent').innerHTML = `<div><b>⏱ Топ по часам</b>${th}</div><div style="margin:12px 0;"><b>📦 Топ по товарам</b>${tt}</div><div style="margin:12px 0;"><b>🌟 Работник месяца</b>${best}</div>`;
+    });
+  }
+
+  // ============ POWER ============
+  function renderPower(p) { p.innerHTML = '<div class="card"><h4>⚡ Управление ролями</h4><p style="color:var(--muted);font-size:13px;margin-bottom:12px;">Повышение сотрудников до начальников</p><div id="powerList">Загрузка...</div></div>'; loadPowerList(); }
+  function loadPowerList() {
+    DB.ref('users').once('value').then(s => {
+      const list=$('#powerList'); let h='';
+      s.forEach(c=>{const u=c.val();if(u.uid===App.user.uid)return;const rl=u.role==='god'?'<span style="color:#FFD700;font-weight:bold;">Начальник</span>':u.role==='creator'?'<span style="color:var(--gold);font-weight:bold;">Создатель</span>':'<span style="color:var(--muted);">Сотрудник</span>';h+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid var(--border);"><div><b>${esc(cleanName(u.name))}</b><br><span style="font-size:11px;color:var(--muted);">${rl} | Пункт ${esc(u.punkt||'?')}</span></div>${u.role==='manager'?`<button class="btn-gold btn-sm promote-btn" data-uid="${c.key}" data-name="${esc(cleanName(u.name))}" style="width:auto;">Повысить до начальника</button>`:u.role==='god'?`<button class="btn-red btn-sm demote-btn" data-uid="${c.key}" data-name="${esc(cleanName(u.name))}" style="width:auto;">Понизить</button>`:'<span style="font-size:12px;color:var(--gold);">Создатель</span>'}</div>`;});
+      list.innerHTML = h||'<p style="color:var(--muted);">Нет сотрудников</p>';
+      list.querySelectorAll('.promote-btn').forEach(b=>b.addEventListener('click',async function(){if(await customConfirm(`Повысить ${this.dataset.name} до начальника?`)){DB.ref('users/'+this.dataset.uid+'/role').set('god').then(()=>{DB.ref('notifications').push({user:this.dataset.uid,text:'🎉 Вас повысили до начальника!',timestamp:Date.now()});toast('✅ Роль изменена');loadPowerList();buildCarousel();});}}));
+      list.querySelectorAll('.demote-btn').forEach(b=>b.addEventListener('click',async function(){if(await customConfirm(`Понизить ${this.dataset.name} до сотрудника?`)){DB.ref('users/'+this.dataset.uid+'/role').set('manager').then(()=>{toast('✅ Роль изменена');loadPowerList();buildCarousel();});}}));
+    });
+  }
+
+  // ============ STICKER MANAGER ============
+  function renderStickerManager(p) {
+    p.innerHTML = '<div class="card"><h4>🎨 Управление стикерпаками</h4><div style="display:flex;gap:8px;margin-bottom:12px;"><input id="packName" placeholder="Название стикерпака" style="flex:1;"><button class="btn-gold" id="createPackBtn" style="width:auto;padding:8px 16px;">Создать</button></div><div id="packsList">Загрузка...</div></div>';
+    $('#createPackBtn').addEventListener('click',()=>{const n=$('#packName').value.trim();if(!n){toast('Введите название',true);return;}DB.ref('sticker_packs').push({name:n,creator:App.user.uid,icon:'',stickers:{},allowed_users:{[App.user.uid]:true}}).then(()=>{$('#packName').value='';loadPacksList();toast('Стикерпак создан');});});
+    loadPacksList();
+  }
+  function loadPacksList() {
+    DB.ref('sticker_packs').once('value').then(s => {
+      const list=$('#packsList'); let h='';
+      s.forEach(c=>{const pack=c.val();const cnt=pack.stickers?Object.keys(pack.stickers).length:0;h+=`<div style="padding:10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;"><div><b>${esc(pack.name)}</b> (${cnt} стикеров)</div><div><button class="btn-blue btn-sm manage-pack-btn" data-pack-id="${c.key}" data-pack-name="${esc(pack.name)}" style="width:auto;">Управлять</button><button class="btn-red btn-sm delete-pack-btn" data-pack-id="${c.key}" style="width:auto;">✕</button></div></div>`;});
+      list.innerHTML = h||'<p style="color:var(--muted);">Нет стикерпаков</p>';
+      list.querySelectorAll('.manage-pack-btn').forEach(b=>b.addEventListener('click',function(){openStickerPackManager(this.dataset.packId,this.dataset.packName);}));
+      list.querySelectorAll('.delete-pack-btn').forEach(b=>b.addEventListener('click',async function(){if(await customConfirm('Точно удалить этот стикерпак?')){DB.ref('sticker_packs/'+this.dataset.packId).remove();loadPacksList();}}));
+    });
+  }
+  function openStickerPackManager(packId, packName) {
+    const panel = document.getElementById('stickerManagerPanel'), content = document.getElementById('stickerManagerContent');
+    panel.style.display = 'flex';
+    DB.ref('sticker_packs/'+packId).once('value').then(snap => {
+      const pack = snap.val(), stickers = pack.stickers||{}, allowed = pack.allowed_users||{};
+      let sHtml = '';
+      for(const sid in stickers) { const st = stickers[sid]; sHtml += `<div style="display:inline-block;margin:4px;position:relative;"><img src="${esc(st.img)}" style="width:50px;height:50px;object-fit:contain;border-radius:8px;border:1px solid var(--border);"><button class="btn-red btn-sm remove-sticker-btn" data-pack-id="${packId}" data-sticker-id="${sid}" style="position:absolute;top:-8px;right:-8px;width:20px;height:20px;padding:0;font-size:10px;border-radius:50%;">✕</button></div>`; }
+      content.innerHTML = `<h4>${esc(packName)}</h4><div style="margin:12px 0;"><label style="font-size:12px;color:var(--muted);">Добавить стикер (URL)</label><div style="display:flex;gap:8px;"><input id="addStickerUrl" placeholder="https://..." style="flex:1;"><button class="btn-gold" id="addStickerBtn" style="width:auto;padding:8px 16px;">+</button></div></div><div style="margin:12px 0;"><label style="font-size:12px;color:var(--muted);">Стикеры</label><div id="packStickers">${sHtml||'<p style="color:var(--muted);">Нет стикеров</p>'}</div></div><div style="margin:12px 0;"><label style="font-size:12px;color:var(--muted);">Доступ для пользователей</label><div id="allowedUsersList">Загрузка...</div></div>`;
+      $('#addStickerBtn').addEventListener('click',()=>{const u=$('#addStickerUrl').value.trim();if(!u){toast('Введите URL',true);return;}DB.ref('sticker_packs/'+packId+'/stickers').push({img:u,emoji:''}).then(()=>{$('#addStickerUrl').value='';openStickerPackManager(packId,packName);});});
+      content.querySelectorAll('.remove-sticker-btn').forEach(b=>b.addEventListener('click',function(){DB.ref('sticker_packs/'+this.dataset.packId+'/stickers/'+this.dataset.stickerId).remove();openStickerPackManager(packId,packName);}));
+      DB.ref('users').once('value').then(us => {
+        const ul = $('#allowedUsersList'); let uh = '';
+        us.forEach(c => { const u = c.val(); if(u.uid===App.user.uid)return; const ia = !!allowed[c.key]; uh += `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px;border-bottom:1px solid var(--border);"><span>${esc(cleanName(u.name))}</span><button class="btn-sm ${ia?'btn-red':'btn-green'} toggle-access-btn" data-pack-id="${packId}" data-user-id="${c.key}" style="width:auto;">${ia?'Запретить':'Разрешить'}</button></div>`; });
+        ul.innerHTML = uh||'<p style="color:var(--muted);">Нет пользователей</p>';
+        ul.querySelectorAll('.toggle-access-btn').forEach(b=>b.addEventListener('click',function(){const ref=DB.ref('sticker_packs/'+this.dataset.packId+'/allowed_users/'+this.dataset.userId);if(allowed[this.dataset.userId])ref.remove();else ref.set(true);openStickerPackManager(packId,packName);}));
+      });
+    });
+  }
+
+  // ============ WORKERS ============
+  function renderWorkers(p) { p.innerHTML = '<div class="card"><h4>👥 Сотрудники</h4><div id="workersList">Загрузка...</div></div>'; loadWorkers(); }
+  function loadWorkers() {
+    DB.ref('users').once('value').then(s => {
+      const list=$('#workersList'); let h='';
+      s.forEach(c=>{const u=c.val();if(u.uid===App.user.uid)return;const rl=u.role==='creator'?'<span style="font-size:10px;background:var(--gold);color:#000;padding:2px 6px;border-radius:8px;">Создатель</span>':u.role==='god'?'<span style="font-size:10px;background:#FFD700;color:#000;padding:2px 6px;border-radius:8px;">Начальник</span>':'';const punktInfo=u.role==='god'?'<span style="font-size:11px;color:var(--muted);">Начальник (без пункта)</span>':`<span style="font-size:11px;color:var(--muted);">Пункт ${esc(u.punkt||'?')} | Надбавка: ${u.bonus||0}₽</span>`;h+=`<div class="worker-row"><span><b>${esc(cleanName(u.name))}</b> ${rl}<br>${punktInfo}</span><span><button class="btn-gold btn-sm worker-bonus" data-name="${esc(cleanName(u.name))}" data-uid="${c.key}">🎁</button><button class="btn-purple btn-sm worker-penalty" data-name="${esc(cleanName(u.name))}" data-uid="${c.key}">⚠️</button>${u.role!=='god'?`<button class="btn-blue btn-sm worker-edit" data-name="${esc(cleanName(u.name))}" data-uid="${c.key}" data-punkt="${esc(u.punkt||'')}">✏️</button>`:''}</span></div>`;});
+      list.innerHTML = h||'<p style="color:var(--muted);">Нет сотрудников</p>';
+      list.querySelectorAll('.worker-bonus').forEach(b=>b.addEventListener('click',async function(){const a=await customPrompt('Введите сумму премии:');if(!a)return;DB.ref('premiums').push({user:this.dataset.uid,amount:parseInt(a),timestamp:Date.now()});DB.ref('notifications').push({user:this.dataset.uid,text:`💰 Премия ${a}₽ от начальника!`,timestamp:Date.now()});toast(`✅ Премия ${a}₽`);}));
+      list.querySelectorAll('.worker-penalty').forEach(b=>b.addEventListener('click',async function(){const a=await customPrompt('Сумма штрафа:');if(!a)return;const r=await customPrompt('Причина:')||'Нарушение';DB.ref('punishes').push({user:this.dataset.uid,amount:parseInt(a),reason:r,timestamp:Date.now()});DB.ref('notifications').push({user:this.dataset.uid,text:`💀 Штраф ${a}₽ за: ${r}`,timestamp:Date.now()});toast(`💀 Штраф ${a}₽`);}));
+      list.querySelectorAll('.worker-edit').forEach(b=>b.addEventListener('click',async function(){const np=await customPrompt('Новый пункт:',this.dataset.punkt);if(np!==null){DB.ref('users/'+this.dataset.uid+'/punkt').set(np).then(()=>{loadWorkers();toast('Пункт обновлён');});}}));
+    });
+  }
+
+  // ============ SALARY ============
+  function renderSalary(p) {
+    p.innerHTML = '<div class="card"><h4>💰 Расчёт ЗП</h4><select id="salUser" style="margin-bottom:12px;"><option value="">— Выберите сотрудника —</option></select><div style="display:flex;gap:8px;"><input type="date" id="salFrom" style="flex:1;"><input type="date" id="salTo" style="flex:1;"></div><button class="btn-green" id="salCalcBtn" style="margin-top:8px;">🧮 Посчитать</button><button class="btn-blue" id="salPayBtn" style="margin-top:4px;">✅ Оплатить</button><div id="salResult" style="margin-top:12px;"></div></div>';
+    let lastCalc = null;
+    DB.ref('users').once('value').then(s => { const sel=$('#salUser'); s.forEach(c=>{const u=c.val();if(u.uid!==App.user.uid)sel.innerHTML+=`<option value="${c.key}">${esc(cleanName(u.name))}</option>`;}); });
+    $('#salCalcBtn').addEventListener('click', async () => {
+      const uid=$('#salUser').value, from=$('#salFrom').value, to=$('#salTo').value;
+      if(!uid||!from||!to){toast('Заполните все поля',true);return;}
+      try {
+        const us=await DB.ref('users/'+uid).once('value'), ud=us.val(), pid=ud.punkt||'';
+        let rate=0; const ps=await DB.ref('punkts').once('value'); ps.forEach(c=>{if(c.key===pid)rate=c.val().rate||0;}); if(!rate)rate=150;
+        let th=0,tt=0,ids=[]; const ss=await DB.ref('shifts').orderByChild('user').equalTo(uid).once('value');
+        ss.forEach(c=>{const s=c.val();if(s.date>=from&&s.date<=to){th+=s.hours||0;tt+=s.tovar||0;ids.push(c.key);}});
+        let prem=0,pun=0; const fTs=new Date(from).getTime(),tTs=new Date(to).getTime();
+        const pr=await DB.ref('premiums').orderByChild('user').equalTo(uid).once('value'); pr.forEach(c=>{const p=c.val();if(p.timestamp>=fTs&&p.timestamp<=tTs)prem+=p.amount||0;});
+        const pu=await DB.ref('punishes').orderByChild('user').equalTo(uid).once('value'); pu.forEach(c=>{const p=c.val();if(p.timestamp>=fTs&&p.timestamp<=tTs)pun+=p.amount||0;});
+        const base=Math.round(th*rate), total=Math.max(0,base+prem-pun);
+        $('#salResult').innerHTML = `<div class="zp-result">Смен: ${ids.length}, часов: ${th.toFixed(1)}, товаров: ${tt}<br>База: ${base}₽, премии: +${prem}₽, штрафы: -${pun}₽<br><b>Итого: ${total}₽</b></div>`;
+        lastCalc = {uid,from,to,total,shiftIds:ids};
+      } catch(ex) { toast('Ошибка расчёта: '+ex.message, true); }
+    });
+    $('#salPayBtn').addEventListener('click', async function() {
+      if(!lastCalc){toast('Сначала посчитайте!',true);return;}
+      if(!await customConfirm(`Оплатить ${lastCalc.total}₽ сотруднику?`)) return;
+      DB.ref('payments').push({user:lastCalc.uid,total:lastCalc.total,dateFrom:lastCalc.from,dateTo:lastCalc.to,timestamp:Date.now()});
+      const proms = lastCalc.shiftIds.map(id => DB.ref('shifts/'+id+'/paid').set(true));
+      Promise.all(proms).then(()=>{toast(`✅ Оплачено ${lastCalc.total}₽`);lastCalc=null;$('#salResult').innerHTML='';});
+    });
+  }
+
+  // ============ ANNOUNCE ============
+  function renderAnnounce(p) {
+    p.innerHTML = '<div class="card"><h4>📜 Новое объявление</h4><textarea id="announceText" placeholder="Текст..." rows="3" style="resize:vertical;margin-bottom:8px;"></textarea><select id="announceExpiry" style="margin-bottom:8px;"><option value="0">Навсегда</option><option value="1">1 час</option><option value="24" selected>24 часа</option><option value="72">3 дня</option><option value="168">7 дней</option></select><button class="btn-gold" id="addAnnounceBtn">Опубликовать</button></div><div id="announceList" style="margin-top:12px;">Загрузка...</div>';
+    $('#addAnnounceBtn').addEventListener('click',()=>{const t=$('#announceText').value.trim();if(!t)return;const h=parseInt($('#announceExpiry').value),exp=h>0?Date.now()+h*3600000:null;DB.ref('announce').push({text:t,timestamp:Date.now(),expiry:exp}).then(()=>{$('#announceText').value='';loadAnnouncesList();toast('📜 Объявление опубликовано');});});
+    loadAnnouncesList();
+  }
+  function loadAnnouncesList() {
+    const el=$('#announceList');if(!el)return;
+    DB.ref('announce').once('value').then(s=>{
+      if(!s.exists()){el.innerHTML='<p style="color:var(--muted);">Нет объявлений</p>';return;}
+      const items=[];s.forEach(c=>{const d=c.val();if(!d.expiry||Date.now()<d.expiry)items.push({id:c.key,data:d});});
+      items.sort((a,b)=>b.data.timestamp-a.data.timestamp);
+      el.innerHTML = items.length?items.map(i=>`<div style="padding:10px;border-bottom:1px solid var(--border);position:relative;">${esc(i.data.text)}<br><small style="color:var(--muted);">${new Date(i.data.timestamp).toLocaleString('ru-RU')}</small><button class="btn-red btn-sm delete-announce" data-id="${i.id}" style="position:absolute;right:8px;top:8px;width:auto;">✕</button></div>`).join(''):'<p style="color:var(--muted);">Нет объявлений</p>';
+      el.querySelectorAll('.delete-announce').forEach(b=>b.addEventListener('click',function(){DB.ref('announce/'+this.dataset.id).remove();loadAnnouncesList();}));
+    });
+  }
+
+  // ============ CHAT & PIN ============
   window.activeMsgKey = null;
-  window.openMsgActions = function(key, canPin, canDelete) { window.activeMsgKey = key; document.getElementById('btnPinMsg').style.display = canPin ? 'block' : 'none'; document.getElementById('btnDelMsg').style.display = canDelete ? 'block' : 'none'; document.getElementById('msgActionModal').style.display = 'flex'; };
-  window.closeMsgActions = function() { document.getElementById('msgActionModal').style.display = 'none'; window.activeMsgKey = null; };
-  window.pinMessage = async function() { if(!window.activeMsgKey) return; const key = window.activeMsgKey; closeMsgActions(); const m = App.messagesCache[key]; if(!m) return; if(!await customConfirm('Закрепить это сообщение?')) return; let text = m.text || ''; if(m.photo || m.photos) text = text ? text + ' [Фото]' : '[Фото]'; if(m.sticker) text = '[Стикер]'; DB.ref('pinned').set({ user: cleanName(m.user), text: text, timestamp: Date.now() }).then(() => toast('📌 Сообщение закреплено')); };
-  window.deleteMessage = async function() { if(!window.activeMsgKey) return; const key = window.activeMsgKey; closeMsgActions(); if(!await customConfirm('Удалить сообщение?')) return; const ref = App.privateChatWith ? (()=>{const u=[App.user.uid,App.privateChatWith].sort();return DB.ref('privateChats/'+u[0]+'_'+u[1]);})() : DB.ref('chat'); ref.child(key).remove().then(() => toast('🗑️ Сообщение удалено')); };
+
+  window.openMsgActions = function(key, canPin, canDelete) {
+      window.activeMsgKey = key;
+      document.getElementById('btnPinMsg').style.display = canPin ? 'block' : 'none';
+      document.getElementById('btnDelMsg').style.display = canDelete ? 'block' : 'none';
+      document.getElementById('msgActionModal').style.display = 'flex';
+  };
+
+  window.closeMsgActions = function() {
+      document.getElementById('msgActionModal').style.display = 'none';
+      window.activeMsgKey = null;
+  };
+
+  window.pinMessage = async function() {
+      if(!window.activeMsgKey) return;
+      const key = window.activeMsgKey;
+      closeMsgActions(); 
+      
+      const m = App.messagesCache[key];
+      if(!m) return;
+      if(!await customConfirm('Закрепить это сообщение?')) return;
+      
+      let text = m.text || '';
+      if(m.photo || m.photos) text = text ? text + ' [Фото]' : '[Фото]';
+      if(m.sticker) text = '[Стикер]';
+
+      DB.ref('pinned').set({
+          user: cleanName(m.user), 
+          text: text,
+          timestamp: Date.now()
+      }).then(() => toast('📌 Сообщение закреплено'));
+  };
+  
+  window.deleteMessage = async function() {
+    if(!window.activeMsgKey) return;
+    const key = window.activeMsgKey;
+    closeMsgActions();
+    
+    if(!await customConfirm('Удалить сообщение?')) return;
+    const ref = App.privateChatWith ? (()=>{const u=[App.user.uid,App.privateChatWith].sort();return DB.ref('privateChats/'+u[0]+'_'+u[1]);})() : DB.ref('chat');
+    ref.child(key).remove().then(() => toast('🗑️ Сообщение удалено'));
+  };
+
   document.getElementById('btnPinMsg').addEventListener('click', window.pinMessage);
   document.getElementById('btnDelMsg').addEventListener('click', window.deleteMessage);
 
@@ -904,17 +1996,20 @@ button:active{transform:scale(0.95)}
     if(App.chatListener){App.chatListener.off();App.chatListener=null;}
     const ref = App.privateChatWith ? (()=>{const u=[App.user.uid,App.privateChatWith].sort();return DB.ref('privateChats/'+u[0]+'_'+u[1]);})() : DB.ref('chat');
     App.chatListener = ref.limitToLast(50);
-    App.chatListener.on('value', snap => { window.chatSnapCache = snap; renderChatMessages(); });
+    App.chatListener.on('value', snap => {
+      window.chatSnapCache = snap;
+      renderChatMessages();
+    });
   }
 
-  // Каждое сообщение отдельное, без объединения в группы
   function renderChatMessages() {
     const snap = window.chatSnapCache;
     if (!snap) return;
+
     App.messagesCache = {};
     const msgs=[]; snap.forEach(c=>{if(c.val())msgs.push({key:c.key,msg:c.val()});});
     msgs.sort((a,b)=>a.msg.timestamp-b.msg.timestamp);
-    let html='';
+    let html='',group=[];
     
     const renderContent = (m) => {
       let c = ''; if(m.text)c+=esc(m.text);
@@ -924,59 +2019,96 @@ button:active{transform:scale(0.95)}
       return c;
     };
     
+    const renderGroup = (g) => {
+      const f=g[0], isMine=f.isMine, isC=f.m.user?.startsWith('🌌'), isG=f.m.user?.startsWith('👑');
+      const un = cleanName(f.userName);
+      
+      let auid = f.m.uid || null;
+      if (!auid) {
+        if(isMine) auid = App.user.uid;
+        else { 
+          for(const uid in App.allUserData){ 
+              if(cleanName(App.allUserData[uid].name).toLowerCase() === un.toLowerCase()){ 
+                  auid=uid; break; 
+              } 
+          } 
+        }
+      }
+      
+      const safeUid = auid ? esc(auid) : '';
+      const cleanUnForJs = un.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+      
+      const avaHtml = `<canvas data-uid="${safeUid}" data-name="${cleanUnForJs}" class="chat-static-avatar canvas-avatar" width="120" height="120" style="width:38px;height:38px;min-width:38px;min-height:38px;" onclick="event.stopPropagation();window.openAvatarPreview('${safeUid}','${cleanUnForJs}')"></canvas>`;
+      
+      const ns=(isC||isG)?'background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;':'';
+      let h=`<div class="chat-bubble-group ${isMine?'mine':'other'}"><div class="msg-author" style="${isMine?'flex-direction:row-reverse;':''}">${avaHtml}<span style="${ns}">${esc(un)}</span></div>`;
+      
+      g.forEach(g2=>{
+        const m=g2.m;
+        let cls='chat-bubble clickable';
+        if(isMine)cls+=' mine';else if(isC)cls+=' creator';else if(isG)cls+=' god';
+        const canDelete = isMine || App.isCreator || (App.isGod && !isC);
+        const canPin = App.isCreator || App.isGod;
+        const clickAttr = (canDelete || canPin) ? `onclick="window.openMsgActions('${esc(g2.item.key)}', ${canPin}, ${canDelete})"` : '';
+        h+=`<div class="${cls}" ${clickAttr}>${renderContent(m)}</div>`;
+      });
+      h+='</div>'; return h;
+    };
+    
     for(let i=0;i<msgs.length;i++){
       const it=msgs[i],m=it.msg;
       const un=cleanName(m.user);
       App.messagesCache[it.key] = m;
       const isM = m.uid ? m.uid === App.user.uid : (App.user&&(m.user==='🌌 '+App.user.name||m.user==='👑 '+App.user.name||m.user===App.user.name));
-      const isC = m.user?.startsWith('🌌') || (m.role === 'creator');
-      const isG = m.user?.startsWith('👑') || (m.role === 'god');
-
-      let auid = m.uid || null;
-      if (!auid) {
-        if(isM) auid = App.user.uid;
-        else { for(const uid in App.allUserData){ if(cleanName(App.allUserData[uid].name).toLowerCase() === un.toLowerCase()){ auid=uid; break; } } }
-      }
-      const safeUid = auid ? esc(auid) : '';
-      const cleanUnForJs = un.replace(/'/g, "\\'").replace(/"/g, "&quot;");
       
-      const avaHtml = `<canvas data-uid="${safeUid}" data-name="${cleanUnForJs}" class="chat-static-avatar canvas-avatar" width="120" height="120" style="width:36px;height:36px;min-width:36px;min-height:36px;" onclick="event.stopPropagation();window.openAvatarPreview('${safeUid}','${cleanUnForJs}')"></canvas>`;
-      
-      const ns=(isC||isG)?'background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;':'';
-      let h=`<div class="chat-bubble-group ${isM?'mine':'other'}"><div class="msg-author" style="${isM?'flex-direction:row-reverse;':''}">${avaHtml}<span style="${ns}">${esc(un)}</span></div>`;
-      
-      let cls='chat-bubble clickable';
-      if(isM) cls+=' mine';
-      else if(isC || isG) cls+=' creator';
-      else cls+=' other';
-      
-      const canDelete = isM || App.isCreator || (App.isGod && !isC);
-      const canPin = App.isCreator || App.isGod;
-      const clickAttr = (canDelete || canPin) ? `onclick="window.openMsgActions('${esc(it.key)}', ${canPin}, ${canDelete})"` : '';
-      h+=`<div class="${cls}" ${clickAttr}>${renderContent(m)}</div>`;
-      
-      h+='</div>';
-      html += h;
+      if(group.length===0||cleanName(group[0].userName)!==un||group[0].isMine!==isM){
+        if(group.length)html+=renderGroup(group);
+        group=[{item:it,userName:m.user,isMine:isM,m}];
+      } else group.push({item:it,userName:m.user,isMine:isM,m});
     }
+    if(group.length)html+=renderGroup(group);
     
     const ce=$('#chat');
     if(!ce) return;
     const was=ce.scrollHeight-ce.scrollTop-ce.clientHeight<60;
     ce.innerHTML=html;
-    document.querySelectorAll('canvas.chat-static-avatar').forEach((c) => {
-         const uid = c.dataset.uid; const userData = App.allUserData[uid];
-         if(userData) renderPremiumAvatar(c, userData.avatarSettings || {}, userData.imgObj || null, userData.name || '?', 0);
-    });
+    initChatAvatars();
     if(was||document.activeElement===$('#chatMsgInput'))ce.scrollTop=ce.scrollHeight;
   }
   
-  function sendMessage() { const inp=$('#chatMsgInput'),t=inp.value.trim();if(!t||!App.user)return; const ref=App.privateChatWith?(()=>{const u=[App.user.uid,App.privateChatWith].sort();return DB.ref('privateChats/'+u[0]+'_'+u[1]);})():DB.ref('chat'); const p=App.isGod?'👑 ':(App.isCreator?'🌌 ':''); ref.push({uid:App.user.uid, user:p+App.user.name, text:t, timestamp:Date.now(), role:App.user.role, likes:{}}).then(()=>{inp.value='';inp.focus();}); }
-  function sendPhoto() { const inp=$('#chatPhotoInput'),files=inp.files;if(!files.length||!App.user)return; const photos=[],cnt=Math.min(files.length,5); for(let i=0;i<cnt;i++){(function(f){const r=new FileReader();r.onload=function(e){const img = new Image();img.onload=function(){const c=document.createElement('canvas'),mw=300,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);photos.push({full:e.target.result,thumb:c.toDataURL('image/jpeg',0.6)});if(photos.length===cnt){const ref=App.privateChatWith?(()=>{const u=[App.user.uid,App.privateChatWith].sort();return DB.ref('privateChats/'+u[0]+'_'+u[1]);})():DB.ref('chat');const p=App.isGod?'👑 ':(App.isCreator?'🌌 ':'');ref.push({uid:App.user.uid, user:p+App.user.name,text:`📷 ${cnt} фото`,photos,timestamp:Date.now(),role:App.user.role,likes:{}});}};img.src=e.target.result;};r.readAsDataURL(f);})(files[i]);} inp.value=''; }
-  function toggleChat() { const mc=$('#mainContent'); if(mc.classList.contains('chat-collapsed')){ mc.classList.remove('chat-collapsed'); App.chatOpened=true; App.lastChatTimestamp=Date.now(); App.unreadCount=0; updateBadge(); const ce=$('#chat'); setTimeout(()=>ce.scrollTop=ce.scrollHeight,300); } else{ mc.classList.add('chat-collapsed'); App.chatOpened=false; } }
+  function sendMessage() {
+    const inp=$('#chatMsgInput'),t=inp.value.trim();if(!t||!App.user)return;
+    const ref=App.privateChatWith?(()=>{const u=[App.user.uid,App.privateChatWith].sort();return DB.ref('privateChats/'+u[0]+'_'+u[1]);})():DB.ref('chat');
+    const p=App.isGod?'👑 ':(App.isCreator?'🌌 ':'');
+    ref.push({uid:App.user.uid, user:p+App.user.name, text:t, timestamp:Date.now(), role:App.user.role, likes:{}}).then(()=>{inp.value='';inp.focus();});
+  }
+  function sendPhoto() {
+    const inp=$('#chatPhotoInput'),files=inp.files;if(!files.length||!App.user)return;
+    const photos=[],cnt=Math.min(files.length,5);
+    for(let i=0;i<cnt;i++){(function(f){const r=new FileReader();r.onload=function(e){const img = new Image();img.onload=function(){const c=document.createElement('canvas'),mw=300,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);photos.push({full:e.target.result,thumb:c.toDataURL('image/jpeg',0.6)});if(photos.length===cnt){const ref=App.privateChatWith?(()=>{const u=[App.user.uid,App.privateChatWith].sort();return DB.ref('privateChats/'+u[0]+'_'+u[1]);})():DB.ref('chat');const p=App.isGod?'👑 ':(App.isCreator?'🌌 ':'');ref.push({uid:App.user.uid, user:p+App.user.name,text:`📷 ${cnt} фото`,photos,timestamp:Date.now(),role:App.user.role,likes:{}});}};img.src=e.target.result;};r.readAsDataURL(f);})(files[i]);}
+    inp.value='';
+  }
+  function toggleChat() {
+    const mc=$('#mainContent');
+    if(mc.classList.contains('chat-collapsed')){
+      mc.classList.remove('chat-collapsed');
+      App.chatOpened=true;
+      App.lastChatTimestamp=Date.now();
+      App.unreadCount=0;
+      updateBadge();
+      const ce=$('#chat');
+      setTimeout(()=>ce.scrollTop=ce.scrollHeight,300);
+    }
+    else{
+      mc.classList.add('chat-collapsed');
+      App.chatOpened=false;
+    }
+  }
   function updateBadge(){const b=$('#chatBadge');if(App.unreadCount>0){b.style.display='inline';b.textContent=App.unreadCount;}else b.style.display='none';}
   function openPrivateChat(){if(!App.selectedProfile||App.selectedProfile===App.user.uid)return;App.privateChatWith=App.selectedProfile;const d=App.allUserData[App.selectedProfile];$('#chatLabel').textContent=d?cleanName(d.name):'...';$('#chatBackBtn').style.display='inline-block';closeMiniProfile();$('#avatarCarousel').classList.remove('open');loadChat();}
   function switchToGlobalChat(){App.privateChatWith=null;$('#chatLabel').textContent='Общий чат';$('#chatBackBtn').style.display='none';loadChat();}
 
+  // ============ STICKERS PANEL ============
   function renderStickerUI() {
     const c=$('#stickerContent'),t=$('#stickerTabs');
     const BASE_EMOJIS = ['😀','😃','😄','😁','😆','😅','😂','🤣','🥲','☺️','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🥸','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','☠️','👽','👾','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾'];
@@ -988,56 +2120,204 @@ button:active{transform:scale(0.95)}
   }
   window.sendSticker = function(img){if(!App.user)return;const ref=App.privateChatWith?(()=>{const u=[App.user.uid,App.privateChatWith].sort();return DB.ref('privateChats/'+u[0]+'_'+u[1]);})():DB.ref('chat');const p=App.isGod?'👑 ':(App.isCreator?'🌌 ':'');ref.push({uid:App.user.uid, user:p+App.user.name,text:'',sticker:img,timestamp:Date.now(),role:App.user.role,likes:{}});$('#stickerPanel').classList.remove('open');};
 
+  // ============ SIDEBAR ============
   function toggleSidebar(){$('#avatarCarousel').classList.toggle('open');}
   function buildCarousel() {
     const el=$('#carouselInner');if(!el)return;el.innerHTML='';const added=new Set();
     for(const uid in App.allUserData){if(uid===App.user.uid)continue;const d=App.allUserData[uid];const safeName=cleanName(d.name);if(added.has(safeName))continue;added.add(safeName);
       const online = App.presenceData[uid]?.online || !!App.activeShifts[uid];
       const isActive=App.selectedProfile===uid;
-      const canvas = document.createElement('canvas'); canvas.className = 'avatar-canvas'; canvas.dataset.uid = uid; canvas.style.width = '56px'; canvas.style.height = '56px';
+      
+      const canvas = document.createElement('canvas');
+      canvas.width = 200;
+      canvas.height = 200;
+      canvas.style.width = '56px';
+      canvas.style.height = '56px';
+      canvas.className = 'avatar-canvas';
+      canvas.dataset.uid = uid;
+      
       const settings = d?.avatarSettings || { style: 'off', speed: 1, color1: '#6366f1', color2: '#a855f7' };
-      renderPremiumAvatar(canvas, settings, d?.imgObj || null, d?.name || '?', 0);
-      const wrapper = document.createElement('div'); wrapper.className = `avatar-item${isActive?' active':''}`; wrapper.dataset.uid = uid; wrapper.appendChild(canvas);
-      if(online){ const dot = document.createElement('div'); dot.className = 'online-dot'; wrapper.appendChild(dot); } el.appendChild(wrapper);
+      const avatarImg = d?.imgObj || null;
+      const name = d?.name || '?';
+      
+      // Рендерим сразу с анимацией (tick=1)
+      renderPremiumAvatar(canvas, settings, avatarImg, name, 1);
+      
+      const wrapper = document.createElement('div');
+      wrapper.className = `avatar-item${isActive?' active':''}`;
+      wrapper.dataset.uid = uid;
+      wrapper.appendChild(canvas);
+      if(online){
+        const dot = document.createElement('div');
+        dot.className = 'online-dot';
+        wrapper.appendChild(dot);
+      }
+      el.appendChild(wrapper);
     }
+      
     el.querySelectorAll('.avatar-item').forEach(item=>item.addEventListener('click',function(){const uid=this.dataset.uid;App.selectedProfile=uid;el.querySelectorAll('.avatar-item').forEach(x=>x.classList.toggle('active',x.dataset.uid===uid));showMiniProfile(uid);}));
   }
+
+  function renderMiniCalendar(uid, container) {
+      const now = new Date();
+      const calYear = now.getFullYear();
+      const calMonth = now.getMonth();
+      DB.ref('shifts').orderByChild('user').equalTo(uid).once('value').then(s => {
+          const shifts = {};
+          s.forEach(c => {
+              const x = c.val();
+              const d = x.timestamp ? new Date(x.timestamp) : new Date();
+              if (!isNaN(d.getTime()) && d.getFullYear() === calYear && d.getMonth() === calMonth) {
+                  shifts[d.getDate()] = true;
+              }
+          });
+
+          const dim = new Date(calYear, calMonth + 1, 0).getDate();
+          const today = new Date().getDate();
+          let h = `<div style="font-size:11px;text-align:center;margin-bottom:6px;font-weight:600;color:var(--muted)">Смены в этом месяце</div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;justify-items:center;">`;
+          for(let d = 1; d <= dim; d++) {
+              const has = shifts[d];
+              const isT = (today === d && calYear === now.getFullYear() && calMonth === now.getMonth());
+              let bg = has ? '#4CAF50' : 'rgba(255,255,255,0.05)';
+              let col = has ? '#fff' : '#aaa';
+              let border = isT ? '1px solid #2196F3' : '1px solid transparent';
+              h += `<div style="width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:10px;border-radius:4px;background:${bg};color:${col};border:${border};">${d}</div>`;
+          }
+          h += `</div>`;
+          container.innerHTML = h;
+      });
+  }
+
   function showMiniProfile(uid){
-    const d=App.allUserData[uid];if(!d)return; const cleanUName = cleanName(d.name); $('#mpName').textContent=cleanUName;
-    const container = $('#mpAvatarContainer'); container.innerHTML = ''; const canvas = document.createElement('canvas'); canvas.style.width = '64px'; canvas.style.height = '64px'; canvas.className = 'mp-avatar-canvas'; container.appendChild(canvas);
-    renderPremiumAvatar(canvas, d?.avatarSettings || { style: 'off' }, d?.imgObj || null, d?.name || '?', 0);
-    const rm={god:'Начальник',creator:'Создатель',manager:'Сотрудник'}; $('#mpStatus').textContent=rm[d.role]||'Сотрудник';
-    if(d.role === 'god' || d.role === 'creator') { $('#mpPunkt').textContent = App.presenceData[uid]?.online ? '🟢 Онлайн' : '🔴 Оффлайн'; $('#mpPunkt').style.color = App.presenceData[uid]?.online ? '#4CAF50' : 'var(--muted)'; } else { $('#mpPunkt').textContent = App.activeShifts[uid] ? '🟢 На смене' : '🔴 Выходной'; $('#mpPunkt').style.color = App.activeShifts[uid] ? '#4CAF50' : 'var(--muted)'; }
-    $('#mpCalendarContainer').style.display = 'none';
+    const d=App.allUserData[uid];if(!d)return;
+    const cleanUName = cleanName(d.name);
+    $('#mpName').textContent=cleanUName;
+    
+    const container = $('#mpAvatarContainer');
+    container.innerHTML = '';
+    const canvas = document.createElement('canvas');
+    canvas.width = 200;
+    canvas.height = 200;
+    canvas.style.width = '64px';
+    canvas.style.height = '64px';
+    canvas.className = 'mp-avatar-canvas';
+    container.appendChild(canvas);
+    
+    const settings = d?.avatarSettings || { style: 'off', speed: 1, color1: '#6366f1', color2: '#a855f7' };
+    const avatarImg = d?.imgObj || null;
+    const name = d?.name || '?';
+    
+    renderPremiumAvatar(canvas, settings, avatarImg, name, 1);
+    
+    const rm={god:'Начальник',creator:'Создатель',manager:'Сотрудник'};
+    $('#mpStatus').textContent=rm[d.role]||'Сотрудник';
+    
+    if(d.role === 'god' || d.role === 'creator') {
+        $('#mpPunkt').textContent = App.presenceData[uid]?.online ? '🟢 Онлайн' : '🔴 Оффлайн';
+        $('#mpPunkt').style.color = App.presenceData[uid]?.online ? '#4CAF50' : 'var(--muted)';
+    } else {
+        $('#mpPunkt').textContent = App.activeShifts[uid] ? '🟢 На смене' : '🔴 Выходной';
+        $('#mpPunkt').style.color = App.activeShifts[uid] ? '#4CAF50' : 'var(--muted)';
+    }
+
+    const mpCal = $('#mpCalendarContainer');
+    if (d.role !== 'god' && d.role !== 'creator') {
+        mpCal.style.display = 'block';
+        mpCal.innerHTML = '<div style="text-align:center;font-size:12px;color:var(--muted);">Загрузка...</div>';
+        renderMiniCalendar(uid, mpCal);
+    } else {
+        mpCal.style.display = 'none';
+    }
+    
     $('#miniProfile').classList.add('show');
   }
   function closeMiniProfile(){$('#miniProfile').classList.remove('show');App.selectedProfile=null;}
 
+  // ============ AVATAR SETTINGS ============
   function loadAvatarSettings(){DB.ref('users/'+App.user.uid+'/avatarSettings').once('value').then(s=>{if(s.exists())Object.assign(App.avatarSettings,s.val());});}
-  function buildAnimationGrid() { const g=$('#animationGrid');if(!g)return;let h=''; ANIMATIONS.forEach(a=>{ const ia=App.avatarSettings.style===a.id; const cu=!a.premium || App.isCreator || App.isGod; const cls = a.id === 'off' ? 'style-btn off-btn' : 'style-btn'; h+=`<button class="${cls} ${ia?'active':''} ${a.premium?'premium':''}" data-style="${a.id}" ${!cu?'disabled':''}>${a.label}${a.premium?' 👑':''}</button>`; }); g.innerHTML=h; g.querySelectorAll('.style-btn').forEach(b=>b.addEventListener('click',function(){ if(this.disabled) return; App.avatarSettings.style=this.dataset.style; g.querySelectorAll('.style-btn').forEach(x=>x.classList.remove('active')); this.classList.add('active'); })); }
+  function buildAnimationGrid() {
+    const g=$('#animationGrid');if(!g)return;let h='';
+    ANIMATIONS.forEach(a=>{
+      const ia=App.avatarSettings.style===a.id;
+      const cu=!a.premium || App.isCreator || App.isGod;
+      const cls = a.id === 'off' ? 'style-btn off-btn' : 'style-btn';
+      h+=`<button class="${cls} ${ia?'active':''} ${a.premium?'premium':''}" data-style="${a.id}" ${!cu?'disabled':''}>${a.label}${a.premium?' 👑':''}</button>`;
+    });
+    g.innerHTML=h;
+    g.querySelectorAll('.style-btn').forEach(b=>b.addEventListener('click',function(){
+      if(this.disabled) return;
+      App.avatarSettings.style=this.dataset.style;
+      g.querySelectorAll('.style-btn').forEach(x=>x.classList.remove('active'));
+      this.classList.add('active');
+    }));
+  }
 
+  // ============ SETTINGS ============
   function openSettings(){$('#mainContent').style.display='none';$('#avatarCarousel').style.display='none';$('#settingsPanel').style.display='flex';$('#setName').value='';loadPunktsForSettings();updateSettingsUI();buildAnimationGrid();}
   function closeSettings(){$('#settingsPanel').style.display='none';$('#mainContent').style.display='flex';$('#avatarCarousel').style.display='flex';}
   function loadPunktsForSettings(){DB.ref('punkts').once('value').then(s=>{const sel=$('#setPunkt');sel.innerHTML='<option value="">Не менять</option>';s.forEach(c=>{sel.innerHTML+=`<option value="${esc(c.key)}">${esc(c.key)}</option>`;});});}
   function updateSettingsUI(){const ha=App.isCreator||App.isGod;document.getElementById('avatarAdvanced').style.display=ha?'block':'none';document.getElementById('avatarSimple').style.display=ha?'none':'block';document.getElementById('punktSettingsRow').style.display=App.isGod?'none':'block';$('#setSpeed').value=App.avatarSettings.speed;$('#setSpeedVal').textContent=App.avatarSettings.speed+'x';$('#setGlow').value=App.avatarSettings.glow;$('#setGlowVal').textContent=App.avatarSettings.glow+'px';$('#setColor1').value=App.avatarSettings.color1;$('#setColor2').value=App.avatarSettings.color2;$('#setRingColor').value=App.avatarSettings.ringColor;$('#setRingThickness').value=App.avatarSettings.ringThickness;}
+  
   function saveSettings(){const nn=$('#setName').value.trim(),np=$('#setPunkt').value,up={};if(nn)up.name=nn;if(np&&!App.isGod)up.punkt=np;if(Object.keys(up).length){DB.ref('users/'+App.user.uid).update(up).then(()=>{if(nn)App.user.name=nn;if(np&&!App.isGod)App.user.punkt=np;updateUI();toast('Настройки сохранены');});}closeSettings();}
-  function saveAvatar(){ const s={style:App.avatarSettings.style,speed:App.avatarSettings.speed,glow:App.avatarSettings.glow,color1:App.avatarSettings.color1,color2:App.avatarSettings.color2,ringColor:App.avatarSettings.ringColor,ringThickness:App.avatarSettings.ringThickness}; const up={avatarSettings:s}; if(App.user.avatar) up.avatar = App.user.avatar; DB.ref('users/'+App.user.uid).update(up).then(()=>{ App.avatarSettings=s; toast('Аватар сохранён'); closeSettings(); }); }
+  
+  function saveAvatar(){
+    const s={style:App.avatarSettings.style,speed:App.avatarSettings.speed,glow:App.avatarSettings.glow,color1:App.avatarSettings.color1,color2:App.avatarSettings.color2,ringColor:App.avatarSettings.ringColor,ringThickness:App.avatarSettings.ringThickness};
+    const up={avatarSettings:s};
+    if(App.user.avatar) up.avatar = App.user.avatar;
+    
+    DB.ref('users/'+App.user.uid).update(up).then(()=>{
+      App.avatarSettings=s;
+      toast('Аватар сохранён');
+      closeSettings();
+    });
+  }
 
-  function loadPinned(){ DB.ref('pinned').on('value',s=>{ const el=$('#pinnedMessage'); if(!s.exists()){el.style.display='none';return;} const d=s.val(); el.style.display='block'; let unpinBtn = (App.isCreator || App.isGod) ? `<button onclick="DB.ref('pinned').remove()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--muted); cursor:pointer; font-size:16px;">✕</button>` : ''; el.innerHTML=`<div style="padding-right:20px;">📌 <b>${esc(cleanName(d.user))}:</b> ${esc(d.text)}</div>${unpinBtn}`; el.style.position = 'relative'; }); }
+  // ============ PINNED & ANNOUNCE ============
+  function loadPinned(){
+    DB.ref('pinned').on('value',s=>{
+      const el=$('#pinnedMessage');
+      if(!s.exists()){el.style.display='none';return;}
+      const d=s.val();
+      el.style.display='block';
+      let unpinBtn = (App.isCreator || App.isGod) ? `<button onclick="DB.ref('pinned').remove()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--muted); cursor:pointer; font-size:16px;">✕</button>` : '';
+      el.innerHTML=`<div style="padding-right:20px;">📌 <b>${esc(cleanName(d.user))}:</b> ${esc(d.text)}</div>${unpinBtn}`;
+      el.style.position = 'relative';
+    });
+  }
+
   function loadAnnounce(){DB.ref('announce').limitToLast(1).on('value',s=>{const el=$('#announceBlock');if(!s.exists()){el.style.display='none';return;}let last=null;s.forEach(c=>{last=c.val();last._key=c.key;});if(last.expiry&&Date.now()>last.expiry){DB.ref('announce/'+last._key).remove();el.style.display='none';return;}el.style.display='block';el.innerHTML=`${esc(last.text)}<br><small style="color:var(--muted);">${new Date(last.timestamp).toLocaleString('ru-RU')}</small>`;if(App.isCreator||App.isGod){const db=document.createElement('button');db.textContent='✕';db.style.cssText='position:absolute;right:8px;top:8px;background:none;border:none;color:var(--red);cursor:pointer;font-size:14px;';db.addEventListener('click',()=>DB.ref('announce/'+last._key).remove());el.appendChild(db);}});}
 
+  // ============ DB LISTENERS ============
   function setupDatabaseListeners(){
     attachDbListener(DB.ref('users'),'value',s=>{
-      const newData = {}; s.forEach(c=>{ const u = c.val(); const oldU = App.allUserData[c.key];
-        if (u.avatar) { if (!oldU || oldU.avatar !== u.avatar || !oldU.imgObj) { u.imgObj = new Image(); u.imgObj.crossOrigin = 'Anonymous'; u.imgObj.src = u.avatar; } else { u.imgObj = oldU.imgObj; } }
-        newData[c.key] = u; });
-      App.allUserData = newData; buildCarousel(); if(window.chatSnapCache) { renderChatMessages(); }
+      const newData = {};
+      s.forEach(c=>{
+        const u = c.val();
+        const oldU = App.allUserData[c.key];
+        
+        if (u.avatar) {
+            if (!oldU || oldU.avatar !== u.avatar || !oldU.imgObj) {
+                u.imgObj = new Image();
+                u.imgObj.crossOrigin = 'Anonymous';
+                u.imgObj.src = u.avatar;
+            } else {
+                u.imgObj = oldU.imgObj;
+            }
+        }
+        newData[c.key] = u;
+      });
+      App.allUserData = newData;
+      buildCarousel();
+      if(window.chatSnapCache) {
+          renderChatMessages();
+      }
     });
     attachDbListener(DB.ref('activeShifts'),'value',s=>{App.activeShifts={};s.forEach(c=>{if(c.val()&&c.val().active)App.activeShifts[c.key]=true;});buildCarousel();});
     attachDbListener(DB.ref('presence'),'value',s=>{App.presenceData={};s.forEach(c=>{App.presenceData[c.key]=c.val();});buildCarousel();});
     attachDbListener(DB.ref('chat').limitToLast(1),'child_added',s=>{if(App.chatOpened)return;const m=s.val();if(!m||!App.user)return;if(m.timestamp<=App.lastChatTimestamp)return;const isM = m.uid ? m.uid === App.user.uid : (App.user && (m.user==='🌌 '+App.user.name||m.user==='👑 '+App.user.name||m.user===App.user.name));if(isM)return;if(App.notifiedKeys[s.key])return;App.notifiedKeys[s.key]=true;App.lastChatTimestamp=Math.max(App.lastChatTimestamp,m.timestamp||0);App.unreadCount++;updateBadge();});
   }
 
+  // ============ INIT ============
   function init() {
     $('#tabLogin').addEventListener('click',toggleAuth);$('#tabRegister').addEventListener('click',toggleAuth);
     $('#loginBtn').addEventListener('click',login);$('#registerBtn').addEventListener('click',register);$('#resetPassBtn').addEventListener('click',resetPassword);
@@ -1049,7 +2329,21 @@ button:active{transform:scale(0.95)}
     document.addEventListener('click',e=>{const p=$('#stickerPanel');if(p&&p.classList.contains('open')&&!e.target.closest('#stickerPanel')&&!e.target.closest('.sticker-toggle'))p.classList.remove('open');});
     $('#sidebarToggleBtn').addEventListener('click',toggleSidebar);$('#sidebarCloseBtn').addEventListener('click',()=>$('#avatarCarousel').classList.remove('open'));
     $('#mpCloseBtn').addEventListener('click',closeMiniProfile);$('#mpChatBtn').addEventListener('click',openPrivateChat);
-    $('#mpAvatarContainer').addEventListener('click', () => { if(App.selectedProfile) window.openAvatarPreview(App.selectedProfile); });
+    
+    document.addEventListener('focusout', (e) => {
+        if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
+            setTimeout(() => { 
+                if(document.body.scrollTop > 0 || document.documentElement.scrollTop > 0) {
+                    window.scrollTo({top: 0, behavior: 'smooth'}); 
+                }
+            }, 50);
+        }
+    });
+
+    $('#mpAvatarContainer').addEventListener('click', () => {
+        if(App.selectedProfile) window.openAvatarPreview(App.selectedProfile);
+    });
+
     document.addEventListener('click',e=>{const mp=$('#miniProfile');if(mp&&mp.classList.contains('show')&&!e.target.closest('#miniProfile')&&!e.target.closest('.avatar-item')&&!e.target.closest('#sidebarToggleBtn')&&!e.target.closest('.msg-author'))closeMiniProfile();});
     $('#mainProfileCard').addEventListener('click',e=>{if(e.target.closest('#settingsBtn'))return;window.openAvatarPreview();});
     $('#toggleFullImgBtn').addEventListener('click',()=>{const cv=$('#previewAvatarCanvas'),im=$('#previewFullImage');if(cv.style.display!=='none'){cv.style.display='none';im.src=App.previewData.imgUrl||'';im.style.display='block';$('#toggleFullImgBtn').textContent='Показать с эффектами';}else{cv.style.display='block';im.style.display='none';$('#toggleFullImgBtn').textContent='Показать оригинал';}});
@@ -1057,7 +2351,38 @@ button:active{transform:scale(0.95)}
     $('#settingsBtn').addEventListener('click',openSettings);$('#settingsCloseBtn').addEventListener('click',closeSettings);
     $('#settingsSaveBtn').addEventListener('click',saveSettings);$('#settingsLogoutBtn').addEventListener('click',()=>{closeSettings();logout();});
     $('#avatarCloseBtn').addEventListener('click',closeSettings);$('#avatarSaveBtn').addEventListener('click',saveAvatar);
-    $('#setAvatarFile').addEventListener('change',e=>{ const f=e.target.files[0]; if(!f)return; const r=new FileReader(); r.onload=ev=>{ const tempImg = new Image(); tempImg.onload = function() { const c = document.createElement('canvas'); const MAX_SIZE = 600; c.width = MAX_SIZE; c.height = MAX_SIZE; const ctx = c.getContext('2d'); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high'; const ratio = Math.max(MAX_SIZE/tempImg.width, MAX_SIZE/tempImg.height); const dw = tempImg.width * ratio, dh = tempImg.height * ratio; ctx.drawImage(tempImg, (MAX_SIZE - dw) / 2, (MAX_SIZE - dh) / 2, dw, dh); App.user.avatar = c.toDataURL('image/jpeg', 0.85); App.user.imgObj = new Image(); App.user.imgObj.crossOrigin = 'Anonymous'; App.user.imgObj.src = App.user.avatar; toast('Фото загружено и оптимизировано! Нажмите «Сохранить аватар».'); }; tempImg.src = ev.target.result; }; r.readAsDataURL(f); });
+    
+    $('#setAvatarFile').addEventListener('change',e=>{
+      const f=e.target.files[0];
+      if(!f)return;
+      const r=new FileReader();
+      r.onload=ev=>{
+        const tempImg = new Image();
+        tempImg.onload = function() {
+          const c = document.createElement('canvas');
+          const MAX_SIZE = 600;
+          c.width = MAX_SIZE;
+          c.height = MAX_SIZE;
+          const ctx = c.getContext('2d');
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          
+          const ratio = Math.max(MAX_SIZE/tempImg.width, MAX_SIZE/tempImg.height);
+          const dw = tempImg.width * ratio, dh = tempImg.height * ratio;
+          ctx.drawImage(tempImg, (MAX_SIZE - dw) / 2, (MAX_SIZE - dh) / 2, dw, dh);
+          
+          App.user.avatar = c.toDataURL('image/jpeg', 0.85);
+          App.user.imgObj = new Image();
+          App.user.imgObj.crossOrigin = 'Anonymous';
+          App.user.imgObj.src = App.user.avatar;
+          
+          toast('Фото загружено и оптимизировано! Нажмите «Сохранить аватар».');
+        };
+        tempImg.src = ev.target.result;
+      };
+      r.readAsDataURL(f);
+    });
+    
     document.querySelectorAll('.settings-tab').forEach(b=>b.addEventListener('click',function(){const tab=this.dataset.tab;document.querySelectorAll('.settings-tab').forEach(x=>{x.classList.remove('active');x.style.background='transparent';x.style.color='var(--muted)';});this.classList.add('active');this.style.background='var(--accent)';this.style.color='#fff';$('#stab-main').style.display=tab==='main'?'flex':'none';$('#stab-avatar').style.display=tab==='avatar'?'flex':'none';}));
     $('#setSpeed').addEventListener('input',function(){App.avatarSettings.speed=parseFloat(this.value);$('#setSpeedVal').textContent=App.avatarSettings.speed+'x';});
     $('#setGlow').addEventListener('input',function(){App.avatarSettings.glow=parseInt(this.value);$('#setGlowVal').textContent=App.avatarSettings.glow+'px';});
