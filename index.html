@@ -1,10 +1,9 @@
-```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-<title>Ozon Hub</title>
+<title>Ozon Hub - Исправленная версия</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{overflow:hidden;height:100%;width:100%;position:fixed;top:0;left:0;background:#0a0a1a}
@@ -530,56 +529,85 @@ button:active{transform:scale(0.95)}
         }
     },
     'fire': (opts) => {
-        const { ctx, cx, cy, fRadius, state, speed, color1, layer } = opts;
-        if(layer === 'back') { 
-            // Мягкое красное свечение вокруг кольца снизу
-            const bottomGrad = ctx.createRadialGradient(cx, cy+fRadius, 5, cx, cy+fRadius, fRadius*1.5);
-            bottomGrad.addColorStop(0, 'rgba(255, 80, 0, 0.6)');
-            bottomGrad.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = bottomGrad;
-            ctx.beginPath(); ctx.arc(cx, cy+fRadius, fRadius*1.5, 0, Math.PI*2); ctx.fill();
+        const { ctx, cx, cy, fRadius, avatarRadius, state, speed, layer } = opts;
+        
+        // Внутреннее свечение (для back layer)
+        if(layer === 'back') {
+            ctx.shadowBlur = 40; ctx.shadowColor = 'rgba(255, 80, 0, 0.8)';
+            ctx.fillStyle = 'rgba(255, 50, 0, 0.4)';
+            ctx.beginPath(); ctx.arc(cx, cy, avatarRadius + 4, 0, Math.PI*2); ctx.fill();
+            ctx.shadowBlur = 0;
         }
+
+        // Передний план (для front layer)
         if(layer === 'front') {
-          if(!state.flames) state.flames = [];
-          if(state.flames.length < 120) { 
-              // Генерируем частицы строго по нижней половине дуги
-              const spawnAngle = Math.PI/2 + (Math.random()-0.5) * Math.PI * 0.9;
-              state.flames.push({
-                  x: cx + Math.cos(spawnAngle)*(fRadius + 1 + Math.random()*4), 
-                  y: cy + Math.sin(spawnAngle)*(fRadius + 1) + Math.random()*3, 
-                  vx: (Math.random()-0.5)*1.2, 
-                  vy: -1.5 - Math.random()*3.5, // Полет строго вверх
-                  life: 1, maxLife: 1, 
-                  size: 15 + Math.random()*30, // Более крупные частицы для эффекта цельного пламени
-                  color: Math.random()>0.7?'#ffb400':(Math.random()>0.4?'#ff5500':'#ff0000')
-              }); 
-          }
-          
-          ctx.globalCompositeOperation = 'lighter';
-          state.flames.forEach(p => { 
-              p.x += p.vx + Math.sin(p.life*12)*0.6; // Легкое извивание пламени
-              p.y += p.vy * speed; 
-              p.life -= 0.015 * speed; 
-              const sc = p.life/p.maxLife; 
-              ctx.fillStyle = p.color; 
-              ctx.globalAlpha = Math.max(0, p.life); 
-              
-              ctx.beginPath();
-              // Рисуем вытянутые частицы
-              ctx.ellipse(p.x, p.y, p.size * sc * 0.4, p.size * sc * 0.8, 0, 0, Math.PI*2);
-              ctx.fill(); 
-          });
-          
-          ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
-          state.flames = state.flames.filter(p => p.life > 0);
-          
-          // Аккуратное огненное кольцо
-          ctx.strokeStyle = '#ffb400';
-          ctx.lineWidth = 2;
-          ctx.shadowBlur = 10;
-          ctx.shadowColor = '#ff3300';
-          ctx.beginPath(); ctx.arc(cx, cy, fRadius, 0, Math.PI*2); ctx.stroke();
-          ctx.shadowBlur = 0;
+            const time = state.tick * 0.5 * speed; // Плавное время
+
+            // 1. Овальное кольцо у основания (как на картинке c51217ceff8df89e2bd6ba4856fc44ab_2.jpg)
+            ctx.save();
+            ctx.translate(cx, cy + fRadius - 6); // Сдвиг вниз
+            ctx.scale(1, 0.35); // Сплющивание в овал
+            
+            // Контур овала
+            ctx.strokeStyle = '#ff3300'; ctx.lineWidth = 3;
+            ctx.shadowBlur = 15; ctx.shadowColor = '#ff0000';
+            ctx.beginPath(); ctx.arc(0, 0, avatarRadius, 0, Math.PI*2); ctx.stroke();
+            
+            // Внутреннее свечение овала
+            const ovalGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, avatarRadius);
+            ovalGrad.addColorStop(0, 'rgba(255, 100, 0, 0.8)');
+            ovalGrad.addColorStop(1, 'rgba(255, 30, 0, 0.1)');
+            ctx.fillStyle = ovalGrad; ctx.beginPath(); ctx.arc(0, 0, avatarRadius, 0, Math.PI*2); ctx.fill();
+            
+            ctx.restore(); ctx.shadowBlur = 0; // Сброс теней и трансформаций
+
+            // 2. Языки пламени, огибающие аватарку (как на картинке)
+            ctx.globalCompositeOperation = 'lighter'; // Эффект наложения
+            
+            for(let i=0; i<3; i++) { // Три слоя пламени для объема
+                const layerPhase = i * Math.PI * 0.2;
+                ctx.beginPath();
+                
+                // Рисуем контур пламени, огибая аватарку
+                const numPoints = 80;
+                const baseRadius = fRadius + 6;
+                const currentHeightShift = Math.sin(time + layerPhase) * 12; // Колебания высоты
+
+                for(let j=0; j<=numPoints; j++) {
+                    const angle = (j / numPoints) * Math.PI * 2 - Math.PI/2;
+                    
+                    // Расчет радиуса в зависимости от угла и времени
+                    let r = baseRadius;
+                    
+                    // Пламя должно быть высоким сверху и низким по бокам
+                    const topScale = 1 - (Math.abs(angle + Math.PI/2) / Math.PI); // Коэффициент "верхности"
+                    
+                    // Колебания контура
+                    r += (Math.sin(j * 0.25 + time * 3 + layerPhase * 4) * 5 * topScale) 
+                         + (Math.cos(j * 0.6 - time * 2 + layerPhase * 2) * 3 * topScale);
+
+                    // Высота (сдвиг) пламени над аватаркой
+                    let yShift = currentHeightShift * topScale * (1 - j/numPoints); // Больше сверху
+                    
+                    const px = cx + Math.cos(angle) * r;
+                    const py = cy + Math.sin(angle) * r - (12 * topScale) - yShift; // Сдвиг выше
+                    
+                    if(j===0) ctx.moveTo(px, py);
+                    else ctx.lineTo(px, py);
+                }
+                
+                // Градиент цвета пламени
+                const flameGrad = ctx.createLinearGradient(cx, cy - fRadius * 1.5, cx, cy + fRadius);
+                flameGrad.addColorStop(0, 'rgba(255, 220, 100, 0.7)'); // Верх: желтый
+                flameGrad.addColorStop(0.3, 'rgba(255, 120, 20, 0.9)'); // Середина: оранжевый
+                flameGrad.addColorStop(0.7, 'rgba(200, 50, 10, 0.95)'); // Низ: красный
+                flameGrad.addColorStop(1, 'rgba(100, 20, 0, 0.2)'); // Самый низ: темный
+
+                ctx.fillStyle = flameGrad;
+                ctx.fill();
+            }
+            
+            ctx.globalCompositeOperation = 'source-over'; // Сброс эффекта
         }
     },
     'glitch': (opts) => {
@@ -2142,5 +2170,3 @@ button:active{transform:scale(0.95)}
 </script>
 </body>
 </html>
-
-```
