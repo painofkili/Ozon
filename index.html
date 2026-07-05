@@ -344,8 +344,7 @@ button:active{transform:scale(0.95)}
     { id:'rgb-rainbow', label:'Радуга 🌈', premium:false },
     { id:'neon-pulse', label:'Пульс 💓', premium:false },
     { id:'running-gradient', label:'Градиент 💫', premium:false },
-    { id:'glitch', label:'Глитч 📺', premium:true }, 
-    { id:'symbiote', label:'Симбиот 🦠', premium:true },       
+    { id:'glitch', label:'Глитч 📺', premium:true },        
     { id:'runes', label:'Руны 📜', premium:true },        
     { id:'pulsar', label:'Квазар 🌟', premium:true },     
     { id:'frost', label:'Фрост ❄️', premium:true }, 
@@ -377,41 +376,6 @@ button:active{transform:scale(0.95)}
             ctx.beginPath();
             ctx.arc(cx, cy, fRadius, 0, Math.PI*2);
             ctx.stroke();
-        }
-    },
-    'symbiote': (opts) => {
-        const { ctx, cx, cy, fRadius, state, speed, color1, color2, layer } = opts;
-        if (layer === 'front') {
-            ctx.save(); ctx.translate(cx, cy);
-            ctx.fillStyle = color1;
-            ctx.shadowBlur = 15; ctx.shadowColor = color2;
-            
-            ctx.beginPath();
-            for(let a=0; a<=Math.PI*2.1; a+=0.1) {
-                const r = fRadius + Math.sin(a*6 + state.tick*5)*8 + Math.cos(a*11 - state.tick*3)*5;
-                if(a===0) ctx.moveTo(Math.cos(a)*r, Math.sin(a)*r);
-                else ctx.lineTo(Math.cos(a)*r, Math.sin(a)*r);
-            }
-            ctx.closePath();
-            ctx.lineWidth = 3;
-            ctx.strokeStyle = '#000';
-            ctx.stroke();
-            ctx.fill();
-
-            if (!state.drips) state.drips = [];
-            if (Math.random() > 0.6 && state.drips.length < 30) {
-                const angle = Math.random() * Math.PI*2;
-                state.drips.push({ angle, dist: fRadius-5, speed: 1 + Math.random()*2.5, life: 1, size: 2+Math.random()*4 });
-            }
-            state.drips.forEach(d => {
-                d.dist += d.speed * speed;
-                d.life -= 0.03 * speed;
-                ctx.beginPath();
-                ctx.arc(Math.cos(d.angle)*d.dist, Math.sin(d.angle)*d.dist, d.size*d.life, 0, Math.PI*2);
-                ctx.fill();
-            });
-            state.drips = state.drips.filter(d => d.life > 0);
-            ctx.restore();
         }
     },
     'dragon-aura': (opts) => {
@@ -566,42 +530,56 @@ button:active{transform:scale(0.95)}
         }
     },
     'fire': (opts) => {
-        const { ctx, cx, cy, fRadius, state, speed, layer } = opts;
+        const { ctx, cx, cy, fRadius, state, speed, color1, layer } = opts;
         if(layer === 'back') { 
-            ctx.shadowBlur=20; ctx.shadowColor='#ff3300'; ctx.strokeStyle='#ff3300'; 
-            ctx.lineWidth=3; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke(); ctx.shadowBlur=0; 
+            // Мягкое красное свечение вокруг кольца снизу
+            const bottomGrad = ctx.createRadialGradient(cx, cy+fRadius, 5, cx, cy+fRadius, fRadius*1.5);
+            bottomGrad.addColorStop(0, 'rgba(255, 80, 0, 0.6)');
+            bottomGrad.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = bottomGrad;
+            ctx.beginPath(); ctx.arc(cx, cy+fRadius, fRadius*1.5, 0, Math.PI*2); ctx.fill();
         }
         if(layer === 'front') {
           if(!state.flames) state.flames = [];
-          if(state.flames.length < 100) { 
-              const angle = -Math.PI/2 + (Math.random()-0.5)*Math.PI*1.2;
+          if(state.flames.length < 120) { 
+              // Генерируем частицы строго по нижней половине дуги
+              const spawnAngle = Math.PI/2 + (Math.random()-0.5) * Math.PI * 0.9;
               state.flames.push({
-                  x: cx + Math.cos(angle)*fRadius*0.8, 
-                  y: cy + fRadius - 5, 
-                  vx: (Math.random()-0.5)*1.5, 
-                  vy: -1.5 - Math.random()*3, 
+                  x: cx + Math.cos(spawnAngle)*(fRadius + 1 + Math.random()*4), 
+                  y: cy + Math.sin(spawnAngle)*(fRadius + 1) + Math.random()*3, 
+                  vx: (Math.random()-0.5)*1.2, 
+                  vy: -1.5 - Math.random()*3.5, // Полет строго вверх
                   life: 1, maxLife: 1, 
-                  size: 15 + Math.random()*25, 
-                  color: Math.random()>0.6?'#ffb400':(Math.random()>0.4?'#ff5500':'#ff0000')
+                  size: 15 + Math.random()*30, // Более крупные частицы для эффекта цельного пламени
+                  color: Math.random()>0.7?'#ffb400':(Math.random()>0.4?'#ff5500':'#ff0000')
               }); 
           }
           
           ctx.globalCompositeOperation = 'lighter';
           state.flames.forEach(p => { 
-              p.x += p.vx + Math.sin(p.life*15)*0.8; 
-              p.y += p.vy; 
+              p.x += p.vx + Math.sin(p.life*12)*0.6; // Легкое извивание пламени
+              p.y += p.vy * speed; 
               p.life -= 0.015 * speed; 
               const sc = p.life/p.maxLife; 
               ctx.fillStyle = p.color; 
               ctx.globalAlpha = Math.max(0, p.life); 
               
               ctx.beginPath();
-              ctx.ellipse(p.x, p.y, p.size * sc * 0.5, p.size * sc, 0, 0, Math.PI*2);
+              // Рисуем вытянутые частицы
+              ctx.ellipse(p.x, p.y, p.size * sc * 0.4, p.size * sc * 0.8, 0, 0, Math.PI*2);
               ctx.fill(); 
           });
           
           ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
           state.flames = state.flames.filter(p => p.life > 0);
+          
+          // Аккуратное огненное кольцо
+          ctx.strokeStyle = '#ffb400';
+          ctx.lineWidth = 2;
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = '#ff3300';
+          ctx.beginPath(); ctx.arc(cx, cy, fRadius, 0, Math.PI*2); ctx.stroke();
+          ctx.shadowBlur = 0;
         }
     },
     'glitch': (opts) => {
@@ -1091,12 +1069,16 @@ button:active{transform:scale(0.95)}
   function renderPremiumAvatar(canvas, settings, avatarImg, fallbackName) {
     if(!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    if(rect.width === 0 || rect.height === 0) return;
+    
+    // Фолбэк-ширина, если элемент скрыт (чтобы аватарки рисовались корректно в скрытых блоках)
+    let displayW = rect.width;
+    let displayH = rect.height;
+    if(displayW === 0 || displayH === 0) {
+        displayW = parseInt(canvas.getAttribute('width')) || 120;
+        displayH = parseInt(canvas.getAttribute('height')) || 120;
+    }
 
     const dpr = window.devicePixelRatio || 1;
-    const displayW = rect.width;
-    const displayH = rect.height;
-    
     const targetW = Math.floor(displayW * dpr);
     const targetH = Math.floor(displayH * dpr);
 
@@ -1213,7 +1195,8 @@ button:active{transform:scale(0.95)}
         renderPremiumAvatar(pc, App.previewData.settings, App.previewData.imgObj || null, App.previewData.name);
     }
 
-    const avatars = document.querySelectorAll('.canvas-avatar, .sidebar-avatar-canvas');
+    // Исключили .canvas-avatar из чата. Анимация только в сайдбаре и профилях
+    const avatars = document.querySelectorAll('.sidebar-avatar-canvas');
     for(let i=0; i<avatars.length; i++) {
         const c = avatars[i];
         if(c._avatarData) {
@@ -1376,7 +1359,6 @@ button:active{transform:scale(0.95)}
       {id:'shift',icon:'🔵',label:'Смена'},{id:'stats',icon:'📊',label:'Стат'},{id:'history',icon:'💳',label:'Выплаты'},
       {id:'board',icon:'🏆',label:'Доска'},{id:'power',icon:'⚡',label:'Сила'},{id:'stickers',icon:'🎨',label:'Стикеры'}
     ];
-    // Начальнику убрали вкладку смены полностью
     if(App.isGod) return [
       {id:'stats',icon:'📊',label:'Стат'},{id:'workers',icon:'👥',label:'Сотрудники'},
       {id:'salary',icon:'💰',label:'Расчёт ЗП'},{id:'announce',icon:'📢',label:'Объявления'},{id:'board',icon:'🏆',label:'Доска'}
@@ -1741,7 +1723,17 @@ button:active{transform:scale(0.95)}
       const safeUid = auid ? esc(auid) : '';
       const cleanUnForJs = un.replace(/'/g, "\\'").replace(/"/g, "&quot;");
       
-      const avaHtml = `<canvas data-uid="${safeUid}" data-name="${cleanUnForJs}" class="chat-static-avatar canvas-avatar" width="120" height="120" style="width:38px;height:38px;" onclick="event.stopPropagation();window.openAvatarPreview('${safeUid}','${cleanUnForJs}')"></canvas>`;
+      // Вместо канваса вставляем статичную картинку или кружок с первой буквой (оптимизация)
+      const uData = auid ? App.allUserData[auid] : null;
+      const uImg = uData?.avatar ? uData.avatar : (isMine && App.user?.avatar ? App.user.avatar : null);
+      let avaHtml = '';
+      if (uImg) {
+          avaHtml = `<img src="${esc(uImg)}" class="chat-static-avatar" onclick="event.stopPropagation();window.openAvatarPreview('${safeUid}','${cleanUnForJs}')">`;
+      } else {
+          const fl = cleanUnForJs ? cleanUnForJs.charAt(0).toUpperCase() : '?';
+          avaHtml = `<div class="chat-static-avatar text-ava" onclick="event.stopPropagation();window.openAvatarPreview('${safeUid}','${cleanUnForJs}')">${esc(fl)}</div>`;
+      }
+
       const ns=(isC||isG)?'background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;':'';
       
       let wrapperCls = 'chat-bubble-wrapper';
@@ -1767,10 +1759,13 @@ button:active{transform:scale(0.95)}
       App.messagesCache[it.key] = m;
       const isM = m.uid ? m.uid === App.user.uid : (App.user&&(m.user==='🌌 '+App.user.name||m.user==='👑 '+App.user.name||m.user===App.user.name));
       
-      if(group.length===0||cleanName(group[0].userName)!==un||group[0].isMine!==isM){
+      // Группируем сообщения: одно и то же имя, тот же пользователь, и разница по времени не более 5 минут (300000 мс)
+      if(group.length===0 || cleanName(group[0].userName)!==un || group[0].isMine!==isM || (m.timestamp - group[group.length-1].m.timestamp > 300000)){
         if(group.length)html+=renderGroup(group);
         group=[{item:it,userName:m.user,isMine:isM,m}];
-      } else group.push({item:it,userName:m.user,isMine:isM,m});
+      } else {
+        group.push({item:it,userName:m.user,isMine:isM,m});
+      }
     }
     if(group.length)html+=renderGroup(group);
     
@@ -1778,15 +1773,6 @@ button:active{transform:scale(0.95)}
     if(!ce) return;
     const was=ce.scrollHeight-ce.scrollTop-ce.clientHeight<60;
     ce.innerHTML=html;
-    
-    ce.querySelectorAll('.canvas-avatar').forEach(canvas => {
-        const uid = canvas.dataset.uid;
-        const uData = uid === App.user?.uid ? App.user : App.allUserData[uid];
-        const settings = uData?.avatarSettings || { style: 'off', speed: 1, color1: '#6366f1', color2: '#a855f7' };
-        const avatarImg = uData?.imgObj || null;
-        const name = uData?.name || canvas.dataset.name || '?';
-        canvas._avatarData = { settings, avatarImg, name };
-    });
 
     if(was||document.activeElement===$('#chatMsgInput'))ce.scrollTop=ce.scrollHeight;
   }
