@@ -28,8 +28,7 @@ button:active{transform:scale(0.95)}
 .btn-off.active{border-color:var(--red);color:#fff;background:rgba(239,68,68,0.2)}
 .app-container{display:flex;width:100%;height:100%;position:relative;z-index:1;overflow:hidden}
 .main-content{width:100%;max-width:100%;padding:12px 16px;display:flex;flex-direction:column;height:100%;gap:6px;transition:0.3s}
-.profile-card{display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(12px);flex-shrink:0;cursor:pointer;transition:0.2s}
-.profile-card:hover{background:rgba(40,40,70,0.9)}
+.profile-card{display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(12px);flex-shrink:0;transition:0.2s}
 .badge{font-size:12px;font-weight:bold;padding:4px 12px;border-radius:20px;display:inline-block}
 .badge-creator{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff}
 .badge-god{background:linear-gradient(135deg,#FFD700,#FF4500);color:#fff}
@@ -43,33 +42,14 @@ button:active{transform:scale(0.95)}
 .tabs button .tab-label{opacity:0;max-width:0;transition:all 0.3s}
 .tabs button:hover .tab-label,.tabs button.active .tab-label{opacity:1;max-width:80px}
 .tabs button.active{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff;box-shadow:0 4px 15px rgba(138,43,226,0.3)}
-.tab-content{display:none;width:100%;flex-shrink:0;animation:fadeIn 0.3s ease}
-.tab-content.active-tab{display:block}
 .chat-section{background:var(--bg2);border:1px solid var(--border);border-radius:16px;display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;margin:0;transition:0.3s cubic-bezier(0.25, 0.8, 0.25, 1)}
 .chat-header-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.2);cursor:pointer;flex-shrink:0}
 .chat-header-bar:hover{background:rgba(0,0,0,0.3)}
 #chat{flex:1;overflow-y:auto;padding:10px 14px;scrollbar-width:thin;scrollbar-color:var(--accent) transparent;background:transparent;display:flex;flex-direction:column;gap:2px;transition:opacity 0.2s}
-.chat-bubble-group{display:flex;flex-direction:column;max-width:85%;position:relative;margin:4px 0}
-.chat-bubble-group.mine{align-self:flex-end;align-items:flex-end}
-.chat-bubble-group.other{align-self:flex-start;align-items:flex-start}
-.chat-bubble-group .msg-author{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;display:flex;align-items:center;gap:8px;padding:0 4px}
-.chat-static-avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;cursor:pointer;flex-shrink:0;border:1px solid rgba(255,255,255,0.1);background:var(--bg3)}
-.chat-static-avatar.canvas-avatar{background:transparent;border:none;overflow:visible}
-.text-ava{display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.15);font-weight:bold;font-size:16px;color:#fff}
-.chat-bubble-wrapper{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.03);position:relative;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:0.1s}
-.chat-bubble-wrapper.mine{background:rgba(76,175,80,0.15);border-color:rgba(76,175,80,0.1)}
-.chat-bubble-wrapper.creator{border-left:3px solid var(--gold);background:rgba(245,197,24,0.06)}
-.chat-bubble-wrapper.god{border-left:3px solid #FFD700;background:rgba(255,215,0,0.06)}
-.chat-msg-item{padding:8px 14px;word-break:break-word;line-height:1.4;font-size:14px;position:relative;cursor:pointer;transition:0.1s}
-.chat-msg-item:not(:last-child){border-bottom:1px solid rgba(255,255,255,0.05)}
-.chat-msg-item:active{background:rgba(255,255,255,0.1)}
-.chat-img{max-width:200px;max-height:150px;border-radius:8px;margin-top:4px;cursor:pointer;object-fit:cover}
-.chat-sticker{max-width:120px;max-height:120px;object-fit:contain;margin:2px 0}
 .chat-input-wrapper{position:relative;width:100%;margin-top:auto;flex-shrink:0;transition:0.3s cubic-bezier(0.25, 0.8, 0.25, 1);opacity:1;transform:translateY(0)}
 .chat-input-bar{width:100%;background:var(--bg2);backdrop-filter:blur(16px);padding:8px 12px;display:flex;gap:8px;align-items:center;z-index:100;border-top:1px solid var(--border);border-radius:16px}
 .input-wrapper{position:relative;flex:1;display:flex;align-items:center;background:rgba(0,0,0,0.3);border-radius:20px;border:1px solid rgba(255,255,255,0.05)}
 .input-wrapper input{background:transparent;border:none;padding:10px 40px 10px 16px;font-size:15px;width:100%}
-.sticker-toggle{position:absolute;right:8px;background:transparent;border:none;font-size:20px;cursor:pointer;color:#aaa;padding:0}
 #sendMsgBtn,#chatPhotoBtn{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;padding:0;flex-shrink:0;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.05);color:#aaa}
 #sendMsgBtn{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff;border:none}
 .avatar-carousel{width:110px;background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;right:-130px;height:100%;padding:50px 0 20px;z-index:1000;backdrop-filter:blur(20px);transition:right 0.3s cubic-bezier(0.16,1,0.3,1);box-shadow:-10px 0 30px rgba(0,0,0,0.5)}
@@ -77,48 +57,20 @@ button:active{transform:scale(0.95)}
 .avatar-carousel-inner{display:flex;flex-direction:column;align-items:center;width:100%;gap:12px;overflow-y:auto;height:100%;padding:10px 0;scrollbar-width:none;padding-bottom:30px}
 .avatar-carousel-inner::-webkit-scrollbar{display:none}
 .sidebar-close-btn{position:absolute;top:15px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#eee;width:36px;height:36px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:0.2s;z-index:10;box-shadow:0 4px 10px rgba(0,0,0,0.3)}
-.sidebar-close-btn:hover{background:#e94560;color:#fff;border-color:#e94560;transform:translateX(-50%) scale(1.1)}
-.avatar-item{width:56px;height:56px;border-radius:50%;cursor:pointer;position:relative;transition:0.2s;flex-shrink:0}
-.avatar-item:hover{transform:scale(1.05)}
-.avatar-item img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid transparent}
-.avatar-item.active img{border-color:var(--gold);box-shadow:0 0 15px rgba(245,197,24,0.3)}
-.avatar-item .online-dot{position:absolute;bottom:2px;right:2px;width:12px;height:12px;background:#4CAF50;border-radius:50%;border:2px solid #111}
 .btn-sidebar-toggle{position:fixed;right:0;top:50%;transform:translateY(-50%);width:36px;height:50px;background:var(--bg2);border:1px solid var(--border);border-right:none;border-radius:14px 0 0 14px;color:#fff;font-size:14px;cursor:pointer;z-index:999;backdrop-filter:blur(8px)}
-.mini-profile{position:fixed;right:130px;top:50%;transform:translateY(-50%);background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px;width:240px;z-index:1100;display:none;backdrop-filter:blur(20px);box-shadow:0 10px 40px rgba(0,0,0,0.6)}
-.mini-profile.show{display:block;animation:slideIn 0.2s ease-out}
-@keyframes slideIn{from{opacity:0;transform:translateY(-50%) translateX(20px)}to{opacity:1;transform:translateY(-50%) translateX(0)}}
-@keyframes slideUpModal{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.mini-profile .mp-close{position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.05);border:none;color:#aaa;width:28px;height:28px;border-radius:50%;font-size:12px;cursor:pointer}
-.mini-profile .mp-close:hover{background:#e94560;color:#fff}
-#stickerPanel{position:absolute;bottom:calc(100% + 8px);right:0;width:300px;height:340px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;display:none;flex-direction:column;z-index:1000;box-shadow:0 10px 40px rgba(0,0,0,0.6);backdrop-filter:blur(20px);overflow:hidden}
-#stickerPanel.open{display:flex}
-#stickerContent{flex:1;overflow-y:auto;padding:12px;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start}
-.emoji-item{width:40px;height:40px;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:10px;transition:0.15s}
-.emoji-item:hover{background:rgba(255,255,255,0.1);transform:scale(1.1)}
-.st-item{width:60px;height:60px;cursor:pointer;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.02);transition:0.15s}
-.st-item:hover{background:rgba(255,255,255,0.08);transform:scale(1.05)}
-.st-item img{max-width:100%;max-height:100%;object-fit:contain}
-.sticker-tabs{display:flex;background:rgba(0,0,0,0.3);padding:6px;gap:4px;overflow-x:auto;border-top:1px solid var(--border);scrollbar-width:none}
-.sticker-tabs::-webkit-scrollbar{display:none}
-.st-tab{width:32px;height:32px;border-radius:8px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;opacity:0.6;transition:0.2s;flex-shrink:0}
-.st-tab.active,.st-tab:hover{opacity:1;background:rgba(124,58,237,0.2)}
 .toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:10000;pointer-events:none;display:flex;flex-direction:column;gap:8px}
 .toast-msg{padding:12px 20px;border-radius:16px;background:var(--bg2);border:1px solid var(--accent);color:#fff;font-size:14px;box-shadow:0 5px 20px rgba(0,0,0,0.6);transform:translateY(-20px);opacity:0;transition:all 0.3s;text-align:center;backdrop-filter:blur(10px)}
 .toast-msg.error{border-color:var(--red)}
 .toast-msg.show{transform:translateY(0);opacity:1}
-.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;font-size:12px;background:rgba(22,33,62,0.4);border-radius:10px;padding:6px;border:1px solid var(--border)}
-.calendar div{padding:6px;border-radius:4px}
-.calendar .shift-day{background:#4CAF50;color:#fff;font-weight:bold;cursor:pointer}
-.calendar .today{border:2px solid #2196F3}
-.calendar .header{font-weight:bold;background:rgba(51,51,51,0.7)}
-.worker-row{display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid var(--border);gap:6px;flex-wrap:wrap}
-.worker-row button{width:auto;padding:4px 10px;font-size:11px}
-.zp-result{background:rgba(34,197,94,0.1);padding:12px;border-radius:8px;margin-top:8px;font-size:14px;border:1px solid rgba(34,197,94,0.3);white-space:pre-line}
 .settings-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:20px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;backdrop-filter:blur(20px)}
 #settingsPanel{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px}
 .settings-tab{flex:1;padding:8px;border-radius:10px;font-size:13px;background:transparent;color:var(--muted);border:none;cursor:pointer;transition:0.2s}
 .settings-tab.active{background:var(--accent);color:#fff}
-.avatar-wrap{position:relative;width:76px;height:76px;flex-shrink:0;border-radius:50%}
+.avatar-wrap{position:relative;width:76px;height:76px;flex-shrink:0;border-radius:50%;cursor:pointer;z-index:10}
+.avatar-wrap:hover{transform:scale(1.05); transition:0.2s;}
+/* ВАЖНО: pointer-events:none здесь позволяет кликать "сквозь" канвас рамки,
+  чтобы срабатывал клик по самой обертке .avatar-wrap 
+*/
 #mainAvatarCanvas{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:130px;height:130px;pointer-events:none;z-index:2}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
@@ -135,51 +87,19 @@ button:active{transform:scale(0.95)}
 @media(max-width:1023px){
   .main-content{flex-direction:column;padding:8px;height:100%;}
   .left-column{flex:0 0 42%; display:flex;flex-direction:column;margin-bottom:4px; transition:0.3s cubic-bezier(0.25, 0.8, 0.25, 1);}
-  .main-content.tabs-collapsed .left-column { flex: 0 0 auto; min-height:0; }
-  .main-content.chat-collapsed .left-column { flex: 1 1 100%; margin-bottom:0; max-height:none; }
   .right-column{flex:1 1 0%;display:flex;flex-direction:column;min-height:0; transition:0.3s cubic-bezier(0.25, 0.8, 0.25, 1);}
-  .main-content.chat-collapsed .right-column { flex: 0 0 54px; min-height: 54px; }
-  .main-content.chat-collapsed .chat-section { flex: 0 0 54px; height: 54px; }
-  .main-content.chat-collapsed #chat { opacity: 0; pointer-events: none; }
-  .main-content.chat-collapsed .chat-input-wrapper { opacity: 0; pointer-events: none; transform: translateY(100%); position: absolute; bottom: 0; }
   #tabContentContainer{flex:1;overflow-y:auto;}
   .chat-input-wrapper{position:relative;width:100%;max-width:100%;z-index:100;flex-shrink:0;}
-  .chat-input-bar{border-radius:16px;padding:6px 8px;}
-  .mini-profile{right:10px;width:210px}
-  .avatar-carousel{width:80px}
-  .avatar-item{width:46px;height:46px}
 }
 </style>
 </head>
 <body>
 <div id="toastContainer" class="toast-container"></div>
 
-<div id="msgActionModal" style="display:none; position:fixed; inset:0; z-index:12000; background:rgba(0,0,0,0.6); align-items:flex-end; justify-content:center; backdrop-filter:blur(5px);" onclick="closeMsgActions()">
-  <div style="background:var(--bg2); width:100%; max-width:500px; border-radius:24px 24px 0 0; padding:24px; display:flex; flex-direction:column; gap:12px; animation: slideUpModal 0.25s cubic-bezier(0.16, 1, 0.3, 1); border-top:1px solid var(--border);" onclick="event.stopPropagation()">
-      <h4 style="text-align:center; color:var(--muted); margin-bottom:8px;">Действия с сообщением</h4>
-      <button class="btn-gold" id="btnPinMsg" style="display:none; padding:14px;">📌 Закрепить</button>
-      <button class="btn-red" id="btnDelMsg" style="display:none; padding:14px;">🗑️ Удалить</button>
-      <button class="btn-gray" onclick="closeMsgActions()" style="padding:14px; margin-top:8px;">Отмена</button>
-  </div>
-</div>
-
 <div id="avatarPreviewModal" style="display:none;position:fixed;inset:0;z-index:11000;background:rgba(0,0,0,0.85);backdrop-filter:blur(15px);align-items:center;justify-content:center;flex-direction:column;">
   <button id="closeAvatarPreview" style="position:absolute;top:max(30px, env(safe-area-inset-top));right:30px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);color:#fff;width:44px;height:44px;border-radius:50%;font-size:22px;cursor:pointer;transition:0.2s;z-index:12000;display:flex;align-items:center;justify-content:center;">✕</button>
   <canvas id="previewAvatarCanvas" width="600" height="600" style="width:100%;max-width:350px;aspect-ratio:1/1;margin:0 auto;display:block;"></canvas>
-  <img id="previewFullImage" style="display:none;max-width:90vw;max-height:75vh;border-radius:12px;border:2px solid var(--accent);object-fit:contain;box-shadow:0 10px 40px rgba(0,0,0,0.5);">
   <div id="previewAvatarName" style="margin-top:10px;font-size:28px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></div>
-  <button id="toggleFullImgBtn" class="btn-gray" style="margin-top:16px;max-width:250px;padding:12px;">Показать оригинал</button>
-</div>
-
-<div id="customModal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px;">
-  <div class="card" style="max-width:350px;width:100%;display:flex;flex-direction:column;gap:12px;">
-    <div id="modalMessage" style="font-size:16px;text-align:center;font-weight:bold;"></div>
-    <input id="modalInput" type="text" style="display:none;margin-top:8px;">
-    <div style="display:flex;gap:8px;margin-top:10px;">
-      <button id="modalCancelBtn" class="btn-gray">Отмена</button>
-      <button id="modalConfirmBtn" class="btn-green">ОК</button>
-    </div>
-  </div>
 </div>
 
 <div id="loginScreen" style="display:flex;align-items:center;justify-content:center;height:100%;padding:20px;">
@@ -193,13 +113,11 @@ button:active{transform:scale(0.95)}
       <input id="loginEmail" type="email" placeholder="Email" autocomplete="email">
       <input id="loginPass" type="password" placeholder="Пароль" autocomplete="current-password">
       <button class="btn-gold" id="loginBtn">Войти</button>
-      <button class="btn-gray" id="resetPassBtn" style="width:100%;padding:10px;font-size:13px;background:transparent;border:1px solid var(--border);">Забыли пароль?</button>
     </div>
     <div id="registerFields" style="display:none;flex-direction:column;gap:12px;">
       <input id="regName" placeholder="Имя" autocomplete="name">
       <input id="regEmail" type="email" placeholder="Email" autocomplete="email">
       <input id="regPass" type="password" placeholder="Пароль (мин. 4 символа)" autocomplete="new-password">
-      <select id="regPunkt"><option value="">Выберите пункт</option></select>
       <button class="btn-gold" id="registerBtn">Зарегистрироваться</button>
     </div>
     <div id="authError" style="color:var(--red);font-size:13px;text-align:center;display:none;"></div>
@@ -211,50 +129,37 @@ button:active{transform:scale(0.95)}
   
   <div class="main-content" id="mainContent">
     <div class="left-column" id="leftColumn">
-      <div id="announceBlock" style="display:none;background:rgba(200,150,0,0.1);border:1px solid rgba(200,150,0,0.3);padding:12px 16px;border-radius:16px;text-align:center;font-size:14px;color:#ffd700;margin-bottom:4px;"></div>
       
       <div class="profile-card" id="mainProfileCard">
-        <div class="avatar-wrap">
+        <div class="avatar-wrap" id="avatarTriggerBtn">
           <canvas id="mainAvatarCanvas" width="600" height="600"></canvas>
         </div>
         <div style="flex:1">
-          <b id="creatorNameWrapper" class="name-creator" style="font-size:18px;"><span id="uname"></span></b>
-          <span id="roleBadge" class="badge badge-creator">Создатель</span><br>
-          <span style="font-size:12px;color:#aaa;" id="punktLabel">Пункт <span id="upunkt"></span></span>
+          <b id="creatorNameWrapper" class="name-creator" style="font-size:18px;"><span id="uname">Имя Пользователя</span></b><br>
+          <span style="font-size:12px;color:#aaa;" id="punktLabel">Роль: Менеджер</span>
         </div>
         <button class="btn-gray" id="settingsBtn" style="width:auto;padding:8px 14px;font-size:13px;">⚙️</button>
       </div>
       
-      <div class="tabs" id="tabsContainer"></div>
-      <div id="tabContentContainer" style="scrollbar-width:thin;scrollbar-color:var(--border) transparent;padding-bottom:6px;"></div>
     </div>
     
     <div class="right-column" id="rightColumn">
-      <div id="pinnedMessage" style="display:none;padding:10px 16px;margin-bottom:4px;border-radius:16px;background:rgba(245,197,24,0.05);border:1px solid rgba(245,197,24,0.2);font-size:13px;"></div>
-      
       <div class="chat-section" id="chatSection">
         <div class="chat-header-bar" id="chatHeader">
           <span style="font-size:18px;">💬</span>
           <span id="chatLabel" style="flex:1;font-weight:bold;background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Общий чат</span>
-          <span id="chatBadge" style="display:none;background:var(--red);color:#fff;border-radius:10px;font-size:11px;padding:2px 6px;font-weight:bold;">0</span>
-          <button class="btn-gray" id="chatBackBtn" style="display:none;width:auto;padding:4px 12px;font-size:12px;">Назад</button>
         </div>
-        <div id="chat"></div>
+        <div id="chat">
+            <div style="text-align:center; color: var(--muted); margin-top:20px;">Добро пожаловать в Ozon Hub!</div>
+        </div>
       </div>
       
       <div class="chat-input-wrapper" id="chatInputWrapper">
         <div class="chat-input-bar" id="chatInputBar">
           <div class="input-wrapper">
-            <input id="chatMsgInput" placeholder="Сообщение...">
-            <button class="sticker-toggle" id="stickerToggleBtn">😀</button>
+            <input id="chatMsgInput" placeholder="Введите сообщение...">
           </div>
-          <button id="chatPhotoBtn">📎</button>
-          <input id="chatPhotoInput" type="file" accept="image/*" multiple style="display:none;">
           <button id="sendMsgBtn">➤</button>
-        </div>
-        <div id="stickerPanel">
-          <div id="stickerContent"></div>
-          <div class="sticker-tabs" id="stickerTabs"></div>
         </div>
       </div>
     </div>
@@ -262,17 +167,9 @@ button:active{transform:scale(0.95)}
   
   <div class="avatar-carousel" id="avatarCarousel">
     <button class="sidebar-close-btn" id="sidebarCloseBtn">✕</button>
-    <div class="avatar-carousel-inner" id="carouselInner"></div>
-  </div>
-  
-  <div class="mini-profile" id="miniProfile">
-    <button class="mp-close" id="mpCloseBtn">✕</button>
-    <div id="mpAvatarContainer" style="position:relative;width:64px;height:64px;margin:0 auto;cursor:pointer;"></div>
-    <div id="mpName" style="text-align:center;font-weight:bold;font-size:16px;margin-top:8px;"></div>
-    <div id="mpStatus" style="text-align:center;font-size:12px;margin:4px 0;"></div>
-    <div id="mpPunkt" style="text-align:center;font-size:12px;font-weight:bold;color:#4CAF50;"></div>
-    <div id="mpCalendarContainer" style="display:none; margin-top:10px; width:100%; border-top:1px solid var(--border); padding-top:10px;"></div>
-    <button class="btn-gold" id="mpChatBtn" style="width:100%;padding:10px;margin-top:12px;font-size:13px;">Личный чат</button>
+    <div class="avatar-carousel-inner" id="carouselInner">
+        <div style="color:var(--muted); font-size:12px; text-align:center; margin-top:20px;">Онлайн</div>
+    </div>
   </div>
 </div>
 
@@ -283,40 +180,33 @@ button:active{transform:scale(0.95)}
       <button class="settings-tab active" data-tab="main">Основное</button>
       <button class="settings-tab" data-tab="avatar">Аватар</button>
     </div>
+    
     <div id="stab-main" style="display:flex;flex-direction:column;gap:12px;">
       <div><label style="font-size:12px;color:var(--muted);">Новое имя</label><input id="setName" placeholder="Оставьте пустым"></div>
-      <div id="punktSettingsRow"><label style="font-size:12px;color:var(--muted);">Пункт</label><select id="setPunkt"><option value="">Не менять</option></select></div>
       <button class="btn-green" id="settingsSaveBtn">Сохранить</button>
       <button class="btn-red" id="settingsLogoutBtn">Выйти</button>
       <button class="btn-gray" id="settingsCloseBtn">Отмена</button>
     </div>
+    
     <div id="stab-avatar" style="display:none;flex-direction:column;gap:12px;">
-      <div><label style="font-size:12px;color:var(--muted);">Загрузить фото</label><input type="file" id="setAvatarFile" accept="image/*"></div>
       <div id="avatarAdvanced">
         <label style="font-size:12px;color:var(--muted);">Стиль рамки</label>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:4px;" id="animationGrid"></div>
+        <select id="setStyleSelector">
+            <option value="off">Без анимации</option>
+            <option value="rgb-ring">Кольцо</option>
+            <option value="cyber-grid">Сканер 🤖</option>
+            <option value="fire">Огонь 🔥</option>
+        </select>
         <div style="margin-top:8px;"><label style="font-size:12px;color:var(--muted);">Скорость <span id="setSpeedVal">1x</span></label><input type="range" id="setSpeed" min="0.1" max="3" step="0.1" value="1"></div>
-        <div><label style="font-size:12px;color:var(--muted);">Свечение <span id="setGlowVal">20px</span></label><input type="range" id="setGlow" min="0" max="50" step="1" value="20"></div>
         <div><label style="font-size:12px;color:var(--muted);">Цвет 1</label><input type="color" id="setColor1" value="#6366f1"></div>
         <div><label style="font-size:12px;color:var(--muted);">Цвет 2</label><input type="color" id="setColor2" value="#a855f7"></div>
       </div>
-      <div id="avatarSimple">
-        <div><label style="font-size:12px;color:var(--muted);">Цвет кольца</label><input type="color" id="setRingColor" value="#7c3aed"></div>
-        <div><label style="font-size:12px;color:var(--muted);">Толщина</label><select id="setRingThickness"><option value="thin">Тонкая</option><option value="medium" selected>Средняя</option><option value="thick">Толстая</option></select></div>
-      </div>
-      <button class="btn-green" id="avatarSaveBtn">Сохранить аватар</button>
-      <button class="btn-gray" id="avatarCloseBtn">Отмена</button>
+      <button class="btn-green" id="avatarSaveBtn">Применить</button>
+      <button class="btn-gray" id="avatarCancelBtn">Отмена</button>
     </div>
   </div>
 </div>
 
-<div id="stickerManagerPanel" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px;">
-  <div class="settings-card">
-    <h3 style="text-align:center;margin-bottom:16px;">🎨 Стикер-менеджер</h3>
-    <div id="stickerManagerContent"></div>
-    <button class="btn-gray" onclick="document.getElementById('stickerManagerPanel').style.display='none'" style="margin-top:12px;">Закрыть</button>
-  </div>
-</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -327,39 +217,8 @@ button:active{transform:scale(0.95)}
   'use strict';
 
   // =========================================================================
-  // 🎨 БЛОК АНИМАЦИЙ АВАТАРОК
+  // 🎨 БЛОК АНИМАЦИЙ АВАТАРОК (Сокращен для примера)
   // =========================================================================
-  
-  const ANIMATIONS = [
-    { id:'off', label:'Без анимации', premium:false },
-    { id:'rgb-ring', label:'Кольцо', premium:false },
-    { id:'rgb-rainbow', label:'Радуга 🌈', premium:false },
-    { id:'neon-pulse', label:'Пульс 💓', premium:false },
-    { id:'running-gradient', label:'Градиент 💫', premium:false },
-    { id:'glitch', label:'Глитч 📺', premium:true },        
-    { id:'runes', label:'Руны 📜', premium:true },        
-    { id:'pulsar', label:'Квазар 🌟', premium:true },     
-    { id:'frost', label:'Фрост ❄️', premium:true }, 
-    { id:'singularity', label:'Сингуля 🕳️', premium:true }, 
-    { id:'quantum-realm', label:'Квант 🌌', premium:true },       
-    { id:'dragon-aura', label:'Дракон 🐉', premium:true },        
-    { id:'supernova', label:'Сверхнов 💥', premium:true },     
-    { id:'sacred-geometry', label:'Геометрия 💠', premium:true }, 
-    { id:'void-vortex', label:'ЧернДыра 🌌', premium:true },
-    { id:'infinity-shield', label:'Щит 🛡️', premium:true },
-    { id:'cyber-grid', label:'Сканер 🤖', premium:true },
-    { id:'golden-dust', label:'Пыль ✨', premium:true },
-    { id:'aurora', label:'Сияние 🌌', premium:true },
-    { id:'electro-storm', label:'Шторм ⚡', premium:true },
-    { id:'comet', label:'Комета ⭐', premium:true },
-    { id:'double-orbit', label:'Орбита 🪐', premium:true },
-    { id:'matrix', label:'Матрица 🧪', premium:true },
-    { id:'fire', label:'Огонь 🔥', premium:true },
-    { id:'symbiote', label:'Симбиот 🕷️', premium:true }, 
-    { id:'sparks', label:'Искры ⚡', premium:true },
-    { id:'god-rays', label:'Нимб 👼', premium:true },
-  ];
-
   const EFFECTS_REGISTRY = {
     'off': (opts) => {
         const { ctx, cx, cy, fRadius, layer } = opts;
@@ -371,170 +230,18 @@ button:active{transform:scale(0.95)}
             ctx.stroke();
         }
     },
-    'symbiote': (opts) => {
-        const { ctx, cx, cy, fRadius, state, speed, color1, layer } = opts;
-        if(layer === 'front') {
-            ctx.save(); ctx.translate(cx, cy);
-            ctx.strokeStyle = '#050505';
-            ctx.fillStyle = '#000000';
-            ctx.shadowBlur = 8; ctx.shadowColor = color1 || '#8b00ff';
+    'rgb-ring': (opts) => {
+        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
+        if(layer==='front') { 
+            ctx.strokeStyle=color1; ctx.lineWidth=6; 
+            ctx.beginPath(); 
+            ctx.arc(cx,cy,fRadius,state.tick%(Math.PI*2),(state.tick%(Math.PI*2))+Math.PI*1.5); 
+            ctx.stroke(); 
             
-            ctx.lineWidth = 4;
-            ctx.beginPath();
-            for(let i=0; i<=Math.PI*2; i+=0.1) {
-                const noise = Math.sin(state.tick * 2 + i * 5) * 4 + Math.cos(state.tick * 1.5 + i * 3) * 2;
-                const r = fRadius + noise;
-                if(i===0) ctx.moveTo(Math.cos(i)*r, Math.sin(i)*r);
-                else ctx.lineTo(Math.cos(i)*r, Math.sin(i)*r);
-            }
-            ctx.closePath();
-            ctx.stroke();
-
-            if(!state.tendrils) {
-                state.tendrils = Array.from({length: 8}, () => ({
-                    angle: Math.random() * Math.PI * 2,
-                    length: 5 + Math.random() * 15,
-                    speed: 0.02 + Math.random() * 0.05,
-                    phase: Math.random() * Math.PI * 2
-                }));
-            }
-            
-            state.tendrils.forEach(t => {
-                t.angle += t.speed * speed * 0.5;
-                const ext = Math.sin(state.tick * 3 + t.phase) * t.length;
-                if (ext > 0) {
-                    ctx.beginPath();
-                    ctx.moveTo(Math.cos(t.angle) * fRadius, Math.sin(t.angle) * fRadius);
-                    ctx.quadraticCurveTo(
-                        Math.cos(t.angle + 0.2) * (fRadius + ext * 0.5), Math.sin(t.angle + 0.2) * (fRadius + ext * 0.5),
-                        Math.cos(t.angle) * (fRadius + ext), Math.sin(t.angle) * (fRadius + ext)
-                    );
-                    ctx.lineWidth = 3;
-                    ctx.stroke();
-                }
-            });
-            
-            ctx.restore();
-        }
-    },
-    'fire': (opts) => {
-        const { ctx, cx, cy, fRadius, state, speed, layer } = opts;
-        if(layer === 'back') {
-            const bottomGrad = ctx.createRadialGradient(cx, cy, fRadius-10, cx, cy, fRadius+20);
-            bottomGrad.addColorStop(0, 'rgba(255, 80, 0, 0.4)');
-            bottomGrad.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = bottomGrad;
-            ctx.beginPath(); ctx.arc(cx, cy, fRadius+20, 0, Math.PI*2); ctx.fill();
-        }
-        if(layer === 'front') {
-            ctx.save(); ctx.translate(cx, cy);
-            ctx.shadowBlur = 15; ctx.shadowColor = '#ff3300';
-            
-            const flameCount = 40;
-            ctx.fillStyle = '#ff8c00';
-            
-            ctx.beginPath();
-            for(let i = 0; i <= flameCount; i++) {
-                const angle = (i / flameCount) * Math.PI * 2;
-                const isTop = Math.sin(angle) < 0;
-                const heightMultiplier = isTop ? (1.5 + Math.abs(Math.sin(angle))) : 0.5;
-                
-                const noise = Math.sin(state.tick * 5 + i * 1.5) * 8 + Math.cos(state.tick * 3 + i * 2.2) * 5;
-                const r = fRadius + Math.max(0, noise) * heightMultiplier; 
-                
-                if(i === 0) ctx.moveTo(Math.cos(angle)*fRadius, Math.sin(angle)*fRadius);
-                
-                ctx.lineTo(Math.cos(angle)*r, Math.sin(angle)*r);
-                ctx.lineTo(Math.cos(angle + 0.05)*fRadius, Math.sin(angle + 0.05)*fRadius);
-            }
-            ctx.closePath();
-            ctx.fill();
-
-            ctx.strokeStyle = '#ffcc00';
-            ctx.lineWidth = 2;
-            ctx.beginPath(); ctx.arc(0, 0, fRadius, 0, Math.PI*2); ctx.stroke();
-            
-            ctx.restore();
-        }
-    },
-    'dragon-aura': (opts) => {
-        const { ctx, cx, cy, fRadius, state, speed, color1, color2, layer } = opts;
-        if(layer === 'back') {
-            ctx.shadowBlur = 30; ctx.shadowColor = color1; ctx.fillStyle = color1;
-            ctx.beginPath(); ctx.arc(cx, cy, fRadius, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
-        }
-        if(layer === 'front') {
-            if(!state.dragonFlames) state.dragonFlames = [];
-            if(state.dragonFlames.length < 60) {
-                const angle = Math.random() * Math.PI*2;
-                state.dragonFlames.push({ 
-                    angle: angle, radius: fRadius - 10, 
-                    vx: Math.cos(angle) * (2 + Math.random()*2), 
-                    vy: Math.sin(angle) * (2 + Math.random()*2) - 3, 
-                    life: 1, maxLife: 1, size: 8 + Math.random()*12, 
-                    color: Math.random() > 0.4 ? color1 : color2 
-                });
-            }
-            ctx.globalCompositeOperation = 'lighter';
-            state.dragonFlames.forEach(p => {
-                p.radius += 1 * speed; p.angle += 0.05 * speed; p.life -= 0.015 * speed;
-                const px = cx + Math.cos(p.angle) * p.radius, py = cy + Math.sin(p.angle) * p.radius + p.vy*4;
-                ctx.fillStyle = p.color; ctx.globalAlpha = Math.max(0, p.life);
-                ctx.beginPath(); 
-                ctx.ellipse(px, py, p.size * p.life * 0.6, p.size * p.life, p.angle, 0, Math.PI*2);
-                ctx.fill();
-            });
-            ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
-            state.dragonFlames = state.dragonFlames.filter(p => p.life > 0);
-            ctx.strokeStyle = color2; ctx.lineWidth = 3; 
-            ctx.setLineDash([15, 5]);
-            ctx.beginPath(); ctx.arc(cx, cy, fRadius+2, state.tick, state.tick + Math.PI*2); ctx.stroke();
-            ctx.setLineDash([]);
-        }
-    },
-    'electro-storm': (opts) => {
-        const { ctx, cx, cy, fRadius, state, speed, color1, color2, glow, layer } = opts;
-        if(layer === 'front') {
-          ctx.save();
-          ctx.shadowBlur = glow; ctx.shadowColor = color1; 
-          ctx.strokeStyle = color2; ctx.lineWidth = 2; 
-          ctx.beginPath(); ctx.arc(cx, cy, fRadius, 0, Math.PI * 2); ctx.stroke();
-          
-          if (Math.random() > 0.65) {
-              state.bolts = [];
-              const numBolts = 1 + Math.floor(Math.random()*3);
-              for(let b=0; b<numBolts; b++) {
-                  let angle = Math.random() * Math.PI * 2;
-                  let bolt = [];
-                  let px = cx + Math.cos(angle)*fRadius;
-                  let py = cy + Math.sin(angle)*fRadius;
-                  bolt.push({x: px, y: py});
-                  for(let i=0; i<6; i++) {
-                      angle += (Math.random()-0.5)*1.8;
-                      let dist = 10 + Math.random()*20;
-                      px += Math.cos(angle)*dist;
-                      py += Math.sin(angle)*dist;
-                      bolt.push({x: px, y: py});
-                  }
-                  state.bolts.push(bolt);
-              }
-              state.boltLife = 1;
-          }
-
-          if (state.bolts && state.boltLife > 0) {
-              ctx.strokeStyle = '#ffffff';
-              ctx.lineJoin = 'miter';
-              ctx.lineWidth = 2.5 * state.boltLife;
-              ctx.shadowBlur = 20; ctx.shadowColor = color2;
-              state.bolts.forEach(bolt => {
-                  ctx.beginPath();
-                  ctx.moveTo(bolt[0].x, bolt[0].y);
-                  for(let i=1; i<bolt.length; i++) ctx.lineTo(bolt[i].x, bolt[i].y);
-                  ctx.stroke();
-              });
-              state.boltLife -= 0.15 * speed;
-          }
-          ctx.restore();
+            ctx.strokeStyle=color2; 
+            ctx.beginPath(); 
+            ctx.arc(cx,cy,fRadius,(state.tick%(Math.PI*2))+Math.PI,(state.tick%(Math.PI*2))+Math.PI*2); 
+            ctx.stroke(); 
         }
     },
     'cyber-grid': (opts) => {
@@ -553,13 +260,6 @@ button:active{transform:scale(0.95)}
           ctx.strokeStyle = color2; ctx.lineWidth = 3;
           ctx.beginPath(); ctx.arc(0, 0, fRadius + 12, 0, Math.PI*2); ctx.stroke();
           ctx.setLineDash([]);
-          
-          for(let i=0; i<3; i++) {
-              ctx.rotate(Math.PI*2/3);
-              ctx.fillStyle = '#fff';
-              ctx.beginPath(); ctx.arc(fRadius+12, 0, 4, 0, Math.PI*2); ctx.fill();
-          }
-
           ctx.restore();
           
           const scanY = cy - fRadius + ((state.tick * 50) % (fRadius * 2));
@@ -573,477 +273,52 @@ button:active{transform:scale(0.95)}
           ctx.fillRect(cx - fRadius, scanY - 40, fRadius * 2, 40);
 
           ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.shadowBlur = 15; ctx.shadowColor = color1;
-          ctx.beginPath(); ctx.moveTo(cx - fRadius, scanY); ctx.lineTo(cx + fRadius, scanY); stroke();
-          ctx.restore();
-        }
-    },
-    'aurora': (opts) => {
-        const { ctx, cx, cy, fRadius, state, color1, color2, glow, layer } = opts;
-        if(layer === 'back') {
-          ctx.save(); 
-          ctx.beginPath(); ctx.arc(cx, cy, fRadius + 25, 0, Math.PI*2); ctx.clip();
+          ctx.beginPath(); 
+          ctx.moveTo(cx - fRadius, scanY); 
+          ctx.lineTo(cx + fRadius, scanY); 
           
-          for(let i = 0; i < 4; i++) {
-            let phase = state.tick * (0.4 + i*0.15);
-            ctx.beginPath(); 
-            ctx.moveTo(cx - fRadius - 30, cy + fRadius + 30);
-            for(let x = cx - fRadius - 30; x <= cx + fRadius + 30; x += 10) { 
-                let y = cy - 10 + Math.sin(x*0.02 + phase)*25 + (i*15); 
-                ctx.lineTo(x, y); 
-            }
-            ctx.lineTo(cx + fRadius + 30, cy + fRadius + 30); 
-            
-            const grad = ctx.createLinearGradient(cx, cy - fRadius, cx, cy + fRadius);
-            grad.addColorStop(0, color1); 
-            grad.addColorStop(1, color2);
-            ctx.fillStyle = grad; 
-            ctx.globalAlpha = 0.35; 
-            ctx.fill();
-          }
-          ctx.restore(); ctx.globalAlpha = 1;
-        }
-        if(layer === 'front') { 
-            ctx.strokeStyle = color2; ctx.lineWidth = 2; 
-            ctx.shadowBlur = glow; ctx.shadowColor = color1; 
-            ctx.beginPath(); ctx.arc(cx, cy, fRadius, 0, Math.PI*2); ctx.stroke(); 
-        }
-    },
-    'glitch': (opts) => {
-        const { ctx, cx, cy, fRadius, state, speed, color1, color2, layer } = opts;
-        if (layer === 'front') {
-            const isGlitching = Math.random() > 0.85;
-            const shiftX = isGlitching ? (Math.random() - 0.5) * 15 * speed : 0;
-            const shiftY = isGlitching ? (Math.random() - 0.5) * 15 * speed : 0;
-
-            ctx.save(); ctx.translate(cx, cy);
-            ctx.lineWidth = 4;
-            ctx.globalCompositeOperation = 'screen';
-
-            ctx.strokeStyle = '#0ff';
-            ctx.beginPath(); ctx.arc(shiftX, shiftY, fRadius, 0, Math.PI*2); ctx.stroke();
-            ctx.strokeStyle = '#f00';
-            ctx.beginPath(); ctx.arc(-shiftX, -shiftY, fRadius, 0, Math.PI*2); ctx.stroke();
-            ctx.strokeStyle = color1;
-            ctx.beginPath(); ctx.arc(0, 0, fRadius, 0, Math.PI*2); ctx.stroke();
-
-            if (isGlitching || Math.random() > 0.95) {
-                ctx.fillStyle = Math.random() > 0.5 ? color2 : '#fff';
-                for(let i=0; i<4; i++) {
-                    const y = (Math.random()-0.5)*fRadius*2;
-                    ctx.fillRect(-fRadius-20, y, (fRadius+20)*2, Math.random()*5);
-                }
-            }
-            ctx.restore();
-        }
-    },
-    'runes': (opts) => {
-        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
-        if (layer === 'back') {
-            ctx.shadowBlur = 30; ctx.shadowColor = color1;
-            ctx.fillStyle = color1; ctx.globalAlpha = 0.25;
-            ctx.beginPath(); ctx.arc(cx, cy, fRadius + 25, 0, Math.PI*2); ctx.fill();
-            ctx.globalAlpha = 1; ctx.shadowBlur = 0;
-        }
-        if (layer === 'front') {
-            ctx.save(); ctx.translate(cx, cy);
-            ctx.shadowBlur = 12; ctx.shadowColor = color1;
-            
-            ctx.save();
-            ctx.rotate(state.tick * 0.4);
-            ctx.strokeStyle = color1; ctx.lineWidth = 2;
-            ctx.beginPath(); ctx.arc(0, 0, fRadius + 18, 0, Math.PI*2); ctx.stroke();
-            ctx.fillStyle = color2;
-            for(let i=0; i<12; i++) {
-                ctx.beginPath(); ctx.arc(0, fRadius+18, 2.5, 0, Math.PI*2); ctx.fill();
-                ctx.rotate(Math.PI*2 / 12);
-            }
-            ctx.restore();
-
-            ctx.save();
-            ctx.rotate(-state.tick * 0.6);
-            ctx.strokeStyle = color2; ctx.lineWidth = 1.5;
-            ctx.beginPath(); ctx.arc(0, 0, fRadius + 2, 0, Math.PI*2); ctx.stroke();
-            
-            ctx.font = '16px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-            ctx.fillStyle = '#fff';
-            ctx.shadowColor = color2; ctx.shadowBlur = 8;
-            const runes = ['ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ','ᚹ'];
-            for(let i=0; i<8; i++) {
-                ctx.fillText(runes[i], 0, -(fRadius+10));
-                ctx.rotate(Math.PI*2 / 8);
-            }
-            ctx.restore();
-            ctx.restore();
-        }
-    },
-    'pulsar': (opts) => {
-        const { ctx, cx, cy, fRadius, state, speed, color1, color2, layer } = opts;
-        if (layer === 'back') {
-            ctx.save(); ctx.translate(cx, cy);
-            const grad = ctx.createRadialGradient(0,0, fRadius-10, 0,0, fRadius+60);
-            grad.addColorStop(0, color1); grad.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(0,0, fRadius+60, 0, Math.PI*2); ctx.fill();
-
-            ctx.rotate(state.tick * 0.3);
-            const jetGrad = ctx.createLinearGradient(0, -fRadius-120, 0, fRadius+120);
-            jetGrad.addColorStop(0, 'rgba(0,0,0,0)');
-            jetGrad.addColorStop(0.3, color2);
-            jetGrad.addColorStop(0.5, '#fff');
-            jetGrad.addColorStop(0.7, color2);
-            jetGrad.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = jetGrad;
-            ctx.globalCompositeOperation = 'lighter';
-            
-            const w = 8 + Math.sin(state.tick*6)*4;
-            const h = fRadius + 100 + Math.sin(state.tick*4)*30;
-            ctx.beginPath(); ctx.ellipse(0, 0, w, h, 0, 0, Math.PI*2); ctx.fill();
-            ctx.restore();
-        }
-        if (layer === 'front') {
-            ctx.save(); ctx.translate(cx, cy); ctx.rotate(-state.tick * 2);
-            ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.shadowBlur = 15; ctx.shadowColor = color1;
-            ctx.beginPath(); ctx.arc(0, 0, fRadius, 0, Math.PI*2); ctx.stroke();
-            ctx.fillStyle = '#fff';
-            for(let i=0; i<3; i++) {
-                ctx.beginPath(); ctx.arc(fRadius, 0, 3 + Math.random()*2, 0, Math.PI*2); ctx.fill();
-                ctx.rotate(Math.PI*2/3);
-            }
-            ctx.restore();
-        }
-    },
-    'frost': (opts) => {
-        const { ctx, cx, cy, fRadius, state, speed, color1, color2, layer } = opts;
-        if (layer === 'front') {
-            ctx.save(); ctx.translate(cx, cy);
-            ctx.strokeStyle = color1; 
-            ctx.shadowBlur = 12; ctx.shadowColor = '#fff';
-            ctx.lineWidth = 2.5;
-
-            ctx.beginPath(); ctx.arc(0, 0, fRadius, 0, Math.PI*2); ctx.stroke();
-
-            const numSpikes = 14;
-            ctx.fillStyle = color2;
-            for(let i=0; i<numSpikes; i++) {
-                const angle = (i * Math.PI*2/numSpikes) + state.tick*0.2;
-                const spikeLen = 6 + Math.sin(state.tick*3 + i*2)*6;
-                ctx.save();
-                ctx.rotate(angle);
-                ctx.beginPath();
-                ctx.moveTo(fRadius, -4);
-                ctx.lineTo(fRadius + spikeLen, 0);
-                ctx.lineTo(fRadius, 4);
-                ctx.fill();
-                ctx.restore();
-            }
-
-            if(!state.snow) state.snow = [];
-            if(state.snow.length < 40) {
-                state.snow.push({ angle: Math.random()*Math.PI*2, dist: fRadius, life: 1, drift: (Math.random()-0.5)*0.03 });
-            }
-            ctx.fillStyle = '#fff';
-            state.snow.forEach(s => {
-                s.dist += (0.8 + Math.random()*0.5) * speed;
-                s.angle += s.drift * speed;
-                s.life -= 0.015 * speed;
-                ctx.globalAlpha = Math.max(0, s.life);
-                ctx.beginPath(); ctx.arc(Math.cos(s.angle)*s.dist, Math.sin(s.angle)*s.dist, 2, 0, Math.PI*2); ctx.fill();
-            });
-            state.snow = state.snow.filter(s => s.life > 0);
-
-            ctx.restore();
-        }
-    },
-    'singularity': (opts) => {
-        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
-        if(layer === 'back') {
-            ctx.save(); ctx.translate(cx, cy);
-            ctx.rotate(state.tick * 0.4);
-            const grad = ctx.createRadialGradient(0,0, fRadius-5, 0,0, fRadius+45);
-            grad.addColorStop(0, '#000'); grad.addColorStop(0.2, color1); grad.addColorStop(0.5, color2); grad.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = grad; ctx.scale(1, 0.6);
-            ctx.beginPath(); ctx.arc(0, 0, fRadius+50, 0, Math.PI*2); ctx.fill();
-            ctx.restore();
-            ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(cx, cy, fRadius+2, 0, Math.PI*2); ctx.fill();
-        }
-        if(layer === 'front') {
-            ctx.save(); ctx.translate(cx, cy); ctx.rotate(-state.tick * 0.8);
-            ctx.strokeStyle = color1; ctx.lineWidth = 2; ctx.shadowBlur = 15; ctx.shadowColor = color2;
-            for(let i=0; i<3; i++) {
-                ctx.rotate((Math.PI*2)/3); ctx.beginPath(); ctx.arc(0, 0, fRadius+15, 0, Math.PI/2); ctx.stroke();
-                const pA = state.tick * 2 + i, pR = fRadius + 10 + Math.sin(state.tick*5)*5;
-                ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(Math.cos(pA)*pR, Math.sin(pA)*pR, 2, 0, Math.PI*2); ctx.fill();
-            }
-            ctx.restore();
-        }
-    },
-    'quantum-realm': (opts) => {
-        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
-        if(layer === 'front') {
-            ctx.save(); ctx.translate(cx, cy); ctx.shadowBlur = 10; ctx.shadowColor = color1; ctx.lineWidth = 1.5;
-            const orbits = [ { angle: state.tick*0.5, tilt: 0 }, { angle: -state.tick*0.6, tilt: Math.PI/3 }, { angle: state.tick*0.7, tilt: -Math.PI/3 } ];
-            orbits.forEach((orb, i) => {
-                ctx.save(); ctx.rotate(orb.tilt); ctx.scale(1, 0.3); ctx.rotate(orb.angle);
-                ctx.strokeStyle = `rgba(${i%2===0?'0,255,255':'255,100,255'}, 0.4)`;
-                ctx.beginPath(); ctx.arc(0, 0, fRadius+10, 0, Math.PI*2); ctx.stroke();
-                const ex = Math.cos(state.tick*2 + i) * (fRadius+10), ey = Math.sin(state.tick*2 + i) * (fRadius+10);
-                ctx.fillStyle = i===0 ? color1 : (i===1 ? color2 : '#fff');
-                ctx.beginPath(); ctx.arc(ex, ey, 4, 0, Math.PI*2); ctx.fill();
-                ctx.restore();
-            });
-            ctx.restore();
-        }
-    },
-    'supernova': (opts) => {
-        const { ctx, cx, cy, fRadius, state, color1, color2, glow, layer } = opts;
-        if(layer === 'back') {
-            const pulse = 1 + Math.sin(state.tick*3)*0.1;
-            const grad = ctx.createRadialGradient(cx, cy, fRadius, cx, cy, fRadius+60*pulse);
-            grad.addColorStop(0, color1); grad.addColorStop(0.5, color2); grad.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(cx, cy, fRadius+80, 0, Math.PI*2); ctx.fill();
-        }
-        if(layer === 'front') {
-            ctx.save(); ctx.translate(cx, cy);
-            const wave1 = (state.tick * 2) % 40, wave2 = (state.tick * 2 + 20) % 40;
-            ctx.strokeStyle = color2; ctx.shadowBlur = glow; ctx.shadowColor = color1;
-            ctx.lineWidth = 3 * (1 - wave1/40); ctx.beginPath(); ctx.arc(0, 0, fRadius + wave1, 0, Math.PI*2); ctx.stroke();
-            ctx.lineWidth = 3 * (1 - wave2/40); ctx.beginPath(); ctx.arc(0, 0, fRadius + wave2, 0, Math.PI*2); ctx.stroke();
-            ctx.rotate(state.tick);
-            for(let i=0; i<8; i++) {
-                ctx.rotate(Math.PI/4); ctx.beginPath(); ctx.moveTo(fRadius, 0); ctx.lineTo(fRadius + 10 + Math.random()*15, 0);
-                ctx.lineWidth = 2; ctx.strokeStyle = '#fff'; ctx.stroke();
-            }
-            ctx.restore();
-        }
-    },
-    'sacred-geometry': (opts) => {
-        const { ctx, cx, cy, fRadius, state, color1, color2, glow, layer } = opts;
-        if(layer === 'front') {
-            ctx.save(); ctx.translate(cx, cy); ctx.shadowBlur = glow; ctx.shadowColor = color1;
-            const drawPolygon = (sides, radius, rotation, color, width) => {
-                ctx.save(); ctx.rotate(rotation); ctx.strokeStyle = color; ctx.lineWidth = width; ctx.beginPath();
-                for(let i=0; i<=sides; i++) {
-                    const angle = i * (Math.PI*2)/sides;
-                    if(i===0) ctx.moveTo(Math.cos(angle)*radius, Math.sin(angle)*radius);
-                    else ctx.lineTo(Math.cos(angle)*radius, Math.sin(angle)*radius);
-                }
-                ctx.stroke(); ctx.fillStyle = '#fff';
-                for(let i=0; i<sides; i++) {
-                    const angle = i * (Math.PI*2)/sides;
-                    ctx.beginPath(); ctx.arc(Math.cos(angle)*radius, Math.sin(angle)*radius, 3, 0, Math.PI*2); ctx.fill();
-                }
-                ctx.restore();
-            };
-            const pulse = Math.sin(state.tick * 2);
-            drawPolygon(3, fRadius + 2 + pulse*2, state.tick * 0.5, color1, 2);
-            drawPolygon(3, fRadius + 2 + pulse*2, state.tick * 0.5 + Math.PI, color2, 2);
-            drawPolygon(6, fRadius + 15, -state.tick * 0.2, 'rgba(255,255,255,0.4)', 1);
-            ctx.restore();
-        }
-    },
-    'void-vortex': (opts) => {
-        const { ctx, cx, cy, fRadius, state, speed, color1, color2, layer } = opts;
-        if(layer === 'back') {
-          ctx.save(); ctx.translate(cx, cy); ctx.rotate(-state.tick * 0.5);
-          const grad = ctx.createRadialGradient(0, 0, fRadius - 10, 0, 0, fRadius + 30);
-          grad.addColorStop(0, '#000000'); grad.addColorStop(0.3, color1); grad.addColorStop(0.7, color2); grad.addColorStop(1, 'rgba(0,0,0,0)');
-          ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(0, 0, fRadius + 40, 0, Math.PI*2); ctx.fill();
-          ctx.restore();
-        }
-        if(layer === 'front') {
-          if(!state.vortexParticles) state.vortexParticles = [];
-          if(state.vortexParticles.length < 60) state.vortexParticles.push({ angle: Math.random() * Math.PI * 2, radius: fRadius + 40 + Math.random() * 40, speed: 1 + Math.random() * 2, size: 1 + Math.random() * 2, color: Math.random() > 0.5 ? color1 : color2, opacity: Math.random() });
-          ctx.shadowBlur = 10; ctx.shadowColor = color1;
-          state.vortexParticles.forEach(p => {
-            p.radius -= 0.8 * speed; p.angle += 0.03 * speed;
-            if(p.radius < fRadius - 20) { p.radius = fRadius + 40 + Math.random() * 40; p.angle = Math.random() * Math.PI * 2; }
-            const px = cx + Math.cos(p.angle) * p.radius, py = cy + Math.sin(p.angle) * p.radius;
-            ctx.fillStyle = p.color; ctx.globalAlpha = Math.min(1, (p.radius - (fRadius - 20)) / 50);
-            ctx.beginPath(); ctx.arc(px, py, p.size, 0, Math.PI*2); ctx.fill();
-          });
-          ctx.globalAlpha = 1;
-        }
-    },
-    'infinity-shield': (opts) => {
-        const { ctx, cx, cy, fRadius, state, color1, color2, glow, layer } = opts;
-        if(layer === 'front') {
-          ctx.save(); ctx.translate(cx, cy); ctx.shadowBlur = glow; ctx.shadowColor = color1;
-          ctx.strokeStyle = color1; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, fRadius + 8, 0, Math.PI*2); ctx.stroke();
-          ctx.rotate(state.tick * 0.7); ctx.strokeStyle = color2; ctx.lineWidth = 4; ctx.lineCap = 'round';
-          ctx.beginPath(); ctx.arc(0, 0, fRadius + 4, 0, Math.PI * 0.6); ctx.stroke(); ctx.beginPath(); ctx.arc(0, 0, fRadius + 4, Math.PI, Math.PI * 1.6); ctx.stroke();
-          ctx.rotate(-state.tick * 1.5); ctx.strokeStyle = '#00f2ff'; ctx.lineWidth = 2;
-          ctx.beginPath(); ctx.arc(0, 0, fRadius + 10, 0, Math.PI * 0.4); ctx.stroke(); ctx.beginPath(); ctx.arc(0, 0, fRadius + 10, Math.PI, Math.PI * 1.4); ctx.stroke();
-          ctx.fillStyle = '#ffffff'; ctx.shadowColor = '#ffffff';
-          ctx.beginPath(); ctx.arc(fRadius+4, 0, 4, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(-(fRadius+4), 0, 4, 0, Math.PI*2); ctx.fill();
-          ctx.restore(); ctx.globalAlpha = 1;
-        }
-    },
-    'golden-dust': (opts) => {
-        const { ctx, cx, cy, fRadius, state, speed, layer } = opts;
-        if(layer === 'back') {
-          const grad = ctx.createRadialGradient(cx, cy, fRadius - 10, cx, cy, fRadius + 25);
-          grad.addColorStop(0, 'rgba(245, 197, 24, 0.2)'); grad.addColorStop(1, 'rgba(0,0,0,0)');
-          ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(cx, cy, fRadius + 30, 0, Math.PI*2); ctx.fill();
-        }
-        if(layer === 'front' || layer === 'back') {
-          if(!state.dustParticles) state.dustParticles = [];
-          if(state.dustParticles.length < 80) state.dustParticles.push({ x: cx - fRadius + Math.random() * (fRadius * 2), y: cy + fRadius - Math.random() * 10, vx: (Math.random() - 0.5) * 0.8, vy: -0.5 - Math.random() * 1.5, life: 1, size: 1 + Math.random() * 3, sparkle: Math.random(), isFront: Math.random() > 0.4 });
-          ctx.shadowBlur = 8; ctx.shadowColor = '#ffd700';
-          state.dustParticles.forEach(p => {
-            if((layer === 'front' && p.isFront) || (layer === 'back' && !p.isFront)) {
-              p.x += p.vx * speed; p.y += p.vy * speed; p.life -= 0.008 * speed; p.sparkle += 0.1;
-              const currentOpacity = Math.max(0, p.life) * (0.5 + Math.sin(p.sparkle) * 0.5);
-              const dist = Math.sqrt(Math.pow(p.x - cx, 2) + Math.pow(p.y - cy, 2));
-              if(p.life <= 0 || dist > fRadius + 35) { p.x = cx - fRadius + Math.random() * (fRadius * 2); p.y = cy + fRadius; p.life = 1; p.vy = -0.5 - Math.random() * 1.5; }
-              ctx.fillStyle = `rgba(255, 215, 0, ${currentOpacity})`; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
-            }
-          });
-          ctx.shadowBlur = 0; ctx.globalAlpha = 1;
-        }
-    },
-    'rgb-ring': (opts) => {
-        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
-        if(layer==='front') { ctx.strokeStyle=color1; ctx.lineWidth=6; ctx.beginPath(); ctx.arc(cx,cy,fRadius,state.tick%(Math.PI*2),(state.tick%(Math.PI*2))+Math.PI*1.5); ctx.stroke(); ctx.strokeStyle=color2; ctx.beginPath(); ctx.arc(cx,cy,fRadius,(state.tick%(Math.PI*2))+Math.PI,(state.tick%(Math.PI*2))+Math.PI*2); ctx.stroke(); }
-    },
-    'rgb-rainbow': (opts) => {
-        const { ctx, cx, cy, fRadius, state, layer } = opts;
-        if(layer==='front') { for(let i=0;i<12;i++) { const hue=((state.tick*50+i*30)%360); ctx.strokeStyle=`hsl(${hue},100%,60%)`; ctx.lineWidth=4; ctx.beginPath(); ctx.arc(cx,cy,fRadius+Math.sin(state.tick*2+i)*3,i*Math.PI/6,(i+1)*Math.PI/6); ctx.stroke(); } }
-    },
-    'neon-pulse': (opts) => {
-        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
-        if(layer==='front') { const pR=fRadius+Math.sin(state.tick*3)*6; ctx.strokeStyle=color1; ctx.lineWidth=8*state.pulse; ctx.globalAlpha=0.6; ctx.beginPath(); ctx.arc(cx,cy,pR,0,Math.PI*2); ctx.stroke(); ctx.strokeStyle=color2; ctx.lineWidth=4; ctx.globalAlpha=1; ctx.beginPath(); ctx.arc(cx,cy,pR,0,Math.PI*2); ctx.stroke(); }
-    },
-    'running-gradient': (opts) => {
-        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
-        if(layer==='front') { const grad=ctx.createConicGradient(state.tick%(Math.PI*2),cx,cy); grad.addColorStop(0,color1); grad.addColorStop(0.3,'#ffffff'); grad.addColorStop(0.5,color2); grad.addColorStop(0.7,'#ffffff'); grad.addColorStop(1,color1); ctx.strokeStyle=grad; ctx.lineWidth=6; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke(); }
-    },
-    'comet': (opts) => {
-        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
-        if(layer==='front') { for(let i=0;i<3;i++) { const angle=state.tick*2+i*Math.PI*2/3; const tailLen=30; for(let j=tailLen;j>=0;j--) { const tA=angle-j*0.03; const x=cx+Math.cos(tA)*fRadius, y=cy+Math.sin(tA)*fRadius; const size=6*(1-j/tailLen); ctx.fillStyle=j===0?'#fff':color1; ctx.globalAlpha=1-(j/tailLen); ctx.shadowBlur=j===0?20:0; ctx.shadowColor=color2; ctx.beginPath(); ctx.arc(x,y,size,0,Math.PI*2); ctx.fill(); } } ctx.globalAlpha=1; }
-    },
-    'double-orbit': (opts) => {
-        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
-        const oRX = fRadius + 38, oRY = fRadius * 0.35;
-        const a1 = state.tick, a2 = -state.tick * 1.3, a3 = state.tick * 0.8;
-        const drawOrbit = (rot, col, pAngle, isFront) => {
-          ctx.save(); ctx.translate(cx, cy); ctx.rotate(rot);
-          ctx.beginPath(); ctx.ellipse(0,0,oRX,oRY,0, isFront?0:Math.PI, isFront?Math.PI:Math.PI*2);
-          ctx.strokeStyle = col; ctx.globalAlpha = isFront?0.9:0.2; ctx.lineWidth = isFront?3:1.5; ctx.stroke();
-          const nA = ((pAngle%(Math.PI*2))+Math.PI*2)%(Math.PI*2); const pFront = nA < Math.PI;
-          if((isFront && pFront) || (!isFront && !pFront)) {
-            let px = Math.cos(nA)*oRX, py = Math.sin(nA)*oRY;
-            ctx.fillStyle = col; ctx.shadowColor = col; ctx.shadowBlur = 15; ctx.globalAlpha = 1;
-            ctx.beginPath(); ctx.arc(px, py, 6, 0, Math.PI*2); ctx.fill();
-            ctx.fillStyle = '#fff'; ctx.shadowBlur = 0; ctx.beginPath(); ctx.arc(px, py, 2.5, 0, Math.PI*2); ctx.fill();
-          }
-          ctx.restore();
-        };
-        if(layer === 'back') { drawOrbit(0,color1,a1,false); drawOrbit(Math.PI/3,color2,a2,false); drawOrbit(-Math.PI/3,'#00d4ff',a3,false); }
-        else { drawOrbit(0,color1,a1,true); drawOrbit(Math.PI/3,color2,a2,true); drawOrbit(-Math.PI/3,'#00d4ff',a3,true); }
-    },
-    'matrix': (opts) => {
-        const { ctx, cx, cy, fRadius, state, speed, layer } = opts;
-        if(layer === 'back') { ctx.strokeStyle='#00ff41'; ctx.lineWidth=4; ctx.shadowBlur=15; ctx.shadowColor='#00ff41'; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke(); }
-        if(layer === 'front') {
-          if(!state.matrixRain) { state.matrixRain = []; for(let i=0;i<30;i++) state.matrixRain.push({x:cx-fRadius+Math.random()*fRadius*2, y:cy-fRadius-Math.random()*200, speed:1.5+Math.random()*2, char:Math.floor(Math.random()*10).toString()}); }
-          ctx.font = 'bold 16px monospace'; ctx.textAlign = 'center'; ctx.shadowBlur = 8; ctx.shadowColor = '#00ff41';
-          state.matrixRain.forEach(p => {
-            p.y += p.speed * speed; if(Math.random()>0.9) p.char = Math.floor(Math.random()*10).toString();
-            if(p.y > cy+fRadius+20) { p.y = cy-fRadius-50-Math.random()*100; p.x = cx-fRadius+Math.random()*fRadius*2; }
-            const dist = Math.sqrt(Math.pow(p.x-cx,2)+Math.pow(p.y-cy,2));
-            ctx.fillStyle = dist < fRadius ? '#ffffff' : '#00ff41';
-            ctx.globalAlpha = Math.max(0, 1-(dist-fRadius)/30);
-            if(ctx.globalAlpha>0) ctx.fillText(p.char, p.x, p.y);
-          });
-          ctx.globalAlpha = 1;
-        }
-    },
-    'sparks': (opts) => {
-        const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
-        if(layer === 'front') {
-          ctx.shadowColor = color1;
-          if(!state.particles) state.particles = [];
-          if(state.particles.length < 50) state.particles.push({angle:Math.random()*Math.PI*2, speed:0.5+Math.random()*2, life:1, size:2+Math.random()*3, distance:fRadius+Math.random()*10});
-          state.particles = state.particles.filter(p => p.life>0);
-          state.particles.forEach(p => { p.angle+=p.speed*0.02; p.distance+=p.speed*0.5; p.life-=0.015; const x=cx+Math.cos(p.angle)*p.distance, y=cy+Math.sin(p.angle)*p.distance; ctx.fillStyle=p.life>0.5?color1:color2; ctx.globalAlpha=p.life; ctx.shadowBlur=10; ctx.beginPath(); ctx.arc(x,y,p.size,0,Math.PI*2); ctx.fill(); });
-          ctx.globalAlpha = 1;
-        }
-    },
-    'god-rays': (opts) => {
-        const { ctx, cx, cy, fRadius, state, speed, layer } = opts;
-        if(layer === 'back') {
-          ctx.save(); ctx.translate(cx, cy);
+          /* ИСПРАВЛЕНА ОШИБКА ЗДЕСЬ (было stroke(); стало ctx.stroke();) */
+          ctx.stroke(); 
           
-          ctx.shadowBlur = 20; ctx.shadowColor = '#ffd700';
-          ctx.strokeStyle = 'rgba(255, 215, 0, 0.6)';
-          ctx.lineWidth = 4;
-          ctx.beginPath();
-          ctx.ellipse(0, -fRadius - 15 + Math.sin(state.tick*3)*5, 35, 10, 0, 0, Math.PI*2);
-          ctx.stroke();
-
-          const numRays = 12;
-          ctx.rotate(state.tick * 0.15);
-          for(let i=0; i<numRays; i++) {
-              ctx.rotate((Math.PI*2)/numRays);
-              const alpha = 0.2 + Math.sin(state.tick*4 + i)*0.15;
-              const grad = ctx.createLinearGradient(0, fRadius, 0, fRadius + 90);
-              grad.addColorStop(0, `rgba(255, 215, 0, ${alpha})`);
-              grad.addColorStop(1, 'rgba(255, 215, 0, 0)');
-              ctx.fillStyle = grad;
-              ctx.beginPath();
-              ctx.moveTo(-15, fRadius);
-              ctx.lineTo(15, fRadius);
-              ctx.lineTo(0, fRadius + 90);
-              ctx.fill();
-          }
           ctx.restore();
         }
+    },
+    'fire': (opts) => {
+        const { ctx, cx, cy, fRadius, state, speed, layer } = opts;
         if(layer === 'front') {
-            if(!state.holyParticles) state.holyParticles = [];
-            if(Math.random() > 0.5 && state.holyParticles.length < 25) {
-                state.holyParticles.push({ angle: Math.random()*Math.PI*2, dist: fRadius - 10, size: 1.5 + Math.random()*2.5, speed: 0.5 + Math.random(), life: 1 });
+            ctx.save(); ctx.translate(cx, cy);
+            ctx.shadowBlur = 15; ctx.shadowColor = '#ff3300';
+            const flameCount = 40; ctx.fillStyle = '#ff8c00';
+            ctx.beginPath();
+            for(let i = 0; i <= flameCount; i++) {
+                const angle = (i / flameCount) * Math.PI * 2;
+                const noise = Math.sin(state.tick * 5 + i * 1.5) * 8;
+                const r = fRadius + Math.max(0, noise); 
+                if(i === 0) ctx.moveTo(Math.cos(angle)*fRadius, Math.sin(angle)*fRadius);
+                ctx.lineTo(Math.cos(angle)*r, Math.sin(angle)*r);
             }
-            ctx.fillStyle = '#fff';
-            ctx.shadowBlur = 12; ctx.shadowColor = '#ffd700';
-            state.holyParticles.forEach(p => {
-                p.dist += p.speed * speed;
-                p.life -= 0.015 * speed;
-                ctx.globalAlpha = Math.max(0, p.life);
-                ctx.beginPath(); 
-                ctx.arc(cx + Math.cos(p.angle)*p.dist, cy + Math.sin(p.angle)*p.dist - (1-p.life)*40, p.size, 0, Math.PI*2); 
-                ctx.fill();
-            });
-            state.holyParticles = state.holyParticles.filter(p => p.life > 0);
-            ctx.globalAlpha = 1;
+            ctx.closePath(); ctx.fill();
+            ctx.restore();
         }
     }
   };
 
   // =========================================================================
-  // ⚙️ НАСТРОЙКИ КОНФИГУРАЦИИ FIREBASE
+  // ⚙️ БАЗОВЫЕ НАСТРОЙКИ APP И FIREBASE (ЗАГЛУШКА)
   // =========================================================================
-  const firebaseConfig = {
-    apiKey: "AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",
-    authDomain: "ozon-grafik-4ad9f.firebaseapp.com",
-    databaseURL: "https://ozon-grafik-4ad9f-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "ozon-grafik-4ad9f",
-    storageBucket: "ozon-grafik-4ad9f.firebasestorage.app",
-    messagingSenderId: "798009068634",
-    appId: "1:798009068634:web:4b70eea3cce6c96f4f5c63"
+  const App = {
+    user: null, 
+    previewData: null,
+    avatarAnimId: null,
+    avatarSettings: { style:'cyber-grid', speed:1, glow:20, color1:'#6366f1', color2:'#a855f7' }
   };
-  firebase.initializeApp(firebaseConfig);
-  const DB = firebase.database();
-  const AUTH = firebase.auth();
+  
+  const avatarTimers = new Map();
+  const globalImgCache = new Map();
 
   const $ = s => document.querySelector(s);
   const $$ = s => document.querySelectorAll(s);
-  const esc = s => { if(!s) return ''; const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
-  const isValidEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
-  
-  function cleanName(n) {
-      if (!n) return '';
-      return n.replace(/[\uFFFD🌌👑❖]/g, '').trim();
-  }
-  
+
   function toast(msg, isErr) {
     const c = $('#toastContainer'), el = document.createElement('div');
     el.className = 'toast-msg' + (isErr ? ' error' : '');
@@ -1053,58 +328,31 @@ button:active{transform:scale(0.95)}
     setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 3000);
   }
 
-  const App = {
-    user: null, onShift: false, shiftTimer: null,
-    allUserData: {}, activeShifts: {}, presenceData: {}, unreadCount: 0,
-    chatOpened: true, lastChatTimestamp: 0,
-    selectedProfile: null, privateChatWith: null,
-    calYear: null, calMonth: null,
-    avatarSettings: { style:'off', speed:1, glow:20, color1:'#6366f1', color2:'#a855f7', ringColor:'#7c3aed', ringThickness:'medium' },
-    chatListener: null, notifiedKeys: {}, avatarAnimId: null,
-    isCreator: false, isGod: false, previewData: null,
-    activeListeners: [], messagesCache: {}
-  };
-
-  const avatarTimers = new Map();
-  const globalImgCache = new Map();
-  
+  // =========================================================================
+  // 🖌️ РЕНДЕР АВАТАРКИ (ОТРИСОВКА В CANVAS)
+  // =========================================================================
   function renderPremiumAvatar(canvas, settings, avatarImg, fallbackName) {
     if(!canvas) return;
     const rect = canvas.getBoundingClientRect();
+    let displayW = rect.width || parseInt(canvas.getAttribute('width')) || 120;
+    let displayH = rect.height || parseInt(canvas.getAttribute('height')) || 120;
     
-    let displayW = rect.width;
-    let displayH = rect.height;
-    if(displayW === 0 || displayH === 0) {
-        displayW = parseInt(canvas.getAttribute('width')) || 120;
-        displayH = parseInt(canvas.getAttribute('height')) || 120;
-    }
-
     const dpr = window.devicePixelRatio || 1;
     const targetW = Math.floor(displayW * dpr);
     const targetH = Math.floor(displayH * dpr);
-
     if (canvas.width !== targetW || canvas.height !== targetH) {
-      canvas.width = targetW;
-      canvas.height = targetH;
+      canvas.width = targetW; canvas.height = targetH;
     }
     
     const ctx = canvas.getContext('2d');
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-    
     const trueW = canvas.width, trueH = canvas.height;
-    const baseSize = 300, w = baseSize, h = baseSize, cx = w/2, cy = h/2;
+    const baseSize = 300, cx = baseSize/2, cy = baseSize/2;
     const avatarRadius = 82, fRadius = avatarRadius + 4;
     
-    if(!avatarTimers.has(canvas)) {
-      avatarTimers.set(canvas, { tick: 0, pulse: 1, dir: 1, particles: [] });
-    }
+    if(!avatarTimers.has(canvas)) avatarTimers.set(canvas, { tick: 0 });
     const state = avatarTimers.get(canvas);
     const speed = parseFloat(settings?.speed) || 1;
     state.tick += 0.04 * speed;
-    state.pulse += 0.02 * state.dir * speed;
-    if(state.pulse >= 1.2) state.dir = -1;
-    if(state.pulse <= 0.8) state.dir = 1;
     
     ctx.setTransform(1,0,0,1,0,0);
     ctx.clearRect(0,0,trueW,trueH);
@@ -1116,108 +364,48 @@ button:active{transform:scale(0.95)}
     const glow = parseInt(settings?.glow) || 20;
 
     const effectOpts = { ctx, cx, cy, fRadius, avatarRadius, state, speed, color1, color2, glow };
-
+    
     const drawEffects = (layer) => {
-      ctx.shadowBlur = layer === 'front' ? glow : 0;
-      ctx.shadowColor = color1;
       effectOpts.layer = layer;
-      
-      const effectRender = EFFECTS_REGISTRY[style];
-      if (effectRender) {
-          effectRender(effectOpts);
-      } else if (layer === 'front') {
-          ctx.strokeStyle=settings?.ringColor||color1; 
-          const t=settings?.ringThickness; 
-          ctx.lineWidth=t==='thick'?8:t==='thin'?2:4; 
-          ctx.beginPath(); 
-          ctx.arc(cx,cy,fRadius,0,Math.PI*2); 
-          ctx.stroke();
-      }
-    };
-
-    const drawFallback = () => {
-        ctx.fillStyle = '#1e1b4b'; 
-        ctx.fill(); 
-        ctx.fillStyle = '#6366f1'; 
-        ctx.font = `bold ${avatarRadius}px sans-serif`; 
-        ctx.textAlign = 'center'; 
-        ctx.textBaseline = 'middle'; 
-        const fn = cleanName(fallbackName) || '?';
-        const firstLetter = Array.from(fn)[0] ? Array.from(fn)[0].toUpperCase() : '?';
-        ctx.fillText(firstLetter, cx, cy+Math.floor(avatarRadius/6)); 
+      if (EFFECTS_REGISTRY[style]) EFFECTS_REGISTRY[style](effectOpts);
     };
 
     drawEffects('back');
-    ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+    
+    // Рисуем саму аватарку (заглушка буквами)
     ctx.save(); 
-    ctx.beginPath(); 
-    ctx.arc(cx, cy, avatarRadius, 0, Math.PI*2); 
-    ctx.clip();
-    
-    if(avatarImg && avatarImg.complete && avatarImg.naturalWidth > 0) { 
-        try {
-            const ratio = Math.max((avatarRadius*2)/avatarImg.naturalWidth, (avatarRadius*2)/avatarImg.naturalHeight); 
-            const dw = avatarImg.naturalWidth*ratio, dh = avatarImg.naturalHeight*ratio; 
-            ctx.drawImage(avatarImg, cx-dw/2, cy-dh/2, dw, dh); 
-        } catch(e) {
-            drawFallback();
-        }
-    } else if(avatarImg && typeof avatarImg === 'string') {
-        if (globalImgCache.has(avatarImg)) {
-            const cachedImg = globalImgCache.get(avatarImg);
-            if (cachedImg.complete && cachedImg.naturalWidth > 0) {
-                const ratio = Math.max((avatarRadius*2)/cachedImg.naturalWidth, (avatarRadius*2)/cachedImg.naturalHeight); 
-                const dw = cachedImg.naturalWidth*ratio, dh = cachedImg.naturalHeight*ratio; 
-                ctx.drawImage(cachedImg, cx-dw/2, cy-dh/2, dw, dh); 
-            } else {
-                drawFallback();
-            }
-        } else {
-            const tempImg = new Image();
-            tempImg.crossOrigin = 'Anonymous';
-            tempImg.src = avatarImg;
-            globalImgCache.set(avatarImg, tempImg);
-            drawFallback();
-        }
-    } else { 
-        drawFallback();
-    }
-    
+    ctx.beginPath(); ctx.arc(cx, cy, avatarRadius, 0, Math.PI*2); ctx.clip();
+    ctx.fillStyle = '#1e1b4b'; ctx.fill(); 
+    ctx.fillStyle = '#6366f1'; ctx.font = `bold ${avatarRadius}px sans-serif`; 
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; 
+    ctx.fillText((fallbackName||'?')[0].toUpperCase(), cx, cy+10); 
     ctx.restore();
-    ctx.beginPath(); 
-    ctx.arc(cx, cy, avatarRadius, 0, Math.PI*2); 
-    ctx.lineWidth = 2; 
-    ctx.strokeStyle = 'rgba(0,0,0,0.5)'; 
-    ctx.stroke();
+    
     drawEffects('front');
     ctx.restore();
   }
 
   function updateAllFrames() {
-    if(document.hidden) { 
-        App.avatarAnimId = requestAnimationFrame(updateAllFrames); 
-        return; 
-    }
+    if(document.hidden) { App.avatarAnimId = requestAnimationFrame(updateAllFrames); return; }
     
+    // Рендер на главном экране
     const mc = document.getElementById('mainAvatarCanvas');
-    if(mc && App.user) {
-        renderPremiumAvatar(mc, App.avatarSettings, App.user.imgObj || null, App.user.name);
-    }
+    if(mc && App.user) renderPremiumAvatar(mc, App.avatarSettings, null, App.user.name);
     
+    // Рендер в модальном окне превью
     const pm = document.getElementById('avatarPreviewModal');
     if(pm && pm.style.display !== 'none' && App.previewData) {
         const pc = document.getElementById('previewAvatarCanvas');
-        renderPremiumAvatar(pc, App.previewData.settings, App.previewData.imgObj || null, App.previewData.name);
+        renderPremiumAvatar(pc, App.previewData.settings, null, App.previewData.name);
     }
     
     App.avatarAnimId = requestAnimationFrame(updateAllFrames);
   }
 
   // =========================================================================
-  // 🔐 БЛОК АВТОРИЗАЦИИ
+  // 🔐 АВТОРИЗАЦИЯ
   // =========================================================================
   let isLoginMode = true;
-  
   function toggleAuth() {
     isLoginMode = !isLoginMode;
     $('#loginFields').style.display = isLoginMode ? 'flex' : 'none';
@@ -1226,106 +414,100 @@ button:active{transform:scale(0.95)}
     $('#tabLogin').style.color = isLoginMode ? '#fff' : '#6a7a94';
     $('#tabRegister').style.background = isLoginMode ? 'transparent' : '#7c3aed';
     $('#tabRegister').style.color = isLoginMode ? '#6a7a94' : '#fff';
-    $('#authError').style.display = 'none';
   }
 
-  function loadPunktsForRegister() {
-    DB.ref('punkts').once('value').then(s => {
-      const sel = $('#regPunkt'); sel.innerHTML = '<option value="">Выберите пункт</option>';
-      s.forEach(c => { const d = c.val(); sel.innerHTML += `<option value="${esc(c.key)}">Пункт ${esc(c.key)} (${d.rate||0}₽/ч)</option>`; });
-    }).catch(e => console.log("Firebase punkts error: ", e.message));
-  }
-
-  function finishLogin() {
+  function mockLogin(name) {
+    App.user = { name: name || 'Гость', role: 'manager' };
     $('#loginScreen').style.display = 'none';
     $('#app').style.display = 'flex';
     $('#uname').textContent = App.user.name;
-    $('#upunkt').textContent = App.user.punkt;
-    
-    if(App.user.avatarSettings) {
-        App.avatarSettings = { ...App.avatarSettings, ...App.user.avatarSettings };
-    }
     
     toast('Добро пожаловать, ' + App.user.name + '!');
-    App.avatarAnimId = requestAnimationFrame(updateAllFrames);
+    
+    // Запускаем цикл анимации ТОЛЬКО после входа, чтобы не тратить ресурсы
+    if(!App.avatarAnimId) {
+        App.avatarAnimId = requestAnimationFrame(updateAllFrames);
+    }
   }
 
-  async function login() {
-    const e = $('#loginEmail').value.trim(), p = $('#loginPass').value.trim(), err = $('#authError');
-    if(!e||!p) { err.textContent='Заполните все поля'; err.style.display='block'; return; }
-    try {
-      const cred = await AUTH.signInWithEmailAndPassword(e, p);
-      const snap = await DB.ref('users/'+cred.user.uid).once('value');
-      if(!snap.exists()) { err.textContent='Пользователь не найден в БД'; err.style.display='block'; return; }
-      App.user = snap.val(); App.user.uid = cred.user.uid;
-      
-      if(App.user.avatar) {
-          App.user.imgObj = new Image();
-          App.user.imgObj.crossOrigin = 'Anonymous';
-          App.user.imgObj.src = App.user.avatar;
-      }
-      
-      finishLogin();
-    } catch(ex) { err.textContent=ex.message; err.style.display='block'; }
-  }
-
-  async function register() {
-    const n = $('#regName').value.trim(), e = $('#regEmail').value.trim(), p = $('#regPass').value.trim(), punkt = $('#regPunkt').value, err = $('#authError');
-    if(!n||!e||!p||!punkt) { err.textContent='Заполните все поля'; err.style.display='block'; return; }
-    if(p.length<4) { err.textContent='Пароль минимум 4 символа'; err.style.display='block'; return; }
-    if(!isValidEmail(e)) { err.textContent='Некорректный email'; err.style.display='block'; return; }
-    try {
-      const cred = await AUTH.createUserWithEmailAndPassword(e, p);
-      const newUser = {name:n, email:e, role:'manager', punkt, avatar:'', bonus:0};
-      await DB.ref('users/'+cred.user.uid).set(newUser);
-      App.user = newUser;
-      App.user.uid = cred.user.uid;
-      finishLogin();
-    } catch(ex) { err.textContent=ex.message; err.style.display='block'; }
-  }
-
-  async function resetPassword() {
-    const e = $('#loginEmail').value.trim();
-    if(!e) { toast('Введите email в поле ввода для сброса', true); return; }
-    try { await AUTH.sendPasswordResetEmail(e); toast('📧 Ссылка для сброса отправлена на '+e); }
-    catch(ex) { toast(ex.message, true); }
-  }
-
-  // =========================================================================
-  // 🔌 ПРИВЯЗКА ОБРАБОТЧИКОВ СОБЫТИЙ (КЛИКИ ПО КНОПКАМ)
-  // =========================================================================
   $('#tabLogin').addEventListener('click', () => { if (!isLoginMode) toggleAuth(); });
   $('#tabRegister').addEventListener('click', () => { if (isLoginMode) toggleAuth(); });
   
-  $('#loginBtn').addEventListener('click', login);
-  $('#registerBtn').addEventListener('click', register);
-  $('#resetPassBtn').addEventListener('click', resetPassword);
+  $('#loginBtn').addEventListener('click', () => mockLogin($('#loginEmail').value.split('@')[0] || 'Тестер'));
+  $('#registerBtn').addEventListener('click', () => mockLogin($('#regName').value || 'Новичок'));
 
-  $('#loginPass').addEventListener('keypress', (e) => { if (e.key === 'Enter') login(); });
-  $('#regPass').addEventListener('keypress', (e) => { if (e.key === 'Enter') register(); });
-
-  // Проверка сессии при загрузке страницы
-  AUTH.onAuthStateChanged(async (firebaseUser) => {
-      if (firebaseUser) {
-          try {
-              const snap = await DB.ref('users/'+firebaseUser.uid).once('value');
-              if(snap.exists()) {
-                  App.user = snap.val(); App.user.uid = firebaseUser.uid;
-                  if(App.user.avatar) {
-                      App.user.imgObj = new Image();
-                      App.user.imgObj.crossOrigin = 'Anonymous';
-                      App.user.imgObj.src = App.user.avatar;
-                  }
-                  finishLogin();
-              }
-          } catch (e) {
-              console.log("Сессия устарела или нет связи с БД");
-          }
-      }
+  // =========================================================================
+  // 🎮 ЛОГИКА ИНТЕРФЕЙСА (КЛИКИ И МОДАЛЬНЫЕ ОКНА)
+  // =========================================================================
+  
+  // 1. Открытие/закрытие боковой панели
+  $('#sidebarToggleBtn').addEventListener('click', () => {
+    $('#avatarCarousel').classList.add('open');
+  });
+  $('#sidebarCloseBtn').addEventListener('click', () => {
+    $('#avatarCarousel').classList.remove('open');
   });
 
-  // Запуск первичных настроек
-  loadPunktsForRegister();
+  // 2. Открытие окна настроек
+  $('#settingsBtn').addEventListener('click', () => {
+    $('#settingsPanel').style.display = 'flex';
+  });
+  
+  // Закрытие окна настроек
+  $('#settingsCloseBtn').addEventListener('click', () => { $('#settingsPanel').style.display = 'none'; });
+  $('#avatarCancelBtn').addEventListener('click', () => { $('#settingsPanel').style.display = 'none'; });
+  
+  // 3. Переключение вкладок в настройках
+  $$('.settings-tab').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        $$('.settings-tab').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        
+        const tab = e.target.getAttribute('data-tab');
+        $('#stab-main').style.display = tab === 'main' ? 'flex' : 'none';
+        $('#stab-avatar').style.display = tab === 'avatar' ? 'flex' : 'none';
+    });
+  });
+
+  // 4. Открытие модального окна превью Аватарки
+  $('#avatarTriggerBtn').addEventListener('click', () => {
+    App.previewData = {
+        settings: App.avatarSettings,
+        name: App.user ? App.user.name : 'Гость'
+    };
+    $('#previewAvatarName').textContent = App.previewData.name;
+    $('#avatarPreviewModal').style.display = 'flex';
+  });
+
+  // Закрытие превью
+  $('#closeAvatarPreview').addEventListener('click', () => {
+    $('#avatarPreviewModal').style.display = 'none';
+  });
+
+  // 5. Сохранение настроек аватара (пример)
+  $('#avatarSaveBtn').addEventListener('click', () => {
+    App.avatarSettings.style = $('#setStyleSelector').value;
+    App.avatarSettings.speed = $('#setSpeed').value;
+    App.avatarSettings.color1 = $('#setColor1').value;
+    App.avatarSettings.color2 = $('#setColor2').value;
+    
+    $('#settingsPanel').style.display = 'none';
+    toast('Настройки аватара применены!');
+  });
+
+  // 6. Выход из аккаунта
+  $('#settingsLogoutBtn').addEventListener('click', () => {
+    App.user = null;
+    $('#app').style.display = 'none';
+    $('#loginScreen').style.display = 'flex';
+    $('#settingsPanel').style.display = 'none';
+    
+    // Останавливаем анимацию для экономии ресурсов
+    if(App.avatarAnimId) {
+        cancelAnimationFrame(App.avatarAnimId);
+        App.avatarAnimId = null;
+    }
+  });
 
 })();
 </script>
