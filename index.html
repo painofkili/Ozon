@@ -355,7 +355,7 @@ button:active{transform:scale(0.95)}
     { id:'double-orbit', label:'Орбита 🪐', premium:true },
     { id:'matrix', label:'Матрица 🧪', premium:true },
     { id:'fire', label:'Огонь 🔥', premium:true },
-    { id:'symbiote', label:'Симбиот 🕷️', premium:true }, // Добавили Симбиота
+    { id:'symbiote', label:'Симбиот 🕷️', premium:true }, 
     { id:'sparks', label:'Искры ⚡', premium:true },
     { id:'god-rays', label:'Нимб 👼', premium:true },
   ];
@@ -379,7 +379,6 @@ button:active{transform:scale(0.95)}
             ctx.fillStyle = '#000000';
             ctx.shadowBlur = 8; ctx.shadowColor = color1 || '#8b00ff';
             
-            // Базовое пульсирующее кольцо материи
             ctx.lineWidth = 4;
             ctx.beginPath();
             for(let i=0; i<=Math.PI*2; i+=0.1) {
@@ -391,7 +390,6 @@ button:active{transform:scale(0.95)}
             ctx.closePath();
             ctx.stroke();
 
-            // Щупальца, которые тянутся НАРУЖУ (чтобы не перекрывать аватарку)
             if(!state.tendrils) {
                 state.tendrils = Array.from({length: 8}, () => ({
                     angle: Math.random() * Math.PI * 2,
@@ -433,12 +431,11 @@ button:active{transform:scale(0.95)}
             ctx.shadowBlur = 15; ctx.shadowColor = '#ff3300';
             
             const flameCount = 40;
-            ctx.fillStyle = '#ff8c00'; // Цвет пламени
+            ctx.fillStyle = '#ff8c00';
             
             ctx.beginPath();
             for(let i = 0; i <= flameCount; i++) {
                 const angle = (i / flameCount) * Math.PI * 2;
-                // Пламя активнее тянется вверх
                 const isTop = Math.sin(angle) < 0;
                 const heightMultiplier = isTop ? (1.5 + Math.abs(Math.sin(angle))) : 0.5;
                 
@@ -453,7 +450,6 @@ button:active{transform:scale(0.95)}
             ctx.closePath();
             ctx.fill();
 
-            // Внутреннее яркое кольцо, связывающее пламя
             ctx.strokeStyle = '#ffcc00';
             ctx.lineWidth = 2;
             ctx.beginPath(); ctx.arc(0, 0, fRadius, 0, Math.PI*2); ctx.stroke();
@@ -461,7 +457,6 @@ button:active{transform:scale(0.95)}
             ctx.restore();
         }
     },
-    // Остальные эффекты остаются без изменений
     'dragon-aura': (opts) => {
         const { ctx, cx, cy, fRadius, state, speed, color1, color2, layer } = opts;
         if(layer === 'back') {
@@ -578,7 +573,7 @@ button:active{transform:scale(0.95)}
           ctx.fillRect(cx - fRadius, scanY - 40, fRadius * 2, 40);
 
           ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.shadowBlur = 15; ctx.shadowColor = color1;
-          ctx.beginPath(); ctx.moveTo(cx - fRadius, scanY); ctx.lineTo(cx + fRadius, scanY); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(cx - fRadius, scanY); ctx.lineTo(cx + fRadius, scanY); stroke();
           ctx.restore();
         }
     },
@@ -966,6 +961,7 @@ button:active{transform:scale(0.95)}
         const { ctx, cx, cy, fRadius, state, color1, color2, layer } = opts;
         if(layer === 'front') {
           ctx.shadowColor = color1;
+          if(!state.particles) state.particles = [];
           if(state.particles.length < 50) state.particles.push({angle:Math.random()*Math.PI*2, speed:0.5+Math.random()*2, life:1, size:2+Math.random()*3, distance:fRadius+Math.random()*10});
           state.particles = state.particles.filter(p => p.life>0);
           state.particles.forEach(p => { p.angle+=p.speed*0.02; p.distance+=p.speed*0.5; p.life-=0.015; const x=cx+Math.cos(p.angle)*p.distance, y=cy+Math.sin(p.angle)*p.distance; ctx.fillStyle=p.life>0.5?color1:color2; ctx.globalAlpha=p.life; ctx.shadowBlur=10; ctx.beginPath(); ctx.arc(x,y,p.size,0,Math.PI*2); ctx.fill(); });
@@ -1021,8 +1017,10 @@ button:active{transform:scale(0.95)}
         }
     }
   };
-  // =========================================================================
 
+  // =========================================================================
+  // ⚙️ НАСТРОЙКИ КОНФИГУРАЦИИ FIREBASE
+  // =========================================================================
   const firebaseConfig = {
     apiKey: "AIzaSyA9jEn0r1oTnyx3ngFNCsOUyj4HGfCHAFo",
     authDomain: "ozon-grafik-4ad9f.firebaseapp.com",
@@ -1055,24 +1053,6 @@ button:active{transform:scale(0.95)}
     setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 3000);
   }
 
-  function fmtDate(t) { const d = new Date(t); return d.getDate() + '.' + (d.getMonth()+1) + '.' + d.getFullYear(); }
-  function secToHMS(s) { const h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60; return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0'); }
-
-  function showCustomModal(msg, isPrompt = false, defVal = '') {
-    return new Promise(resolve => {
-      const modal = $('#customModal'), msgEl = $('#modalMessage'), inp = $('#modalInput');
-      msgEl.textContent = msg;
-      if(isPrompt) { inp.style.display = 'block'; inp.value = defVal || ''; setTimeout(() => inp.focus(), 50); }
-      else inp.style.display = 'none';
-      modal.style.display = 'flex';
-      const clean = () => { $('#modalCancelBtn').onclick = null; $('#modalConfirmBtn').onclick = null; modal.style.display = 'none'; };
-      $('#modalCancelBtn').onclick = () => { clean(); resolve(isPrompt ? null : false); };
-      $('#modalConfirmBtn').onclick = () => { clean(); resolve(isPrompt ? inp.value : true); };
-    });
-  }
-  const customConfirm = m => showCustomModal(m, false);
-  const customPrompt = (m, d) => showCustomModal(m, true, d);
-
   const App = {
     user: null, onShift: false, shiftTimer: null,
     allUserData: {}, activeShifts: {}, presenceData: {}, unreadCount: 0,
@@ -1085,18 +1065,8 @@ button:active{transform:scale(0.95)}
     activeListeners: [], messagesCache: {}
   };
 
-  window.chatSnapCache = null;
-
-  function attachDbListener(ref, ev, cb) { ref.on(ev, cb); App.activeListeners.push({ref, event:ev, callback:cb}); }
-  function clearAllListeners() {
-    App.activeListeners.forEach(l => l.ref.off(l.event, l.callback));
-    App.activeListeners.length = 0;
-    if(App.chatListener) { App.chatListener.off(); App.chatListener = null; }
-  }
-
-  // ============ AVATAR RENDER ENGINE ============
   const avatarTimers = new Map();
-  const globalImgCache = new Map(); // Кэш для защиты от утечек памяти (зависаний)
+  const globalImgCache = new Map();
   
   function renderPremiumAvatar(canvas, settings, avatarImg, fallbackName) {
     if(!canvas) return;
@@ -1184,7 +1154,6 @@ button:active{transform:scale(0.95)}
     ctx.arc(cx, cy, avatarRadius, 0, Math.PI*2); 
     ctx.clip();
     
-    // БЕЗОПАСНАЯ загрузка картинки, устраняет залипание 
     if(avatarImg && avatarImg.complete && avatarImg.naturalWidth > 0) { 
         try {
             const ratio = Math.max((avatarRadius*2)/avatarImg.naturalWidth, (avatarRadius*2)/avatarImg.naturalHeight); 
@@ -1207,7 +1176,7 @@ button:active{transform:scale(0.95)}
             const tempImg = new Image();
             tempImg.crossOrigin = 'Anonymous';
             tempImg.src = avatarImg;
-            globalImgCache.set(avatarImg, tempImg); // Сохраняем в кэш чтобы не вызывать 60 раз в секунду
+            globalImgCache.set(avatarImg, tempImg);
             drawFallback();
         }
     } else { 
@@ -1240,62 +1209,15 @@ button:active{transform:scale(0.95)}
         const pc = document.getElementById('previewAvatarCanvas');
         renderPremiumAvatar(pc, App.previewData.settings, App.previewData.imgObj || null, App.previewData.name);
     }
-
-    const avatars = document.querySelectorAll('.sidebar-avatar-canvas');
-    for(let i=0; i<avatars.length; i++) {
-        const c = avatars[i];
-        if(c._avatarData) {
-            renderPremiumAvatar(c, c._avatarData.settings, c._avatarData.avatarImg, c._avatarData.name);
-        }
-    }
-
-    const settingsPanel = document.getElementById('settingsPanel');
-    if (settingsPanel && settingsPanel.style.display !== 'none') {
-        const previews = document.querySelectorAll('.anim-preview-canvas');
-        for(let i=0; i<previews.length; i++) {
-            const c = previews[i];
-            const style = c.dataset.style;
-            renderPremiumAvatar(c, { ...App.avatarSettings, style: style }, App.user?.imgObj || null, App.user?.name || '?');
-        }
-    }
     
     App.avatarAnimId = requestAnimationFrame(updateAllFrames);
   }
 
-  window.openAvatarPreview = function(uid, defName) {
-    const isOwnProfileClick = (!uid || uid === 'undefined' || uid === 'null');
-    const targetUid = isOwnProfileClick ? App.user?.uid : uid;
-
-    let s = {style:'off', speed:1, color1:'#6366f1', color2:'#a855f7'};
-    let imgUrl = null;
-    let imgObj = null;
-    let name = cleanName(defName) || 'Аватар';
-
-    if (targetUid === App.user?.uid) { 
-        s = App.avatarSettings; 
-        imgUrl = App.user?.avatar; 
-        imgObj = App.user?.imgObj;
-        name = cleanName(App.user?.name) || 'Аватар'; 
-    } else if(targetUid && App.allUserData[targetUid]) { 
-        s = App.allUserData[targetUid].avatarSettings || s; 
-        imgUrl = App.allUserData[targetUid].avatar; 
-        imgObj = App.allUserData[targetUid].imgObj;
-        name = cleanName(App.allUserData[targetUid].name) || name; 
-    } else {
-        name = name || '?';
-    }
-    
-    App.previewData = { uid: targetUid, settings: s, imgUrl, imgObj, name };
-    $('#previewAvatarName').textContent = name;
-    $('#previewAvatarCanvas').style.display = 'block';
-    $('#previewFullImage').style.display = 'none';
-    $('#toggleFullImgBtn').textContent = 'Показать оригинал';
-    $('#toggleFullImgBtn').style.display = imgUrl ? 'block' : 'none';
-    $('#avatarPreviewModal').style.display = 'flex';
-  };
-
-  // ============ AUTH ============
+  // =========================================================================
+  // 🔐 БЛОК АВТОРИЗАЦИИ
+  // =========================================================================
   let isLoginMode = true;
+  
   function toggleAuth() {
     isLoginMode = !isLoginMode;
     $('#loginFields').style.display = isLoginMode ? 'flex' : 'none';
@@ -1311,7 +1233,21 @@ button:active{transform:scale(0.95)}
     DB.ref('punkts').once('value').then(s => {
       const sel = $('#regPunkt'); sel.innerHTML = '<option value="">Выберите пункт</option>';
       s.forEach(c => { const d = c.val(); sel.innerHTML += `<option value="${esc(c.key)}">Пункт ${esc(c.key)} (${d.rate||0}₽/ч)</option>`; });
-    });
+    }).catch(e => console.log("Firebase punkts error: ", e.message));
+  }
+
+  function finishLogin() {
+    $('#loginScreen').style.display = 'none';
+    $('#app').style.display = 'flex';
+    $('#uname').textContent = App.user.name;
+    $('#upunkt').textContent = App.user.punkt;
+    
+    if(App.user.avatarSettings) {
+        App.avatarSettings = { ...App.avatarSettings, ...App.user.avatarSettings };
+    }
+    
+    toast('Добро пожаловать, ' + App.user.name + '!');
+    App.avatarAnimId = requestAnimationFrame(updateAllFrames);
   }
 
   async function login() {
@@ -1320,7 +1256,7 @@ button:active{transform:scale(0.95)}
     try {
       const cred = await AUTH.signInWithEmailAndPassword(e, p);
       const snap = await DB.ref('users/'+cred.user.uid).once('value');
-      if(!snap.exists()) { err.textContent='Пользователь не найден'; err.style.display='block'; return; }
+      if(!snap.exists()) { err.textContent='Пользователь не найден в БД'; err.style.display='block'; return; }
       App.user = snap.val(); App.user.uid = cred.user.uid;
       
       if(App.user.avatar) {
@@ -1340,18 +1276,57 @@ button:active{transform:scale(0.95)}
     if(!isValidEmail(e)) { err.textContent='Некорректный email'; err.style.display='block'; return; }
     try {
       const cred = await AUTH.createUserWithEmailAndPassword(e, p);
-      await DB.ref('users/'+cred.user.uid).set({name:n, email:e, role:'manager', punkt, avatar:'', bonus:0});
-      App.user = {name:n, email:e, role:'manager', punkt, avatar:'', bonus:0, uid:cred.user.uid};
+      const newUser = {name:n, email:e, role:'manager', punkt, avatar:'', bonus:0};
+      await DB.ref('users/'+cred.user.uid).set(newUser);
+      App.user = newUser;
+      App.user.uid = cred.user.uid;
       finishLogin();
     } catch(ex) { err.textContent=ex.message; err.style.display='block'; }
   }
 
   async function resetPassword() {
     const e = $('#loginEmail').value.trim();
-    if(!e) { toast('Введите email', true); return; }
+    if(!e) { toast('Введите email в поле ввода для сброса', true); return; }
     try { await AUTH.sendPasswordResetEmail(e); toast('📧 Ссылка для сброса отправлена на '+e); }
     catch(ex) { toast(ex.message, true); }
   }
+
+  // =========================================================================
+  // 🔌 ПРИВЯЗКА ОБРАБОТЧИКОВ СОБЫТИЙ (КЛИКИ ПО КНОПКАМ)
+  // =========================================================================
+  $('#tabLogin').addEventListener('click', () => { if (!isLoginMode) toggleAuth(); });
+  $('#tabRegister').addEventListener('click', () => { if (isLoginMode) toggleAuth(); });
+  
+  $('#loginBtn').addEventListener('click', login);
+  $('#registerBtn').addEventListener('click', register);
+  $('#resetPassBtn').addEventListener('click', resetPassword);
+
+  $('#loginPass').addEventListener('keypress', (e) => { if (e.key === 'Enter') login(); });
+  $('#regPass').addEventListener('keypress', (e) => { if (e.key === 'Enter') register(); });
+
+  // Проверка сессии при загрузке страницы
+  AUTH.onAuthStateChanged(async (firebaseUser) => {
+      if (firebaseUser) {
+          try {
+              const snap = await DB.ref('users/'+firebaseUser.uid).once('value');
+              if(snap.exists()) {
+                  App.user = snap.val(); App.user.uid = firebaseUser.uid;
+                  if(App.user.avatar) {
+                      App.user.imgObj = new Image();
+                      App.user.imgObj.crossOrigin = 'Anonymous';
+                      App.user.imgObj.src = App.user.avatar;
+                  }
+                  finishLogin();
+              }
+          } catch (e) {
+              console.log("Сессия устарела или нет связи с БД");
+          }
+      }
+  });
+
+  // Запуск первичных настроек
+  loadPunktsForRegister();
+
 })();
 </script>
 </body>
