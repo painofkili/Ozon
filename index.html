@@ -565,42 +565,33 @@ button:active{transform:scale(0.95)}
         }
     },
     'fire': (opts) => {
-        const { ctx, cx, cy, fRadius, state, speed, layer } = opts;
-        if(layer === 'back') { 
-            ctx.shadowBlur=20; ctx.shadowColor='#ff3300'; ctx.strokeStyle='#ff3300'; 
-            ctx.lineWidth=3; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke(); ctx.shadowBlur=0; 
+        const { ctx, cx, cy, fRadius, state, layer } = opts;
+        if (layer === 'back') {
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = '#ff3300';
+
+            ctx.beginPath();
+            ctx.arc(0, 0, fRadius + 10, 0, Math.PI);
+            ctx.quadraticCurveTo(fRadius + 15, -fRadius + 5, 0, -fRadius - 50 - Math.sin(state.tick * 2) * 12);
+            ctx.quadraticCurveTo(-fRadius - 15, -fRadius + 5, -fRadius - 10, 0);
+
+            const grad = ctx.createLinearGradient(0, -fRadius - 60, 0, fRadius + 10);
+            grad.addColorStop(0, '#ffcc00');
+            grad.addColorStop(0.4, '#ff6600');
+            grad.addColorStop(1, '#990000');
+
+            ctx.fillStyle = grad;
+            ctx.fill();
+            ctx.restore();
         }
-        if(layer === 'front') {
-          if(!state.flames) state.flames = [];
-          if(state.flames.length < 100) { 
-              const angle = -Math.PI/2 + (Math.random()-0.5)*Math.PI*1.2;
-              state.flames.push({
-                  x: cx + Math.cos(angle)*fRadius*0.8, 
-                  y: cy + fRadius - 5, 
-                  vx: (Math.random()-0.5)*1.5, 
-                  vy: -1.5 - Math.random()*3, 
-                  life: 1, maxLife: 1, 
-                  size: 15 + Math.random()*25, 
-                  color: Math.random()>0.6?'#ffb400':(Math.random()>0.4?'#ff5500':'#ff0000')
-              }); 
-          }
-          
-          ctx.globalCompositeOperation = 'lighter';
-          state.flames.forEach(p => { 
-              p.x += p.vx + Math.sin(p.life*15)*0.8; 
-              p.y += p.vy; 
-              p.life -= 0.015 * speed; 
-              const sc = p.life/p.maxLife; 
-              ctx.fillStyle = p.color; 
-              ctx.globalAlpha = Math.max(0, p.life); 
-              
-              ctx.beginPath();
-              ctx.ellipse(p.x, p.y, p.size * sc * 0.5, p.size * sc, 0, 0, Math.PI*2);
-              ctx.fill(); 
-          });
-          
-          ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
-          state.flames = state.flames.filter(p => p.life > 0);
+        if (layer === 'front') {
+            ctx.strokeStyle = 'rgba(255, 100, 0, 0.4)';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(cx, cy, fRadius, 0, Math.PI*2);
+            ctx.stroke();
         }
     },
     'glitch': (opts) => {
@@ -1086,17 +1077,17 @@ button:active{transform:scale(0.95)}
 
   // ============ AVATAR RENDER ENGINE ============
   const avatarTimers = new Map();
-  const globalImgCache = new Map(); // <--- ВОТ КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ 1
 
   function renderPremiumAvatar(canvas, settings, avatarImg, fallbackName) {
     if(!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    if(rect.width === 0 || rect.height === 0) return;
+    
+    // ИСПРАВЛЕНИЕ: Если getBoundingClientRect дает 0 (скрытый элемент), берем из style
+    let displayW = rect.width || parseInt(canvas.style.width) || 120;
+    let displayH = rect.height || parseInt(canvas.style.height) || 120;
+    if(displayW === 0 || displayH === 0) return;
 
     const dpr = window.devicePixelRatio || 1;
-    const displayW = rect.width;
-    const displayH = rect.height;
-    
     const targetW = Math.floor(displayW * dpr);
     const targetH = Math.floor(displayH * dpr);
 
@@ -1171,7 +1162,7 @@ button:active{transform:scale(0.95)}
     ctx.arc(cx, cy, avatarRadius, 0, Math.PI*2); 
     ctx.clip();
     
-    // <--- ВОТ КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ 2 (КЭШИРОВАНИЕ КАРТИНКИ)
+    // ИСПРАВЛЕНИЕ: Кэш картинок, чтобы вкладка не зависала
     if(avatarImg && avatarImg.complete && avatarImg.naturalWidth > 0) { 
         try {
             const ratio = Math.max((avatarRadius*2)/avatarImg.naturalWidth, (avatarRadius*2)/avatarImg.naturalHeight); 
@@ -1201,7 +1192,6 @@ button:active{transform:scale(0.95)}
     } else { 
         drawFallback();
     }
-    // КЭШИРОВАНИЕ ЗАКОНЧЕНО --->
     
     ctx.restore();
     ctx.beginPath(); 
@@ -1864,6 +1854,7 @@ button:active{transform:scale(0.95)}
       canvas.style.height = '56px';
       canvas.style.borderRadius = '50%';
       canvas.style.display = 'block';
+      // ИСПРАВЛЕНИЕ: Класс для сайдбара, чтобы его подхватывала анимация
       canvas.className = 'sidebar-avatar-canvas';
       canvas.dataset.uid = uid;
       
@@ -1932,13 +1923,19 @@ button:active{transform:scale(0.95)}
     canvas.style.height = '64px';
     canvas.style.borderRadius = '50%';
     canvas.style.border = '2px solid var(--accent)';
+    
+    // ИСПРАВЛЕНИЕ: Добавлен класс canvas-avatar, чтобы его обновлял requestAnimationFrame
+    canvas.className = 'canvas-avatar';
+    canvas.dataset.uid = uid;
+    
     container.appendChild(canvas);
     
     const settings = d?.avatarSettings || { style: 'off', speed: 1, color1: '#6366f1', color2: '#a855f7' };
     const avatarImg = d?.imgObj || null;
     const name = d?.name || '?';
     
-    renderPremiumAvatar(canvas, settings, avatarImg, name);
+    // ИСПРАВЛЕНИЕ: Добавлены данные для анимации
+    canvas._avatarData = { settings, avatarImg, name, uid };
     
     const rm={god:'Начальник',creator:'Создатель',manager:'Сотрудник'};
     $('#mpStatus').textContent=rm[d.role]||'Сотрудник';
