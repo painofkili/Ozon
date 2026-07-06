@@ -122,8 +122,8 @@ button:active{transform:scale(0.95)}
 .style-btn.active{border-color:var(--accent);background:rgba(124,58,237,0.2);color:#fff}
 .style-btn.premium{border-color:#FFD700;background:rgba(255,215,0,0.05)}
 
-.avatar-wrap{position:relative;width:76px;height:76px;flex-shrink:0;border-radius:50%}
-#mainAvatarCanvas{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:130px;height:130px;pointer-events:none;z-index:2}
+.avatar-wrap{position:relative;width:78px;height:78px;flex-shrink:0;border-radius:50%;overflow:visible}
+#mainAvatarCanvas{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:134px;height:134px;pointer-events:none;z-index:2}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
 @media(min-width:1024px){
@@ -330,6 +330,7 @@ button:active{transform:scale(0.95)}
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 
 <script>
 (function() {
@@ -348,6 +349,7 @@ button:active{transform:scale(0.95)}
   firebase.initializeApp(firebaseConfig);
   const DB = firebase.database();
   const AUTH = firebase.auth();
+  const STORAGE = firebase.storage();
 
   const $ = s => document.querySelector(s);
   const $$ = s => document.querySelectorAll(s);
@@ -386,6 +388,66 @@ button:active{transform:scale(0.95)}
   const customConfirm = m => showCustomModal(m, false);
   const customPrompt = (m, d) => showCustomModal(m, true, d);
 
+  // Загрузка изображения в Firebase Storage вместо base64 в RTDB
+  async function uploadImageToStorage(file, path) {
+    try {
+      const ref = STORAGE.ref(path);
+      // Сжимаем до JPEG 800px перед загрузкой
+      const compressed = await compressImage(file, 800, 0.8);
+      const snapshot = await ref.putString(compressed, 'data_url', { contentType: 'image/jpeg' });
+      const url = await snapshot.ref.getDownloadURL();
+      return url;
+    } catch (e) {
+      console.error('Storage upload error:', e);
+      return null;
+    }
+  }
+
+  // Сжатие изображения в canvas
+  function compressImage(file, maxSize, quality) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          const c = document.createElement('canvas');
+          let w = img.width, h = img.height;
+          if (w > maxSize || h > maxSize) {
+            const ratio = Math.min(maxSize / w, maxSize / h);
+            w = Math.round(w * ratio);
+            h = Math.round(h * ratio);
+          }
+          c.width = w;
+          c.height = h;
+          const ctx = c.getContext('2d');
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(c.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = reject;
+        img.src = ev.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Кэширование punkts (TTL 5 минут)
+  function getPunktsCache() {
+    const now = Date.now();
+    if (App.punktsCache && (now - App.punktsCacheTs) < 300000) {
+      return Promise.resolve(App.punktsCache);
+    }
+    return DB.ref('punkts').once('value').then(s => {
+      const data = {};
+      s.forEach(c => { data[c.key] = c.val(); });
+      App.punktsCache = data;
+      App.punktsCacheTs = now;
+      return data;
+    });
+  }
+
   const imageCache = {};
   function getCachedImage(url, cb) {
     if(!url) return null;
@@ -408,7 +470,8 @@ button:active{transform:scale(0.95)}
     avatarSettings: { style:'rgb-ring', speed:1, glow:20, color1:'#6366f1', color2:'#a855f7', ringColor:'#7c3aed', ringThickness:'medium' },
     chatListener: null, notifiedKeys: {}, avatarAnimId: null,
     isCreator: false, isGod: false, previewData: null,
-    activeListeners: [], messagesCache: {}
+    activeListeners: [], messagesCache: {},
+    punktsCache: null, punktsCacheTs: 0
   };
 
   // Глобальный кэш для чата, чтобы его можно было перерисовывать асинхронно
@@ -422,7 +485,7 @@ button:active{transform:scale(0.95)}
     { id:'comet', label:'Комета ⭐', premium:true },
     { id:'double-orbit', label:'Орбита 🪐', premium:true },
     { id:'matrix', label:'Матрица 🧪', premium:true },
-    { id:'fire', label:'Огонь 🔥', premium:true },
+    { id:'fire', label:'Огненное кольцо 🔥', premium:true },
     { id:'sparks', label:'Искры ⚡', premium:true },
     { id:'god-rays', label:'Нимб 👼', premium:true },
     { id:'void-vortex', label:'Черная Дыра 🌌', premium:true },
@@ -557,14 +620,42 @@ button:active{transform:scale(0.95)}
         }
       } 
       else if(style === 'fire') {
-        if(layer === 'back') { ctx.shadowBlur=20; ctx.shadowColor='#ff3300'; ctx.strokeStyle='#ff3300'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(cx,cy,fRadius,0,Math.PI*2); ctx.stroke(); ctx.shadowBlur=0; }
-        if(layer === 'front' || layer === 'back') {
-          if(!state.fireParticles) state.fireParticles = [];
-          if(state.fireParticles.length < 150) { const sA = Math.random()*Math.PI*2; state.fireParticles.push({x:cx+Math.cos(sA)*avatarRadius, y:cy+Math.sin(sA)*avatarRadius, vx:(Math.random()-0.5)*1.5, vy:-Math.random()*3-1, life:1, maxLife:1, size:15+Math.random()*15, color:Math.random()>0.5?'#ff3300':(Math.random()>0.5?'#ff7700':'#ffcc00'), isFront:Math.random()>0.5}); }
-          ctx.globalCompositeOperation = 'lighter';
-          state.fireParticles.forEach(p => { if((layer==='front'&&p.isFront)||(layer==='back'&&!p.isFront)) { p.x+=p.vx+Math.sin(p.life*10)*0.5; p.y+=p.vy; p.life-=0.02*speed; const sc = p.life/p.maxLife; ctx.fillStyle=p.color; ctx.globalAlpha=Math.max(0,p.life); ctx.beginPath(); ctx.arc(p.x,p.y,Math.max(0.1,p.size*sc),0,Math.PI*2); ctx.fill(); } });
-          ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
-          if(layer==='front') state.fireParticles = state.fireParticles.filter(p => p.life>0);
+        if(layer === 'front') {
+          ctx.save();
+          ctx.shadowBlur=40;ctx.shadowColor='#ff4400';
+          ctx.globalCompositeOperation='lighter';
+          const R=avatarRadius;
+          for(let i=0;i<20;i++){
+            const a=(i/20)*Math.PI*2+state.tick*0.4;
+            const flick=Math.sin(state.tick*6+i*2.1)*0.12+Math.sin(state.tick*11+i*3.7)*0.06;
+            const h=35+Math.sin(state.tick*4+i*0.9)*15+Math.sin(state.tick*8+i*2.5)*8;
+            const w=6+Math.sin(state.tick*7+i*1.3)*2;
+            const tipA=a+0.1+flick;
+            const bx=cx+Math.cos(a)*R,by=cy+Math.sin(a)*R;
+            const mx=cx+Math.cos(a+0.05)*(R+h*0.5),my=cy+Math.sin(a+0.05)*(R+h*0.5);
+            const tx=cx+Math.cos(tipA)*(R+h),ty=cy+Math.sin(tipA)*(R+h);
+            const px=-Math.sin(a),py=Math.cos(a);
+            for(let s=0;s<5;s++){
+              const t=s/4;
+              const col=Math.floor(t*4);
+              ctx.fillStyle=['#fffbe6','#ffcc00','#ff6600','#ff3300','rgba(200,20,0,0.3)'][col];
+              ctx.globalAlpha=[0.8,0.7,0.55,0.4,0.2][col];
+              const cw=w*(1-t*0.85);
+              const cx0=bx+(mx-bx)*t+px*cw,cy0=by+(my-by)*t+py*cw;
+              const cx1=bx+(tx-bx)*t-px*cw*0.3,cy1=by+(ty-by)*t-py*cw*0.3;
+              ctx.beginPath();
+              ctx.moveTo(bx+px*w*0.3,by+py*w*0.3);
+              ctx.quadraticCurveTo((cx0+cx1)/2,(cy0+cy1)/2,bx+(tx-bx)*(t+0.15)+px*cw*0.5,by+(ty-by)*(t+0.15)+py*cw*0.5);
+              ctx.quadraticCurveTo((cx0+cx1)/2,(cy0+cy1)/2,bx-px*w*0.3,by-py*w*0.3);
+              ctx.fill();
+            }
+          }
+          ctx.shadowBlur=0;
+          ctx.globalCompositeOperation='source-over';
+          ctx.globalAlpha=0.15;
+          ctx.strokeStyle='#ff4400';ctx.lineWidth=10;
+          ctx.beginPath();ctx.arc(cx,cy,R+8,0,Math.PI*2);ctx.stroke();
+          ctx.restore();
         }
       } 
       else if(style === 'sparks' && layer === 'front') {
@@ -715,16 +806,31 @@ button:active{transform:scale(0.95)}
   }
 
   function updateAllFrames() {
-    if(document.hidden) { App.avatarAnimId = requestAnimationFrame(updateAllFrames); return; }
+    const rendered = [];
     
     const mc = $('#mainAvatarCanvas');
-    if(mc && App.user) renderPremiumAvatar(mc, App.avatarSettings, getCachedImage(App.user.avatar), App.user.name);
+    if(mc && App.user) {
+      const rect = mc.getBoundingClientRect();
+      if(rect.width > 0 && rect.height > 0) {
+        renderPremiumAvatar(mc, App.avatarSettings, getCachedImage(App.user.avatar), App.user.name);
+        rendered.push('main');
+      }
+    }
     
     const pm = $('#avatarPreviewModal');
     const pc = $('#previewAvatarCanvas');
-    // Отрисовываем превью только когда оно видимо!
     if(pm && pm.style.display !== 'none' && App.previewData) {
+      const rect = pc.getBoundingClientRect();
+      if(rect.width > 0 && rect.height > 0) {
         renderPremiumAvatar(pc, App.previewData.settings, getCachedImage(App.previewData.imgUrl), App.previewData.name);
+        rendered.push('preview');
+      }
+    }
+    
+    // Останавливаем анимацию если ничего не видно (экономия батареи/GPU)
+    if(rendered.length === 0 || document.hidden) {
+      App.avatarAnimId = null;
+      return;
     }
     
     App.avatarAnimId = requestAnimationFrame(updateAllFrames);
@@ -757,6 +863,7 @@ button:active{transform:scale(0.95)}
     $('#toggleFullImgBtn').textContent = 'Показать оригинал';
     $('#toggleFullImgBtn').style.display = imgUrl ? 'block' : 'none';
     $('#avatarPreviewModal').style.display = 'flex';
+    if(!App.avatarAnimId) App.avatarAnimId = requestAnimationFrame(updateAllFrames);
   };
 
   // ============ AUTH ============
@@ -773,9 +880,9 @@ button:active{transform:scale(0.95)}
   }
 
   function loadPunktsForRegister() {
-    DB.ref('punkts').once('value').then(s => {
+    getPunktsCache().then(data => {
       const sel = $('#regPunkt'); sel.innerHTML = '<option value="">Выберите пункт</option>';
-      s.forEach(c => { const d = c.val(); sel.innerHTML += `<option value="${esc(c.key)}">Пункт ${esc(c.key)} (${d.rate||0}₽/ч)</option>`; });
+      for(const k in data) { const d = data[k]; sel.innerHTML += `<option value="${esc(k)}">Пункт ${esc(k)} (${d.rate||0}₽/ч)</option>`; }
     });
   }
 
@@ -946,13 +1053,14 @@ button:active{transform:scale(0.95)}
       const p = App.isGod?'👑 ':(App.isCreator?'🌌 ':'');
       DB.ref('chat').push({uid:App.user.uid,user:p+App.user.name,text:`🔵 Пункт ${punktName} на смене`,timestamp:Date.now(),role:App.user.role,likes:{}}); 
       loadShift(); toast(`Смена начата! Пункт: ${punktName}`); 
-    });
+    }).catch(e => { toast('Ошибка начала смены: '+e.message, true); });
   }
   function endShift() {
     const tv = parseInt($('#tovarCount')?.value)||0;
     const punktName = App.user.punkt || 'Не указан';
     DB.ref('activeShifts/'+App.user.uid).once('value').then(s => {
-      if(!s.exists()) return; const st = s.val().startTime;
+      if(!s.exists()){toast('Смена не найдена',true);return;}
+      const st = s.val().startTime;
       const hr = Math.round((Date.now()-st)/3600000*100)/100;
       const id = App.user.uid+'_'+Date.now();
       DB.ref('shifts/'+id).set({user:App.user.uid,user_name:App.user.name,punkt:punktName,date:new Date().toLocaleDateString('ru-RU'),timeFrom:new Date(st).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'}),timeTo:new Date().toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'}),hours:hr,tovar:tv,paid:false,timestamp:Date.now()}).then(() => { 
@@ -962,8 +1070,8 @@ button:active{transform:scale(0.95)}
         DB.ref('chat').push({uid:App.user.uid,user:p+App.user.name,text:`🔴 Пункт ${punktName} с ${stTime} до ${endTime}`,timestamp:Date.now(),role:App.user.role,likes:{}}); 
         DB.ref('activeShifts/'+App.user.uid).remove(); if(App.shiftTimer) clearInterval(App.shiftTimer); 
         App.onShift = false; loadShift(); toast(`Смена завершена! ${hr}ч, ${tv} товаров`); 
-      });
-    });
+      }).catch(e => toast('Ошибка сохранения смены: '+e.message, true));
+    }).catch(e => toast('Ошибка загрузки смены: '+e.message, true));
   }
 
   // ============ STATS ============
@@ -999,7 +1107,7 @@ button:active{transform:scale(0.95)}
     });
   }
   function changeCal(dir) { App.calMonth+=dir; if(App.calMonth<0){App.calMonth=11;App.calYear--;} if(App.calMonth>11){App.calMonth=0;App.calYear++;} renderCalendar(); }
-  async function clearShifts() { if(!await customConfirm('Очистить все ваши смены безвозвратно?')) return; DB.ref('shifts').orderByChild('user').equalTo(App.user.uid).once('value').then(s=>{const p=[];s.forEach(c=>p.push(DB.ref('shifts/'+c.key).remove()));return Promise.all(p);}).then(()=>{toast('Смены очищены');renderCalendar();}); }
+  async function clearShifts() { if(!await customConfirm('Очистить все ваши смены безвозвратно?')) return; DB.ref('shifts').orderByChild('user').equalTo(App.user.uid).once('value').then(s=>{const p=[];s.forEach(c=>p.push(DB.ref('shifts/'+c.key).remove()));return Promise.all(p);}).then(()=>{toast('Смены очищены');renderCalendar();}).catch(e=>toast('Ошибка: '+e.message, true)); }
 
   // ============ HISTORY ============
   function renderHistory(p) {
@@ -1092,7 +1200,7 @@ button:active{transform:scale(0.95)}
       if(!uid||!from||!to){toast('Заполните все поля',true);return;}
       try {
         const us=await DB.ref('users/'+uid).once('value'), ud=us.val(), pid=ud.punkt||'';
-        let rate=0; const ps=await DB.ref('punkts').once('value'); ps.forEach(c=>{if(c.key===pid)rate=c.val().rate||0;}); if(!rate)rate=150;
+        let rate=0; const ps=await getPunktsCache(); for(const k in ps){if(k===pid)rate=ps[k].rate||0;} if(!rate)rate=150;
         let th=0,tt=0,ids=[]; const ss=await DB.ref('shifts').orderByChild('user').equalTo(uid).once('value');
         ss.forEach(c=>{const s=c.val();if(s.date>=from&&s.date<=to){th+=s.hours||0;tt+=s.tovar||0;ids.push(c.key);}});
         let prem=0,pun=0; const fTs=new Date(from).getTime(),tTs=new Date(to).getTime();
@@ -1275,12 +1383,24 @@ button:active{transform:scale(0.95)}
     const inp=$('#chatMsgInput'),t=inp.value.trim();if(!t||!App.user)return;
     const ref=App.privateChatWith?(()=>{const u=[App.user.uid,App.privateChatWith].sort();return DB.ref('privateChats/'+u[0]+'_'+u[1]);})():DB.ref('chat');
     const p=App.isGod?'👑 ':(App.isCreator?'🌌 ':'');
-    ref.push({uid:App.user.uid, user:p+App.user.name, text:t, timestamp:Date.now(), role:App.user.role, likes:{}}).then(()=>{inp.value='';inp.focus();});
+    ref.push({uid:App.user.uid, user:p+App.user.name, text:t, timestamp:Date.now(), role:App.user.role, likes:{}}).then(()=>{inp.value='';inp.focus();}).catch(e=>toast('Ошибка отправки: '+e.message, true));
   }
-  function sendPhoto() {
-    const inp=$('#chatPhotoInput'),files=inp.files;if(!files.length||!App.user)return;
-    const photos=[],cnt=Math.min(files.length,5);
-    for(let i=0;i<cnt;i++){(function(f){const r=new FileReader();r.onload=function(e){const img = new Image();img.onload=function(){const c=document.createElement('canvas'),mw=300,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);photos.push({full:e.target.result,thumb:c.toDataURL('image/jpeg',0.6)});if(photos.length===cnt){const ref=App.privateChatWith?(()=>{const u=[App.user.uid,App.privateChatWith].sort();return DB.ref('privateChats/'+u[0]+'_'+u[1]);})():DB.ref('chat');const p=App.isGod?'👑 ':(App.isCreator?'🌌 ':'');ref.push({uid:App.user.uid, user:p+App.user.name,text:`📷 ${cnt} фото`,photos,timestamp:Date.now(),role:App.user.role,likes:{}});}};img.src=e.target.result;};r.readAsDataURL(f);})(files[i]);}
+  async function sendPhoto() {
+    const inp=$('#chatPhotoInput'),files=inp.files;
+    if(!files.length||!App.user) return;
+    const cnt=Math.min(files.length,5);
+    const fileArr=Array.from(files).slice(0,cnt);
+    const results=await Promise.allSettled(fileArr.map(async (f)=>{
+      const thumb = await compressImage(f, 300, 0.6);
+      const full = await compressImage(f, 800, 0.8);
+      return {full, thumb};
+    }));
+    const photos=results.filter(r=>r.status==='fulfilled'&&r.value).map(r=>r.value);
+    if(photos.length){
+      const ref=App.privateChatWith?(()=>{const u=[App.user.uid,App.privateChatWith].sort();return DB.ref('privateChats/'+u[0]+'_'+u[1]);})():DB.ref('chat');
+      const p=App.isGod?'👑 ':(App.isCreator?'🌌 ':'');
+      ref.push({uid:App.user.uid, user:p+App.user.name,text:`📷 ${photos.length} фото`,photos,timestamp:Date.now(),role:App.user.role,likes:{}}).catch(e=>toast('Ошибка отправки: '+e.message, true));
+    }
     inp.value='';
   }
   function toggleChat() {
@@ -1410,8 +1530,8 @@ button:active{transform:scale(0.95)}
 
   // ============ SETTINGS ============
   function openSettings(){$('#mainContent').style.display='none';$('#avatarCarousel').style.display='none';$('#settingsPanel').style.display='flex';$('#setName').value='';loadPunktsForSettings();updateSettingsUI();buildAnimationGrid();}
-  function closeSettings(){$('#settingsPanel').style.display='none';$('#mainContent').style.display='flex';$('#avatarCarousel').style.display='flex';}
-  function loadPunktsForSettings(){DB.ref('punkts').once('value').then(s=>{const sel=$('#setPunkt');sel.innerHTML='<option value="">Не менять</option>';s.forEach(c=>{sel.innerHTML+=`<option value="${esc(c.key)}">${esc(c.key)}</option>`;});});}
+  function closeSettings(){$('#settingsPanel').style.display='none';$('#mainContent').style.display='flex';$('#avatarCarousel').style.display='flex';if(!App.avatarAnimId)App.avatarAnimId=requestAnimationFrame(updateAllFrames);}
+  function loadPunktsForSettings(){getPunktsCache().then(data=>{const sel=$('#setPunkt');sel.innerHTML='<option value="">Не менять</option>';for(const k in data)sel.innerHTML+=`<option value="${esc(k)}">${esc(k)}</option>`;});}
   function updateSettingsUI(){const ha=App.isCreator||App.isGod;document.getElementById('avatarAdvanced').style.display=ha?'block':'none';document.getElementById('avatarSimple').style.display=ha?'none':'block';document.getElementById('punktSettingsRow').style.display=App.isGod?'none':'block';$('#setSpeed').value=App.avatarSettings.speed;$('#setSpeedVal').textContent=App.avatarSettings.speed+'x';$('#setGlow').value=App.avatarSettings.glow;$('#setGlowVal').textContent=App.avatarSettings.glow+'px';$('#setColor1').value=App.avatarSettings.color1;$('#setColor2').value=App.avatarSettings.color2;$('#setRingColor').value=App.avatarSettings.ringColor;$('#setRingThickness').value=App.avatarSettings.ringThickness;}
   
   function saveSettings(){const nn=$('#setName').value.trim(),np=$('#setPunkt').value,up={};if(nn)up.name=nn;if(np&&!App.isGod)up.punkt=np;if(Object.keys(up).length){DB.ref('users/'+App.user.uid).update(up).then(()=>{if(nn)App.user.name=nn;if(np&&!App.isGod)App.user.punkt=np;updateUI();toast('Настройки сохранены');});}closeSettings();}
@@ -1430,7 +1550,7 @@ button:active{transform:scale(0.95)}
       App.avatarSettings=s;
       toast('Аватар сохранён');
       closeSettings();
-    });
+    }).catch(e => toast('Ошибка сохранения: '+e.message, true));
   }
 
   // ============ PINNED & ANNOUNCE ============
@@ -1502,32 +1622,25 @@ button:active{transform:scale(0.95)}
     $('#avatarCloseBtn').addEventListener('click',closeSettings);$('#avatarSaveBtn').addEventListener('click',saveAvatar);
     
     // ОПТИМИЗАЦИЯ ФОТО ПРИ ЗАГРУЗКЕ. Размер: 600px вместо 1024px. Качество: 0.85
-    $('#setAvatarFile').addEventListener('change',e=>{
+    $('#setAvatarFile').addEventListener('change',async e=>{
       const f=e.target.files[0];
       if(!f)return;
-      const r=new FileReader();
-      r.onload=ev=>{
-        const tempImg = new Image();
-        tempImg.onload = function() {
-          const c = document.createElement('canvas');
-          const MAX_SIZE = 600;
-          c.width = MAX_SIZE;
-          c.height = MAX_SIZE;
-          const ctx = c.getContext('2d');
-          ctx.imageSmoothingEnabled = true;
-          ctx.imageSmoothingQuality = 'high';
-          
-          const ratio = Math.max(MAX_SIZE/tempImg.width, MAX_SIZE/tempImg.height);
-          const dw = tempImg.width * ratio, dh = tempImg.height * ratio;
-          ctx.drawImage(tempImg, (MAX_SIZE - dw) / 2, (MAX_SIZE - dh) / 2, dw, dh);
-          
-          App.user.avatar = c.toDataURL('image/jpeg', 0.85);
-          delete imageCache[App.user.avatar];
-          toast('Фото загружено и оптимизировано! Нажмите «Сохранить аватар».');
-        };
-        tempImg.src = ev.target.result;
-      };
-      r.readAsDataURL(f);
+      try {
+        const compressed = await compressImage(f, 600, 0.85);
+        const url = await uploadImageToStorage(f, 'avatars/'+App.user.uid+'_'+Date.now()+'.jpg');
+        if(url) {
+          App.user.avatar = url;
+          delete imageCache[url];
+          toast('Аватар загружен в облако! Нажмите «Сохранить аватар».');
+        } else {
+          // Fallback: если Storage не настроен, сохраняем сжатый base64
+          App.user.avatar = compressed;
+          delete imageCache[compressed];
+          toast('⚠️ Storage не настроен, фото сохранено в БД (base64). Настройте Firebase Storage.', true);
+        }
+      } catch(ex) {
+        toast('Ошибка загрузки фото: '+ex.message, true);
+      }
     });
     
     document.querySelectorAll('.settings-tab').forEach(b=>b.addEventListener('click',function(){const tab=this.dataset.tab;document.querySelectorAll('.settings-tab').forEach(x=>{x.classList.remove('active');x.style.background='transparent';x.style.color='var(--muted)';});this.classList.add('active');this.style.background='var(--accent)';this.style.color='#fff';$('#stab-main').style.display=tab==='main'?'flex':'none';$('#stab-avatar').style.display=tab==='avatar'?'flex':'none';}));
@@ -1541,6 +1654,23 @@ button:active{transform:scale(0.95)}
     
     window.BASE_EMOJIS = ['😀','😃','😄','😁','😆','😅','😂','🤣','🥲','☺️','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🥸','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','ร้อน','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','☠️','👽','👾','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾'];
   }
+  // Глобальный обработчик ошибок
+  window.addEventListener('error', function(e) {
+    if(e.message && !e.message.includes('ResizeObserver')) {
+      console.error('Global error:', e.message);
+    }
+  });
+  window.addEventListener('unhandledrejection', function(e) {
+    console.error('Unhandled rejection:', e.reason);
+  });
+
+  // Восстанавливаем анимацию аватаров при возвращении на страницу
+  document.addEventListener('visibilitychange', () => {
+    if(!document.hidden && App.user && !App.avatarAnimId) {
+      App.avatarAnimId = requestAnimationFrame(updateAllFrames);
+    }
+  });
+
   document.addEventListener('DOMContentLoaded', init);
 })();
 </script>
