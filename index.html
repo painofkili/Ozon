@@ -628,6 +628,7 @@ button:active{transform:scale(0.95)}
         }
         if(layer === 'front') {
           const R=avatarRadius,steps=36,stepA=(Math.PI*2)/steps;
+          const isCustom=color1!=='#6366f1'||color2!=='#a855f7';
           ctx.save();
           ctx.globalCompositeOperation='lighter';
           const pulse=0.85+Math.sin(state.tick*2)*0.15;
@@ -635,9 +636,17 @@ button:active{transform:scale(0.95)}
           ctx.shadowBlur=25*pulse;ctx.shadowColor='#ff6600';
           for(let i=0;i<steps;i++){
             const a=i*stepA+state.tick*0.2;
-            const hue=((i/steps)*360+state.tick*50)%360;
+            const t=((i/steps)+state.tick*0.08)%1;
             const alpha=0.5+0.5*Math.sin(state.tick*6+i*0.7);
-            ctx.strokeStyle='hsl('+hue+',100%,55%)';
+            if(isCustom){
+              const mix=t<0.5?color1:color2;
+              ctx.strokeStyle=mix;
+            } else {
+              const hue=5+Math.sin(t*20+state.tick*2)*20;
+              const sat=85+Math.sin(t*15)*15;
+              const lit=50+Math.sin(t*18+state.tick*3)*15;
+              ctx.strokeStyle='hsl('+(hue|0)+','+(sat|0)+'%,'+(lit|0)+'%)';
+            }
             ctx.globalAlpha=alpha*pulse;
             ctx.beginPath();ctx.arc(cx,cy,R,a-stepA*0.15,a+stepA*0.15);ctx.stroke();
           }
